@@ -9,7 +9,7 @@
 
 </p>
 
-![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=spectrum-website) ![Contributors](https://img.shields.io/github/contributors/HuskyNZ/peter-v2?color=dark-green) ![Issues](https://img.shields.io/github/issues//Spectrum-Website) ![License](https://img.shields.io/github/license/Spectrum-Website)
+![Contributors](https://img.shields.io/github/contributors/SpectrumPro/Spectrum?color=dark-green) ![Issues](https://img.shields.io/github/issues/Spectrum?color=dark-green) ![License](https://img.shields.io/github/license/Spectrum?color=dark-green)
 
 ## About The Project
 
