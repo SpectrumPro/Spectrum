@@ -17,10 +17,7 @@ This site is node based dmx control system
 
 ## Built With
 
-* [NextJS](https://nextjs.org/)
-* [Tailwind](https://tailwindcss.com/)
-* [Vercel](https://vercel.com/)
-* [Cloudlfare](https://www.cloudflare.com/)
+* [Godot](https://godotengine.org/)
 * [Github](https://github.com/)
 
 ## Roadmap
