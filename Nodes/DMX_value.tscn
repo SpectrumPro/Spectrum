@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1wy1hnwjiopk"]
+
+[ext_resource type="Script" path="res://Nodes/DMX_value.gd" id="1_yid4k"]
+
+[node name="DMXValue" type="GraphNode"]
+offset_right = 245.0
+offset_bottom = 118.0
+title = "DMX Value"
+show_close = true
+resizable = true
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 0.356863, 0.356863, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = true
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+script = ExtResource("1_yid4k")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Chanel Number"
+
+[node name="ChanelNumber" type="SpinBox" parent="HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+min_value = 1.0
+max_value = 512.0
+value = 1.0
+rounded = true
+update_on_text_changed = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer3"]
+layout_mode = 2
+text = "Value"
+
+[node name="Value" type="SpinBox" parent="HBoxContainer3"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 255.0
+
+[connection signal="close_request" from="." to="." method="_on_Control_close_request"]
+[connection signal="value_changed" from="HBoxContainer/ChanelNumber" to="." method="_on_chanel_number_value_changed"]
+[connection signal="value_changed" from="HBoxContainer3/Value" to="." method="_on_value_value_changed"]
