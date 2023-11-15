@@ -43,9 +43,3 @@ Main App
 
 Readme
 * [HuskyNZ](https://www.husky.nz)
-
-
-## Acknowledgements
-
-* [Cloudflare](https://cloudflare.com)
-* [Vercel](https://vercel.com)
