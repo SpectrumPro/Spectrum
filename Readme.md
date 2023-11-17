@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/SpectrumPro/Spectrum-Website/">
-    <img src="" alt="Logo" width="80" height="80">
+    <img src="https://serv.hnz.li/spectrum/logo/default.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Spectrum</h3>
@@ -9,37 +9,34 @@
 
 </p>
 
-![Contributors](https://img.shields.io/github/contributors/SpectrumPro/Spectrum?color=dark-green) ![Issues](https://img.shields.io/github/issues/Spectrum?color=dark-green) ![License](https://img.shields.io/github/license/Spectrum?color=dark-green)
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=spectrum-website) ![Contributors](https://img.shields.io/github/contributors/SpectrumPro/spectrum?color=dark-green) ![GitHub issues](https://img.shields.io/github/issues/SpectrumPro/Spectrum) ![GitHub License](https://img.shields.io/github/license/SpectrumPro/Spectrum)
 
-## About The Project
+# Spectrum: Node-Based DMX Control System
 
-This site is node based dmx control system
+Welcome to Spectrum, a powerful and intuitive node-based DMX control system designed for lighting professionals and enthusiasts. Created in the Godot game engine, Spectrum allows you to seamlessly orchestrate complex lighting setups through a visual and modular interface.
 
-## Built With
+### Key Features:
+- **Node-Based Control:** Design your lighting effects using a visual node graph, making it easy to create, modify, and organize DMX control logic.
+- **Real-Time Preview:** See your lighting effects come to life with a real-time preview, ensuring that your vision is accurately translated to the final result.
+- **Modular Architecture:** Build and customize your lighting setups by connecting modular nodes, providing flexibility and adaptability to suit various scenarios.
+- **DMX Integration:** Spectrum seamlessly integrates with DMX hardware, offering precise control over a wide range of lighting fixtures for concerts, events, installations, and more.
+- **Art-Net Support:** Spectrum supports Art-Net, allowing for efficient communication with a variety of DMX devices over Ethernet.
 
-* [Godot](https://godotengine.org/)
-* [Github](https://github.com/)
+### Contributing:
+We welcome contributions from the community! Whether it's bug fixes, feature enhancements, or documentation improvements, your input helps make Spectrum better for everyone. Check out our [contribution guidelines](link-to-contributing.md) to get started.
 
-## Roadmap
+### Note: Spectrum is in VERY early development.
+Please be aware that Spectrum is still in its early stages of development. While it already boasts powerful features, expect regular updates and improvements as we work towards a stable and feature-rich release. Your feedback and contributions are invaluable in shaping the future of Spectrum.
 
-There are numerous more features I intend to implement, with many more in the works.
+Experience the future of DMX control with Spectrum – where creativity meets precision. Illuminate your world with ease!
 
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-* If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/issues/new/SpectrumPro/Spectrum) to discuss it, or directly create a pull request after you edit the *README.md* file with necessary changes.
-* Please make sure you check your spelling and grammar.
-* Create individual PR for each suggestion.
-
-## License
+### License
 
 Distributed under the MPL License. See [LICENSE](https://github.com/SpectrumPro/Spectrum/blob/master/LICENSE) for more information.
 
-## Authors
+### Contributors
 
-Main App
-* [Liam](https://liamsherwin.tech/)
+[<img src="https://github.com/not-my-username.png" width="60px;"/>](https://github.com/not-my-username) - Lead Development 
+[<img src="https://github.com/HuskyNZ.png" width="60px;"/>](https://github.com/HuskyNZ) - Website, CDN
 
-Readme
-* [HuskyNZ](https://www.husky.nz)
+Copyright © [Liam Sherwin](liamsherwin.tech)
