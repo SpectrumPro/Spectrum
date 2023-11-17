@@ -23,12 +23,10 @@ Welcome to Spectrum, a powerful and intuitive node-based DMX control system desi
 - **Art-Net Support:** Spectrum supports Art-Net, allowing for efficient communication with a variety of DMX devices over Ethernet.
 
 ### Contributing:
-We welcome contributions from the community! Whether it's bug fixes, feature enhancements, or documentation improvements, your input helps make Spectrum better for everyone. Check out our [contribution guidelines](link-to-contributing.md) to get started.
+We welcome contributions from the community! Whether it's bug fixes, feature enhancements, or documentation improvements, your input helps make Spectrum better for everyone. Check out our [contribution guidelines](contributing.md) to get started.
 
 ### Note: Spectrum is in VERY early development.
 Please be aware that Spectrum is still in its early stages of development. While it already boasts powerful features, expect regular updates and improvements as we work towards a stable and feature-rich release. Your feedback and contributions are invaluable in shaping the future of Spectrum.
-
-Experience the future of DMX control with Spectrum – where creativity meets precision. Illuminate your world with ease!
 
 ### License
 
@@ -39,4 +37,4 @@ Distributed under the MPL License. See [LICENSE](https://github.com/SpectrumPro/
 [<img src="https://github.com/not-my-username.png" width="60px;"/>](https://github.com/not-my-username) - Lead Development 
 [<img src="https://github.com/HuskyNZ.png" width="60px;"/>](https://github.com/HuskyNZ) - Website, CDN
 
-Copyright © [Liam Sherwin](liamsherwin.tech)
+Spectrum, it's Assets, Images, and Code is Copyrighted © [Liam Sherwin](liamsherwin.tech) (Unless otherwise specified)
