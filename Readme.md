@@ -37,4 +37,4 @@ Distributed under the MPL License. See [LICENSE](https://github.com/SpectrumPro/
 [<img src="https://github.com/not-my-username.png" width="60px;"/>](https://github.com/not-my-username) - Lead Development 
 [<img src="https://github.com/HuskyNZ.png" width="60px;"/>](https://github.com/HuskyNZ) - Website, CDN
 
-Spectrum, it's Assets, Images, and Code is Copyrighted © [Liam Sherwin](liamsherwin.tech) (Unless otherwise specified)
+Spectrum, it's Assets, Images, and Code is Copyrighted © [Liam Sherwin](https://liamsherwin.tech) (Unless otherwise specified)
