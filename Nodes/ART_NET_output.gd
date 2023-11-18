@@ -2,29 +2,38 @@ extends GraphNode
 
 
 var udp_peer = PacketPeerUDP.new()
-var target_ip: String = "localhost"
-var target_port: int = 6454
+var target_ip = "172.0.0.1"
+var target_port = 6454
+
 var formatted_dmx_data = []
 var packet_id = 0
 var debug_index = 1
 
 func _ready():
-	udp_peer.connect_to_host("192.168.1.84", 6454)
+	connect_to_host()
+
+func connect_to_host():
+	udp_peer.close()
+	udp_peer.connect_to_host(target_ip, target_port)
 
 func _on_Control_close_request():
+	get_parent().delete(self)
 	queue_free()
+
+func node_process():
+	pass
 
 func receive(data, _slot):
 	formatted_dmx_data = []
 	for channel in range(1, 513):
 		formatted_dmx_data.append(data.dmx_channels.get(channel, 0))
+	send_artnet_packet(data.universe-1)
 	print(formatted_dmx_data)
-	send_artnet_packet(0, target_ip, target_port)
 
 func _on_Control_resize_request(new_minsize):
 	size = new_minsize
 
-func send_artnet_packet(universe, ip, port):
+func send_artnet_packet(universe):
 	# Construct Art-Net packet
 	var packet = PackedByteArray()
 
@@ -39,7 +48,7 @@ func send_artnet_packet(universe, ip, port):
 
 	# ArtDMX packet
 	# Sequence Number
-	packet.append(100)
+	packet.append(0)
 
 	# Physical Port (Set to 0 if not needed)
 	packet.append(0)
@@ -58,10 +67,16 @@ func send_artnet_packet(universe, ip, port):
 		packet.append(value)
 
 	# Send the packet
-	udp_peer.set_dest_address(ip, port)
+#	udp_peer.set_dest_address(ip, port)
+
 	udp_peer.put_packet(packet)
 	
-	packet_id = (packet_id + packet_id) % 255
 
-func _on_button_pressed():
-	receive({"universe":1,"dmx_channels":{4:1}},0)
+
+func _on_url_text_submitted(new_text):
+	target_ip = new_text
+	connect_to_host()
+
+func _on_port_text_submitted(new_text):
+	target_port = int(new_text)
+	connect_to_host()

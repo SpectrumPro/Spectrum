@@ -4,17 +4,17 @@
 
 [node name="ARTNETOutput" type="GraphNode"]
 offset_right = 244.0
-offset_bottom = 146.0
+offset_bottom = 113.0
 title = "Art-Net Output"
 show_close = true
 resizable = true
 slot/0/left_enabled = true
 slot/0/left_type = 0
-slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_color = Color(1, 0, 0.498039, 1)
 slot/0/left_icon = null
 slot/0/right_enabled = false
 slot/0/right_type = 0
-slot/0/right_color = Color(1, 0.356863, 0.356863, 1)
+slot/0/right_color = Color(1, 0, 0, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 slot/1/left_enabled = false
@@ -42,23 +42,38 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer2"]
 layout_mode = 2
-text = "DMX Data"
+text = "DMX In"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="HBoxContainer"]
 layout_mode = 2
 text = "Art-Net Url"
 
-[node name="LineEdit" type="LineEdit" parent="HBoxContainer"]
+[node name="Url" type="LineEdit" parent="HBoxContainer"]
 layout_mode = 2
-placeholder_text = "172.0.0.1:6454"
+size_flags_horizontal = 10
+text = "172.0.0.1"
+placeholder_text = "172.0.0.1"
 expand_to_text_length = true
 
-[node name="Button" type="Button" parent="."]
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
 layout_mode = 2
-text = "A Button"
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="HBoxContainer3"]
+layout_mode = 2
+text = "Art-Net Port"
+
+[node name="Port" type="LineEdit" parent="HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "6454"
+placeholder_text = "6454"
+expand_to_text_length = true
 
 [connection signal="close_request" from="." to="." method="_on_Control_close_request"]
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="text_submitted" from="HBoxContainer/Url" to="." method="_on_url_text_submitted"]
+[connection signal="text_submitted" from="HBoxContainer3/Port" to="." method="_on_port_text_submitted"]
