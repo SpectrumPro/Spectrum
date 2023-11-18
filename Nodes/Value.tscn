@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbm7uywqo0w5o"]
+
+[ext_resource type="Script" path="res://Nodes/Value.gd" id="1_j7ajx"]
+
+[node name="Value" type="GraphNode"]
+offset_right = 197.0
+offset_bottom = 85.0
+title = "Value"
+show_close = true
+resizable = true
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("1_j7ajx")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Value"
+
+[node name="Value" type="SpinBox" parent="HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 10
+max_value = 512.0
+rounded = true
+update_on_text_changed = true
+
+[connection signal="close_request" from="." to="." method="_on_Control_close_request"]
+[connection signal="value_changed" from="HBoxContainer/Value" to="." method="_on_value_value_changed"]
