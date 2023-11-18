@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="48"
+   height="48"
+   viewBox="0 0 12.7 12.7"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="DMX_value.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#000000"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="11.502694"
+     inkscape:cx="11.171296"
+     inkscape:cy="16.039721"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="1920"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="5.2918685"
+       y="8.2486222"
+       width="39.23258"
+       height="29.114316"
+       id="rect2" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:none;stroke:#ffffff;stroke-width:1.29499999;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
+       id="path1"
+       cx="6.3499999"
+       cy="6.3499999"
+       r="4.8795004" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.295;stroke-linecap:square;stroke-dasharray:none"
+       id="path2"
+       cx="6.3499999"
+       cy="9.182601"
+       r="0.70300978" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.295;stroke-linecap:square;stroke-dasharray:none"
+       id="path2-5"
+       cx="9.2256117"
+       cy="6.2321916"
+       r="0.70300978" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.295;stroke-linecap:square;stroke-dasharray:none"
+       id="path2-5-2"
+       cx="3.4743886"
+       cy="6.2321916"
+       r="0.70300978" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.295;stroke-linecap:square;stroke-dasharray:none"
+       id="path2-5-2-7"
+       cx="4.1773982"
+       cy="8.2629547"
+       r="0.70300978" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.295;stroke-linecap:square;stroke-dasharray:none"
+       id="path2-5-2-7-6"
+       cx="8.5226021"
+       cy="8.2629547"
+       r="0.70300978" />
+    <path
+       style="font-weight:bold;font-size:14.6667px;font-family:Monospace;-inkscape-font-specification:'Monospace Bold';white-space:pre;fill:#ffffff;stroke-width:4.89449;stroke-linecap:square"
+       d="M 5.9510171,21.592914 V 11.12089 h 3.2413408 q 2.0386711,0 3.2413411,1.305336 1.217336,1.290669 1.217336,3.842675 0,2.566673 -1.24667,3.945343 -1.232003,1.37867 -3.3733408,1.37867 z m 2.9626735,-1.804005 q 1.3346694,0 1.9506714,-0.865335 0.630668,-0.865335 0.630668,-2.640006 0,-1.760004 -0.601335,-2.552006 Q 10.29236,12.924894 9.089691,12.924894 H 8.0483553 v 6.864015 z M 14.67771,21.592914 V 11.12089 h 2.874673 l 0.894669,5.940013 h 0.05867 l 1.056003,-5.940013 h 2.728006 v 10.472024 h -1.906671 v -2.390673 q 0,-0.572001 0.02933,-1.290669 0.02933,-0.733335 0.07333,-1.496004 0.044,-0.777335 0.088,-1.46667 0.044,-0.689335 0.07333,-1.188002 0.02933,-0.513335 0.044,-0.704002 h -0.088 l -1.07067,6.072014 h -2.068004 l -1.15867,-6.086681 h -0.088 q 0.01467,0.220001 0.05867,0.733335 0.044,0.513335 0.088,1.217336 0.05867,0.689335 0.102667,1.46667 0.05867,0.762669 0.088,1.510671 0.02933,0.733335 0.02933,1.349336 v 2.273339 z m 8.506692,0 3.138673,-5.397346 -2.93334,-5.074678 h 2.170672 l 1.730671,3.300007 1.701337,-3.300007 h 2.200005 l -2.93334,5.060011 3.138674,5.412013 h -2.244005 l -1.877338,-3.637342 -1.921338,3.637342 z"
+       id="text2"
+       transform="matrix(0.13961514,0,0,0.13961514,3.742773,2.0392353)"
+       aria-label="DMX" />
+  </g>
+</svg>
