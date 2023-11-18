@@ -4,7 +4,7 @@ extends Control
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
-
+ 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -13,7 +13,7 @@ func _process(_delta):
 		self.visible = true
 		
 func _input(event):
-	if (event is InputEventMouseButton) and event.pressed:
+	if (event is InputEventMouseButton) and event.pressed and get_parent().get_node("TabContainer").get_current_tab_control().name == "Node Editor":
 		var evLocal = make_input_local(event)
 		if !Rect2(Vector2(0,0),self.size).has_point(evLocal.position):
 			self.visible = false
