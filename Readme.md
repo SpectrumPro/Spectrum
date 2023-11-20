@@ -17,7 +17,7 @@ Welcome to Spectrum, a powerful and intuitive node-based DMX control system desi
 
 ### Key Features:
 - **Node-Based Control:** Design your lighting effects using a visual node graph, making it easy to create, modify, and organize DMX control logic.
-- **Real-Time Preview:** See your lighting effects come to life with a real-time preview, ensuring that your vision is accurately translated to the final result.
+- **Real-Time Preview (Comming Soon!):** See your lighting effects come to life with a real-time preview, ensuring that your vision is accurately translated to the final result.
 - **Modular Architecture:** Build and customize your lighting setups by connecting modular nodes, providing flexibility and adaptability to suit various scenarios.
 - **DMX Integration:** Spectrum seamlessly integrates with DMX hardware, offering precise control over a wide range of lighting fixtures for concerts, events, installations, and more.
 - **Art-Net Support:** Spectrum supports Art-Net, allowing for efficient communication with a variety of DMX devices over Ethernet.
