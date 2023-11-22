@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=7 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="Script" path="res://Scripts/NodeList.gd" id="2_8afhv"]
+[ext_resource type="Script" path="res://Scripts/Console.gd" id="2_qq2ap"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
+[ext_resource type="Script" path="res://Scripts/ConsoleList.gd" id="3_xxoug"]
+
+[sub_resource type="Theme" id="Theme_0vxhv"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -22,24 +26,133 @@ grow_vertical = 2
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 layout_mode = 2
+theme = SubResource("Theme_0vxhv")
 right_disconnects = true
 scroll_offset = Vector2(0, -31)
 script = ExtResource("1")
 
-[node name="Node List" type="Control" parent="."]
+[node name="Console" type="GridContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+
+[node name="Console Editor" type="GraphEdit" parent="TabContainer/Console"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
+theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+snap_distance = 6
+arrange_nodes_button_hidden = true
+script = ExtResource("2_qq2ap")
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Console"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Console/MarginContainer"]
+layout_mode = 2
+
+[node name="name" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/name"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="LineEdit" type="LineEdit" parent="TabContainer/Console/MarginContainer/VBoxContainer/name"]
+custom_minimum_size = Vector2(162.85, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Name"
+
+[node name="color" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/color"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Background Colour"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="TabContainer/Console/MarginContainer/VBoxContainer/color"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Colour"
+color = Color(0.109804, 0.109804, 0.109804, 1)
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="connection" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/connection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Connection"
+
+[node name="OptionButton" type="OptionButton" parent="TabContainer/Console/MarginContainer/VBoxContainer/connection"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+popup/item_0/text = "Blank 1"
+popup/item_0/id = 0
+popup/item_1/text = "Blank 2"
+popup/item_1/id = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "External Input"
+
+[node name="External Input" type="Button" parent="TabContainer/Console/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Choose"
+
+[node name="Node Editor List" type="Control" parent="."]
 visible = false
 layout_mode = 2
 anchors_preset = 0
-anchor_left = 0.0229167
-anchor_top = 0.15463
-anchor_right = 0.0229167
-anchor_bottom = 0.15463
+anchor_left = 0.0109375
+anchor_top = 0.0759259
+anchor_right = 0.0109375
+anchor_bottom = 0.0759259
 offset_right = 186.0
 offset_bottom = 268.0
 script = ExtResource("2_8afhv")
 metadata/_edit_use_anchors_ = true
 
-[node name="NodeList" type="ItemList" parent="Node List"]
+[node name="NodeList" type="ItemList" parent="Node Editor List"]
+layout_mode = 1
+offset_right = 186.0
+offset_bottom = 8.0
+auto_height = true
+
+[node name="Console List" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.0109375
+anchor_top = 0.0759259
+anchor_right = 0.0109375
+anchor_bottom = 0.0759259
+offset_right = 186.0
+offset_bottom = 268.0
+script = ExtResource("3_xxoug")
+metadata/_edit_use_anchors_ = true
+
+[node name="WidgetList" type="ItemList" parent="Console List"]
 layout_mode = 1
 offset_right = 186.0
 offset_bottom = 8.0
@@ -54,7 +167,41 @@ offset_right = 1914.0
 offset_bottom = 26.0
 script = ExtResource("3_l3bnx")
 
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -141.0
+offset_bottom = 31.0
+grow_horizontal = 0
+
+[node name="Save" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Save"
+
+[node name="Load" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Load
+"
+
+[node name="Load2" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "New
+"
+
 [connection signal="connection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_GraphEdit_connection_request"]
 [connection signal="disconnection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_GraphEdit_disconnection_request"]
-[connection signal="item_clicked" from="Node List/NodeList" to="TabContainer/Node Editor" method="_on_item_list_item_clicked"]
-[connection signal="item_clicked" from="Node List/NodeList" to="Node List" method="_on_node_list_item_clicked"]
+[connection signal="node_deselected" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_node_deselected"]
+[connection signal="node_selected" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_node_selected"]
+[connection signal="text_submitted" from="TabContainer/Console/MarginContainer/VBoxContainer/name/LineEdit" to="TabContainer/Console/Console Editor" method="_on_line_edit_text_submitted"]
+[connection signal="color_changed" from="TabContainer/Console/MarginContainer/VBoxContainer/color/ColorPickerButton" to="TabContainer/Console/Console Editor" method="_on_color_picker_button_color_changed"]
+[connection signal="item_selected" from="TabContainer/Console/MarginContainer/VBoxContainer/connection/OptionButton" to="TabContainer/Console/Console Editor" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="TabContainer/Console/MarginContainer/VBoxContainer/HBoxContainer/External Input" to="TabContainer/Console/Console Editor" method="_on_external_input_pressed"]
+[connection signal="item_clicked" from="Node Editor List/NodeList" to="TabContainer/Node Editor" method="_on_item_list_item_clicked"]
+[connection signal="item_clicked" from="Node Editor List/NodeList" to="Node Editor List" method="_on_node_list_item_clicked"]
+[connection signal="item_clicked" from="Console List/WidgetList" to="TabContainer/Console/Console Editor" method="_on_widget_list_item_clicked"]
+[connection signal="item_clicked" from="Console List/WidgetList" to="Console List" method="_on_node_list_item_clicked"]

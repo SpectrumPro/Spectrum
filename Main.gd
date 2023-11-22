@@ -2,24 +2,30 @@ extends GraphEdit
 
 var initial_position = Vector2(40,40)
 var node_index = 0
-@onready var node_list = get_parent().get_parent().get_node("Node List/NodeList")                                                                             
+@onready var node_list = get_parent().get_parent().get_node("Node Editor List/NodeList")                                                                             
+@onready var connection_option_button = get_parent().get_node("Console/MarginContainer/VBoxContainer/connection/OptionButton")
+@onready var console_editor = get_parent().get_node("Console/Console Editor")
 var built_in_nodes = {
 	'DMX Value':"DMX_value",
 	'Art-Net Output':"ART_NET_output",
 	'Merge':"Merge",
 	'Value':"Value",
-	'DMX Table': "DMX_table"
+	'DMX Table': "DMX_table",
+	'Dimmer': "Dimmer"
 }
 
 var connected_nodes = {}
 
 var outbound_queue = {}
 # Called when the node enters the scene tree for the first time.
-
 func _ready():
 	for node in built_in_nodes:
 		node_list.add_item(node)
-
+	var add_node_button = Button.new()
+	add_node_button.text = "Add Node"
+	add_node_button.pressed.connect(get_parent().get_parent().get_node("Node Editor List").add_node_button_clicked)
+	self.get_zoom_hbox().add_child(add_node_button)
+ 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if Input.is_action_just_pressed("process_loop"):
@@ -74,7 +80,12 @@ func delete(node):
 				connected_nodes[i].erase(x)
 		if len(connected_nodes[i]) == 0:
 			connected_nodes.erase(i)
-
+	connection_option_button.clear()
+	var opt_button_list = []
+	for i in self.get_children():
+		opt_button_list.append(str(i.name))
+		connection_option_button.add_item(i.name)
+	console_editor.set_connection_button_list(opt_button_list)	
 #func _on_RunProgram_pressed():
 #	var G = self
 #	var connection_list = G.get_connection_list()
@@ -88,12 +99,20 @@ func delete(node):
 #			result += value_2
 #	print(result)
 
-
 func _on_item_list_item_clicked(index, _at_position, _mouse_button_index):
 	print("res://Nodes/" + built_in_nodes[node_list.get_item_text(index)] + ".tscn")
 	var node_to_add = load("res://Nodes/" + built_in_nodes[node_list.get_item_text(index)] + ".tscn").instantiate()
 	node_to_add.position_offset = (get_viewport().get_mouse_position() + self.scroll_offset) / self.zoom
 #	set_editable_instance(node_to_add, true)
 	node_to_add.name = node_to_add.name + str(node_index)
+	node_to_add.title = node_to_add.title + " #" + str(node_index)
 	self.add_child(node_to_add)
 	node_index += 1
+	
+	connection_option_button.clear()
+	var opt_button_list = []
+	for i in self.get_children():
+		if i.get_meta_list().has("external_input"):
+			opt_button_list.append(str(i.name))
+			connection_option_button.add_item(i.name)
+	console_editor.set_connection_button_list(opt_button_list)

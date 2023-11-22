@@ -4,7 +4,7 @@ var channel_number = 1
 var value = 0
 
 var dmx_data = {
-	"universe":1,
+	"universe":2,
 	"dmx_channels":{}
 }
 
@@ -13,9 +13,7 @@ func node_process():
 	if not queue.is_empty():
 		get_parent().send(self, dmx_data, 0)
 		queue = {}
-
-
-
+		
 func set_dmx_data():
 	dmx_data.dmx_channels = {channel_number:value}
 	queue[0] = dmx_data

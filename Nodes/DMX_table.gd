@@ -60,6 +60,6 @@ func _on_resize_request(new_minsize):
 	size = new_minsize
 
 
-func _on_universe_value_changed(value):
-	dmx_data.universe = int(value)
+func _on_universe_value_changed(new_value):
+	dmx_data.universe = int(new_value)
 	_set_dmx_data()

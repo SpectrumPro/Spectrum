@@ -18,6 +18,8 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("1_j7ajx")
+metadata/external_input = true
+metadata/external_input_range = Vector2(-512, 512)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -30,6 +32,7 @@ text = "Value"
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 10
+min_value = -512.0
 max_value = 512.0
 rounded = true
 update_on_text_changed = true
