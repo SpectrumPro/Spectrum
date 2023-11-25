@@ -1,8 +1,7 @@
 # Whenever a tag push matching pattern "v*" then run the job
 on: 
   push:
-    tags:
-      - "v*"
+   
 
 jobs:
   # job id, can be anything
@@ -39,3 +38,4 @@ jobs:
         generateReleaseNotes: true
         tag: ${{ github.ref_name }}
         artifacts: ${{ steps.export.outputs.archive_directory }}/*
+      
