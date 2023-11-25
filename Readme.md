@@ -35,6 +35,6 @@ Distributed under the MPL License. See [LICENSE](https://github.com/SpectrumPro/
 ### Contributors
 
 [<img src="https://github.com/not-my-username.png" width="60px;"/>](https://github.com/not-my-username) - Lead Development 
-[<img src="https://github.com/HuskyNZ.png" width="60px;"/>](https://github.com/HuskyNZ) - Website, CDN
+[<img src="https://serv.hnz.li/logo/default.png" width="60px;"/>](https://github.com/HuskyNZ) - Website, CDN, Windows Installer
 
 Spectrum, it's Assets, Images, and Code is Copyrighted © [Liam Sherwin](https://liamsherwin.tech) (Unless otherwise specified)
