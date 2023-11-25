@@ -30,8 +30,6 @@ jobs:
         archive_output: true
 
     - name: Build Advanced Installer Project (.AIP)  Demo
-  on: [workflow_dispatch]
-  jobs:
   advinst-aip-build-demo:
     runs-on: windows-latest
     name: Build Aip Demo
