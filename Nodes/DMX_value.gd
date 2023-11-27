@@ -4,7 +4,7 @@ var channel_number = 1
 var value = 0
 
 var dmx_data = {
-	"universe":2,
+	"universe":1,
 	"dmx_channels":{}
 }
 

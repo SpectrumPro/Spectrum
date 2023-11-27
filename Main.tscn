@@ -159,16 +159,14 @@ offset_bottom = 8.0
 auto_height = true
 
 [node name="Label" type="Label" parent="."]
-visible = false
 layout_mode = 0
-offset_left = 1834.0
+offset_left = 1725.0
 offset_top = 3.0
-offset_right = 1914.0
+offset_right = 1775.0
 offset_bottom = 26.0
 script = ExtResource("3_l3bnx")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0

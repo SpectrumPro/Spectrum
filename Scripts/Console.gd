@@ -22,6 +22,11 @@ func _ready():
 	for node in built_in_widget:
 		widget_list.add_item(node)
 
+	var add_node_button = Button.new()
+	add_node_button.text = "Add Item"
+	add_node_button.pressed.connect(get_parent().get_parent().get_parent().get_node("Console List").add_node_button_clicked)
+	self.get_zoom_hbox().add_child(add_node_button)
+
 	OS.open_midi_inputs()
 	print(OS.get_connected_midi_inputs())
 	
