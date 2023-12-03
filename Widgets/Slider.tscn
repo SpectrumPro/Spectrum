@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://ddlftbjtbb25j"]
+
+[ext_resource type="Script" path="res://Widgets/Slider.gd" id="1_3eiyw"]
+[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Slider_handle.svg" id="3_0dph2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugvh4"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 10.0
+expand_margin_right = 11.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig8lx"]
+bg_color = Color(0.117235, 0.117235, 0.117235, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 7.0
+expand_margin_right = 7.0
+
+[node name="slider" type="GraphNode"]
+offset_right = 96.0
+offset_bottom = 356.0
+resizable = true
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("1_3eiyw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VSlider" type="VSlider" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 113.325)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_icons/grabber = ExtResource("3_0dph2")
+theme_override_icons/grabber_highlight = ExtResource("3_0dph2")
+theme_override_styles/slider = SubResource("StyleBoxFlat_ugvh4")
+max_value = 255.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(60.155, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_ig8lx")
+text = "Slider"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[connection signal="value_changed" from="VBoxContainer/VSlider" to="." method="_on_value_slider_changed"]

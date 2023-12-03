@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://c25ralxn28mo5"]
+
+[ext_resource type="Script" path="res://Nodes/Dimmer.gd" id="1_e8ajr"]
+
+[node name="Dimmer" type="GraphNode"]
+offset_right = 197.0
+offset_bottom = 85.0
+resizable = true
+title = "Dimmer"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 0, 0.498039, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 0, 0.498039, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = true
+slot/2/left_type = 0
+slot/2/left_color = Color(1, 1, 1, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+script = ExtResource("1_e8ajr")
+metadata/external_input = true
+metadata/Inputs = [NodePath("Option"), NodePath("HBoxContainer/Amount")]
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "DMX In"
+
+[node name="Label2" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "DMX Out"
+
+[node name="Option" type="OptionButton" parent="."]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Math"
+popup/item_0/id = 0
+popup/item_1/text = "Gate"
+popup/item_1/id = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Amount"
+
+[node name="Amount" type="SpinBox" parent="HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 10
+min_value = -255.0
+max_value = 255.0
+rounded = true
+update_on_text_changed = true
+
+[connection signal="item_selected" from="Option" to="." method="_on_option_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/Amount" to="." method="_on_value_value_changed"]

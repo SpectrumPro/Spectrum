@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1umsuahhgmut"]
+
+[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="1_ygrao"]
+
+[node name="TextureButton" type="TextureButton"]
+size_flags_horizontal = 8
+texture_normal = ExtResource("1_ygrao")

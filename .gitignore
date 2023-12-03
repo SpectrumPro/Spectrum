@@ -16,3 +16,7 @@ mono_crash.*.json
 
 # Repo specific ignores
 Export/
+
+android/
+
+.DS_Store

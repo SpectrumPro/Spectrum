@@ -46,7 +46,7 @@ func add_row():
 func _on_value_changed(_value):
 	_set_dmx_data()
 	
-func _on_Control_close_request():
+func close_request():
 	get_parent().delete(self)
 	queue_free()
 
@@ -59,7 +59,6 @@ func _on_sort_pressed():
 func _on_resize_request(new_minsize):
 	size = new_minsize
 
-
-func _on_universe_value_changed(value):
-	dmx_data.universe = int(value)
+func _on_universe_value_changed(new_value):
+	dmx_data.universe = int(new_value)
 	_set_dmx_data()

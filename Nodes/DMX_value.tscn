@@ -4,10 +4,9 @@
 
 [node name="DMXValue" type="GraphNode"]
 offset_right = 245.0
-offset_bottom = 118.0
-title = "DMX Value"
-show_close = true
+offset_bottom = 144.0
 resizable = true
+title = "DMX Value"
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 1, 1, 1)
@@ -39,7 +38,7 @@ script = ExtResource("1_yid4k")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 4
 
 [node name="Label" type="Label" parent="HBoxContainer2"]
 layout_mode = 2
@@ -48,7 +47,7 @@ text = "Dmx Out"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 4
 
 [node name="Label" type="Label" parent="HBoxContainer"]
 layout_mode = 2
@@ -57,7 +56,8 @@ text = "Chanel Number"
 [node name="ChanelNumber" type="SpinBox" parent="HBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 10
+size_flags_vertical = 4
 min_value = 1.0
 max_value = 512.0
 value = 1.0
@@ -66,7 +66,6 @@ update_on_text_changed = true
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="."]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="HBoxContainer3"]
 layout_mode = 2
@@ -76,9 +75,9 @@ text = "Value"
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 10
+size_flags_vertical = 4
 max_value = 255.0
 rounded = true
 
-[connection signal="close_request" from="." to="." method="_on_Control_close_request"]
 [connection signal="value_changed" from="HBoxContainer/ChanelNumber" to="." method="_on_chanel_number_value_changed"]
 [connection signal="value_changed" from="HBoxContainer3/Value" to="." method="_on_value_value_changed"]

@@ -5,9 +5,8 @@
 [node name="Merge" type="GraphNode"]
 offset_right = 223.0
 offset_bottom = 185.0
-title = "Merge"
-show_close = true
 resizable = true
+title = "Merge"
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 0, 0.498039, 1)
@@ -93,5 +92,4 @@ layout_mode = 2
 layout_mode = 2
 text = "DMX In 2"
 
-[connection signal="close_request" from="." to="." method="_on_Control_close_request"]
 [connection signal="item_selected" from="HBoxContainer/OptionButton" to="." method="_on_option_button_item_selected"]

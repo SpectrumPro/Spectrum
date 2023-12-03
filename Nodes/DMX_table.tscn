@@ -5,9 +5,8 @@
 [node name="DMXTable" type="GraphNode"]
 offset_right = 266.0
 offset_bottom = 361.0
-title = "DMX Table"
-show_close = true
 resizable = true
+title = "DMX Table"
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 1, 1, 1)
@@ -92,7 +91,6 @@ size_flags_horizontal = 3
 text = "Sort
 "
 
-[connection signal="close_request" from="." to="." method="_on_Control_close_request"]
 [connection signal="resize_request" from="." to="." method="_on_resize_request"]
 [connection signal="value_changed" from="HBoxContainer/Universe" to="." method="_on_universe_value_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Add" to="." method="_on_add_pressed"]
