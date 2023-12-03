@@ -29,15 +29,19 @@ func _process_data():
 	print(dmx_data)
 	queue = dmx_data
 
-func _on_Control_close_request():
+func close_request():
 	get_parent().delete(self)
 	queue_free()
 
 func receive(data, slot):
 	if slot == 0:
+		if typeof(data) != 27: 
+			return
 		most_recent_data = data.dmx_channels
 		dmx_data.universe = data.universe
 	elif slot == 1:
+		if typeof(data) != 2: 
+			return
 		dimmer_amount = data
 		$HBoxContainer/Amount.value = data
 	_process_data()

@@ -16,6 +16,8 @@ func _ready():
 	pass
 
 func receive(data, slot):
+	if typeof(data) != 27: 
+		return
 	if slot == 0:
 		dmx_0 = data
 	elif slot == 1:
@@ -38,7 +40,8 @@ func node_process():
 				dmx_data.dmx_channels = dmx_1.dmx_channels.duplicate()
 				dmx_data.dmx_channels.merge(dmx_0.dmx_channels)
 		get_parent().send(self, dmx_data, 0)
-func _on_Control_close_request():
+		
+func close_request():
 	get_parent().delete(self)
 	queue_free()
 

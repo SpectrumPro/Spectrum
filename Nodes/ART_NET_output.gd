@@ -16,7 +16,7 @@ func connect_to_host():
 	udp_peer.close()
 	udp_peer.connect_to_host(target_ip, target_port)
 
-func _on_Control_close_request():
+func close_request():
 	get_parent().delete(self)
 	queue_free()
 
@@ -24,6 +24,8 @@ func node_process():
 	pass
 
 func receive(data, _slot):
+	if typeof(data) != 27: 
+		return
 	formatted_dmx_data = []
 	for channel in range(1, 513):
 		formatted_dmx_data.append(data.dmx_channels.get(channel, 0))

@@ -18,3 +18,5 @@ mono_crash.*.json
 Export/
 
 android/
+
+.DS_Store

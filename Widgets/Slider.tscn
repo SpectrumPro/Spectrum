@@ -1,20 +1,16 @@
-[gd_scene load_steps=8 format=3 uid="uid://ddlftbjtbb25j"]
+[gd_scene load_steps=5 format=3 uid="uid://ddlftbjtbb25j"]
 
 [ext_resource type="Script" path="res://Widgets/Slider.gd" id="1_3eiyw"]
-[ext_resource type="StyleBox" uid="uid://md3ekp7dens7" path="res://Styles/Slider.tres" id="1_ciw1s"]
-[ext_resource type="StyleBox" uid="uid://bl5msohwrvyxu" path="res://Styles/Slider Selected.tres" id="2_svhkm"]
-[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Slider Handle.svg" id="3_0dph2"]
+[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Slider_handle.svg" id="3_0dph2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugvh4"]
-bg_color = Color(0.117235, 0.117235, 0.117235, 1)
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 expand_margin_left = 10.0
 expand_margin_right = 11.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s2ugn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig8lx"]
 bg_color = Color(0.117235, 0.117235, 0.117235, 1)
@@ -28,10 +24,7 @@ expand_margin_right = 7.0
 [node name="slider" type="GraphNode"]
 offset_right = 96.0
 offset_bottom = 356.0
-theme_override_constants/close_h_offset = -3
-theme_override_styles/frame = ExtResource("1_ciw1s")
-theme_override_styles/selected_frame = ExtResource("2_svhkm")
-show_close = true
+resizable = true
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 1, 1, 1)
@@ -41,42 +34,23 @@ slot/0/right_type = 0
 slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color(1, 1, 1, 1)
-slot/1/left_icon = null
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color(1, 1, 1, 1)
-slot/1/right_icon = null
-slot/1/draw_stylebox = true
-slot/2/left_enabled = false
-slot/2/left_type = 0
-slot/2/left_color = Color(1, 1, 1, 1)
-slot/2/left_icon = null
-slot/2/right_enabled = false
-slot/2/right_type = 0
-slot/2/right_color = Color(1, 1, 1, 1)
-slot/2/right_icon = null
-slot/2/draw_stylebox = true
 script = ExtResource("1_3eiyw")
 
-[node name="VSlider" type="VSlider" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VSlider" type="VSlider" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 113.325)
 layout_mode = 2
-size_flags_horizontal = 1
+size_flags_horizontal = 4
 size_flags_vertical = 3
 theme_override_icons/grabber = ExtResource("3_0dph2")
 theme_override_icons/grabber_highlight = ExtResource("3_0dph2")
 theme_override_styles/slider = SubResource("StyleBoxFlat_ugvh4")
 max_value = 255.0
 
-[node name="HSeparator" type="HSeparator" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 7
-theme_override_styles/separator = SubResource("StyleBoxFlat_s2ugn")
-
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="VBoxContainer"]
 custom_minimum_size = Vector2(60.155, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -87,5 +61,4 @@ text = "Slider"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[connection signal="close_request" from="." to="." method="_on_close_request"]
-[connection signal="value_changed" from="VSlider" to="." method="_on_value_slider_changed"]
+[connection signal="value_changed" from="VBoxContainer/VSlider" to="." method="_on_value_slider_changed"]

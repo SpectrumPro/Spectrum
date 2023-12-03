@@ -5,9 +5,8 @@
 [node name="Value" type="GraphNode"]
 offset_right = 197.0
 offset_bottom = 85.0
-title = "Value"
-show_close = true
 resizable = true
+title = "Value"
 slot/0/left_enabled = false
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 1, 1, 1)
@@ -37,5 +36,4 @@ max_value = 512.0
 rounded = true
 update_on_text_changed = true
 
-[connection signal="close_request" from="." to="." method="_on_Control_close_request"]
 [connection signal="value_changed" from="HBoxContainer/Value" to="." method="_on_value_value_changed"]

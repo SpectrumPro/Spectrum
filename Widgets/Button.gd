@@ -24,8 +24,6 @@ func set_connection(node):
 func get_connection():
 	return connection
 
-func set_item_name(new_name):
-	self.get_node("VBoxContainer/Label").text = new_name
 
 func _on_value_slider_changed(value):
 	if connection:

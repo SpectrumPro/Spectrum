@@ -11,10 +11,12 @@ config_version=5
 [application]
 
 config/name="Spectrum"
+config/description="Realtime node based DMX controll"
 run/main_scene="res://Main.tscn"
-config/features=PackedStringArray("4.1")
+config/use_custom_user_dir=true
+config/features=PackedStringArray("4.2")
 boot_splash/bg_color=Color(0.133333, 0.133333, 0.133333, 1)
-boot_splash/image="res://Assets/icon-small.png"
+boot_splash/image="res://Assets/Icon_small.png"
 boot_splash/fullsize=false
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
@@ -23,6 +25,10 @@ boot_splash/minimum_display_time=500
 [audio]
 
 driver/enable_input=true
+
+[autoload]
+
+Globals="*res://Scripts/Global.gd"
 
 [display]
 

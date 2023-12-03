@@ -14,7 +14,7 @@ func external_input(value):
 	queue[0] = value
 	$HBoxContainer/Value.set_value_no_signal(value)
 
-func _on_Control_close_request():
+func close_request():
 	get_parent().delete(self)
 	queue_free()
 

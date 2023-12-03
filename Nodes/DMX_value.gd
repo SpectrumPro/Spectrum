@@ -19,6 +19,8 @@ func set_dmx_data():
 	queue[0] = dmx_data
 	
 func receive(data, slot):
+	if typeof(data) != 2: 
+		return
 	if slot == 0:
 		channel_number = int(data)
 		get_node("HBoxContainer/ChanelNumber").set_value_no_signal(data)
@@ -35,6 +37,6 @@ func _on_value_value_changed(new_value):
 	value = int(new_value)
 	set_dmx_data()
 
-func _on_Control_close_request():
+func close_request():
 	get_parent().delete(self)
 	queue_free()
