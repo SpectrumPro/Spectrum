@@ -23,7 +23,7 @@ Welcome to Spectrum, a powerful and intuitive node-based DMX control system desi
 - **Art-Net Support:** Spectrum supports Art-Net, allowing for efficient communication with a variety of DMX devices over Ethernet.
 
 ### Screen Shots
-![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/1.png?raw=true)
+![Spectrum Screen Shot](https://serv.hnz.li/spectrum/screenshots/v2-spectrum.png)
 ![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/2.png?raw=true)
 
 ### Contributing:
