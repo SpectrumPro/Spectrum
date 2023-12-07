@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://do3e2bue24bsp"
-path="res://.godot/imported/Slider_handle.svg-66e9335363d5273fd080c0c4dec3bade.ctex"
+uid="uid://cv0titm4w4jp6"
+path="res://.godot/imported/Arrow_downward.svg-a4945c31f826a9c233039799fe5574d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Slider_handle.svg"
-dest_files=["res://.godot/imported/Slider_handle.svg-66e9335363d5273fd080c0c4dec3bade.ctex"]
+source_file="res://Assets/Icons/Arrow_downward.svg"
+dest_files=["res://.godot/imported/Arrow_downward.svg-a4945c31f826a9c233039799fe5574d1.ctex"]
 
 [params]
 
