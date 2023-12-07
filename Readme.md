@@ -22,6 +22,10 @@ Welcome to Spectrum, a powerful and intuitive node-based DMX control system desi
 - **DMX Integration:** Spectrum seamlessly integrates with DMX hardware, offering precise control over a wide range of lighting fixtures for concerts, events, installations, and more.
 - **Art-Net Support:** Spectrum supports Art-Net, allowing for efficient communication with a variety of DMX devices over Ethernet.
 
+### Screen Shots
+![Spectrum Screen Shot](https://serv.hnz.li/spectrum/screenshots/v2-spectrum.png)
+![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/2.png?raw=true)
+
 ### Contributing:
 We welcome contributions from the community! Whether it's bug fixes, feature enhancements, or documentation improvements, your input helps make Spectrum better for everyone. Check out our [contribution guidelines](contributing.md) to get started.
 

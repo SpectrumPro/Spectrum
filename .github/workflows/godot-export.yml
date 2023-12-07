@@ -4,6 +4,7 @@ on:
    
 
 jobs:
+
   # job id, can be anything
   export_game:
     # Always use ubuntu-latest for this action
@@ -29,6 +30,8 @@ jobs:
         relative_project_path: ./
         archive_output: true
 
+    - name: generate FOO unique variable based on timestamp
+      run: echo FOO=foobar--$(date +%s) >> $GITHUB_ENV
       # This release action has worked well for me. However, you can most likely use any release action of your choosing.
       # https://github.com/ncipollo/release-action
     - name: create release
@@ -36,6 +39,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: true
-        tag: ${{ github.ref_name }}
+        tag: ${{ env.FOO }}
+        prerelease: true
         artifacts: ${{ steps.export.outputs.archive_directory }}/*
       
