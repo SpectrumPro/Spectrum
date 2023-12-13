@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Spectrum"
-config/description="Realtime node based DMX controll"
+config/description="Realtime node based DMX controller"
 run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
 config/features=PackedStringArray("4.2")
@@ -35,9 +35,13 @@ Globals="*res://Scripts/Global.gd"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/subwindows/embed_subwindows=false
-window/vsync/vsync_mode=0
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false
+
+[editor]
+
+movie_writer/movie_file="/Users/liam/Documents/Repos/SpectrumPro/Spectrum/record.avi"
+movie_writer/fps=30
 
 [input]
 

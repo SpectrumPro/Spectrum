@@ -1,14 +1,28 @@
-[gd_scene load_steps=10 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=17 format=3 uid="uid://p3sohjs1pt37"]
 
-[ext_resource type="Script" path="res://Scripts/System.gd" id="1_mbi58"]
 [ext_resource type="Script" path="res://Scripts/Node_list.gd" id="2_8afhv"]
 [ext_resource type="Script" path="res://Scripts/Console.gd" id="2_qq2ap"]
 [ext_resource type="Script" path="res://Scripts/Node_system.gd" id="2_qxkpt"]
-[ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
+[ext_resource type="Script" path="res://Scripts/Fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Console_list.gd" id="3_xxoug"]
+[ext_resource type="Script" path="res://Scripts/Save_load_system.gd" id="5_qili6"]
 [ext_resource type="Script" path="res://Scripts/Settings.gd" id="6_fan4u"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="8_sc503"]
+[ext_resource type="Script" path="res://Scripts/Popup_menu.gd" id="9_i0ok2"]
+[ext_resource type="Script" path="res://Scripts/Popup_window.gd" id="10_yavq3"]
+[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
+[ext_resource type="Script" path="res://Scripts/File_dialog.gd" id="12_rd712"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gm6tl"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.199732, 0.199732, 0.199732, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktq0q"]
 bg_color = Color(0.117235, 0.117235, 0.117235, 1)
@@ -19,6 +33,13 @@ corner_radius_bottom_left = 5
 expand_margin_left = 7.0
 expand_margin_right = 7.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5sp73"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.12549, 0.12549, 0.12549, 0)
+
 [node name="Main" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -26,6 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("5_qili6")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
@@ -34,11 +56,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/side_margin = 0
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 layout_mode = 2
 theme = SubResource("Theme_0vxhv")
-scroll_offset = Vector2(0, -31)
 right_disconnects = true
 show_arrange_button = false
 script = ExtResource("2_qxkpt")
@@ -169,7 +191,7 @@ offset_right = 186.0
 offset_bottom = 8.0
 auto_height = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -178,33 +200,33 @@ offset_left = -223.0
 offset_bottom = 31.0
 grow_horizontal = 0
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="Label" type="Label" parent="Menu Buttons"]
 layout_mode = 2
 size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxFlat_gm6tl")
 text = "FPS"
 script = ExtResource("3_l3bnx")
 
-[node name="Save" type="Button" parent="HBoxContainer"]
-visible = false
+[node name="Save" type="Button" parent="Menu Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Save"
 
-[node name="Load" type="Button" parent="HBoxContainer"]
+[node name="Load" type="Button" parent="Menu Buttons"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Load
 "
 
-[node name="New" type="Button" parent="HBoxContainer"]
+[node name="New" type="Button" parent="Menu Buttons"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "New
 "
 
-[node name="Settings" type="Button" parent="HBoxContainer"]
+[node name="Settings" type="Button" parent="Menu Buttons"]
 layout_mode = 2
 text = "Settings"
 
@@ -253,6 +275,21 @@ max_value = 5.0
 value = 2.0
 rounded = true
 
+[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/TabContainer/General/General"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Settings/TabContainer/General/General/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "VSync"
+
+[node name="VSync" type="CheckButton" parent="Settings/TabContainer/General/General/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
 [node name="Restart Warning" type="Label" parent="Settings/TabContainer/General"]
 visible = false
 layout_mode = 2
@@ -264,11 +301,77 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ktq0q")
 text = "Restart editor to see effect"
 horizontal_alignment = 1
 
-[node name="System" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("1_mbi58")
+[node name="Popup Menu" type="MenuButton" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 57.0
+offset_bottom = 57.0
+scale = Vector2(0.52, 0.52)
+icon = ExtResource("8_sc503")
+script = ExtResource("9_i0ok2")
+
+[node name="Popups" type="Window" parent="."]
+title = "Warnings"
+initial_position = 5
+size = Vector2i(1140, 500)
+visible = false
+script = ExtResource("10_yavq3")
+
+[node name="VBoxContainer" type="PanelContainer" parent="Popups"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="VBoxContainer" parent="Popups/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Popups/VBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5sp73")
+
+[node name="Content" type="VBoxContainer" parent="Popups/VBoxContainer/PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="Popups/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Close" type="Button" parent="Popups/VBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Close"
+icon = ExtResource("11_mn7am")
+
+[node name="File Name Dialog" type="ConfirmationDialog" parent="."]
+title = "File Name"
+initial_position = 5
+script = ExtResource("12_rd712")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="File Name Dialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+size_flags_horizontal = 3
+
+[node name="LineEdit" type="LineEdit" parent="File Name Dialog/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Show"
+placeholder_text = "Save file name"
+select_all_on_focus = true
+
+[node name="Label" type="Label" parent="File Name Dialog/HBoxContainer"]
+layout_mode = 2
+text = ".spshow"
 
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer/Console/Console Editor" method="_on_tab_container_tab_clicked"]
 [connection signal="child_exiting_tree" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_child_exiting_tree"]
@@ -286,7 +389,12 @@ script = ExtResource("1_mbi58")
 [connection signal="item_clicked" from="Node Editor List/NodeList" to="Node Editor List" method="_on_node_list_item_clicked"]
 [connection signal="item_clicked" from="Console List/WidgetList" to="TabContainer/Console/Console Editor" method="_on_widget_list_item_clicked"]
 [connection signal="item_clicked" from="Console List/WidgetList" to="Console List" method="_on_node_list_item_clicked"]
-[connection signal="pressed" from="HBoxContainer/Save" to="System" method="_on_save_pressed"]
-[connection signal="pressed" from="HBoxContainer/Settings" to="Settings" method="_on_settings_pressed"]
+[connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="_on_settings_pressed"]
 [connection signal="close_requested" from="Settings" to="Settings" method="_on_close_requested"]
 [connection signal="value_changed" from="Settings/TabContainer/General/General/HBoxContainer/UI Scale" to="Settings" method="_on_ui_scale_value_changed"]
+[connection signal="toggled" from="Settings/TabContainer/General/General/HBoxContainer2/VSync" to="Settings" method="_on_v_sync_toggled"]
+[connection signal="close_requested" from="Popups" to="Popups" method="_on_close_requested"]
+[connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
+[connection signal="close_requested" from="File Name Dialog" to="File Name Dialog" method="_on_close_requested"]
+[connection signal="confirmed" from="File Name Dialog" to="." method="_on_file_name_dialog_confirmed"]
