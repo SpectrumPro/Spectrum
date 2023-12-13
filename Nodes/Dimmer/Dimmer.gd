@@ -43,7 +43,7 @@ func receive(data, slot):
 		if typeof(data) != 2: 
 			return
 		dimmer_amount = data
-		$HBoxContainer/Amount.value = data
+		$Row2/Amount.value = data
 	_process_data()
 
 func _on_value_value_changed(value):
@@ -54,7 +54,7 @@ func _on_value_value_changed(value):
 func _on_option_item_selected(index):
 	operation = index
 	if operation == 0:
-		$HBoxContainer/Amount.min_value = -255
+		$Row2/Amount.min_value = -255
 	elif operation == 1:
-		$HBoxContainer/Amount.min_value = 0
+		$Row2/Amount.min_value = 0
 	_process_data()

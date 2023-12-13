@@ -1,6 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqx41p1x8hrxe"]
-
-[ext_resource type="Script" path="res://Nodes/Merge.gd" id="1_v744b"]
+[gd_scene format=3 uid="uid://bqx41p1x8hrxe"]
 
 [node name="Merge" type="GraphNode"]
 offset_right = 223.0
@@ -52,20 +50,19 @@ slot/4/right_type = 0
 slot/4/right_color = Color(1, 1, 1, 1)
 slot/4/right_icon = null
 slot/4/draw_stylebox = true
-script = ExtResource("1_v744b")
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+[node name="Row0" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer3"]
+[node name="Label" type="Label" parent="Row0"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "DMX Out"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Row1" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="OptionButton" type="OptionButton" parent="HBoxContainer"]
+[node name="OptionButton" type="OptionButton" parent="Row1"]
 layout_mode = 2
 size_flags_horizontal = 3
 item_count = 2
@@ -78,18 +75,18 @@ popup/item_1/id = 1
 [node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="Row2" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer2"]
+[node name="Label" type="Label" parent="Row2"]
 layout_mode = 2
 text = "DMX In 1"
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="."]
+[node name="Row3" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer4"]
+[node name="Label" type="Label" parent="Row3"]
 layout_mode = 2
 text = "DMX In 2"
 
-[connection signal="item_selected" from="HBoxContainer/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="item_selected" from="Row1/OptionButton" to="." method="_on_option_button_item_selected"]

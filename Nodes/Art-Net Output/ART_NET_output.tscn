@@ -1,6 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmmso7jqr82x0"]
-
-[ext_resource type="Script" path="res://Nodes/ART_NET_output.gd" id="1_648c2"]
+[gd_scene format=3 uid="uid://bmmso7jqr82x0"]
 
 [node name="ARTNETOutput" type="GraphNode"]
 offset_top = 1.0
@@ -35,43 +33,42 @@ slot/2/right_type = 0
 slot/2/right_color = Color(1, 1, 1, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
-script = ExtResource("1_648c2")
-metadata/Inputs = [NodePath("HBoxContainer/Url"), NodePath("HBoxContainer3/Port")]
+metadata/Inputs = [NodePath("Row1/Url"), NodePath("Row2/Port")]
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="Row0" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer2"]
+[node name="Label" type="Label" parent="Row0"]
 layout_mode = 2
 text = "DMX In"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Row1" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="Label" type="Label" parent="Row1"]
 layout_mode = 2
 text = "Art-Net Url"
 
-[node name="Url" type="LineEdit" parent="HBoxContainer"]
+[node name="Url" type="LineEdit" parent="Row1"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "172.0.0.1"
 placeholder_text = "172.0.0.1"
 expand_to_text_length = true
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+[node name="Row2" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer3"]
+[node name="Label" type="Label" parent="Row2"]
 layout_mode = 2
 text = "Art-Net Port"
 
-[node name="Port" type="LineEdit" parent="HBoxContainer3"]
+[node name="Port" type="LineEdit" parent="Row2"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "6454"
 placeholder_text = "6454"
 expand_to_text_length = true
 
-[connection signal="text_submitted" from="HBoxContainer/Url" to="." method="_on_url_text_submitted"]
-[connection signal="text_submitted" from="HBoxContainer3/Port" to="." method="_on_port_text_submitted"]
+[connection signal="text_submitted" from="Row1/Url" to="." method="_on_url_text_submitted"]
+[connection signal="text_submitted" from="Row2/Port" to="." method="_on_port_text_submitted"]

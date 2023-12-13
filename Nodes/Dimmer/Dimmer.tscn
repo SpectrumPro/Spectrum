@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c25ralxn28mo5"]
 
-[ext_resource type="Script" path="res://Nodes/Dimmer.gd" id="1_e8ajr"]
+[ext_resource type="Script" path="res://Nodes/Dimmer/Dimmer.gd" id="1_e8ajr"]
 
 [node name="Dimmer" type="GraphNode"]
 offset_right = 197.0
@@ -36,16 +36,16 @@ slot/2/right_icon = null
 slot/2/draw_stylebox = true
 script = ExtResource("1_e8ajr")
 metadata/external_input = true
-metadata/Inputs = [NodePath("Option"), NodePath("HBoxContainer/Amount")]
+metadata/Inputs = [NodePath("Option"), NodePath("Row2/Amount")]
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="Row0" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer2"]
+[node name="Label" type="Label" parent="Row0"]
 layout_mode = 2
 text = "DMX In"
 
-[node name="Label2" type="Label" parent="HBoxContainer2"]
+[node name="Label2" type="Label" parent="Row0"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "DMX Out"
@@ -59,14 +59,14 @@ popup/item_0/id = 0
 popup/item_1/text = "Gate"
 popup/item_1/id = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Row2" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="Label" type="Label" parent="Row2"]
 layout_mode = 2
 text = "Amount"
 
-[node name="Amount" type="SpinBox" parent="HBoxContainer"]
+[node name="Amount" type="SpinBox" parent="Row2"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -76,4 +76,4 @@ rounded = true
 update_on_text_changed = true
 
 [connection signal="item_selected" from="Option" to="." method="_on_option_item_selected"]
-[connection signal="value_changed" from="HBoxContainer/Amount" to="." method="_on_value_value_changed"]
+[connection signal="value_changed" from="Row2/Amount" to="." method="_on_value_value_changed"]

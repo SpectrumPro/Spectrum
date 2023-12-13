@@ -1,6 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bbm7uywqo0w5o"]
-
-[ext_resource type="Script" path="res://Nodes/Value.gd" id="1_j7ajx"]
+[gd_scene format=3 uid="uid://cviei6v7iwybm"]
 
 [node name="Value" type="GraphNode"]
 offset_right = 197.0
@@ -16,18 +14,15 @@ slot/0/right_type = 0
 slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
-script = ExtResource("1_j7ajx")
-metadata/external_input = true
-metadata/external_input_range = Vector2(-512, 512)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Row0" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="Label" type="Label" parent="Row0"]
 layout_mode = 2
 text = "Value"
 
-[node name="Value" type="SpinBox" parent="HBoxContainer"]
+[node name="Value" type="SpinBox" parent="Row0"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -36,4 +31,4 @@ max_value = 512.0
 rounded = true
 update_on_text_changed = true
 
-[connection signal="value_changed" from="HBoxContainer/Value" to="." method="_on_value_value_changed"]
+[connection signal="value_changed" from="Row0/Value" to="." method="_on_value_value_changed"]

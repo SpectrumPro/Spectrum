@@ -53,9 +53,6 @@ func close_request():
 func _on_add_pressed():
 	add_row()
 
-func _on_sort_pressed():
-	pass # Replace with function body.
-
 func _on_resize_request(new_minsize):
 	size = new_minsize
 
