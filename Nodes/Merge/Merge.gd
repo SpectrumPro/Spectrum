@@ -12,7 +12,6 @@ var dmx_data = {
 var operation = 0
 
 func _ready():
-	print(dmx_data)
 	pass
 
 func receive(data, slot):

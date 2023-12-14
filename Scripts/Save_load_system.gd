@@ -22,16 +22,17 @@ func _on_save_pressed():
 func save():
 	
 	for node_to_save in get_node("TabContainer/Node Editor").get_children():
-		var manifest_file_path = node_to_save.get_meta("manifest_file_path") + "manifest.json"
-		var manifest_file = FileAccess.open(manifest_file_path, FileAccess.READ)
+		var node_file_path = node_to_save.get_meta("node_file_path")
+		var manifest_file = FileAccess.open(node_file_path+"manifest.json", FileAccess.READ)
 		if not manifest_file:
-			Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":manifest_file_path}])
+			Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":node_file_path}])
 			return
 		var manifest = JSON.parse_string(manifest_file.get_as_text())
 		save_file.nodes[node_to_save.name] = {
-			"manifest_file_path":manifest_file_path,
+			"node_file_path":node_file_path,
 			"uuid":manifest.uuid,
 			"name":node_to_save.name,
+			"position_offset":[node_to_save.position_offset.x,node_to_save.position_offset.y],
 			"values":{
 				
 			}
@@ -40,11 +41,11 @@ func save():
 			print(node_to_save)
 			print(manifest.values[key])
 			if not node_to_save.get_node(manifest.values[key].node):
-				Globals.show_popup([{"type":Globals.error.NODE_SAVE_MANIFEST_ERROR,"from":manifest_file_path}])
+				Globals.show_popup([{"type":Globals.error.NODE_SAVE_MANIFEST_ERROR,"from":node_file_path}])
 				return
 			save_file.nodes[node_to_save.name].values[key] = node_to_save.get_node(manifest.values[key].node).get(manifest.values[key].content)
 	save_file.node_connections = get_node("TabContainer/Node Editor").connected_nodes
-	# Get the user's home directory
+
 	Globals.file_name_dialog.popup()
 	
 	#print(save_file)
@@ -69,3 +70,29 @@ func save_json_to_file(save_folder_path, save_file, file_name):
 	
 	file_access.store_string(JSON.stringify(save_file, "\t"))
 	file_access.close()
+
+func _on_load_pressed():
+	get_node("Load File Dialog").popup()
+	
+func load_save(file_path):
+	var manifest_file = FileAccess.open(file_path, FileAccess.READ)
+	if manifest_file == null:
+		Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_FILE,"from":file_path}])
+		return
+	var manifest = JSON.parse_string(manifest_file.get_as_text())
+	if manifest == null:
+		Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":file_path}])
+		return
+	for node_to_add in manifest.nodes.values():
+		var node_manifest_file = FileAccess.open(node_to_add.node_file_path + "manifest.json", FileAccess.READ)
+		var node_manifest = JSON.parse_string(node_manifest_file.get_as_text())
+		if manifest == null:
+			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":node_manifest_file}])
+			return
+		get_node("TabContainer/Node Editor")._add_node(node_to_add.node_file_path, {"position_offset":node_to_add.position_offset, "values":node_to_add.values})
+	
+	get_node("TabContainer/Node Editor").generate_connected_nodes(manifest.node_connections)
+
+func _on_load_file_dialog_file_selected(path):
+	load_save(path)
+	

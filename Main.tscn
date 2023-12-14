@@ -61,6 +61,7 @@ theme_override_constants/side_margin = 0
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 layout_mode = 2
 theme = SubResource("Theme_0vxhv")
+scroll_offset = Vector2(0, -31)
 right_disconnects = true
 show_arrange_button = false
 script = ExtResource("2_qxkpt")
@@ -213,7 +214,6 @@ size_flags_horizontal = 3
 text = "Save"
 
 [node name="Load" type="Button" parent="Menu Buttons"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Load
@@ -373,9 +373,17 @@ select_all_on_focus = true
 layout_mode = 2
 text = ".spshow"
 
+[node name="Load File Dialog" type="FileDialog" parent="."]
+title = "Open a File"
+size = Vector2i(392, 159)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer/Console/Console Editor" method="_on_tab_container_tab_clicked"]
 [connection signal="child_exiting_tree" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_child_exiting_tree"]
-[connection signal="connection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_GraphEdit_connection_request"]
+[connection signal="connection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="GraphEdit_connection_request"]
 [connection signal="disconnection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_GraphEdit_disconnection_request"]
 [connection signal="node_deselected" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_node_deselected"]
 [connection signal="node_selected" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_node_selected"]
@@ -390,6 +398,7 @@ text = ".spshow"
 [connection signal="item_clicked" from="Console List/WidgetList" to="TabContainer/Console/Console Editor" method="_on_widget_list_item_clicked"]
 [connection signal="item_clicked" from="Console List/WidgetList" to="Console List" method="_on_node_list_item_clicked"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="_on_settings_pressed"]
 [connection signal="close_requested" from="Settings" to="Settings" method="_on_close_requested"]
 [connection signal="value_changed" from="Settings/TabContainer/General/General/HBoxContainer/UI Scale" to="Settings" method="_on_ui_scale_value_changed"]
@@ -398,3 +407,4 @@ text = ".spshow"
 [connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
 [connection signal="close_requested" from="File Name Dialog" to="File Name Dialog" method="_on_close_requested"]
 [connection signal="confirmed" from="File Name Dialog" to="." method="_on_file_name_dialog_confirmed"]
+[connection signal="file_selected" from="Load File Dialog" to="." method="_on_load_file_dialog_file_selected"]

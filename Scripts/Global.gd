@@ -60,6 +60,16 @@ extends Node
 		"content": "Unable to save a node due to a manifest issue, likely caused by a problem with the 'values' list",
 		"code": 2.4
 	},
+	"MISSING_NODES": {
+		"title": "Save File Contains Missing Nodes",
+		"content": "Unable to load save file, as it containes nodes that are not installed on this system",
+		"code": 2.5
+	},
+	"UNABLE_TO_LOAD_FILE": {
+		"title": "Unable To Load File",
+		"content": "Unable to load a file, file may not exist",
+		"code": 2.5
+	},
 	"UNKNOWN_ERROR": {
 		"title": "Unknown Error",
 		"content": "An unknown error occurred",

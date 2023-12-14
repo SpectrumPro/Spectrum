@@ -10,7 +10,7 @@ var dmx_data = {
 var queue = {}
 
 func _ready():
-	print("Hi")
+	pass
 
 func send():
 	if not queue.is_empty():
