@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://ddlftbjtbb25j"]
 
-[ext_resource type="Script" path="res://Widgets/Slider.gd" id="1_3eiyw"]
+[ext_resource type="Script" path="res://Widgets/Slider/Slider.gd" id="1_3eiyw"]
 [ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="3_0dph2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ugvh4"]
@@ -23,7 +23,7 @@ expand_margin_right = 7.0
 
 [node name="slider" type="GraphNode"]
 offset_right = 96.0
-offset_bottom = 356.0
+offset_bottom = 360.0
 resizable = true
 slot/0/left_enabled = false
 slot/0/left_type = 0

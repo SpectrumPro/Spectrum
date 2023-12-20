@@ -10,7 +10,7 @@ var save_file = {
 	}
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	OS.set_low_processor_usage_mode(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -46,27 +46,27 @@ func save():
 			save_file.nodes[node_to_save.name].values[key] = node_to_save.get_node(manifest.values[key].node).get(manifest.values[key].content)
 	save_file.node_connections = get_node("TabContainer/Node Editor").connected_nodes
 
-	Globals.file_name_dialog.popup()
+	Globals.save_file_dialog.popup()
 	
 	#print(save_file)
 	
-func _on_file_name_dialog_confirmed():
-	var input_file_name = get_node("File Name Dialog/HBoxContainer/LineEdit").text
+func _on_save_file_dialog_file_selected(path):
+	var input_file_name = Globals.save_file_dialog.current_file
+	print(input_file_name)
 	if not input_file_name:
 		input_file_name = "New Save"
 	file_name = input_file_name
-	save_json_to_file(save_folder_path, save_file, file_name)
+	print(file_name)
+	save_json_to_file(path, save_file, file_name)
 	
 func save_json_to_file(save_folder_path, save_file, file_name):
 	
 	var dir_access = DirAccess.open(home_directory)
 	
-	if not dir_access.dir_exists(save_folder_path):
-		dir_access.make_dir(save_folder_path)
-		
-	var save_file_path = save_folder_path + file_name + ".spshow"
-	print(save_file_path)
-	var file_access = FileAccess.open(save_file_path, FileAccess.WRITE)
+	var save_file_path = save_folder_path
+	print(save_folder_path)
+	
+	var file_access = FileAccess.open(save_folder_path, FileAccess.WRITE)
 	
 	file_access.store_string(JSON.stringify(save_file, "\t"))
 	file_access.close()

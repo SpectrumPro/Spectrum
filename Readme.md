@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/SpectrumPro/Spectrum-Website/">
-    <img src="https://serv.hnz.li/spectrum/logo/default.png" alt="Logo" width="80" height="80">
+	<img src="https://serv.hnz.li/spectrum/logo/default.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Spectrum</h3>

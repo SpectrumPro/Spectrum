@@ -1,17 +1,20 @@
-[gd_scene load_steps=17 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=20 format=3 uid="uid://p3sohjs1pt37"]
 
-[ext_resource type="Script" path="res://Scripts/Node_list.gd" id="2_8afhv"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
+[ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
 [ext_resource type="Script" path="res://Scripts/Console.gd" id="2_qq2ap"]
 [ext_resource type="Script" path="res://Scripts/Node_system.gd" id="2_qxkpt"]
 [ext_resource type="Script" path="res://Scripts/Fps.gd" id="3_l3bnx"]
-[ext_resource type="Script" path="res://Scripts/Console_list.gd" id="3_xxoug"]
+[ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="5_cx6ah"]
 [ext_resource type="Script" path="res://Scripts/Save_load_system.gd" id="5_qili6"]
 [ext_resource type="Script" path="res://Scripts/Settings.gd" id="6_fan4u"]
-[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="8_sc503"]
-[ext_resource type="Script" path="res://Scripts/Popup_menu.gd" id="9_i0ok2"]
+[ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://Assets/Icons/Scene.svg" id="6_xdyfm"]
+[ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://Assets/Icons/Cue_list.svg" id="7_wiftu"]
+[ext_resource type="Texture2D" uid="uid://cw7e02n080in3" path="res://Assets/Icons/Effect.svg" id="8_43gv6"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://Assets/Icons/Delete.svg" id="10_y5pfa"]
 [ext_resource type="Script" path="res://Scripts/Popup_window.gd" id="10_yavq3"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
-[ext_resource type="Script" path="res://Scripts/File_dialog.gd" id="12_rd712"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://Assets/Icons/Edit.svg" id="11_yr0gv"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
 
@@ -47,7 +50,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_lygr6")
 script = ExtResource("5_qili6")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1
@@ -56,15 +69,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/side_margin = 0
+current_tab = 2
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
+visible = false
 layout_mode = 2
 theme = SubResource("Theme_0vxhv")
-scroll_offset = Vector2(0, -31)
 right_disconnects = true
 show_arrange_button = false
 script = ExtResource("2_qxkpt")
+
+[node name="Add Node Popup" type="ItemList" parent="TabContainer/Node Editor"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0109375
+anchor_top = 0.0486177
+anchor_right = 0.0109375
+anchor_bottom = 0.0486177
+offset_right = 186.0
+offset_bottom = 8.0
+auto_height = true
+script = ExtResource("2_8afhv")
+metadata/_edit_use_anchors_ = true
 
 [node name="Console" type="HSplitContainer" parent="TabContainer"]
 visible = false
@@ -76,10 +103,22 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+minimap_enabled = false
+show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("2_qq2ap")
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Console"]
+[node name="Add Widget Popup" type="ItemList" parent="TabContainer/Console/Console Editor"]
+visible = false
+layout_mode = 1
+offset_left = 21.0
+offset_top = 82.0
+offset_right = 207.0
+offset_bottom = 90.0
+auto_height = true
+script = ExtResource("5_cx6ah")
+
+[node name="Widget Settings Menu" type="MarginContainer" parent="TabContainer/Console"]
 visible = false
 custom_minimum_size = Vector2(358.28, 0)
 layout_mode = 2
@@ -89,49 +128,49 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 15
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Console/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Console/Widget Settings Menu"]
 layout_mode = 2
 
-[node name="name" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+[node name="name" type="HBoxContainer" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/name"]
+[node name="Label" type="Label" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/name"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Name"
 
-[node name="LineEdit" type="LineEdit" parent="TabContainer/Console/MarginContainer/VBoxContainer/name"]
+[node name="LineEdit" type="LineEdit" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/name"]
 custom_minimum_size = Vector2(162.85, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Name"
 
-[node name="color" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+[node name="color" type="HBoxContainer" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/color"]
+[node name="Label" type="Label" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/color"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Background Colour"
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="TabContainer/Console/MarginContainer/VBoxContainer/color"]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/color"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Colour"
 color = Color(0.109804, 0.109804, 0.109804, 1)
 
-[node name="HSeparator" type="HSeparator" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer"]
 layout_mode = 2
 
-[node name="connection" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+[node name="connection" type="HBoxContainer" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/connection"]
+[node name="Label" type="Label" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/connection"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Connection"
 
-[node name="OptionButton" type="OptionButton" parent="TabContainer/Console/MarginContainer/VBoxContainer/connection"]
+[node name="OptionButton" type="OptionButton" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/connection"]
 layout_mode = 2
 size_flags_horizontal = 3
 item_count = 2
@@ -140,70 +179,393 @@ popup/item_0/id = 0
 popup/item_1/text = "Blank 2"
 popup/item_1/id = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Console/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 10
 
-[node name="Label" type="Label" parent="TabContainer/Console/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "External Input"
 
-[node name="External Input" type="Button" parent="TabContainer/Console/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="External Input" type="Button" parent="TabContainer/Console/Widget Settings Menu/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 text = "Choose"
 
-[node name="Node Editor List" type="Control" parent="."]
+[node name="Functions" type="MarginContainer" parent="TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Functions"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="New Scene" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Scene"
+icon = ExtResource("6_xdyfm")
+
+[node name="New Cue List" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Cue List"
+icon = ExtResource("7_wiftu")
+
+[node name="New Effect" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Effect"
+icon = ExtResource("8_43gv6")
+
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Scenes" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Item" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item/HBoxContainer"]
+layout_mode = 2
+text = "Red"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item2" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item2/HBoxContainer"]
+layout_mode = 2
+text = "Green
+"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item2/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item3" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item3/HBoxContainer"]
+layout_mode = 2
+text = "Blue"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item3/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item4" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item4/HBoxContainer"]
+layout_mode = 2
+text = "White"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item4/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer/Scenes/Item4/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Scenes"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer3" type="ScrollContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Effects" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Item" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item/HBoxContainer"]
+layout_mode = 2
+text = "Strobe 1"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item2" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item2/HBoxContainer"]
+layout_mode = 2
+text = "Strobe 2"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item2/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item3" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item3/HBoxContainer"]
+layout_mode = 2
+text = "Random Colors"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item3/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item4" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item4/HBoxContainer"]
+layout_mode = 2
+text = "Lightning "
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item4/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item4/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item5" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item5"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item5/HBoxContainer"]
+layout_mode = 2
+text = "Fire"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item5/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2/ScrollContainer3/VBoxContainer3/Effects/Item5/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Effects"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cues" type="VBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Item" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item/HBoxContainer"]
+layout_mode = 2
+text = "Pre Show"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item2" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item2/HBoxContainer"]
+layout_mode = 2
+text = "First Half
+"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item2/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="Item3" type="PanelContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item3/HBoxContainer"]
+layout_mode = 2
+text = "Second Half"
+
+[node name="Button" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = ExtResource("10_y5pfa")
+
+[node name="Button2" type="Button" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3/ScrollContainer2/VBoxContainer2/Cues/Item3/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_yr0gv")
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "Cues
+"
+horizontal_alignment = 1
+
+[node name="Patch Editor" type="Control" parent="TabContainer"]
 visible = false
 layout_mode = 2
-anchors_preset = 0
-anchor_left = 0.0109375
-anchor_top = 0.0759259
-anchor_right = 0.0109375
-anchor_bottom = 0.0759259
-offset_right = 186.0
-offset_bottom = 268.0
-script = ExtResource("2_8afhv")
-metadata/_edit_use_anchors_ = true
-
-[node name="NodeList" type="ItemList" parent="Node Editor List"]
-layout_mode = 1
-offset_right = 186.0
-offset_bottom = 8.0
-auto_height = true
-
-[node name="Console List" type="Control" parent="."]
-visible = false
-layout_mode = 1
-anchor_left = 0.0109375
-anchor_top = 0.0759259
-anchor_right = 0.0109375
-anchor_bottom = 0.0759259
-offset_right = 186.0
-offset_bottom = 268.0
-script = ExtResource("3_xxoug")
-metadata/_edit_use_anchors_ = true
-
-[node name="WidgetList" type="ItemList" parent="Console List"]
-layout_mode = 1
-offset_right = 186.0
-offset_bottom = 8.0
-auto_height = true
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -223.0
-offset_bottom = 31.0
+offset_left = -355.0
+offset_right = -3.0
+offset_bottom = 45.0
 grow_horizontal = 0
 
 [node name="Label" type="Label" parent="Menu Buttons"]
 layout_mode = 2
-size_flags_horizontal = 10
 theme_override_styles/normal = SubResource("StyleBoxFlat_gm6tl")
 text = "FPS"
 script = ExtResource("3_l3bnx")
@@ -211,11 +573,13 @@ script = ExtResource("3_l3bnx")
 [node name="Save" type="Button" parent="Menu Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 text = "Save"
 
 [node name="Load" type="Button" parent="Menu Buttons"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 text = "Load
 "
 
@@ -228,6 +592,8 @@ text = "New
 
 [node name="Settings" type="Button" parent="Menu Buttons"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 text = "Settings"
 
 [node name="Settings" type="Window" parent="."]
@@ -272,7 +638,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 0
 min_value = 1.0
 max_value = 5.0
-value = 2.0
+value = 1.0
 rounded = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Settings/TabContainer/General/General"]
@@ -300,17 +666,6 @@ theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_ktq0q")
 text = "Restart editor to see effect"
 horizontal_alignment = 1
-
-[node name="Popup Menu" type="MenuButton" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 57.0
-offset_bottom = 57.0
-scale = Vector2(0.52, 0.52)
-icon = ExtResource("8_sc503")
-script = ExtResource("9_i0ok2")
 
 [node name="Popups" type="Window" parent="."]
 title = "Warnings"
@@ -350,53 +705,40 @@ size_flags_vertical = 8
 text = "Close"
 icon = ExtResource("11_mn7am")
 
-[node name="File Name Dialog" type="ConfirmationDialog" parent="."]
-title = "File Name"
-initial_position = 5
-script = ExtResource("12_rd712")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="File Name Dialog"]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 192.0
-offset_bottom = 51.0
-size_flags_horizontal = 3
-
-[node name="LineEdit" type="LineEdit" parent="File Name Dialog/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "New Show"
-placeholder_text = "Save file name"
-select_all_on_focus = true
-
-[node name="Label" type="Label" parent="File Name Dialog/HBoxContainer"]
-layout_mode = 2
-text = ".spshow"
-
 [node name="Load File Dialog" type="FileDialog" parent="."]
 title = "Open a File"
-size = Vector2i(392, 159)
+initial_position = 5
+size = Vector2i(532, 439)
 ok_button_text = "Open"
 dialog_hide_on_ok = true
 file_mode = 0
 access = 2
 
-[connection signal="tab_clicked" from="TabContainer" to="TabContainer/Console/Console Editor" method="_on_tab_container_tab_clicked"]
+[node name="Save File Dialog" type="FileDialog" parent="."]
+initial_position = 5
+size = Vector2i(742, 659)
+access = 2
+
+[connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="child_exiting_tree" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_child_exiting_tree"]
 [connection signal="connection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="GraphEdit_connection_request"]
 [connection signal="disconnection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_GraphEdit_disconnection_request"]
+[connection signal="gui_input" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_gui_input"]
+[connection signal="gui_input" from="TabContainer/Node Editor" to="TabContainer/Node Editor/Add Node Popup" method="_on_node_editor_gui_input"]
 [connection signal="node_deselected" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_node_deselected"]
 [connection signal="node_selected" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_node_selected"]
-[connection signal="node_deselected" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_node_deselected"]
-[connection signal="node_selected" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_node_selected"]
-[connection signal="text_submitted" from="TabContainer/Console/MarginContainer/VBoxContainer/name/LineEdit" to="TabContainer/Console/Console Editor" method="_on_line_edit_text_submitted"]
-[connection signal="color_changed" from="TabContainer/Console/MarginContainer/VBoxContainer/color/ColorPickerButton" to="TabContainer/Console/Console Editor" method="_on_color_picker_button_color_changed"]
-[connection signal="item_selected" from="TabContainer/Console/MarginContainer/VBoxContainer/connection/OptionButton" to="TabContainer/Console/Console Editor" method="_on_option_button_item_selected"]
-[connection signal="pressed" from="TabContainer/Console/MarginContainer/VBoxContainer/HBoxContainer/External Input" to="TabContainer/Console/Console Editor" method="_on_external_input_pressed"]
-[connection signal="item_clicked" from="Node Editor List/NodeList" to="TabContainer/Node Editor" method="_on_item_list_item_clicked"]
-[connection signal="item_clicked" from="Node Editor List/NodeList" to="Node Editor List" method="_on_node_list_item_clicked"]
-[connection signal="item_clicked" from="Console List/WidgetList" to="TabContainer/Console/Console Editor" method="_on_widget_list_item_clicked"]
-[connection signal="item_clicked" from="Console List/WidgetList" to="Console List" method="_on_node_list_item_clicked"]
+[connection signal="item_clicked" from="TabContainer/Node Editor/Add Node Popup" to="TabContainer/Node Editor" method="_on_item_list_item_clicked"]
+[connection signal="item_clicked" from="TabContainer/Node Editor/Add Node Popup" to="TabContainer/Node Editor/Add Node Popup" method="_on_item_clicked"]
+[connection signal="gui_input" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor/Add Widget Popup" method="_on_console_editor_gui_input"]
+[connection signal="node_deselected" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_widget_deselected"]
+[connection signal="node_selected" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_widget_selected"]
+[connection signal="scroll_offset_changed" from="TabContainer/Console/Console Editor" to="TabContainer/Console/Console Editor" method="_on_scroll_offset_changed"]
+[connection signal="item_clicked" from="TabContainer/Console/Console Editor/Add Widget Popup" to="TabContainer/Console/Console Editor" method="_on_widget_list_item_clicked"]
+[connection signal="item_clicked" from="TabContainer/Console/Console Editor/Add Widget Popup" to="TabContainer/Console/Console Editor/Add Widget Popup" method="_on_item_clicked"]
+[connection signal="text_submitted" from="TabContainer/Console/Widget Settings Menu/VBoxContainer/name/LineEdit" to="TabContainer/Console/Console Editor" method="_on_line_edit_text_submitted"]
+[connection signal="color_changed" from="TabContainer/Console/Widget Settings Menu/VBoxContainer/color/ColorPickerButton" to="TabContainer/Console/Console Editor" method="_on_color_picker_button_color_changed"]
+[connection signal="item_selected" from="TabContainer/Console/Widget Settings Menu/VBoxContainer/connection/OptionButton" to="TabContainer/Console/Console Editor" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="TabContainer/Console/Widget Settings Menu/VBoxContainer/HBoxContainer/External Input" to="TabContainer/Console/Console Editor" method="_on_external_input_pressed"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="_on_settings_pressed"]
@@ -405,6 +747,5 @@ access = 2
 [connection signal="toggled" from="Settings/TabContainer/General/General/HBoxContainer2/VSync" to="Settings" method="_on_v_sync_toggled"]
 [connection signal="close_requested" from="Popups" to="Popups" method="_on_close_requested"]
 [connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
-[connection signal="close_requested" from="File Name Dialog" to="File Name Dialog" method="_on_close_requested"]
-[connection signal="confirmed" from="File Name Dialog" to="." method="_on_file_name_dialog_confirmed"]
 [connection signal="file_selected" from="Load File Dialog" to="." method="_on_load_file_dialog_file_selected"]
+[connection signal="file_selected" from="Save File Dialog" to="." method="_on_save_file_dialog_file_selected"]

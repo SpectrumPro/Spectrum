@@ -7,12 +7,13 @@ var config = ConfigFile.new()
 func _ready():
 	config.load("user://spectrum.cfg")
 	var scale_factor = config.get_value("Display", "content_scale_factor")
-	self.set_content_scale_factor(scale_factor)
-	get_tree().root.set_content_scale_factor(scale_factor)
-	#get_parent().get_node("Node Config Editor").set_content_scale_factor(config.get_value("Display", "content_scale_factor"))
-	get_parent().get_node("Popups").set_content_scale_factor(scale_factor)
-	#get_parent().get_node("FileDialog").set_content_scale_factor(scale_factor)	
-	ui_scale_input.set_value_no_signal(scale_factor)
+	if scale_factor:
+		self.set_content_scale_factor(scale_factor)
+		get_tree().root.set_content_scale_factor(scale_factor)
+		#get_parent().get_node("Node Config Editor").set_content_scale_factor(config.get_value("Display", "content_scale_factor"))
+		get_parent().get_node("Popups").set_content_scale_factor(scale_factor)
+		#get_parent().get_node("FileDialog").set_content_scale_factor(scale_factor)	
+		ui_scale_input.set_value_no_signal(scale_factor)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

@@ -1,3 +1,4 @@
+
 extends Node
 
 var connection
@@ -6,7 +7,7 @@ var value = 0
 func _ready():
 	pass # Replace with function body.
 
-func _on_close_request():
+func close_request():
 	queue_free()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -24,7 +25,11 @@ func set_connection(node):
 func get_connection():
 	return connection
 
-
 func _on_value_slider_changed(value):
 	if connection:
 		connection.external_input(value)
+
+
+func _on_resize_request(new_minsize):
+	self.size = Vector2i(new_minsize)
+	print(self.size)

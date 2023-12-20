@@ -1,13 +1,28 @@
 extends Node
 
+var node_path = "res://Nodes/"
+var widget_path = "res://Widgets/"
+var edit_mode = true
+
+var values = {
+	"snapping_distance":20
+}
 
 @onready var components = {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
 	"warning":ResourceLoader.load("res://Components/Warning.tscn")
 }
-@onready var popup_window = get_tree().root.get_node("Main/Popups")
-@onready var file_name_dialog = get_tree().root.get_node("Main/File Name Dialog")
+@onready var nodes = {
+	"popup_window":get_tree().root.get_node("Main/Popups"),
+	"save_file_dialog":get_tree().root.get_node("Main/Save File Dialog"),
+	"add_node_popup":get_tree().root.get_node("Main/TabContainer/Node Editor/Add Node Popup"),
+	"add_widget_popup":get_tree().root.get_node("Main/TabContainer/Console/Console Editor/Add Widget Popup"),
+	"widget_settings_menu":get_tree().root.get_node("Main/TabContainer/Console/Widget Settings Menu"),
+}
 
+@onready var icons = {
+	"menue":load("res://Assets/Icons/menu.svg")
+}
 
 @onready var error = {
 	"MANIFEST_MISSING_MANIFEST_VERSION": {
@@ -28,6 +43,11 @@ extends Node
 	"MANIFEST_MISSING_NODES": {
 		"title": "Manifest missing nodes",
 		"content": "Manifest is missing required 'nodes' field",
+		"code":1.4
+	},
+	"MANIFEST_MISSING_WIDGET": {
+		"title": "Manifest missing widgets",
+		"content": "Manifest is missing required 'widgets' field",
 		"code":1.4
 	},
 	"MANIFEST_MISSING_METADATA": {
@@ -84,6 +104,6 @@ func show_popup(content = []):
 		node_to_add.get_node("HBoxContainer/VBoxContainer/Title").text = i.type.title 
 		node_to_add.get_node("HBoxContainer/VBoxContainer/Content").text = i.type.content  + ". errcode: " + str(i.type.code) + ((" from: " + i.from) if i.has("from") else "") 
 		node_to_add.get_node("HBoxContainer/VBoxContainer/Time").text = Time.get_time_string_from_system()
-		popup_window.get_node("VBoxContainer/PanelContainer/ScrollContainer/Content").add_child(node_to_add)
+		nodes.popup_window.get_node("VBoxContainer/PanelContainer/ScrollContainer/Content").add_child(node_to_add)
 	
-	popup_window.popup()
+	nodes.popup_window.popup()

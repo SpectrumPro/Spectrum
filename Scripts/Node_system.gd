@@ -2,13 +2,12 @@ extends GraphEdit
 
 var initial_position = Vector2(40,40)
 var node_index = 0
-@onready var node_list = get_parent().get_parent().get_node("Node Editor List/NodeList")                                                                             
 @onready var connection_option_button = get_parent().get_node("Console/MarginContainer/VBoxContainer/connection/OptionButton")
 @onready var console_editor = get_parent().get_node("Console/Console Editor")
 var built_in_nodes = {
 
 }
-var node_path = "res://Nodes/"
+var node_path = Globals.node_path
 
 var connected_nodes = {}
 var selected_nodes = []
@@ -16,7 +15,7 @@ var selected_nodes = []
 var outbound_queue = {}
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_add_menu_hbox_button("Add Node", get_parent().get_parent().get_node("Node Editor List").add_node_button_clicked)
+	_add_menu_hbox_button("Add Node", Globals.nodes.add_node_popup.add_node_button_clicked)
 	_add_menu_hbox_button("Delete Node", self.request_delete)
 	
 	var access = DirAccess.open(node_path)
@@ -31,7 +30,7 @@ func _ready():
 				return
 			var verify_result = verify_manifest(manifest, manifest_file_path)
 			if verify_result == []:
-				node_list.add_item(manifest.metadata.name)
+				Globals.nodes.add_node_popup.add_item(manifest.metadata.name)
 				built_in_nodes[manifest.uuid] = node_path + node_folder + "/"
 			else:
 				Globals.show_popup(verify_result)
@@ -62,8 +61,6 @@ func verify_manifest(manifest,from):
 	return return_mgs
 
 func _process(_delta):
-	if Input.is_action_just_pressed("process_loop"):
-		print(connected_nodes)
 	if not outbound_queue.is_empty():
 		for i in outbound_queue:
 			if connected_nodes.has(i):
@@ -115,16 +112,7 @@ func delete(node):
 				
 		if len(connected_nodes[i]) == 0:
 			connected_nodes.erase(i)
-			
-	connection_option_button.clear()
-	var opt_button_list = []
-	
-	for i in self.get_children():
-		opt_button_list.append(str(i.name))
-		connection_option_button.add_item(i.name)
 		
-	console_editor.set_connection_button_list(opt_button_list)	
-	console_editor.remove_connection(node)
 
 
 func _add_node(node_file_path, overrides = {"name":"", "title":"", "position_offset":[]}):
@@ -157,7 +145,7 @@ func _add_node(node_file_path, overrides = {"name":"", "title":"", "position_off
 		print(overrides.position_offset)
 		node_to_add.position_offset = Vector2i(overrides.position_offset[0],overrides.position_offset[1])
 	
-	if overrides.values:
+	if overrides.get("values"):
 		for key in overrides.values.keys():
 			node_to_add.get_node(manifest.values[key].node).set(manifest.values[key].content, overrides.values[key])
 			print(manifest.values[key])
@@ -184,13 +172,14 @@ func _on_node_deselected(node):
 
 
 func _regenerate_option_button_list():
-	connection_option_button.clear()
-	var opt_button_list = []
-	for i in self.get_children():
-		if i.get("has_external_input"):
-			opt_button_list.append(str(i.name))
-			connection_option_button.add_item(i.name)
-	console_editor.set_connection_button_list(opt_button_list)
+	#connection_option_button.clear()
+	#var opt_button_list = []
+	#for i in self.get_children():
+		#if i.get("has_external_input"):
+			#opt_button_list.append(str(i.name))
+			#connection_option_button.add_item(i.name)
+	#console_editor.set_connection_button_list(opt_button_list)
+	pass
 
 func generate_connected_nodes(node_connections):
 	for key in node_connections.keys():

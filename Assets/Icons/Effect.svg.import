@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vw0vs7dlct55"
-path="res://.godot/imported/menu.svg-6ce66a908baf6bd26789152f87307774.ctex"
+uid="uid://cw7e02n080in3"
+path="res://.godot/imported/Effect.svg-d5b87edd5a7ec8e747e360a6fda9c038.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/menu.svg"
-dest_files=["res://.godot/imported/menu.svg-6ce66a908baf6bd26789152f87307774.ctex"]
+source_file="res://Assets/Icons/Effect.svg"
+dest_files=["res://.godot/imported/Effect.svg-d5b87edd5a7ec8e747e360a6fda9c038.ctex"]
 
 [params]
 
@@ -21,7 +21,7 @@ compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

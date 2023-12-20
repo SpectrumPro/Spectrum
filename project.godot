@@ -24,6 +24,7 @@ boot_splash/minimum_display_time=500
 
 [audio]
 
+buses/default_bus_layout=""
 driver/enable_input=true
 
 [autoload]
@@ -59,4 +60,3 @@ process_loop={
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
-environment/defaults/default_environment="res://default_env.tres"
