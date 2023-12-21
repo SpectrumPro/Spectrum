@@ -13,6 +13,7 @@ var save_file = {
 func _ready():
 	OS.set_low_processor_usage_mode(true)
 	load_save("/Users/liam/Documents/Spectrum/V0.3.0 Save")
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

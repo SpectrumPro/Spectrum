@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://Scripts/Node_system.gd" id="2_qxkpt"]
 [ext_resource type="Script" path="res://Scripts/Fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="5_cx6ah"]
-[ext_resource type="Script" path="res://Scripts/Save_load_system.gd" id="5_qili6"]
+[ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
 [ext_resource type="Script" path="res://Scripts/Settings.gd" id="6_fan4u"]
 [ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://Assets/Icons/Scene.svg" id="6_xdyfm"]
 [ext_resource type="Script" path="res://Scripts/Functions.gd" id="7_5dnuk"]
@@ -90,14 +90,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 2
+current_tab = 1
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 visible = false
 custom_minimum_size = Vector2(147.79, 0)
 layout_mode = 2
 theme = SubResource("Theme_0vxhv")
-scroll_offset = Vector2(0, -45)
 right_disconnects = true
 show_arrange_button = false
 script = ExtResource("2_qxkpt")
@@ -117,7 +116,6 @@ script = ExtResource("2_8afhv")
 metadata/_edit_use_anchors_ = true
 
 [node name="Console" type="HSplitContainer" parent="TabContainer"]
-visible = false
 layout_mode = 2
 
 [node name="Console Editor" type="GraphEdit" parent="TabContainer/Console"]
@@ -224,6 +222,7 @@ size_flags_horizontal = 3
 text = "Choose"
 
 [node name="Functions" type="MarginContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -446,7 +445,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="TabContainer/3D/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1920, 1035)
+size = Vector2i(2, 2)
 render_target_update_mode = 0
 
 [node name="Node3D" parent="TabContainer/3D/SubViewportContainer/SubViewport" instance=ExtResource("14_44rt7")]
