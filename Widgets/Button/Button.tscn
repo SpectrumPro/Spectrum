@@ -1,6 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d13q5meef75lt"]
-
-[ext_resource type="Script" path="res://Widgets/Button/Button.gd" id="1_bjehy"]
+[gd_scene load_steps=4 format=3 uid="uid://d13q5meef75lt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1meh7"]
 bg_color = Color(0.137255, 0.137255, 0.137255, 1)
@@ -32,7 +30,6 @@ corner_radius_bottom_left = 10
 offset_right = 80.0
 offset_bottom = 80.0
 resizable = true
-script = ExtResource("1_bjehy")
 
 [node name="Button" type="Button" parent="."]
 use_parent_material = true
@@ -48,5 +45,3 @@ disabled = true
 toggle_mode = true
 text = "Button"
 text_overrun_behavior = 3
-
-[connection signal="resized" from="." to="." method="_on_resized"]
