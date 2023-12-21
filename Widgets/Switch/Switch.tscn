@@ -1,0 +1,92 @@
+[gd_scene load_steps=7 format=3 uid="uid://d2b3q73a48sny"]
+
+[ext_resource type="Script" path="res://Widgets/Button/Button.gd" id="1_56i8r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1c4f0"]
+bg_color = Color(0.235294, 0.137255, 0.137255, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.27451, 0.27451, 0.27451, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cwlsm"]
+bg_color = Color(0.0666667, 0.235294, 0.0666667, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.27451, 0.27451, 0.27451, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vo6nq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ccxs"]
+bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_au1w3"]
+bg_color = Color(0, 1, 0, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="Switch" type="GraphElement"]
+offset_right = 140.0
+offset_bottom = 140.0
+resizable = true
+script = ExtResource("1_56i8r")
+
+[node name="Switch" type="Button" parent="."]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_1c4f0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1c4f0")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cwlsm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vo6nq")
+disabled = true
+toggle_mode = true
+action_mode = 0
+text = "Button"
+text_overrun_behavior = 3
+
+[node name="Container" type="HBoxContainer" parent="Switch"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="False" type="Panel" parent="Switch/Container"]
+custom_minimum_size = Vector2(41.34, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_3ccxs")
+
+[node name="True" type="Panel" parent="Switch/Container"]
+custom_minimum_size = Vector2(41.34, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_au1w3")
+
+[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="toggled" from="Switch" to="." method="_on_switch_toggled"]

@@ -5,12 +5,16 @@ var widget_path = "res://Widgets/"
 var edit_mode = true
 
 var values = {
-	"snapping_distance":20
+	"snapping_distance":20,
+	"edit_mode":true
 }
+
+var subscriptions = {}
 
 @onready var components = {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
-	"warning":ResourceLoader.load("res://Components/Warning.tscn")
+	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
+	"function_list_item":ResourceLoader.load("res://Components/Function_list_item.tscn")
 }
 @onready var nodes = {
 	"popup_window":get_tree().root.get_node("Main/Popups"),
@@ -18,10 +22,21 @@ var values = {
 	"add_node_popup":get_tree().root.get_node("Main/TabContainer/Node Editor/Add Node Popup"),
 	"add_widget_popup":get_tree().root.get_node("Main/TabContainer/Console/Console Editor/Add Widget Popup"),
 	"widget_settings_menu":get_tree().root.get_node("Main/TabContainer/Console/Widget Settings Menu"),
+	"edit_mode_toggle":get_tree().root.get_node("Main/Menu Buttons/Edit Mode"),
+	"scenes_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes/ScrollContainer/VBoxContainer/Scenes"),
+	"effects_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects/ScrollContainer/VBoxContainer/Effects"),
+	"cues_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer/VBoxContainer/Cues"),
+	"functions":get_tree().root.get_node("Main/TabContainer/Functions")
 }
 
 @onready var icons = {
-	"menue":load("res://Assets/Icons/menu.svg")
+	"menue":load("res://Assets/Icons/menu.svg"),
+	"center":load("res://Assets/Icons/Center.svg")
+	
+}
+
+@onready var shaders = {
+	"invert":load("res://Assets/Shaders/Invert.tres"),
 }
 
 @onready var error = {
@@ -88,7 +103,12 @@ var values = {
 	"UNABLE_TO_LOAD_FILE": {
 		"title": "Unable To Load File",
 		"content": "Unable to load a file, file may not exist",
-		"code": 2.5
+		"code": 2.6
+	},
+	"WIDGET_LOAD_MANIFEST_ERROR": {
+		"title": "Manifest Error During Widget Load",
+		"content": "Unable to load a widget due to a manifest issue, likely caused by a problem with the 'values' list",
+		"code": 2.7
 	},
 	"UNKNOWN_ERROR": {
 		"title": "Unknown Error",
@@ -99,7 +119,6 @@ var values = {
 
 func show_popup(content = []):
 	for i in content:
-		print(i)
 		var node_to_add = components.warning.instantiate()
 		node_to_add.get_node("HBoxContainer/VBoxContainer/Title").text = i.type.title 
 		node_to_add.get_node("HBoxContainer/VBoxContainer/Content").text = i.type.content  + ". errcode: " + str(i.type.code) + ((" from: " + i.from) if i.has("from") else "") 
@@ -107,3 +126,17 @@ func show_popup(content = []):
 		nodes.popup_window.get_node("VBoxContainer/PanelContainer/ScrollContainer/Content").add_child(node_to_add)
 	
 	nodes.popup_window.popup()
+
+func subscribe(value, callback):
+	if value in subscriptions:
+		subscriptions[value].append(callback)
+	else:
+		subscriptions[value] = []
+		subscriptions[value].append(callback)
+
+func set_value(value_name, value):
+	values[value_name] = value
+	if subscriptions.get(value_name):
+		for node_to_update in subscriptions[value_name]:
+			if node_to_update.is_valid():
+				node_to_update.call(value)

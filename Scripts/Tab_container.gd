@@ -1,24 +1,22 @@
 # WIP
-
-
 extends TabContainer
 
 var last_click_time := 0
 var double_click_threshold := 0.5  # Adjust this as needed
 
 func _ready():
-	pass  # Initialization code goes here
+	pass
 
 func _on_tab_clicked(tab_index):
-	var current_time = Time.get_ticks_msec() / 1000.0
-	
-	if current_time - last_click_time < double_click_threshold:
-		# Double click detected
-		on_double_click(tab_index)
-	else:
-		# Single click, update last click time
-		last_click_time = current_time
-
+	#var current_time = Time.get_ticks_msec() / 1000.0
+	#
+	#if current_time - last_click_time < double_click_threshold:
+		## Double click detected
+		#on_double_click(tab_index)
+	#else:
+		## Single click, update last click time
+		#last_click_time = current_time
+	pass
 func on_double_click(tab_index):
 	# Here, you can implement the logic to pop out the tab into a new window
 	# For simplicity, let's assume you have a function to create a new window

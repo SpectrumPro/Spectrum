@@ -4,9 +4,6 @@ extends Node
 var connection
 var value = 0
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
 func close_request():
 	queue_free()
 	
@@ -29,7 +26,7 @@ func _on_value_slider_changed(value):
 	if connection:
 		connection.external_input(value)
 
-
-func _on_resize_request(new_minsize):
-	self.size = Vector2i(new_minsize)
-	print(self.size)
+func _on_resized():
+	var new_minsize = self.size
+	var snap_size = Globals.values.snapping_distance
+	self.size = Vector2(round(new_minsize.x / snap_size) * snap_size, round(new_minsize.y / snap_size) * snap_size)

@@ -22,7 +22,6 @@ func _ready():
 	for node_folder in access.get_directories():
 		var manifest_file_path = node_path + node_folder + "/manifest.json"
 		if access.file_exists(manifest_file_path):
-			print(manifest_file_path)
 			var manifest_file = FileAccess.open(manifest_file_path, FileAccess.READ)
 			var manifest = JSON.parse_string(manifest_file.get_as_text())
 			if manifest == null:
@@ -70,7 +69,6 @@ func _process(_delta):
 
 
 func send(node, data, slot):
-	print(node, data, slot)
 	if node.name in outbound_queue:
 		outbound_queue[node.name][slot] = data
 	else:
@@ -142,13 +140,11 @@ func _add_node(node_file_path, overrides = {"name":"", "title":"", "position_off
 	node_to_add.set_meta("node_file_path", node_file_path)
 	
 	if overrides["position_offset"]:
-		print(overrides.position_offset)
 		node_to_add.position_offset = Vector2i(overrides.position_offset[0],overrides.position_offset[1])
 	
 	if overrides.get("values"):
 		for key in overrides.values.keys():
 			node_to_add.get_node(manifest.values[key].node).set(manifest.values[key].content, overrides.values[key])
-			print(manifest.values[key])
 	
 	var close_button = Globals.components.close_button.instantiate()
 	close_button.pressed.connect(node_to_add.close_request)
@@ -184,5 +180,4 @@ func _regenerate_option_button_list():
 func generate_connected_nodes(node_connections):
 	for key in node_connections.keys():
 		for i in node_connections[key]:
-			print(node_connections[key])
 			GraphEdit_connection_request(key, i[0], i[1], i[2])

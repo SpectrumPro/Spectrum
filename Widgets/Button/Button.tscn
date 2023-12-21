@@ -1,34 +1,52 @@
-[gd_scene load_steps=2 format=3 uid="uid://d13q5meef75lt"]
+[gd_scene load_steps=5 format=3 uid="uid://d13q5meef75lt"]
 
 [ext_resource type="Script" path="res://Widgets/Button/Button.gd" id="1_bjehy"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1meh7"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.27451, 0.27451, 0.27451, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u5hmk"]
+bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.227451, 0.52549, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r7hki"]
+
 [node name="Button" type="GraphElement"]
-offset_right = 140.0
-offset_bottom = 140.0
+offset_right = 80.0
+offset_bottom = 80.0
 resizable = true
 script = ExtResource("1_bjehy")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Button" type="Button" parent="."]
+use_parent_material = true
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_filter = 1
-
-[node name="Button" type="Button" parent="PanelContainer"]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_1meh7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1meh7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_u5hmk")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_1meh7")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_r7hki")
 disabled = true
-
-[node name="Label" type="Label" parent="PanelContainer/Button"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+toggle_mode = true
 text = "Button"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-clip_text = true
+text_overrun_behavior = 3
 
 [connection signal="resized" from="." to="." method="_on_resized"]

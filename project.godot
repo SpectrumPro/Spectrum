@@ -15,7 +15,7 @@ config/description="Realtime node based DMX controller"
 run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
 config/features=PackedStringArray("4.2")
-boot_splash/bg_color=Color(0.133333, 0.133333, 0.133333, 1)
+boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
 boot_splash/image="res://Assets/Icon_small.png"
 boot_splash/fullsize=false
 config/icon="res://icon.png"
@@ -35,6 +35,7 @@ Globals="*res://Scripts/Global.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/initial_position_type=4
 window/subwindows/embed_subwindows=false
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false

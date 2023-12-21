@@ -1,0 +1,18 @@
+{
+	"manifest_version": 1,
+	"minimum_version": "0.2.0",
+	"version": "1",
+	"widget": {
+		"script": "Switch.gd",
+		"scene": "Switch.tscn"
+	},
+	"metadata": {
+		"author": "Liam Sherwin",
+		"name": "Switch",
+		"description": "A Switch to control everything",
+		"copyright": "Liam Sherwin",
+	},
+	"uuid": "cf6edef6-088e-4fa1-a7b4-b2eebab87122",
+	"values":{
+	}
+}
