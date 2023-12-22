@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cvceixc4adbo0"]
 
-[ext_resource type="PackedScene" uid="uid://cg11db0qy14yf" path="res://rig.glb" id="1_lo8s3"]
-[ext_resource type="Material" uid="uid://jwlx0lbgr8ab" path="res://Metal.tres" id="2_cmkty"]
+[ext_resource type="PackedScene" path="res://rig.glb" id="1_lo8s3"]
+[ext_resource type="Material" uid="uid://jwlx0lbgr8ab" path="res://Assets/3D/Metal.tres" id="2_cmkty"]
 
 [node name="rig" instance=ExtResource("1_lo8s3")]
 

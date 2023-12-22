@@ -1,9 +1,9 @@
 [gd_scene load_steps=12 format=3 uid="uid://c77mf2kr4q4gj"]
 
-[ext_resource type="Script" path="res://Assets/Camera3D.gd" id="1_01vm5"]
-[ext_resource type="Script" path="res://Assets/Room Lights.gd" id="3_00imu"]
-[ext_resource type="PackedScene" uid="uid://c7vr51m6f8k1s" path="res://Assets/rig.glb" id="3_p2xcw"]
-[ext_resource type="PackedScene" uid="uid://csex1cusgig" path="res://Assets/Light.tscn" id="4_4g2uy"]
+[ext_resource type="Script" path="res://Assets/3D/Camera3D.gd" id="1_01vm5"]
+[ext_resource type="Script" path="res://Assets/3D/Room Lights.gd" id="3_00imu"]
+[ext_resource type="PackedScene" uid="uid://c7vr51m6f8k1s" path="res://Assets/3D/rig.glb" id="3_p2xcw"]
+[ext_resource type="PackedScene" uid="uid://csex1cusgig" path="res://Assets/3D/Light.tscn" id="4_4g2uy"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_2tat3"]
 
