@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=27 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
@@ -17,7 +17,9 @@
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
 [ext_resource type="Texture2D" uid="uid://dis005hfepinf" path="res://Assets/Icons/Fixture.svg" id="12_qh3k3"]
 [ext_resource type="Texture2D" uid="uid://ds5mmj3a0ukl4" path="res://Assets/Icons/Fixture_group.svg" id="13_qhavw"]
+[ext_resource type="Texture2D" uid="uid://dpj5ee27m3m18" path="res://Assets/Icons/Universe.svg" id="14_13prp"]
 [ext_resource type="PackedScene" uid="uid://c77mf2kr4q4gj" path="res://3D.tscn" id="14_44rt7"]
+[ext_resource type="Texture2D" uid="uid://bdnlb80222dah" path="res://Assets/Icons/Channel_lock.svg" id="15_bwv7p"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
 
@@ -90,7 +92,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
+current_tab = 4
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 visible = false
@@ -116,6 +118,7 @@ script = ExtResource("2_8afhv")
 metadata/_edit_use_anchors_ = true
 
 [node name="Console" type="HSplitContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Console Editor" type="GraphEdit" parent="TabContainer/Console"]
@@ -353,7 +356,7 @@ text = "Cues
 "
 horizontal_alignment = 1
 
-[node name="Patch Editor" type="MarginContainer" parent="TabContainer"]
+[node name="Fixtures" type="MarginContainer" parent="TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
@@ -361,73 +364,144 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Editor"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Fixtures"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Patch Editor/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Fixtures/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Patch Editor/VBoxContainer/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Fixtures/VBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Patch Editor/VBoxContainer/MarginContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="New Scene" type="Button" parent="TabContainer/Patch Editor/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="New Scene" type="Button" parent="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "New Virtual Fixture"
 icon = ExtResource("11_8n5cs")
 
-[node name="New Effect" type="Button" parent="TabContainer/Patch Editor/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="New Effect" type="Button" parent="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "New Physical Fixture"
 icon = ExtResource("12_qh3k3")
 
-[node name="New Cue List" type="Button" parent="TabContainer/Patch Editor/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+[node name="New Cue List" type="Button" parent="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "New Fixture Group"
 icon = ExtResource("13_qhavw")
 
-[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Patch Editor/VBoxContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Fixtures/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/HSplitContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer"]
 layout_mode = 2
 
-[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/HSplitContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer"]
 layout_mode = 2
 
-[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/PanelContainer2"]
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Editor/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+
+[node name="Patch Bay" type="MarginContainer" parent="TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Bay"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Patch Bay/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="New Universe" type="Button" parent="TabContainer/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Universe"
+icon = ExtResource("14_13prp")
+
+[node name="New Channel Lock" type="Button" parent="TabContainer/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Channel Lock"
+icon = ExtResource("15_bwv7p")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Patch Bay/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer"]
 layout_mode = 2
 
 [node name="3D" type="Control" parent="TabContainer"]
