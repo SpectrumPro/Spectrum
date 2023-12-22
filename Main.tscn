@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=29 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
@@ -20,6 +20,8 @@
 [ext_resource type="Texture2D" uid="uid://dpj5ee27m3m18" path="res://Assets/Icons/Universe.svg" id="14_13prp"]
 [ext_resource type="PackedScene" uid="uid://c77mf2kr4q4gj" path="res://3D.tscn" id="14_44rt7"]
 [ext_resource type="Texture2D" uid="uid://bdnlb80222dah" path="res://Assets/Icons/Channel_lock.svg" id="15_bwv7p"]
+[ext_resource type="Texture2D" uid="uid://b2vi1f3f4utvw" path="res://Assets/Icons/Input.svg" id="16_1byph"]
+[ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="17_jo4vo"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
 
@@ -462,6 +464,17 @@ icon = ExtResource("14_13prp")
 layout_mode = 2
 text = "New Channel Lock"
 icon = ExtResource("15_bwv7p")
+
+[node name="New Input" type="Button" parent="TabContainer/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Input"
+icon = ExtResource("16_1byph")
+
+[node name="New Output" type="Button" parent="TabContainer/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Output
+"
+icon = ExtResource("17_jo4vo")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Patch Bay/VBoxContainer"]
 layout_mode = 2
