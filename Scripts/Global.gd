@@ -14,7 +14,7 @@ var subscriptions = {}
 @onready var components = {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
 	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
-	"function_list_item":ResourceLoader.load("res://Components/Function_list_item.tscn")
+	"list_item":ResourceLoader.load("res://Components/List_item.tscn")
 }
 @onready var nodes = {
 	"popup_window":get_tree().root.get_node("Main/Popups"),
