@@ -1,0 +1,28 @@
+{
+	"manifest_version": 1,
+	"minimum_version": "0.2.0",
+	"version": "1",
+	"node": {
+		"script": "ART_NET_output.gd",
+		"scene": "ART_NET_output.tscn"
+	},
+	"metadata": {
+		"author": "Liam Sherwin",
+		"name": "Art-Net Output",
+		"description": "Send Art-Net packets to a remote or local server",
+		"copyright": "Liam Sherwin",
+	},
+	"uuid": "b2b20594-55a2-459c-817a-e6c13bd83d87",
+	"values":{
+		"Url":{
+			"node":"Row1/Url",
+			"default":"172.0.0.1",
+			"content":"text"
+		},
+		"Port":{
+			"node":"Row2/Port",
+			"default":"6454",
+			"content":"text"
+		},
+	}
+}

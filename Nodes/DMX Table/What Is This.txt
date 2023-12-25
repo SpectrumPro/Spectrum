@@ -1,0 +1,1 @@
+DMX Table was a node added during early development. Due to the implementation of virtual fixtures, it has been deprecated, but still exists in the file system for future use.

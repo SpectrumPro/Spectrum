@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dsafem63m72ph"]
+
+[sub_resource type="Shader" id="Shader_g00hd"]
+code = "shader_type canvas_item;
+
+void vertex() {
+    // no-op
+}
+
+void fragment() {
+    // Invert and convert to grayscale
+    COLOR.rgb = vec3(1.0) - COLOR.rgb;
+    COLOR.rgb = vec3(dot(COLOR.rgb, vec3(0.3333)));
+}
+"
+
+[resource]
+shader = SubResource("Shader_g00hd")

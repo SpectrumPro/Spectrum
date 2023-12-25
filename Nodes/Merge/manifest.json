@@ -1,0 +1,23 @@
+{
+	"manifest_version": 1,
+	"minimum_version": "0.2.0",
+	"version": "1",
+	"node": {
+		"script": "Merge.gd",
+		"scene": "Merge.tscn"
+	},
+	"metadata": {
+		"author": "Liam Sherwin",
+		"name": "Merge",
+		"description": "Merges 2 DMX values together",
+		"copyright": "Liam Sherwin",
+	},
+	"uuid": "99b66120-3253-447f-a4d7-dab03d92dee2",
+	"values":{
+		"value":{
+			"node":"Row1/OptionButton",
+			"default":0,
+			"content":"selected"
+		},
+	}
+}

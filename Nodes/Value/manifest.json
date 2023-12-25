@@ -1,0 +1,23 @@
+{
+	"manifest_version": 1,
+	"minimum_version": "0.2.0",
+	"version": "1",
+	"node": {
+		"script": "Value.gd",
+		"scene": "Value.tscn"
+	},
+	"metadata": {
+		"author": "Liam Sherwin",
+		"name": "Value",
+		"description": "Outputs an integer value from -512 to 512",
+		"copyright": "Liam Sherwin",
+	},
+	"uuid": "b2b20594-55a2-459c-817a-e6c13bd83d80",
+	"values":{
+		"value":{
+			"node":"Row0/Value",
+			"default":0,
+			"content":"value"
+		},
+	}
+}

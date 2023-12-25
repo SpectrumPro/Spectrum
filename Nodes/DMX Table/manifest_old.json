@@ -1,0 +1,23 @@
+{
+	"manifest_version": 1,
+	"minimum_version": "0.2.0",
+	"version": "1",
+	"node": {
+		"script": "DMX_table.gd",
+		"scene": "DMX_table.tscn"
+	},
+	"metadata": {
+		"author": "Liam Sherwin",
+		"name": "DMX Table",
+		"description": "Outputs 1 or more DMX values at once",
+		"copyright": "Liam Sherwin",
+	},
+	"uuid": "81f287b8-a919-4c80-aeab-bfc0ccedfe74",
+	"values":{
+		"Universe":{
+			"node":"Row1/Universe",
+			"default":0,
+			"content":"value"
+		},
+	}
+}

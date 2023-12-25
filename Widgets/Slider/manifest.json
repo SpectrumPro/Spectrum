@@ -1,0 +1,18 @@
+{
+	"manifest_version": 1,
+	"minimum_version": "0.2.0",
+	"version": "1",
+	"widget": {
+		"script": "Slider.gd",
+		"scene": "Slider.tscn"
+	},
+	"metadata": {
+		"author": "Liam Sherwin",
+		"name": "Slider",
+		"description": "A slider that outputs any range of numbers",
+		"copyright": "Liam Sherwin",
+	},
+	"uuid": "b2b20594-55a2-459c-817a-e6c13bd83d80",
+	"values":{
+	}
+}
