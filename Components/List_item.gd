@@ -2,7 +2,7 @@ extends PanelContainer
 
 var control_node
 
-func set_function_name(name):
+func set_item_name(name):
 	$Container/Name.text = name
 
 func set_color(color):

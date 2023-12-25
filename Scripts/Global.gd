@@ -1,5 +1,7 @@
 extends Node
 
+const uuid_util = preload('res://Scripts/uuid.gd')
+
 var node_path = "res://Nodes/"
 var widget_path = "res://Widgets/"
 var edit_mode = true
@@ -11,22 +13,44 @@ var values = {
 
 var subscriptions = {}
 
+var universes = {}
+
 @onready var components = {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
 	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
-	"list_item":ResourceLoader.load("res://Components/List_item.tscn")
+	"list_item":ResourceLoader.load("res://Components/List_item.tscn"),
+	"accept_dialog":ResourceLoader.load("res://Components/Accept_dialog.tscn")
 }
 @onready var nodes = {
+	# General Nodes
 	"popup_window":get_tree().root.get_node("Main/Popups"),
 	"save_file_dialog":get_tree().root.get_node("Main/Save File Dialog"),
 	"add_node_popup":get_tree().root.get_node("Main/TabContainer/Node Editor/Add Node Popup"),
 	"add_widget_popup":get_tree().root.get_node("Main/TabContainer/Console/Console Editor/Add Widget Popup"),
 	"widget_settings_menu":get_tree().root.get_node("Main/TabContainer/Console/Widget Settings Menu"),
 	"edit_mode_toggle":get_tree().root.get_node("Main/Menu Buttons/Edit Mode"),
+	
+	# Functions Tab
+	"functions":get_tree().root.get_node("Main/TabContainer/Functions"),
 	"scenes_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes/ScrollContainer/VBoxContainer/Scenes"),
 	"effects_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects/ScrollContainer/VBoxContainer/Effects"),
 	"cues_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer/VBoxContainer/Cues"),
-	"functions":get_tree().root.get_node("Main/TabContainer/Functions")
+	
+	# Patch Bay Tab
+	"patch_bay":get_tree().root.get_node("Main/TabContainer/Patch Bay"),
+	"universe_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes"),
+	"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
+	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/Universe Outputs"),
+	"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
+	"universe_controls_cover":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/Cover"),
+	"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
+	"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
+	
+	# Fixtures Tab
+	"fixtures":get_tree().root.get_node("Main/TabContainer/Fixtures"),
+	"virtual_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer/Virtual Fixtures"),
+	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer/Physical Fixtures"),
+	"fixture_groups_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups"),
 }
 
 @onready var icons = {
@@ -140,3 +164,6 @@ func set_value(value_name, value):
 		for node_to_update in subscriptions[value_name]:
 			if node_to_update.is_valid():
 				node_to_update.call(value)
+
+func new_uuid():
+	return uuid_util.v4()
