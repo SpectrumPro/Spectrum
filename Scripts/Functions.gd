@@ -27,19 +27,19 @@ func on_edit_mode_changed(edit_mode):
 
 func new_scene():
 	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_function_name("Scene")
+	node_to_add.set_item_name("Scene")
 	node_to_add.control_node = self
 	Globals.nodes.scenes_list.add_child(node_to_add)
 	
 func new_effect():
 	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_function_name("Effect")
+	node_to_add.set_item_name("Effect")
 	node_to_add.control_node = self	
 	Globals.nodes.effects_list.add_child(node_to_add)
 	
 func new_cue():
 	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_function_name("Cue")
+	node_to_add.set_item_name("Cue")
 	node_to_add.control_node = self	
 	Globals.nodes.cues_list.add_child(node_to_add)
 	

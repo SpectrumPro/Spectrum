@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
+  "name": "600XB",
+  "categories": ["Dimmer"],
+  "meta": {
+    "authors": ["Anonymous"],
+    "createDate": "2021-08-20",
+    "lastModifyDate": "2021-08-20"
+  },
+  "links": {
+    "productPage": [
+      "https://www.fovitec.com/products/600xb-bi-color-led-panel-with-dmx"
+    ]
+  },
+  "physical": {
+    "dimensions": [394, 399, 76],
+    "power": 36,
+    "bulb": {
+      "type": "600× LED",
+      "lumens": 1420
+    },
+    "lens": {
+      "degreesMinMax": [45, 45]
+    }
+  },
+  "availableChannels": {
+    "Intensity": {
+      "capability": {
+        "type": "Intensity"
+      }
+    },
+    "Color Temperature": {
+      "capability": {
+        "type": "ColorTemperature",
+        "colorTemperatureStart": "3200K",
+        "colorTemperatureEnd": "5600K"
+      }
+    }
+  },
+  "modes": [
+    {
+      "name": "2-channel",
+      "shortName": "2ch",
+      "channels": [
+        "Intensity",
+        "Color Temperature"
+      ]
+    }
+  ],
+  "fixtureKey": "600xb",
+  "manufacturerKey": "fovitec",
+  "oflURL": "https://open-fixture-library.org/fovitec/600xb"
+}

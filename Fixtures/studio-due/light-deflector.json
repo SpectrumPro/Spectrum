@@ -1,0 +1,89 @@
+{
+  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
+  "name": "Light Deflector",
+  "categories": ["Scanner"],
+  "meta": {
+    "authors": ["Manu Larue"],
+    "createDate": "2020-03-24",
+    "lastModifyDate": "2020-03-24"
+  },
+  "links": {
+    "other": [
+      "http://backstageworld.com/StudioDue/deflector.html",
+      "http://www.forum.licht-geluid.nl/licht-forum-foto-s/3267-studio-due-light-deflector.html"
+    ]
+  },
+  "physical": {
+    "dimensions": [320, 460, 130],
+    "weight": 5,
+    "power": 69
+  },
+  "availableChannels": {
+    "Pan": {
+      "fineChannelAliases": ["Pan fine"],
+      "capability": {
+        "type": "Pan",
+        "angleStart": "0deg",
+        "angleEnd": "360deg"
+      }
+    },
+    "Tilt": {
+      "fineChannelAliases": ["Tilt fine"],
+      "capability": {
+        "type": "Tilt",
+        "angleStart": "0deg",
+        "angleEnd": "360deg"
+      }
+    },
+    "Tilt Spin": {
+      "capability": {
+        "type": "TiltContinuous",
+        "helpWanted": "At which DMX values is continuous tilt disabled? Where does it spin clockwise / counter-clockwise?",
+        "speedStart": "0.166667rpm",
+        "speedEnd": "30rpm"
+      }
+    },
+    "Pan/Tilt Speed": {
+      "capability": {
+        "type": "PanTiltSpeed",
+        "speedStart": "slow",
+        "speedEnd": "fast"
+      }
+    },
+    "Reset": {
+      "capability": {
+        "type": "Maintenance",
+        "comment": "Reset Pan/Tilt",
+        "helpWanted": "At which DMX values does the fixture perform a reset?"
+      }
+    }
+  },
+  "modes": [
+    {
+      "name": "8 bit 4-channel",
+      "shortName": "8bit",
+      "channels": [
+        "Pan",
+        "Tilt",
+        "Tilt Spin",
+        "Pan/Tilt Speed"
+      ]
+    },
+    {
+      "name": "16 bit 7-channel",
+      "shortName": "16bit",
+      "channels": [
+        "Pan",
+        "Pan fine",
+        "Tilt",
+        "Tilt fine",
+        "Tilt Spin",
+        "Pan/Tilt Speed",
+        "Reset"
+      ]
+    }
+  ],
+  "fixtureKey": "light-deflector",
+  "manufacturerKey": "studio-due",
+  "oflURL": "https://open-fixture-library.org/studio-due/light-deflector"
+}

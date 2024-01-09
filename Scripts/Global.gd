@@ -1,9 +1,12 @@
 extends Node
 
-const uuid_util = preload('res://Scripts/uuid.gd')
+const uuid_util = preload('res://Scripts/Classes/Uuid.gd')
+const ArtNet = preload('res://Scripts/Classes/Art_net.gd')
+var art_net_sender = ArtNet.new()
 
 var node_path = "res://Nodes/"
 var widget_path = "res://Widgets/"
+var fixture_path = "res://Fixtures/"
 var edit_mode = true
 
 var values = {
@@ -14,13 +17,16 @@ var values = {
 var subscriptions = {}
 
 var universes = {}
+var fixtures = {}
 
 @onready var components = {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
 	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
 	"list_item":ResourceLoader.load("res://Components/List_item.tscn"),
-	"accept_dialog":ResourceLoader.load("res://Components/Accept_dialog.tscn")
+	"accept_dialog":ResourceLoader.load("res://Components/Accept_dialog.tscn"),
+	"channel_slider":ResourceLoader.load("res://Components/Channel_slider.tscn")
 }
+
 @onready var nodes = {
 	# General Nodes
 	"popup_window":get_tree().root.get_node("Main/Popups"),
@@ -40,17 +46,32 @@ var universes = {}
 	"patch_bay":get_tree().root.get_node("Main/TabContainer/Patch Bay"),
 	"universe_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes"),
 	"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
-	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/Universe Outputs"),
+	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs"),
 	"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
 	"universe_controls_cover":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/Cover"),
 	"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
 	"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
+	"universe_io_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"),
+	"universe_io_type":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type"),
 	
 	# Fixtures Tab
 	"fixtures":get_tree().root.get_node("Main/TabContainer/Fixtures"),
 	"virtual_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer/Virtual Fixtures"),
 	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer/Physical Fixtures"),
 	"fixture_groups_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups"),
+	
+	# Add Fixture Menue
+	"add_fixture_menu":get_tree().root.get_node("Main/Add Fixture"),
+	"fixture_tree":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/Fixture Tree"),
+	"fixture_channel_list":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/Channel List"),
+	"fixture_modes_option":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes"),
+	"fixture_universe_option":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3/Fixture Universe Option"),
+	"add_fixture_button":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button"),
+	
+	# Desk
+	"desk":get_tree().root.get_node("Main/TabContainer/Desk"),
+	"desk_channel_container":get_tree().root.get_node("Main/TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer/Channel Container"),
+	"desk_universe_option":get_tree().root.get_node("Main/TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option"),
 }
 
 @onready var icons = {
@@ -167,3 +188,20 @@ func set_value(value_name, value):
 
 func new_uuid():
 	return uuid_util.v4()
+
+func set_desk_data(universe, data):
+	art_net_sender.send_artnet_packet(0, data)
+
+func reload_universe_io_connections(io={}):
+	if io:
+		print(io)
+	else:
+		print(universes)
+
+func _ready():
+	art_net_sender.target_ip = "192.168.1.53"
+	art_net_sender.connect_to_host()
+	var dmx = []
+	dmx.resize(512)
+	dmx.fill(255)
+	art_net_sender.send_artnet_packet(0, dmx)

@@ -1,10 +1,10 @@
-[gd_scene load_steps=31 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=34 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
 [ext_resource type="Script" path="res://Scripts/Console.gd" id="2_qq2ap"]
 [ext_resource type="Script" path="res://Scripts/Node_system.gd" id="2_qxkpt"]
-[ext_resource type="Script" path="res://Scripts/Fps.gd" id="3_l3bnx"]
+[ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="5_cx6ah"]
 [ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
 [ext_resource type="Script" path="res://Scripts/Settings.gd" id="6_fan4u"]
@@ -24,6 +24,9 @@
 [ext_resource type="Texture2D" uid="uid://bdnlb80222dah" path="res://Assets/Icons/Channel_lock.svg" id="15_bwv7p"]
 [ext_resource type="Texture2D" uid="uid://b2vi1f3f4utvw" path="res://Assets/Icons/Input.svg" id="16_1byph"]
 [ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="17_jo4vo"]
+[ext_resource type="Script" path="res://Scripts/Desk.gd" id="20_0lfsq"]
+[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Add_fixture.tscn" id="25_owwqo"]
+[ext_resource type="Script" path="res://Scripts/Add_fixture.gd" id="25_w0caf"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
 
@@ -96,7 +99,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 4
+current_tab = 5
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 visible = false
@@ -445,6 +448,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Patch Bay" type="MarginContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -555,16 +559,84 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Universe Controls" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2"]
 layout_mode = 2
+
+[node name="IO Type" type="OptionButton" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+item_count = 2
+selected = 0
+popup/item_0/text = "Empty"
+popup/item_0/id = 1
+popup/item_1/text = "Art-Net"
+popup/item_1/id = 0
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="IO Controls" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Art-Net" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Ip Address"
+
+[node name="Art Net Port" type="LineEdit" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer"]
+custom_minimum_size = Vector2(145.25, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "172.0.0.1"
+placeholder_text = "172.0.0.1"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Port"
+
+[node name="Art Net Port" type="SpinBox" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2"]
+custom_minimum_size = Vector2(145.25, 0)
+layout_mode = 2
+max_value = 65535.0
+value = 6454.0
+rounded = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Universe"
+
+[node name="Art Net Universe" type="SpinBox" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3"]
+custom_minimum_size = Vector2(145.25, 0)
+layout_mode = 2
+max_value = 9.22337e+18
+rounded = true
 
 [node name="PanelContainer3" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Universe Outputs" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3"]
 layout_mode = 2
+
+[node name="Universe Outputs" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer"]
 layout_mode = 2
@@ -577,6 +649,57 @@ size_flags_vertical = 3
 [node name="Channel Overrides" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Desk" type="MarginContainer" parent="TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("20_0lfsq")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Desk"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Desk/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Universe  "
+
+[node name="Desk Universe Option" type="OptionButton" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+item_count = 1
+popup/item_0/text = " "
+popup/item_0/id = 0
+
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Channel Container" type="HBoxContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Desk/VSplitContainer"]
+layout_mode = 2
 size_flags_vertical = 3
 
 [node name="3D" type="Control" parent="TabContainer"]
@@ -776,6 +899,15 @@ initial_position = 5
 size = Vector2i(742, 659)
 access = 2
 
+[node name="Add Fixture" type="Window" parent="."]
+title = "Add Fixture"
+initial_position = 5
+size = Vector2i(870, 635)
+visible = false
+script = ExtResource("25_w0caf")
+
+[node name="TabContainer" parent="Add Fixture" instance=ExtResource("25_owwqo")]
+
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="child_exiting_tree" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_child_exiting_tree"]
 [connection signal="connection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="GraphEdit_connection_request"]
@@ -810,6 +942,11 @@ access = 2
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Input" to="TabContainer/Patch Bay" method="_on_new_input_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Output" to="TabContainer/Patch Bay" method="_on_new_output_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Channel Overide" to="TabContainer/Patch Bay" method="_on_new_channel_overide_pressed"]
+[connection signal="item_selected" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type" to="TabContainer/Patch Bay" method="_on_io_type_item_selected"]
+[connection signal="text_submitted" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer/Art Net Port" to="TabContainer/Patch Bay" method="_on_art_net_port_text_submitted"]
+[connection signal="value_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2/Art Net Port" to="TabContainer/Patch Bay" method="_on_art_net_port_value_changed"]
+[connection signal="value_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3/Art Net Universe" to="TabContainer/Patch Bay" method="_on_art_net_universe_value_changed"]
+[connection signal="item_selected" from="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option" to="TabContainer/Desk" method="_on_desk_universe_option_item_selected"]
 [connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]
@@ -821,3 +958,4 @@ access = 2
 [connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
 [connection signal="file_selected" from="Load File Dialog" to="." method="_on_load_file_dialog_file_selected"]
 [connection signal="file_selected" from="Save File Dialog" to="." method="_on_save_file_dialog_file_selected"]
+[connection signal="close_requested" from="Add Fixture" to="Add Fixture" method="_on_close_requested"]

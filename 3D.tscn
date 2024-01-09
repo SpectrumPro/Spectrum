@@ -22,10 +22,14 @@ albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Environment" id="Environment_pfmir"]
 background_mode = 1
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
 sdfgi_use_occlusion = true
 glow_bloom = 1.0
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.0817
+volumetric_fog_density = 0.1225
+volumetric_fog_gi_inject = 0.14
 adjustment_enabled = true
 
 [node name="Node3D" type="Node3D"]

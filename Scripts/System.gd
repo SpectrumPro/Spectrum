@@ -12,7 +12,7 @@ var save_file = {
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	OS.set_low_processor_usage_mode(true)
-	load_save("/Users/liam/Documents/Spectrum/V0.3.0 Save")
+	#load_save("/Users/liam/Documents/Spectrum/V0.3.0 Save")
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -26,6 +26,7 @@ func save():
 	
 	save_nodes()
 	save_widgets()
+	save_file.universes = Globals.universes
 	Globals.nodes.save_file_dialog.popup()
 
 func save_widgets():
@@ -105,6 +106,7 @@ func _on_load_pressed():
 	get_node("Load File Dialog").popup()
 	
 func load_save(file_path):
+	# Check if save file is valid
 	var manifest_file = FileAccess.open(file_path, FileAccess.READ)
 	if manifest_file == null:
 		Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_FILE,"from":file_path}])
@@ -115,6 +117,7 @@ func load_save(file_path):
 		Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":file_path}])
 		return
 		
+	# Add Nodes
 	for node_to_add in manifest.nodes.values():
 		var node_manifest_file = FileAccess.open(node_to_add.node_file_path + "manifest.json", FileAccess.READ)
 		var node_manifest = JSON.parse_string(node_manifest_file.get_as_text())
@@ -122,18 +125,23 @@ func load_save(file_path):
 			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":node_manifest_file}])
 			return
 		get_node("TabContainer/Node Editor")._add_node(node_to_add.node_file_path, {"position_offset":node_to_add.position_offset, "values":node_to_add.values})
-	
+	# Add node connections
 	get_node("TabContainer/Node Editor").generate_connected_nodes(manifest.node_connections)
 	
+	# Add Widgets
 	for widget_to_add in manifest.widgets.values():
-
 		var widget_manifest_file = FileAccess.open(widget_to_add.widget_file_path + "manifest.json", FileAccess.READ)
 		var widget_manifest = JSON.parse_string(widget_manifest_file.get_as_text())
 		if manifest == null:
 			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":widget_manifest_file}])
 			return
 		get_node("TabContainer/Console/Console Editor")._add_widget(widget_to_add.widget_file_path, {"position_offset":widget_to_add.get("position_offset"), "values":widget_to_add.get("values"), "size":widget_to_add.get("size")})
-
+	
+	#Add Universes
+	Globals.universes = manifest.universes
+	Globals.nodes.patch_bay.universes = Globals.universes
+	Globals.nodes.patch_bay.reload_universes()
+	
 func _on_load_file_dialog_file_selected(path):
 	load_save(path)
 

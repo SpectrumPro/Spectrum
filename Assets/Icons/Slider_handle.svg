@@ -7,7 +7,7 @@
    viewBox="0 0 210.006 79.006699"
    version="1.1"
    id="svg1"
-   inkscape:version="1.2.1 (9c6d41e4, 2022-07-14)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
    sodipodi:docname="Slider_handle.svg"
    inkscape:export-filename="renders\Slider3.png"
    inkscape:export-xdpi="96"
@@ -34,12 +34,12 @@
      inkscape:document-units="mm"
      inkscape:lockguides="true"
      inkscape:zoom="0.94530004"
-     inkscape:cx="240.1354"
-     inkscape:cy="133.81995"
-     inkscape:window-width="1280"
-     inkscape:window-height="747"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:cx="399.87304"
+     inkscape:cy="219.50703"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="1680"
+     inkscape:window-y="32"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1"
      showgrid="false" />
@@ -139,7 +139,7 @@
        gradientUnits="userSpaceOnUse" />
   </defs>
   <rect
-     style="fill:#1a1a1a;fill-opacity:1;stroke:#242424;stroke-width:11.87;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+     style="fill:#e8e8e8;fill-opacity:1;stroke:#cfcfcf;stroke-width:11.87;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
      id="rect1"
      width="198.1367"
      height="67.137199"
