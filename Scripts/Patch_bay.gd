@@ -24,7 +24,7 @@ func delete_request(node):
 		"universe":
 			confirmation_dialog.confirmed.connect((
 			func(node):
-				universes.erase(node.get_meta("universe_uuid"))
+				Globals.delete_universe(node.get_meta("universe_uuid"))
 				
 				current_universe_uuid = ""
 				reload_universes()
@@ -66,12 +66,13 @@ func on_edit_mode_changed(edit_mode):
 		function_item.dissable_buttons(not edit_mode)
 
 func new_universe():
-	universes[Globals.new_uuid()] = {
-		"name":"Universe " + str(len(universes.keys())+1),
-		"fixtures:":{},
-		"inputs":{},
-		"outputs":{},
-	}
+	Globals.new_universe().set_name("Universe " + str(len(universes.keys())+1))
+	#universes[Globals.new_uuid()] = {
+		#"name":"Universe " + str(len(universes.keys())+1),
+		#"fixtures:":{},
+		#"inputs":{},
+		#"outputs":{},
+	#}
 	reload_universes()
 
 func reload_universes():
@@ -81,7 +82,7 @@ func reload_universes():
 	for uuid in universes:
 		var universe = universes[uuid]
 		var node_to_add = Globals.components.list_item.instantiate()
-		node_to_add.set_item_name(universe.name)
+		node_to_add.set_item_name(universe.get_name())
 		node_to_add.control_node = self
 		node_to_add.set_meta("universe_uuid", uuid)
 		node_to_add.set_meta("type", "universe")

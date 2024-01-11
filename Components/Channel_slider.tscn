@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://drh6naeg211g6"]
+[gd_scene load_steps=6 format=3 uid="uid://drh6naeg211g6"]
 
 [ext_resource type="Script" path="res://Components/Channel_slider.gd" id="1_2ours"]
 [ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_rvi85"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_ba0og"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j2wop"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5epos"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
@@ -27,6 +29,10 @@ layout_mode = 2
 theme_override_icons/updown = SubResource("ImageTexture_ba0og")
 max_value = 255.0
 
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_j2wop")
+
 [node name="VSlider" type="VSlider" parent="VBoxContainer"]
 use_parent_material = true
 layout_mode = 2
@@ -38,6 +44,10 @@ theme_override_icons/grabber = ExtResource("1_rvi85")
 theme_override_icons/grabber_highlight = ExtResource("1_rvi85")
 theme_override_styles/slider = SubResource("StyleBoxFlat_5epos")
 max_value = 255.0
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_j2wop")
 
 [node name="Clear" type="Button" parent="VBoxContainer"]
 layout_mode = 2

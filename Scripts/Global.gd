@@ -2,6 +2,7 @@ extends Node
 
 const uuid_util = preload('res://Scripts/Classes/Uuid.gd')
 const ArtNet = preload('res://Scripts/Classes/Art_net.gd')
+const Universe = preload('res://Scripts/Classes/Universe.gd')
 var art_net_sender = ArtNet.new()
 
 var node_path = "res://Nodes/"
@@ -204,4 +205,16 @@ func _ready():
 	var dmx = []
 	dmx.resize(512)
 	dmx.fill(255)
-	art_net_sender.send_artnet_packet(0, dmx)
+	art_net_sender.send_packet(0, dmx)
+
+func new_universe():
+	var new_universe = Universe.new()
+	universes[new_universe.get_uuid()] = new_universe
+	return new_universe
+
+func delete_universe(universe):
+	if typeof(universe) == 4: # String
+		universes.erase(universe)
+	elif typeof(universe) == 27:
+		universes.erase(universe.get_uuid())
+	

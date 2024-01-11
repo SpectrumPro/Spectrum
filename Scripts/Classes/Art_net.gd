@@ -1,28 +1,27 @@
 extends Node
 class_name ArtNet
 
-var udp_peer = PacketPeerUDP.new()
+var _udp_peer = PacketPeerUDP.new()
 var target_ip = "172.0.0.1"
 var target_port = 6454
 
-var formatted_dmx_data = []
-var packet_id = 0
-var debug_index = 1
+var _formatted_dmx_data = []
+var _packet_id = 0
 
 func connect_to_host():
-	udp_peer.close()
-	udp_peer.connect_to_host(target_ip, target_port)
+	_udp_peer.close()
+	_udp_peer.connect_to_host(target_ip, target_port)
 
 #func receive(data, _slot):
 	#if typeof(data) != 27: 
 		#return
-	#formatted_dmx_data = []
+	#_formatted_dmx_data = []
 	#for channel in range(1, 513):
-		#formatted_dmx_data.append(data.dmx_channels.get(channel, 0))
+		#_formatted_dmx_data.append(data.dmx_channels.get(channel, 0))
 	#send_artnet_packet(data.universe-1)
-	#print(formatted_dmx_data)
+	#print(_formatted_dmx_data)
 	
-func send_artnet_packet(universe,dmx_data):
+func send_packet(universe,dmx_data):
 	print(universe)
 	print(dmx_data)
 	# Construct Art-Net packet
@@ -58,7 +57,7 @@ func send_artnet_packet(universe,dmx_data):
 		packet.append(value)
 
 	# Send the packet
-#	udp_peer.set_dest_address(ip, port)
+#	_udp_peer.set_dest_address(ip, port)
 	print(packet)
-	print(udp_peer.put_packet(packet))
+	print(_udp_peer.put_packet(packet))
 	
