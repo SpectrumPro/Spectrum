@@ -3,6 +3,7 @@ extends Control
 var current_universe_uuid
 var current_io_uuid
 var current_io_type
+var current_io
 
 var input_options = [
 	"Empty",
@@ -39,6 +40,7 @@ func delete_request(node):
 				universes[current_universe_uuid].outputs.erase(node.get_meta("output_uuid"))
 				current_io_uuid = ""
 				current_io_type = ""
+				current_io = ""
 				reload_io()
 				
 			).bind(node))
@@ -48,14 +50,15 @@ func edit_request(node):
 	match node.get_meta("type"):
 		"universe":
 			current_universe_uuid = node.get_meta("universe_uuid")
-			Globals.nodes.universe_name.text = universes[current_universe_uuid].name
+			Globals.nodes.universe_name.text = universes[current_universe_uuid].get_name()
 			
 			set_universe_controls_enabled(true)
 			reload_io()
 		"output":
 			current_io_uuid = node.get_meta("output_uuid")
 			current_io_type = "output"
-			set_io_controls_enabled(true, universes[current_universe_uuid].outputs[current_io_uuid].type)
+			current_io = universes[current_universe_uuid].get_output(current_io_uuid)
+			set_io_controls_enabled(true, universes[current_universe_uuid].get_output(current_io_uuid).get_type())
 			reload_io()
 
 func on_edit_mode_changed(edit_mode):
@@ -110,25 +113,29 @@ func new_input():
 	Globals.nodes.universe_inputs.add_child(node_to_add)
 
 func new_output():
-	var output_uuid = Globals.new_uuid()
-	
-	universes[current_universe_uuid].outputs[output_uuid] = {
-		"type":"Empty",
-		"name":"Empty Output",
-		"settings":{
-			
-		}
-	}
+	universes[current_universe_uuid].new_output("Empty")
+	#var output_uuid = Globals.new_uuid()
+	#
+	#universes[current_universe_uuid].outputs[output_uuid] = {
+		#"type":"Empty",
+		#"name":"Empty Output",
+		#"settings":{
+			#
+		#}
+	#}
 	reload_io()
 
 func reload_io():
 	if not current_universe_uuid:return
+	
 	for node in Globals.nodes.universe_outputs.get_children():
 		node.queue_free()
-	for uuid in universes[current_universe_uuid].outputs:
-		var output = universes[current_universe_uuid].outputs[uuid]
+		
+	for uuid in universes[current_universe_uuid].get_all_outputs().keys():
+		var output = universes[current_universe_uuid].get_output(uuid)
 		var node_to_add = Globals.components.list_item.instantiate()
-		node_to_add.set_item_name(output.name)
+		print(output)
+		node_to_add.set_item_name(output._get_name())
 		node_to_add.control_node = self
 		node_to_add.set_meta("output_uuid", uuid)
 		node_to_add.set_meta("type", "output")
@@ -136,19 +143,20 @@ func reload_io():
 		node_to_add.set_highlighted(false)
 		
 		if current_io_uuid == uuid:
-			if output.type:
-				Globals.nodes.universe_io_type.selected = output_options.find(output.type)
-			node_to_add.set_highlighted(true)
-			if output.type != "Empty":
+			if output.get_type():
+				Globals.nodes.universe_io_type.selected = output_options.find(output.get_type())
+			
+			if output.get_type() != "Empty":
 				for node in Globals.nodes.universe_io_controls.get_children():
-					if node.name == output.type:
+					if node.name == output.get_type():
 						node.visible = true
 					else:
+			
 						node.visible = false
+			node_to_add.set_highlighted(true)
 			
 		Globals.nodes.universe_outputs.add_child(node_to_add)
 
-		
 func set_universe_controls_enabled(enabled):
 	for node in Globals.nodes.universe_controls.get_children():
 		if node is LineEdit:
@@ -167,7 +175,6 @@ func set_io_controls_enabled(enabled, type):
 			node.visible = false
 
 
-
 # Button Callbacks
 
 func _on_io_type_item_selected(index):
@@ -177,27 +184,20 @@ func _on_io_type_item_selected(index):
 			set_io_controls_enabled(true, input_options[index])
 			
 		elif current_io_type == "output":
-			universes[current_universe_uuid].outputs[current_io_uuid].type = output_options[index]
+			current_io = universes[current_universe_uuid].change_output_type(current_io_uuid, output_options[index])
 			set_io_controls_enabled(true, output_options[index])
-			match output_options[index]:
-				"Art-Net":
-					universes[current_universe_uuid].outputs[current_io_uuid].settings = {
-						"ip":"172.0.0.1",
-						"port":6454,
-						"universe":0
-					}
-				"Empty":
-					universes[current_universe_uuid].outputs[current_io_uuid].settings = {}
 		reload_io()
 
-func _on_art_net_port_text_submitted(new_text):
-	universes[current_universe_uuid].outputs[current_io_uuid].settings.ip = new_text
+func _on_art_net_ip_text_submitted(new_text):
+	current_io.art_net.ip = new_text
+	current_io.connect_to_host()
 	
 func _on_art_net_port_value_changed(value):
-	universes[current_universe_uuid].outputs[current_io_uuid].settings.port = value
+	current_io.art_net.port = value
+	current_io.connect_to_host()
 	
 func _on_art_net_universe_value_changed(value):
-	universes[current_universe_uuid].outputs[current_io_uuid].settings.universe = value
+	current_io.art_net.universe = int(value)
 
 func _on_new_universe_pressed():
 	new_universe()

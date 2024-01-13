@@ -589,7 +589,7 @@ layout_mode = 2
 size_flags_horizontal = 2
 text = "Ip Address"
 
-[node name="Art Net Port" type="LineEdit" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer"]
+[node name="Art Net IP" type="LineEdit" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer"]
 custom_minimum_size = Vector2(145.25, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -683,6 +683,7 @@ text = "Universe  "
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 item_count = 1
+allow_reselect = true
 popup/item_0/text = " "
 popup/item_0/id = 0
 
@@ -943,7 +944,7 @@ script = ExtResource("25_w0caf")
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Output" to="TabContainer/Patch Bay" method="_on_new_output_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Channel Overide" to="TabContainer/Patch Bay" method="_on_new_channel_overide_pressed"]
 [connection signal="item_selected" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type" to="TabContainer/Patch Bay" method="_on_io_type_item_selected"]
-[connection signal="text_submitted" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer/Art Net Port" to="TabContainer/Patch Bay" method="_on_art_net_port_text_submitted"]
+[connection signal="text_submitted" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer/Art Net IP" to="TabContainer/Patch Bay" method="_on_art_net_ip_text_submitted"]
 [connection signal="value_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2/Art Net Port" to="TabContainer/Patch Bay" method="_on_art_net_port_value_changed"]
 [connection signal="value_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3/Art Net Universe" to="TabContainer/Patch Bay" method="_on_art_net_universe_value_changed"]
 [connection signal="item_selected" from="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option" to="TabContainer/Desk" method="_on_desk_universe_option_item_selected"]

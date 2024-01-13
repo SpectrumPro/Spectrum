@@ -200,12 +200,7 @@ func reload_universe_io_connections(io={}):
 		print(universes)
 
 func _ready():
-	art_net_sender.target_ip = "192.168.1.53"
-	art_net_sender.connect_to_host()
-	var dmx = []
-	dmx.resize(512)
-	dmx.fill(255)
-	art_net_sender.send_packet(0, dmx)
+	pass
 
 func new_universe():
 	var new_universe = Universe.new()

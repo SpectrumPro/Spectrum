@@ -2,27 +2,30 @@ extends Node
 class_name ArtNet
 
 var _udp_peer = PacketPeerUDP.new()
-var target_ip = "172.0.0.1"
-var target_port = 6454
 
-var _formatted_dmx_data = []
-var _packet_id = 0
+var art_net = {
+	"ip":"172.0.0.1",
+	"port":6454,
+	"universe":0,
+	"name":"Art-Net Output", 
+	"type":"Art-Net"
+}
 
 func connect_to_host():
 	_udp_peer.close()
-	_udp_peer.connect_to_host(target_ip, target_port)
+	print(_udp_peer.connect_to_host(art_net.ip, art_net.port))
 
-#func receive(data, _slot):
-	#if typeof(data) != 27: 
-		#return
-	#_formatted_dmx_data = []
-	#for channel in range(1, 513):
-		#_formatted_dmx_data.append(data.dmx_channels.get(channel, 0))
-	#send_artnet_packet(data.universe-1)
-	#print(_formatted_dmx_data)
-	
-func send_packet(universe,dmx_data):
-	print(universe)
+func _get_name():
+	return art_net.name
+
+func _set_name(name):
+	art_net.name = name
+
+func get_type():
+	return art_net.type
+
+
+func send_packet(dmx_data):
 	print(dmx_data)
 	# Construct Art-Net packet
 	var packet = PackedByteArray()
@@ -44,8 +47,8 @@ func send_packet(universe,dmx_data):
 	packet.append(0)
 
 	# Universe (16-bit)
-	packet.append(universe)
-	packet.append(0)
+	packet.append(art_net.universe % 256)  # Lower 8 bits
+	packet.append(art_net.universe / 256)  # Upper 8 bits
 
 	# Length (16-bit)
 #	packet.append_array([512 % 256, int(512 / 255)])
@@ -53,11 +56,11 @@ func send_packet(universe,dmx_data):
 	packet.append(00)
 	
 	# DMX Channels
-	for value in dmx_data:
-		packet.append(value)
+	for channel in range(1, 513):
+		packet.append(dmx_data.get(channel, 0))
+		print(dmx_data.get(channel, 0))
 
 	# Send the packet
 #	_udp_peer.set_dest_address(ip, port)
-	print(packet)
-	print(_udp_peer.put_packet(packet))
+	_udp_peer.put_packet(packet)
 	
