@@ -1,0 +1,62 @@
+[gd_scene load_steps=6 format=3 uid="uid://drh6naeg211g6"]
+
+[ext_resource type="Script" path="res://Components/Channel_slider.gd" id="1_2ours"]
+[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_rvi85"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_ba0og"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j2wop"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5epos"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 17.0
+expand_margin_right = 17.0
+
+[node name="Channel Slider" type="PanelContainer"]
+offset_right = 67.0
+offset_bottom = 203.0
+script = ExtResource("1_2ours")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_icons/updown = SubResource("ImageTexture_ba0og")
+max_value = 255.0
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_j2wop")
+
+[node name="VSlider" type="VSlider" parent="VBoxContainer"]
+use_parent_material = true
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
+mouse_default_cursor_shape = 10
+theme_override_icons/grabber = ExtResource("1_rvi85")
+theme_override_icons/grabber_highlight = ExtResource("1_rvi85")
+theme_override_styles/slider = SubResource("StyleBoxFlat_5epos")
+max_value = 255.0
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_j2wop")
+
+[node name="Clear" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "CLEAR"
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[connection signal="value_changed" from="VBoxContainer/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/VSlider" to="." method="_on_v_slider_value_changed"]
+[connection signal="button_down" from="VBoxContainer/Clear" to="." method="_on_clear_button_down"]

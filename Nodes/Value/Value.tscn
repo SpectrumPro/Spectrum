@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://cviei6v7iwybm"]
+
+[node name="Value" type="GraphNode"]
+offset_right = 197.0
+offset_bottom = 85.0
+resizable = true
+title = "Value"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+
+[node name="Row0" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Row0"]
+layout_mode = 2
+text = "Value"
+
+[node name="Value" type="SpinBox" parent="Row0"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 10
+min_value = -512.0
+max_value = 512.0
+rounded = true
+update_on_text_changed = true
+
+[connection signal="value_changed" from="Row0/Value" to="." method="_on_value_value_changed"]

@@ -11,11 +11,11 @@ config_version=5
 [application]
 
 config/name="Spectrum"
-config/description="Realtime node based DMX controll"
+config/description="Realtime node based DMX controller"
 run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
 config/features=PackedStringArray("4.2")
-boot_splash/bg_color=Color(0.133333, 0.133333, 0.133333, 1)
+boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
 boot_splash/image="res://Assets/Icon_small.png"
 boot_splash/fullsize=false
 config/icon="res://icon.png"
@@ -24,6 +24,7 @@ boot_splash/minimum_display_time=500
 
 [audio]
 
+buses/default_bus_layout=""
 driver/enable_input=true
 
 [autoload]
@@ -34,10 +35,16 @@ Globals="*res://Scripts/Global.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/initial_position_type=4
 window/subwindows/embed_subwindows=false
 window/vsync/vsync_mode=0
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false
+
+[editor]
+
+movie_writer/movie_file="/Users/liam/Documents/Repos/SpectrumPro/Spectrum/record.avi"
+movie_writer/fps=30
 
 [input]
 
@@ -55,4 +62,3 @@ process_loop={
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
-environment/defaults/default_environment="res://default_env.tres"

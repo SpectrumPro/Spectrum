@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://bmmso7jqr82x0"]
+
+[node name="ARTNETOutput" type="GraphNode"]
+offset_top = 1.0
+offset_right = 244.0
+offset_bottom = 145.0
+resizable = true
+title = "Art-Net Output"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 0, 0.498039, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 0, 0, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(1, 1, 1, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+metadata/Inputs = [NodePath("Row1/Url"), NodePath("Row2/Port")]
+
+[node name="Row0" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Row0"]
+layout_mode = 2
+text = "DMX In"
+
+[node name="Row1" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Row1"]
+layout_mode = 2
+text = "Art-Net Url"
+
+[node name="Url" type="LineEdit" parent="Row1"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "172.0.0.1"
+placeholder_text = "172.0.0.1"
+expand_to_text_length = true
+
+[node name="Row2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Row2"]
+layout_mode = 2
+text = "Art-Net Port"
+
+[node name="Port" type="LineEdit" parent="Row2"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "6454"
+placeholder_text = "6454"
+expand_to_text_length = true
+
+[connection signal="text_submitted" from="Row1/Url" to="." method="_on_url_text_submitted"]
+[connection signal="text_submitted" from="Row2/Port" to="." method="_on_port_text_submitted"]
