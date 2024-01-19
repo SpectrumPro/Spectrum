@@ -49,7 +49,6 @@ var fixtures = {}
 	"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
 	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs"),
 	"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
-	"universe_controls_cover":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/Cover"),
 	"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
 	"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
 	"universe_io_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"),
@@ -163,6 +162,11 @@ var fixtures = {}
 	},
 }
 
+func _process(delta):
+	if Input.is_action_just_pressed("process_loop"):
+		for universe in universes.values():
+			print(universe.serialize())
+
 func show_popup(content = []):
 	for i in content:
 		var node_to_add = components.warning.instantiate()
@@ -189,10 +193,7 @@ func set_value(value_name, value):
 
 func new_uuid():
 	return uuid_util.v4()
-
-func set_desk_data(universe, data):
-	art_net_sender.send_artnet_packet(0, data)
-
+	
 func reload_universe_io_connections(io={}):
 	if io:
 		print(io)
@@ -209,7 +210,21 @@ func new_universe():
 
 func delete_universe(universe):
 	if typeof(universe) == 4: # String
+		universes[universe].queue_free()
 		universes.erase(universe)
-	elif typeof(universe) == 27:
+	elif typeof(universe) == 27: 
+		universes[universe.get_uuid()].queue_free()
 		universes.erase(universe.get_uuid())
-	
+	print(universe)
+
+func serialize_universes():
+	var serialized_universes = {}
+	for universe_uuid in universes:
+		serialized_universes[universe_uuid] = universes[universe_uuid].serialize()
+	return serialized_universes
+
+func deserialize_universes(new_universes):
+	for universe_uuid in new_universes:
+		var universe_to_add = Universe.new()
+		universe_to_add.from(new_universes[universe_uuid])
+		universes[universe_uuid] = universe_to_add

@@ -3,7 +3,38 @@ class_name ArtNet
 
 var _udp_peer = PacketPeerUDP.new()
 
-var art_net = {
+var exposed_values = [
+	{
+		"name":"Ip Address",
+		"type":LineEdit,
+		"signal":"text_submitted",
+		"function":"set_ip_addr",
+		"configs":{
+			"placeholder_text":"172.0.0.1"
+		}
+	},
+	{
+		"name":"Port",
+		"type":SpinBox,
+		"signal":"value_changed",
+		"function":"set_port",
+		"configs": {
+			"max_value":65535
+		}
+	}, 
+	{
+		"name":"Art-Net Universe",
+		"type":SpinBox,
+		"signal":"value_changed",
+		"function":"set_universe",
+		"configs":{
+			"max_value":9223370000000000000,
+			"rounded":"true",
+		}
+	}
+]
+
+var config = {
 	"ip":"172.0.0.1",
 	"port":6454,
 	"universe":0,
@@ -13,20 +44,39 @@ var art_net = {
 
 func connect_to_host():
 	_udp_peer.close()
-	print(_udp_peer.connect_to_host(art_net.ip, art_net.port))
+	print(_udp_peer.connect_to_host(config.ip, config.port))
 
 func _get_name():
-	return art_net.name
+	return config.name
 
 func _set_name(name):
-	art_net.name = name
+	config.name = name
 
 func get_type():
-	return art_net.type
+	return config.type
 
+func set_ip_addr(new_ip_address):
+	config.ip = new_ip_address
+	connect_to_host()
+
+func set_port(new_port):
+	config.port = new_port
+	connect_to_host()
+
+func set_universe(new_universe):
+	config.universe = new_universe
+	connect_to_host()
+	
+func serialize():
+	return config
+
+func from(serialized_data):
+	config = serialized_data
+
+func _disconnect():
+	_udp_peer.close()
 
 func send_packet(dmx_data):
-	print(dmx_data)
 	# Construct Art-Net packet
 	var packet = PackedByteArray()
 
@@ -47,8 +97,8 @@ func send_packet(dmx_data):
 	packet.append(0)
 
 	# Universe (16-bit)
-	packet.append(art_net.universe % 256)  # Lower 8 bits
-	packet.append(art_net.universe / 256)  # Upper 8 bits
+	packet.append(int(config.universe) % 256)  # Lower 8 bits
+	packet.append(int(config.universe) / 256)  # Upper 8 bits
 
 	# Length (16-bit)
 #	packet.append_array([512 % 256, int(512 / 255)])
@@ -58,7 +108,6 @@ func send_packet(dmx_data):
 	# DMX Channels
 	for channel in range(1, 513):
 		packet.append(dmx_data.get(channel, 0))
-		print(dmx_data.get(channel, 0))
 
 	# Send the packet
 #	_udp_peer.set_dest_address(ip, port)

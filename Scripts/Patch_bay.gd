@@ -37,10 +37,13 @@ func delete_request(node):
 		"output":
 			confirmation_dialog.confirmed.connect((
 			func(node):
-				universes[current_universe_uuid].outputs.erase(node.get_meta("output_uuid"))
+				universes[current_universe_uuid].remove_output(node.get_meta("output_uuid"))
 				current_io_uuid = ""
 				current_io_type = ""
 				current_io = ""
+				
+				Globals.nodes.universe_io_type.disabled = true
+				
 				reload_io()
 				
 			).bind(node))
@@ -58,6 +61,10 @@ func edit_request(node):
 			current_io_uuid = node.get_meta("output_uuid")
 			current_io_type = "output"
 			current_io = universes[current_universe_uuid].get_output(current_io_uuid)
+			
+			Globals.nodes.universe_io_type.disabled = false
+			
+			
 			set_io_controls_enabled(true, universes[current_universe_uuid].get_output(current_io_uuid).get_type())
 			reload_io()
 
@@ -79,13 +86,12 @@ func new_universe():
 	reload_universes()
 
 func reload_universes():
-	
 	for node in Globals.nodes.universe_list.get_children():
 		node.queue_free()
 	for uuid in universes:
 		var universe = universes[uuid]
 		var node_to_add = Globals.components.list_item.instantiate()
-		node_to_add.set_item_name(universe.get_name())
+		node_to_add.set_item_name(universe._get_name())
 		node_to_add.control_node = self
 		node_to_add.set_meta("universe_uuid", uuid)
 		node_to_add.set_meta("type", "universe")
@@ -130,11 +136,13 @@ func reload_io():
 	
 	for node in Globals.nodes.universe_outputs.get_children():
 		node.queue_free()
-		
+	
+	for node in Globals.nodes.universe_io_controls.get_children():
+		node.queue_free()
+	
 	for uuid in universes[current_universe_uuid].get_all_outputs().keys():
 		var output = universes[current_universe_uuid].get_output(uuid)
 		var node_to_add = Globals.components.list_item.instantiate()
-		print(output)
 		node_to_add.set_item_name(output._get_name())
 		node_to_add.control_node = self
 		node_to_add.set_meta("output_uuid", uuid)
@@ -146,13 +154,28 @@ func reload_io():
 			if output.get_type():
 				Globals.nodes.universe_io_type.selected = output_options.find(output.get_type())
 			
-			if output.get_type() != "Empty":
-				for node in Globals.nodes.universe_io_controls.get_children():
-					if node.name == output.get_type():
-						node.visible = true
-					else:
-			
-						node.visible = false
+			for value in output.exposed_values:
+				var value_node_to_add = value.type.new()
+				value_node_to_add.get(value.signal).connect(output.get(value.function))
+				
+				for config in value.configs:
+					value_node_to_add.set(config, value.configs[config])
+				
+				var container = HBoxContainer.new()
+				var lable = Label.new()
+				lable.text = value.name
+				lable.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+				value_node_to_add.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+				container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+				container.add_child(lable)
+				container.add_child(value_node_to_add)
+				Globals.nodes.universe_io_controls.add_child(container)
+			#if output.get_type() != "Empty":
+				#for node in Globals.nodes.universe_io_controls.get_children():
+					#if node.name == output.get_type():
+						#node.visible = true
+					#else:
+						#node.visible = false
 			node_to_add.set_highlighted(true)
 			
 		Globals.nodes.universe_outputs.add_child(node_to_add)
@@ -168,12 +191,12 @@ func set_universe_controls_enabled(enabled):
 		Globals.nodes.universe_name.text = ""
 
 func set_io_controls_enabled(enabled, type):
-	if enabled and type != "Empty":
-		Globals.nodes.universe_io_controls.get_node(type).visible = true
-	else:
-		for node in Globals.nodes.universe_io_controls.get_children():
-			node.visible = false
-
+	#if enabled and type != "Empty":
+		#Globals.nodes.universe_io_controls.get_node(type).visible = true
+	#else:
+		#for node in Globals.nodes.universe_io_controls.get_children():
+			#node.visible = false
+	pass
 
 # Button Callbacks
 
@@ -203,14 +226,16 @@ func _on_new_universe_pressed():
 	new_universe()
 
 func _on_new_channel_overide_pressed():
-	new_channel_override()
-
+	#new_channel_override()
+	pass
+	
 func _on_new_input_pressed():
-	new_input()
+	#new_input()
+	pass
 
 func _on_new_output_pressed():
 	new_output()
 
 func _on_universe_name_text_changed(new_text):
-	universes[current_universe_uuid].name = new_text
+	universes[current_universe_uuid]._set_name(new_text)
 	reload_universes()

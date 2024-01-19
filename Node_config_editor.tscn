@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://1mesbpw37hqp"]
+[gd_scene load_steps=7 format=3 uid="uid://1mesbpw37hqp"]
 
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_cbrbr"]
 [ext_resource type="Script" path="res://Scripts/Node Config Editor/Node_config_editor.gd" id="1_rhkbh"]
 [ext_resource type="Script" path="res://Scripts/Node Config Editor/Template_node.gd" id="2_3lv1s"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://Assets/Icons/Arrow_upward.svg" id="3_v586t"]
@@ -19,6 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_cbrbr")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 1

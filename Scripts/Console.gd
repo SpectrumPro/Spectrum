@@ -17,6 +17,9 @@ var outbound_queue = {}
 var center_button
 # Called when the widget enters the scene tree for the first time.
 func _ready():
+	
+	print("Console _ready()")
+	
 	_add_menu_hbox_button("Add Widgets", Globals.nodes.add_widget_popup.add_widget_button_clicked.bind(Vector2(220,100)))
 	_add_menu_hbox_button("Delete Widgets", self.request_delete)
 	_add_menu_hbox_button(Globals.icons.menue, self.show_settings_menu)

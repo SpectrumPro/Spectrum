@@ -9,24 +9,17 @@ var save_file = {
 		"node_connections":{},
 		"widgets":{}
 	}
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	OS.set_low_processor_usage_mode(true)
-	#load_save("/Users/liam/Documents/Spectrum/V0.3.0 Save")
-	
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
 
 func _on_save_pressed():
 	save()
 
 func save():
-	
 	save_nodes()
 	save_widgets()
-	save_file.universes = Globals.universes
+	save_file.universes = Globals.serialize_universes()
 	Globals.nodes.save_file_dialog.popup()
 
 func save_widgets():
@@ -138,8 +131,7 @@ func load_save(file_path):
 		get_node("TabContainer/Console/Console Editor")._add_widget(widget_to_add.widget_file_path, {"position_offset":widget_to_add.get("position_offset"), "values":widget_to_add.get("values"), "size":widget_to_add.get("size")})
 	
 	#Add Universes
-	Globals.universes = manifest.universes
-	Globals.nodes.patch_bay.universes = Globals.universes
+	Globals.deserialize_universes(manifest.universes)
 	Globals.nodes.patch_bay.reload_universes()
 	
 func _on_load_file_dialog_file_selected(path):

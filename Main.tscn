@@ -1,10 +1,11 @@
-[gd_scene load_steps=34 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=35 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
 [ext_resource type="Script" path="res://Scripts/Console.gd" id="2_qq2ap"]
 [ext_resource type="Script" path="res://Scripts/Node_system.gd" id="2_qxkpt"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
+[ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
 [ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="5_cx6ah"]
 [ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
 [ext_resource type="Script" path="res://Scripts/Settings.gd" id="6_fan4u"]
@@ -99,16 +100,27 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 5
+current_tab = 6
+drag_to_rearrange_enabled = true
+use_hidden_tabs_for_min_size = true
+script = ExtResource("3_nk5d5")
 
 [node name="Node Editor" type="GraphEdit" parent="TabContainer"]
 visible = false
 custom_minimum_size = Vector2(147.79, 0)
 layout_mode = 2
 theme = SubResource("Theme_0vxhv")
+scroll_offset = Vector2(0, -45)
 right_disconnects = true
 show_arrange_button = false
 script = ExtResource("2_qxkpt")
+
+[node name="Label" type="Label" parent="TabContainer/Node Editor"]
+layout_mode = 0
+offset_top = 54.0
+offset_right = 591.0
+offset_bottom = 77.0
+text = "Caution, the node editor is an experimental feature, expect things to break."
 
 [node name="Add Node Popup" type="ItemList" parent="TabContainer/Node Editor"]
 visible = false
@@ -129,6 +141,7 @@ visible = false
 layout_mode = 2
 
 [node name="Console Editor" type="GraphEdit" parent="TabContainer/Console"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -155,6 +168,7 @@ script = ExtResource("5_cx6ah")
 metadata/_edit_use_anchors_ = true
 
 [node name="Widget Settings Menu" type="MarginContainer" parent="TabContainer/Console"]
+visible = false
 custom_minimum_size = Vector2(358.28, 0)
 layout_mode = 2
 size_flags_stretch_ratio = 0.0
@@ -231,6 +245,20 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Choose"
 
+[node name="Panel" type="Panel" parent="TabContainer/Console"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Console/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Console will be back in a future Spectrum update, as it undergoes significant changes."
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Functions" type="MarginContainer" parent="TabContainer"]
 visible = false
 layout_mode = 2
@@ -240,7 +268,22 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 script = ExtResource("7_5dnuk")
 
+[node name="Panel" type="Panel" parent="TabContainer/Functions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Functions/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Functions are a work in progress and will be available in a future version of Spectrum."
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Functions"]
+visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Functions/VBoxContainer"]
@@ -373,6 +416,7 @@ theme_override_constants/margin_bottom = 10
 script = ExtResource("11_523ge")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Fixtures"]
+visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Fixtures/VBoxContainer"]
@@ -446,6 +490,20 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="TabContainer/Fixtures"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Fixtures/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Fixtures are a work in progress and will be available in a future version of Spectrum."
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Patch Bay" type="MarginContainer" parent="TabContainer"]
 visible = false
@@ -564,6 +622,7 @@ layout_mode = 2
 
 [node name="IO Type" type="OptionButton" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
+disabled = true
 alignment = 1
 item_count = 2
 selected = 0
@@ -577,53 +636,6 @@ layout_mode = 2
 
 [node name="IO Controls" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
-
-[node name="Art-Net" type="VBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Ip Address"
-
-[node name="Art Net IP" type="LineEdit" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer"]
-custom_minimum_size = Vector2(145.25, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-text = "172.0.0.1"
-placeholder_text = "172.0.0.1"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Port"
-
-[node name="Art Net Port" type="SpinBox" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2"]
-custom_minimum_size = Vector2(145.25, 0)
-layout_mode = 2
-max_value = 65535.0
-value = 6454.0
-rounded = true
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Universe"
-
-[node name="Art Net Universe" type="SpinBox" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3"]
-custom_minimum_size = Vector2(145.25, 0)
-layout_mode = 2
-max_value = 9.22337e+18
-rounded = true
 
 [node name="PanelContainer3" type="PanelContainer" parent="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
@@ -652,6 +664,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Desk" type="MarginContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -680,12 +693,9 @@ layout_mode = 2
 text = "Universe  "
 
 [node name="Desk Universe Option" type="OptionButton" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 37)
 layout_mode = 2
-item_count = 1
 allow_reselect = true
-popup/item_0/text = " "
-popup/item_0/id = 0
 
 [node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -704,10 +714,10 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="3D" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="TabContainer/3D"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -718,10 +728,29 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="TabContainer/3D/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1035)
 render_target_update_mode = 0
 
 [node name="Node3D" parent="TabContainer/3D/SubViewportContainer/SubViewport" instance=ExtResource("14_44rt7")]
+
+[node name="Panel" type="Panel" parent="TabContainer/3D"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="TabContainer/3D/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "3D features are a work in progress and will be available in a future version of Spectrum."
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -909,6 +938,21 @@ script = ExtResource("25_w0caf")
 
 [node name="TabContainer" parent="Add Fixture" instance=ExtResource("25_owwqo")]
 
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -9.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Beta Version 0.3.0
+"
+
+[connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="child_exiting_tree" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="_on_child_exiting_tree"]
 [connection signal="connection_request" from="TabContainer/Node Editor" to="TabContainer/Node Editor" method="GraphEdit_connection_request"]
@@ -935,18 +979,12 @@ script = ExtResource("25_w0caf")
 [connection signal="pressed" from="TabContainer/Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Scene" to="TabContainer/Functions" method="_on_new_scene_pressed"]
 [connection signal="pressed" from="TabContainer/Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Effect" to="TabContainer/Functions" method="_on_new_effect_pressed"]
 [connection signal="pressed" from="TabContainer/Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Cue List" to="TabContainer/Functions" method="_on_new_cue_list_pressed"]
-[connection signal="pressed" from="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Virtual Fixture" to="TabContainer/Fixtures" method="_on_new_virtual_fixture_pressed"]
-[connection signal="pressed" from="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Physical Fixture" to="TabContainer/Fixtures" method="_on_new_physical_fixture_pressed"]
-[connection signal="pressed" from="TabContainer/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Fixture Group" to="TabContainer/Fixtures" method="_on_new_fixture_group_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Universe" to="TabContainer/Patch Bay" method="_on_new_universe_pressed"]
 [connection signal="text_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name" to="TabContainer/Patch Bay" method="_on_universe_name_text_changed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Input" to="TabContainer/Patch Bay" method="_on_new_input_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Output" to="TabContainer/Patch Bay" method="_on_new_output_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Channel Overide" to="TabContainer/Patch Bay" method="_on_new_channel_overide_pressed"]
 [connection signal="item_selected" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type" to="TabContainer/Patch Bay" method="_on_io_type_item_selected"]
-[connection signal="text_submitted" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer/Art Net IP" to="TabContainer/Patch Bay" method="_on_art_net_ip_text_submitted"]
-[connection signal="value_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer2/Art Net Port" to="TabContainer/Patch Bay" method="_on_art_net_port_value_changed"]
-[connection signal="value_changed" from="TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls/Art-Net/HBoxContainer3/Art Net Universe" to="TabContainer/Patch Bay" method="_on_art_net_universe_value_changed"]
 [connection signal="item_selected" from="TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option" to="TabContainer/Desk" method="_on_desk_universe_option_item_selected"]
 [connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]

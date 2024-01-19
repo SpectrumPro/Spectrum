@@ -5,9 +5,13 @@ var last_click_time := 0
 var double_click_threshold := 0.5  # Adjust this as needed
 
 func _ready():
+	#set_tab_button_icon(get_current_tab(), load("res://Assets/Icons/close.svg"))
 	pass
-
 func _on_tab_clicked(tab_index):
+	#if not get_current_tab() == get_previous_tab():
+		#set_tab_button_icon(get_current_tab(), load("res://Assets/Icons/close.svg"))
+		#set_tab_button_icon(get_previous_tab(), Texture2D.new())
+	pass
 	#var current_time = Time.get_ticks_msec() / 1000.0
 	#
 	#if current_time - last_click_time < double_click_threshold:
@@ -16,10 +20,10 @@ func _on_tab_clicked(tab_index):
 	#else:
 		## Single click, update last click time
 		#last_click_time = current_time
-	pass
+
+	
 func on_double_click(tab_index):
-	# Here, you can implement the logic to pop out the tab into a new window
-	# For simplicity, let's assume you have a function to create a new window
+
 	create_new_window(tab_index)
 
 func create_new_window(tab_index):
@@ -31,7 +35,7 @@ func create_new_window(tab_index):
 	
 	# Create a new window scene and instance it
 	var new_window_instance = Window.new()
-	print(Globals.tab_bar_popups.console)
+
 	# Add the tab's content to the new window
 	var duplicated_content = tab_content.duplicate()
 	duplicated_content.visible = true
@@ -40,5 +44,9 @@ func create_new_window(tab_index):
 	new_window_instance.add_child(duplicated_content)
 	get_tree().get_root().add_child(new_window_instance)
 	# Add the new window to the scene or show it as needed
-	new_window_instance.show()
+	new_window_instance.visible = true
 
+
+func _on_tab_button_pressed(tab):
+	if tab == get_current_tab():
+		set_tab_hidden(tab, true)
