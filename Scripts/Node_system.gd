@@ -3,7 +3,7 @@ extends GraphEdit
 var initial_position = Vector2(40,40)
 var node_index = 0
 #@onready var connection_option_button = get_parent().get_node("Console/MarginContainer/VBoxContainer/connection/OptionButton")
-@onready var console_editor = get_parent().get_node("Console/Console Editor")
+#@onready var console_editor = get_parent().get_node("Console/Console Editor")
 var built_in_nodes = {
 
 }

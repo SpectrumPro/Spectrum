@@ -104,7 +104,6 @@ func load_save(file_path):
 	if manifest_file == null:
 		Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_FILE,"from":file_path}])
 		return
-		
 	var manifest = JSON.parse_string(manifest_file.get_as_text())
 	if manifest == null:
 		Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":file_path}])
