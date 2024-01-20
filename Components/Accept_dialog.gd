@@ -6,5 +6,5 @@ func _on_canceled():
 func _on_confirmed():
 	queue_free()
 
-func _on_custom_action(action):
+func _on_custom_action(_action):
 	queue_free()

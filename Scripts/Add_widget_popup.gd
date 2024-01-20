@@ -13,9 +13,9 @@ func _on_console_editor_gui_input(event):
 			if !Rect2(Vector2(0,0),self.size).has_point(evLocal.position):
 				self.visible = false
 
-func add_widget_button_clicked(position):
+func add_widget_button_clicked(spwan_position):
 	self.visible = true
-	self.position = position
+	self.position = spwan_position
 	self.move_to_front()
 
 func _on_item_clicked(_index, _at_position, _mouse_button_index):

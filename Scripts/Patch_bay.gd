@@ -64,8 +64,6 @@ func edit_request(node):
 			
 			Globals.nodes.universe_io_type.disabled = false
 			
-			
-			set_io_controls_enabled(true, universes[current_universe_uuid].get_output(current_io_uuid).get_type())
 			reload_io()
 
 func on_edit_mode_changed(edit_mode):
@@ -159,7 +157,10 @@ func reload_io():
 				value_node_to_add.get(value.signal).connect(output.get(value.function))
 				
 				for config in value.configs:
-					value_node_to_add.set(config, value.configs[config])
+					if value.configs[config] is Callable:
+						value_node_to_add.set(config, value.configs[config].call())
+					else:
+						value_node_to_add.set(config, value.configs[config])
 				
 				var container = HBoxContainer.new()
 				var lable = Label.new()
@@ -190,25 +191,15 @@ func set_universe_controls_enabled(enabled):
 	if not enabled:
 		Globals.nodes.universe_name.text = ""
 
-func set_io_controls_enabled(enabled, type):
-	#if enabled and type != "Empty":
-		#Globals.nodes.universe_io_controls.get_node(type).visible = true
-	#else:
-		#for node in Globals.nodes.universe_io_controls.get_children():
-			#node.visible = false
-	pass
-
 # Button Callbacks
 
 func _on_io_type_item_selected(index):
 	if current_io_uuid:
 		if current_io_type == "input":
 			universes[current_universe_uuid].inputs[current_io_uuid].type = input_options[index]
-			set_io_controls_enabled(true, input_options[index])
 			
 		elif current_io_type == "output":
 			current_io = universes[current_universe_uuid].change_output_type(current_io_uuid, output_options[index])
-			set_io_controls_enabled(true, output_options[index])
 		reload_io()
 
 func _on_art_net_ip_text_submitted(new_text):

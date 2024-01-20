@@ -9,5 +9,5 @@ func _get_name():
 func get_type():
 	return "Empty"
 	
-func send_packet(packet):
+func send_packet(_packet):
 	return false

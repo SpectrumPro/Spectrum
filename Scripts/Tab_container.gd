@@ -36,11 +36,11 @@ func create_new_window(tab_index):
 	node_to_replace.replace_by(new_window_node)
 	node_to_replace.queue_free()
 
-func window_close_request(name):
-	var node_to_replace = get_node(name)
+func window_close_request(node_name):
+	var node_to_replace = get_node(node_name)
 	var new_control_node = Control.new()
 	
-	new_control_node.name = name
+	new_control_node.name = node_name
 	
 	node_to_replace.replace_by(new_control_node)
 	node_to_replace.queue_free()

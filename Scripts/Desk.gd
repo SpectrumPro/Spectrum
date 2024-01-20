@@ -22,7 +22,7 @@ func reload_universes():
 		Globals.nodes.desk_universe_option.add_item(Globals.universes[universe]._get_name())
 	if len(Globals.universes) == 0:
 		current_universe = null
-	Globals.nodes.desk_universe_option.select(0)
+	Globals.nodes.desk_universe_option.item_selected.emit(0)
 	
 func slider_changed(value, channel):
 	if current_universe:

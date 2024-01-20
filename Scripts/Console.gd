@@ -17,9 +17,6 @@ var outbound_queue = {}
 var center_button
 # Called when the widget enters the scene tree for the first time.
 func _ready():
-	
-	print("Console _ready()")
-	
 	_add_menu_hbox_button("Add Widgets", Globals.nodes.add_widget_popup.add_widget_button_clicked.bind(Vector2(220,100)))
 	_add_menu_hbox_button("Delete Widgets", self.request_delete)
 	_add_menu_hbox_button(Globals.icons.menue, self.show_settings_menu)
@@ -29,6 +26,9 @@ func _ready():
 	
 	Globals.subscribe("edit_mode", edit_mode_toggled)
 	
+	load_widgets_from_file()
+	
+func load_widgets_from_file():
 	var access = DirAccess.open(widget_path)
 	for widget_folder in access.get_directories():
 		var manifest_file_path = widget_path + widget_folder + "/manifest.json"
@@ -206,5 +206,5 @@ func edit_mode_toggled(edit_mode):
 		for widget in selected_widgets:
 			widget.material = Globals.shaders.invert
 		
-func _on_popup_request(position):
-	Globals.nodes.add_widget_popup.add_widget_button_clicked(position)
+func _on_popup_request(at_position):
+	Globals.nodes.add_widget_popup.add_widget_button_clicked(at_position)

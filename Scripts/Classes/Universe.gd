@@ -22,8 +22,8 @@ var universe = {
 	}
 }
 
-func _set_name(name):
-	universe.name = name
+func _set_name(new_name):
+	universe.name = new_name
 
 func _get_name():
 	return universe.name
@@ -90,8 +90,6 @@ func serialize():
 func from(serialized_universe):
 	universe.name = serialized_universe.name
 	universe.uuid = serialized_universe.uuid
-	
-	var new_inputs = {}
 	
 	for output_uuid in serialized_universe.outputs:
 		var input = serialized_universe.outputs[output_uuid]

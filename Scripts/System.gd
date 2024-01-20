@@ -84,15 +84,11 @@ func _on_save_file_dialog_file_selected(path):
 
 	save_json_to_file(path, save_file, file_name)
 	
-func save_json_to_file(save_folder_path, save_file, file_name):
+func save_json_to_file(folder_path, save_data, _file_name):
 	
-	var dir_access = DirAccess.open(home_directory)
+	var file_access = FileAccess.open(folder_path, FileAccess.WRITE)
 	
-	var save_file_path = save_folder_path
-	
-	var file_access = FileAccess.open(save_folder_path, FileAccess.WRITE)
-	
-	file_access.store_string(JSON.stringify(save_file, "\t"))
+	file_access.store_string(JSON.stringify(save_data, "\t"))
 	file_access.close()
 
 func _on_load_pressed():
@@ -112,7 +108,6 @@ func load_save(file_path):
 	# Add Nodes
 	for node_to_add in manifest.nodes.values():
 		var node_manifest_file = FileAccess.open(node_to_add.node_file_path + "manifest.json", FileAccess.READ)
-		var node_manifest = JSON.parse_string(node_manifest_file.get_as_text())
 		if manifest == null:
 			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":node_manifest_file}])
 			return
@@ -123,7 +118,6 @@ func load_save(file_path):
 	# Add Widgets
 	for widget_to_add in manifest.widgets.values():
 		var widget_manifest_file = FileAccess.open(widget_to_add.widget_file_path + "manifest.json", FileAccess.READ)
-		var widget_manifest = JSON.parse_string(widget_manifest_file.get_as_text())
 		if manifest == null:
 			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":widget_manifest_file}])
 			return

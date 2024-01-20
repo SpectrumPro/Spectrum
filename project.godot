@@ -31,6 +31,17 @@ driver/enable_input=true
 
 Globals="*res://Scripts/Global.gd"
 
+[debug]
+
+gdscript/warnings/shadowed_variable=0
+gdscript/warnings/shadowed_variable_base_class=0
+gdscript/warnings/shadowed_global_identifier=0
+gdscript/warnings/standalone_expression=0
+gdscript/warnings/static_called_on_instance=0
+gdscript/warnings/integer_division=0
+gdscript/warnings/narrowing_conversion=0
+gdscript/warnings/confusable_local_declaration=0
+
 [display]
 
 window/size/viewport_width=1920

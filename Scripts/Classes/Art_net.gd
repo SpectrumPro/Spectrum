@@ -9,9 +9,9 @@ var exposed_values = [
 		"type":LineEdit,
 		"signal":"text_submitted",
 		"function":"set_ip_addr",
-		"get_function":"get_ip_addr",
 		"configs":{
-			"placeholder_text":"172.0.0.1"
+			"placeholder_text":"172.0.0.1",
+			"text":self.get_ip_addr
 		}
 	},
 	{
@@ -19,9 +19,9 @@ var exposed_values = [
 		"type":SpinBox,
 		"signal":"value_changed",
 		"function":"set_port",
-		"get_function":"get_port",
 		"configs": {
-			"max_value":65535
+			"max_value":65535,
+			"value":self.get_port
 		}
 	}, 
 	{
@@ -29,10 +29,10 @@ var exposed_values = [
 		"type":SpinBox,
 		"signal":"value_changed",
 		"function":"set_universe",
-		"get_function":"get_universe",
 		"configs":{
 			"max_value":9223370000000000000,
 			"rounded":"true",
+			"value":self.get_universe
 		}
 	}
 ]
@@ -52,8 +52,8 @@ func connect_to_host():
 func _get_name():
 	return config.name
 
-func _set_name(name):
-	config.name = name
+func _set_name(new_name):
+	config.name = new_name
 
 func get_type():
 	return config.type

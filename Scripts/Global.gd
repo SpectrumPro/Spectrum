@@ -162,10 +162,10 @@ var fixtures = {}
 	},
 }
 
-func _process(delta):
-	if Input.is_action_just_pressed("process_loop"):
-		for universe in universes.values():
-			print(universe.serialize())
+#func _process(_delta):
+	#if Input.is_action_just_pressed("process_loop"):
+		#for universe in universes.values():
+			#print(universe.serialize())
 
 func show_popup(content = []):
 	for i in content:
@@ -204,9 +204,9 @@ func _ready():
 	pass
 
 func new_universe():
-	var new_universe = Universe.new()
-	universes[new_universe.get_uuid()] = new_universe
-	return new_universe
+	var universe_to_add = Universe.new()
+	universes[universe_to_add.get_uuid()] = universe_to_add
+	return universe_to_add
 
 func delete_universe(universe):
 	if typeof(universe) == 4: # String
