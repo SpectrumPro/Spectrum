@@ -32,33 +32,33 @@ var fixtures = {}
 	# General Nodes
 	"popup_window":get_tree().root.get_node("Main/Popups"),
 	"save_file_dialog":get_tree().root.get_node("Main/Save File Dialog"),
-	"add_node_popup":get_tree().root.get_node("Main/TabContainer/Node Editor/Add Node Popup"),
-	"add_widget_popup":get_tree().root.get_node("Main/TabContainer/Console/Console Editor/Add Widget Popup"),
-	"widget_settings_menu":get_tree().root.get_node("Main/TabContainer/Console/Widget Settings Menu"),
+	"add_node_popup":get_tree().root.get_node("Main/TabContainer/Node Editor/Node Editor/Add Node Popup"),
+	"add_widget_popup":get_tree().root.get_node("Main/TabContainer/Console/Console/Console Editor/Add Widget Popup"),
+	"widget_settings_menu":get_tree().root.get_node("Main/TabContainer/Console/Console/Widget Settings Menu"),
 	"edit_mode_toggle":get_tree().root.get_node("Main/Menu Buttons/Edit Mode"),
 	
 	# Functions Tab
-	"functions":get_tree().root.get_node("Main/TabContainer/Functions"),
-	"scenes_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes/ScrollContainer/VBoxContainer/Scenes"),
-	"effects_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects/ScrollContainer/VBoxContainer/Effects"),
-	"cues_list":get_tree().root.get_node("Main/TabContainer/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer/VBoxContainer/Cues"),
+	"functions":get_tree().root.get_node("Main/TabContainer/Functions/Functions"),
+	"scenes_list":get_tree().root.get_node("Main/TabContainer/Functions/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes/ScrollContainer/VBoxContainer/Scenes"),
+	"effects_list":get_tree().root.get_node("Main/TabContainer/Functions/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects/ScrollContainer/VBoxContainer/Effects"),
+	"cues_list":get_tree().root.get_node("Main/TabContainer/Functions/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer/VBoxContainer/Cues"),
 	
 	# Patch Bay Tab
-	"patch_bay":get_tree().root.get_node("Main/TabContainer/Patch Bay"),
-	"universe_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes"),
-	"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
-	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs"),
-	"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
-	"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
-	"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
-	"universe_io_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"),
-	"universe_io_type":get_tree().root.get_node("Main/TabContainer/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type"),
+	"patch_bay":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/"),
+	"universe_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes"),
+	"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
+	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs"),
+	"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
+	"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
+	"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
+	"universe_io_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"),
+	"universe_io_type":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type"),
 	
 	# Fixtures Tab
-	"fixtures":get_tree().root.get_node("Main/TabContainer/Fixtures"),
-	"virtual_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer/Virtual Fixtures"),
-	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer/Physical Fixtures"),
-	"fixture_groups_list":get_tree().root.get_node("Main/TabContainer/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups"),
+	"fixtures":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/"),
+	"virtual_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer/Virtual Fixtures"),
+	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer/Physical Fixtures"),
+	"fixture_groups_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups"),
 	
 	# Add Fixture Menue
 	"add_fixture_menu":get_tree().root.get_node("Main/Add Fixture"),
@@ -69,9 +69,9 @@ var fixtures = {}
 	"add_fixture_button":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button"),
 	
 	# Desk
-	"desk":get_tree().root.get_node("Main/TabContainer/Desk"),
-	"desk_channel_container":get_tree().root.get_node("Main/TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer/Channel Container"),
-	"desk_universe_option":get_tree().root.get_node("Main/TabContainer/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option"),
+	"desk":get_tree().root.get_node("Main/TabContainer/Desk/Desk"),
+	"desk_channel_container":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer/Channel Container"),
+	"desk_universe_option":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option"),
 }
 
 @onready var icons = {

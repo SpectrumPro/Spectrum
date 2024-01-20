@@ -9,6 +9,7 @@ var exposed_values = [
 		"type":LineEdit,
 		"signal":"text_submitted",
 		"function":"set_ip_addr",
+		"get_function":"get_ip_addr",
 		"configs":{
 			"placeholder_text":"172.0.0.1"
 		}
@@ -18,6 +19,7 @@ var exposed_values = [
 		"type":SpinBox,
 		"signal":"value_changed",
 		"function":"set_port",
+		"get_function":"get_port",
 		"configs": {
 			"max_value":65535
 		}
@@ -27,6 +29,7 @@ var exposed_values = [
 		"type":SpinBox,
 		"signal":"value_changed",
 		"function":"set_universe",
+		"get_function":"get_universe",
 		"configs":{
 			"max_value":9223370000000000000,
 			"rounded":"true",
@@ -67,6 +70,14 @@ func set_universe(new_universe):
 	config.universe = new_universe
 	connect_to_host()
 	
+func get_ip_addr():
+	return config.ip
+
+func get_port():
+	return config.port
+
+func get_universe():
+	return config.universe
 func serialize():
 	return config
 
