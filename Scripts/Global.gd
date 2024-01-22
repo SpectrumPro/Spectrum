@@ -72,6 +72,7 @@ var fixtures = {}
 	"desk":get_tree().root.get_node("Main/TabContainer/Desk/Desk"),
 	"desk_channel_container":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer/Channel Container"),
 	"desk_universe_option":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option"),
+	"command_input":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Command Input")
 }
 
 @onready var icons = {

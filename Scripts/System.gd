@@ -136,3 +136,7 @@ func _on_edit_mode_toggled(toggled_on):
 		Globals.nodes.edit_mode_toggle.text = "Play Mode"
 	else:
 		Globals.nodes.edit_mode_toggle.text = "Edit Mode"
+
+
+func on_keypad_button_pressed(extra_arg_0):
+	pass # Replace with function body.
