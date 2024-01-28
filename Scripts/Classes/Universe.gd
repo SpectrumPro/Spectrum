@@ -66,9 +66,10 @@ func remove_fixture(fixture):
 	fixture.delete()
 	
 	var active_fixtures = Globals.get_value("active_fixtures")
-	if fixture in active_fixtures:
-		active_fixtures.erase(fixture)
-		Globals.set_value("active_fixtures", active_fixtures)
+	if active_fixtures:
+		if fixture in active_fixtures:
+			active_fixtures.erase(fixture)
+			Globals.set_value("active_fixtures", active_fixtures)
 	
 func get_fixtures():
 	return universe.fixtures
@@ -80,10 +81,9 @@ func set_fixture_data(data):
 	universe.fixture_data.merge(data, true)
 	_compile_and_send()
 
-func remove_output(uuid):
-	if uuid in universe.outputs.keys():
-		universe.outputs[uuid].free()
-		universe.outputs.erase(uuid)
+func remove_output(output):
+	universe.outputs.erase(output.get_uuid())
+	output.delete()
 
 func change_output_type(uuid, type):
 	if not type: type == "Empty"
@@ -93,6 +93,7 @@ func change_output_type(uuid, type):
 		"Art-Net":
 			universe.outputs[uuid] = Art_Net.new()
 			universe.outputs[uuid].connect_to_host()
+	universe.outputs[uuid].set_uuid(uuid)
 	return universe.outputs[uuid]
 
 func set_desk_data(dmx_data):
@@ -157,3 +158,11 @@ func from(serialized_universe):
 				universe.outputs[output_uuid] = Art_Net.new()
 				universe.outputs[output_uuid].from(input)
 				universe.outputs[output_uuid].connect_to_host()
+
+func delete():
+	for fixture in universe.fixtures.values():
+		remove_fixture(fixture)
+	
+	for output in universe.outputs.values():
+		remove_output(output)
+		

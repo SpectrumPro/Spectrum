@@ -26,10 +26,10 @@ func delete_request(node):
 		"universe":
 			confirmation_dialog.confirmed.connect((
 			func(node):
-				Globals.delete_universe(node.get_meta("universe_uuid"))
+				Globals.delete_universe(universes[node.get_meta("universe_uuid")])
 				
 				current_universe_uuid = ""
-				reload_universes()
+				Globals.call_subscription("reload_universes")
 				reload_io()
 				
 				set_universe_controls_enabled(false)
@@ -54,7 +54,7 @@ func edit_request(node):
 	match node.get_meta("type"):
 		"universe":
 			current_universe_uuid = node.get_meta("universe_uuid")
-			Globals.nodes.universe_name.text = universes[current_universe_uuid].get_name()
+			Globals.nodes.universe_name.text = universes[current_universe_uuid].get_universe_name()
 			
 			set_universe_controls_enabled(true)
 			reload_io()
@@ -75,13 +75,8 @@ func on_edit_mode_changed(edit_mode):
 		function_item.dissable_buttons(not edit_mode)
 
 func new_universe():
-	Globals.new_universe().set_name("Universe " + str(len(universes.keys())+1))
-	#universes[Globals.new_uuid()] = {
-		#"name":"Universe " + str(len(universes.keys())+1),
-		#"fixtures:":{},
-		#"inputs":{},
-		#"outputs":{},
-	#}
+	Globals.new_universe().set_universe_name("Universe " + str(len(universes.keys())+1))
+
 	Globals.call_subscription("reload_universes")
 
 func reload_universes():
@@ -139,7 +134,7 @@ func reload_io():
 	for uuid in universes[current_universe_uuid].get_all_outputs().keys():
 		var output = universes[current_universe_uuid].get_output(uuid)
 		var node_to_add = Globals.components.list_item.instantiate()
-		node_to_add.set_item_name(output._get_name())
+		node_to_add.set_item_name(output.get_io_name())
 		node_to_add.control_node = self
 		node_to_add.set_meta("output_uuid", uuid)
 		node_to_add.set_meta("type", "output")

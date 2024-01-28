@@ -231,14 +231,13 @@ func new_universe():
 	universes[universe_to_add.get_uuid()] = universe_to_add
 	return universe_to_add
 
-func delete_universe(universe):
-	if typeof(universe) == 4: # String
-		universes[universe].queue_free()
-		universes.erase(universe)
-	elif typeof(universe) == 27: 
-		universes[universe.get_uuid()].queue_free()
-		universes.erase(universe.get_uuid())
-	print(universes.keys())
+func delete_universe(universe): 
+	universe.delete()
+	universe.queue_free()
+	universes.erase(universe.get_uuid())
+	
+	call_subscription("reload_universes")
+	call_subscription("reload_fixtures")
 
 func serialize_universes():
 	var serialized_universes = {}

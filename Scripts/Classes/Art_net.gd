@@ -42,17 +42,18 @@ var config = {
 	"port":6454,
 	"universe":0,
 	"name":"Art-Net Output", 
-	"type":"Art-Net"
+	"type":"Art-Net",
+	"uuid":""
 }
 
 func connect_to_host():
 	_udp_peer.close()
 	print(_udp_peer.connect_to_host(config.ip, config.port))
 
-func _get_name():
+func get_io_name():
 	return config.name
 
-func _set_name(new_name):
+func set_io_name(new_name):
 	config.name = new_name
 
 func get_type():
@@ -79,6 +80,12 @@ func get_port():
 func get_universe():
 	return config.universe
 	
+func get_uuid():
+	return config.uuid
+	
+func set_uuid(new_uuid):
+	config.uuid = new_uuid
+	
 func serialize():
 	return config
 
@@ -87,6 +94,10 @@ func from(serialized_data):
 
 func _disconnect():
 	_udp_peer.close()
+
+func delete():
+	_disconnect()
+	self.queue_free()
 
 func send_packet(dmx_data):
 	# Construct Art-Net packet
