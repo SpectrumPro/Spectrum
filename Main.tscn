@@ -1,4 +1,4 @@
-[gd_scene load_steps=77 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=78 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://dvb0tqyrkaajq" path="res://Assets/Icons/Terminal.svg" id="17_656rg"]
 [ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="17_jo4vo"]
 [ext_resource type="Script" path="res://Scripts/Desk.gd" id="20_0lfsq"]
+[ext_resource type="Script" path="res://Scripts/2D.gd" id="23_pdwae"]
 [ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Add_fixture.tscn" id="25_owwqo"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -268,7 +269,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 4
+current_tab = 7
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
@@ -685,6 +686,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Desk" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Desk" type="MarginContainer" parent="TabContainer/Desk"]
@@ -1175,6 +1177,23 @@ grow_vertical = 2
 text = "3D features are a work in progress and will be available in a future version of Spectrum."
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Virtual Fixtures" type="Control" parent="TabContainer"]
+layout_mode = 2
+
+[node name="Virtual Fixtures" type="GraphEdit" parent="TabContainer/Virtual Fixtures"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
+theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+scroll_offset = Vector2(0, -45)
+show_minimap_button = false
+show_arrange_button = false
+script = ExtResource("23_pdwae")
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1

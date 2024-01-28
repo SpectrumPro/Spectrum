@@ -20,7 +20,7 @@ var command_tree = {
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	load_dmx_faders()
-	Globals.subscribe("reload_universes_callback", self.reload_universes)
+	Globals.subscribe("reload_universes", self.reload_universes)
 	Globals.subscribe("active_fixtures", self.active_fixtures_changed)
 
 func load_dmx_faders():
@@ -35,7 +35,7 @@ func load_dmx_faders():
 func reload_universes():
 	Globals.nodes.desk_universe_option.clear()
 	for universe in Globals.universes:
-		Globals.nodes.desk_universe_option.add_item(Globals.universes[universe]._get_name())
+		Globals.nodes.desk_universe_option.add_item(Globals.universes[universe].get_universe_name())
 	if len(Globals.universes) == 0:
 		current_universe = null
 	Globals.nodes.desk_universe_option.item_selected.emit(0)

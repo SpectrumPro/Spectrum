@@ -26,11 +26,11 @@ func on_edit_mode_changed(edit_mode):
 		function_item.dissable_buttons(not edit_mode)
 
 func reload_fixtures():
-	print("reloading")
 	for node in Globals.nodes.physical_fixture_list.get_children():
 		node.queue_free()
 	
-	
+	await get_tree().process_frame 
+	#print(Globals.universes.values())
 	for universe in Globals.universes.values():
 		print(universe.get_fixtures())
 		for fixture in universe.get_fixtures().values():
@@ -41,11 +41,11 @@ func reload_fixtures():
 			node_to_add.control_node = self
 			node_to_add.set_item_name(fixture.config.fixture_name)
 			node_to_add.name = fixture.config.uuid
+			print(node_to_add.name)
 			node_to_add.set_meta("fixture", fixture)
 			Globals.nodes.physical_fixture_list.add_child(node_to_add)
 
 func set_active_fixtures(fixtures):
-	print(get_children())
 	for fixture in active_fixtures:
 		Globals.nodes.physical_fixture_list.get_node(fixture.config.uuid).set_highlighted(false)
 	active_fixtures = fixtures

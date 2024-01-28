@@ -22,8 +22,34 @@ func save():
 	save_file.universes = Globals.serialize_universes()
 	Globals.nodes.save_file_dialog.popup()
 
+func save_nodes():
+	for node_to_save in Globals.nodes.node_editor.get_children():
+		var node_file_path = node_to_save.get_meta("node_file_path")
+		if not node_file_path: continue
+		var manifest_file = FileAccess.open(node_file_path+"manifest.json", FileAccess.READ)
+		if not manifest_file:
+			Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":node_file_path}])
+			return
+		var manifest = JSON.parse_string(manifest_file.get_as_text())
+		save_file.nodes[node_to_save.name] = {
+			"node_file_path":node_file_path,
+			"uuid":manifest.uuid,
+			"name":node_to_save.name,
+			"position_offset":[node_to_save.position_offset.x,node_to_save.position_offset.y],
+			"values":{
+				
+			}
+		}
+		for key in manifest.values.keys():
+
+			if not node_to_save.get_node(manifest.values[key].node):
+				Globals.show_popup([{"type":Globals.error.NODE_SAVE_MANIFEST_ERROR,"from":node_file_path}])
+				return
+			save_file.nodes[node_to_save.name].values[key] = node_to_save.get_node(manifest.values[key].node).get(manifest.values[key].content)
+	save_file.node_connections = Globals.nodes.node_editor.connected_nodes
+
 func save_widgets():
-	for widget_to_save in get_node("TabContainer/Console/Console Editor").get_children():
+	for widget_to_save in Globals.nodes.console_editor.get_children():
 		var widget_file_path = widget_to_save.get_meta("widget_file_path")
 		if not widget_file_path: continue
 		var manifest_file = FileAccess.open(widget_file_path+"manifest.json", FileAccess.READ)
@@ -47,34 +73,8 @@ func save_widgets():
 				Globals.show_popup([{"type":Globals.error.NODE_SAVE_MANIFEST_ERROR,"from":widget_file_path}])
 				return
 			save_file.widgets[widget_to_save.name].values[key] = widget_to_save.get_node(manifest.values[key].node).get(manifest.values[key].content)
-	save_file.node_connections = get_node("TabContainer/Node Editor").connected_nodes
+	save_file.node_connections = Globals.nodes.node_editor.connected_nodes
 
-func save_nodes():
-	for node_to_save in get_node("TabContainer/Node Editor").get_children():
-		var node_file_path = node_to_save.get_meta("node_file_path")
-		if not node_file_path: continue
-		var manifest_file = FileAccess.open(node_file_path+"manifest.json", FileAccess.READ)
-		if not manifest_file:
-			Globals.show_popup([{"type":Globals.error.UNABLE_TO_LOAD_MANIFEST,"from":node_file_path}])
-			return
-		var manifest = JSON.parse_string(manifest_file.get_as_text())
-		save_file.nodes[node_to_save.name] = {
-			"node_file_path":node_file_path,
-			"uuid":manifest.uuid,
-			"name":node_to_save.name,
-			"position_offset":[node_to_save.position_offset.x,node_to_save.position_offset.y],
-			"values":{
-				
-			}
-		}
-		for key in manifest.values.keys():
-
-			if not node_to_save.get_node(manifest.values[key].node):
-				Globals.show_popup([{"type":Globals.error.NODE_SAVE_MANIFEST_ERROR,"from":node_file_path}])
-				return
-			save_file.nodes[node_to_save.name].values[key] = node_to_save.get_node(manifest.values[key].node).get(manifest.values[key].content)
-	save_file.node_connections = get_node("TabContainer/Node Editor").connected_nodes
-	
 func _on_save_file_dialog_file_selected(path):
 	var input_file_name = Globals.nodes.save_file_dialog.current_file
 
@@ -111,9 +111,9 @@ func load_save(file_path):
 		if manifest == null:
 			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":node_manifest_file}])
 			return
-		get_node("TabContainer/Node Editor")._add_node(node_to_add.node_file_path, {"position_offset":node_to_add.position_offset, "values":node_to_add.values})
+		Globals.nodes.node_editor._add_node(node_to_add.node_file_path, {"position_offset":node_to_add.position_offset, "values":node_to_add.values})
 	# Add node connections
-	get_node("TabContainer/Node Editor").generate_connected_nodes(manifest.node_connections)
+	Globals.nodes.node_editor.generate_connected_nodes(manifest.node_connections)
 	
 	# Add Widgets
 	for widget_to_add in manifest.widgets.values():
@@ -121,11 +121,11 @@ func load_save(file_path):
 		if manifest == null:
 			Globals.show_popup([{"type":Globals.error.MISSING_NODES,"from":widget_manifest_file}])
 			return
-		get_node("TabContainer/Console/Console Editor")._add_widget(widget_to_add.widget_file_path, {"position_offset":widget_to_add.get("position_offset"), "values":widget_to_add.get("values"), "size":widget_to_add.get("size")})
+		Globals.nodes.console_editor._add_widget(widget_to_add.widget_file_path, {"position_offset":widget_to_add.get("position_offset"), "values":widget_to_add.get("values"), "size":widget_to_add.get("size")})
 	
 	#Add Universes
 	Globals.deserialize_universes(manifest.universes)
-	Globals.nodes.patch_bay.reload_universes()
+	Globals.call_subscription("reload_universes")
 	
 func _on_load_file_dialog_file_selected(path):
 	load_save(path)

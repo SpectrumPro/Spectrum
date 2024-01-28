@@ -17,6 +17,7 @@ var universes = Globals.universes
 
 func _ready():
 	Globals.subscribe("edit_mode", self.on_edit_mode_changed)
+	Globals.subscribe("reload_universes", self.reload_universes)
 
 func delete_request(node):
 	var confirmation_dialog = Globals.components.accept_dialog.instantiate()
@@ -81,7 +82,7 @@ func new_universe():
 		#"inputs":{},
 		#"outputs":{},
 	#}
-	reload_universes()
+	Globals.call_subscription("reload_universes")
 
 func reload_universes():
 	for node in Globals.nodes.universe_list.get_children():
@@ -89,7 +90,7 @@ func reload_universes():
 	for uuid in universes:
 		var universe = universes[uuid]
 		var node_to_add = Globals.components.list_item.instantiate()
-		node_to_add.set_item_name(universe._get_name())
+		node_to_add.set_item_name(universe.get_universe_name())
 		node_to_add.control_node = self
 		node_to_add.set_meta("universe_uuid", uuid)
 		node_to_add.set_meta("type", "universe")
@@ -101,7 +102,6 @@ func reload_universes():
 		
 		Globals.nodes.universe_list.add_child(node_to_add)
 	
-	Globals.call_subscription("reload_universes_callback")
 func new_channel_override():
 	var node_to_add = Globals.components.list_item.instantiate()
 	node_to_add.set_item_name("Channel Override")
@@ -226,5 +226,5 @@ func _on_new_output_pressed():
 	new_output()
 
 func _on_universe_name_text_changed(new_text):
-	universes[current_universe_uuid]._set_name(new_text)
+	universes[current_universe_uuid].set_universe_name(new_text)
 	reload_universes()

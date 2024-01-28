@@ -44,7 +44,7 @@ func _ready():
 	Globals.nodes.fixture_tree.item_selected.connect(self._item_selected)
 	Globals.nodes.fixture_modes_option.item_selected.connect(self._mode_item_selected)
 	
-	Globals.subscribe("reload_universes_callback", self.reload_universes)
+	Globals.subscribe("reload_universes", self.reload_universes)
 
 func reload_menue():
 	if not current_fixture:return
@@ -79,8 +79,7 @@ func _mode_item_selected(index):
 func reload_universes():
 	Globals.nodes.fixture_universe_option.clear()
 	for universe in Globals.universes.values():
-		Globals.nodes.fixture_universe_option.add_item(universe.get_name())
-
+		Globals.nodes.fixture_universe_option.add_item(universe.get_universe_name())
 func _on_add_fixture_button_pressed():
 	if Globals.nodes.fixture_universe_option.selected < 0: return
 	Globals.universes.values()[Globals.nodes.fixture_universe_option.selected].new_fixture(current_fixture, options)

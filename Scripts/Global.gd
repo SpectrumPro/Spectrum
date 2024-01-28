@@ -26,7 +26,8 @@ var active_fixtures = {}
 	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
 	"list_item":ResourceLoader.load("res://Components/List_item.tscn"),
 	"accept_dialog":ResourceLoader.load("res://Components/Accept_dialog.tscn"),
-	"channel_slider":ResourceLoader.load("res://Components/Channel_slider.tscn")
+	"channel_slider":ResourceLoader.load("res://Components/Channel_slider.tscn"),
+	"virtual_fixture":ResourceLoader.load("res://Components/Virtual_fixture.tscn")
 }
 
 @onready var nodes = {
@@ -37,6 +38,13 @@ var active_fixtures = {}
 	"add_widget_popup":get_tree().root.get_node("Main/TabContainer/Console/Console/Console Editor/Add Widget Popup"),
 	"widget_settings_menu":get_tree().root.get_node("Main/TabContainer/Console/Console/Widget Settings Menu"),
 	"edit_mode_toggle":get_tree().root.get_node("Main/Menu Buttons/Edit Mode"),
+	
+	#Node Editor
+	"node_editor":get_tree().root.get_node("Main/TabContainer/Node Editor/Node Editor"),
+	
+	#Console
+	"console_editor":get_tree().root.get_node("Main/TabContainer/Console/Console/Console Editor"),
+	
 	
 	# Functions Tab
 	"functions":get_tree().root.get_node("Main/TabContainer/Functions/Functions"),
@@ -60,8 +68,7 @@ var active_fixtures = {}
 	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer3/ScrollContainer/Physical Fixtures"),
 	"fixture_groups_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups"),
 	
-	# Add Fixture Menue
-	
+	# Add Fixture Menu
 	"add_fixture_window":get_tree().root.get_node("Main/Add Fixture"),
 	"add_fixture_menu":get_tree().root.get_node("Main/Add Fixture/Add Fixture/"),
 	"fixture_tree":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/Fixture Tree"),
@@ -74,7 +81,10 @@ var active_fixtures = {}
 	"desk":get_tree().root.get_node("Main/TabContainer/Desk/Desk"),
 	"desk_channel_container":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer/Channel Container"),
 	"desk_universe_option":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option"),
-	"command_input":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Command Input")
+	"command_input":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Command Input"),
+	
+	#Virtual Fixtures
+	"virtual_fixtures":get_tree().root.get_node("Main/TabContainer/Virtual Fixtures/Virtual Fixtures"),
 }
 
 @onready var icons = {
@@ -193,6 +203,9 @@ func set_value(value_name, value):
 		for node_to_update in subscriptions[value_name]:
 			if node_to_update.is_valid():
 				node_to_update.call(value)
+
+func get_value(value_name):
+	return values.get(value_name, null)
 
 func call_subscription(value_name):
 	if subscriptions.get(value_name):

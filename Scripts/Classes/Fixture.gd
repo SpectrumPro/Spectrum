@@ -9,20 +9,31 @@ var config = {
 	"fixture_name":"",
 	"display_name":"",
 	"file_path":"",
-	"uuid":""
+	"uuid":"",
+	"mode":""
 }
 
 var channels = {}
 var channel_ranges = {}
-
-var channel_configuration = {}
-
 var compiled_dmx_data = {}
+var virtual_fixtures = []
+var parameters = {}
 
-var overrides = {}
+func serialize():
+	var serialized_virtual_fixtures = []
+	for fixture in virtual_fixtures:
+		serialized_virtual_fixtures.append(fixture.serialize())
+		
+	return {
+			"display_name":config.display_name,
+			"fixture_brand":config.fixture_brand,
+			"fixture_name":config.fixture_name,
+			"mode":config.mode,
+			"virtual_fixtures":serialized_virtual_fixtures
+	}
 
-
-func from(universe, manifest, channel, mode, name, uuid):
+func from(universe, manifest, channel, mode, name, uuid, virtual_fixtures):
+	print("Making new fixture from manifest")
 	channel_ranges = manifest.get("channels", {})
 	channels = manifest.modes.values()[mode].channels
 	config.universe = universe
@@ -31,30 +42,14 @@ func from(universe, manifest, channel, mode, name, uuid):
 	config.fixture_brand = manifest.info.brand
 	config.fixture_name = manifest.info.name
 	config.name = name
-	config.file_path = manifest.info.get("file_path", "")
 	config.uuid = uuid
+	config.mode = mode
+	
+	if virtual_fixtures:
+		for fixture in virtual_fixtures:
+			Globals.nodes.virtual_fixtures.from(fixture, self)
 	
 	return self
-
-#func determine_color_model(fixture_channels):
-	#var color_model = []
-#
-	#for channel_name in fixture_channels.keys():
-		#var channel_info = fixture_channels[channel_name]
-		#var capability_type = channel_info.get("capabilities", {}).get("type", "").to_lower()
-#
-		#if capability_type == "colorintensity":
-			#var color = channel_info.get("capabilities", {}).get("color", "").to_lower()
-			#color_model.append(color)
-#
-	#if "cyan" in color_model and "magenta" in color_model and "yellow" in color_model:
-		#return "CYM"
-	#elif "red" in color_model and "green" in color_model and "blue" in color_model:
-		#return "RGB"
-	## Add more conditions for other color models if needed
-#
-	#return "Unknown"
-
 
 func set_color_rgb(r,g,b):
 	if "ColorIntensityRed" in channels:
@@ -65,3 +60,16 @@ func set_color_rgb(r,g,b):
 		compiled_dmx_data[channels.find("ColorIntensityBlue")+config.channel] = int(remap(b, 0.0, 1.0, 0.0, 255.0))
 	#print(compiled_dmx_data)
 	config.universe.set_fixture_data(compiled_dmx_data)
+	
+	parameters.color = Color(r, g, b)
+	
+	update_virtual_fixtures()
+	
+func update_virtual_fixtures():
+	if not virtual_fixtures:return
+	
+	for fixture in virtual_fixtures:
+		fixture.set_color_rgb(parameters.color)
+	
+func add_virtual_fixture(node):
+	virtual_fixtures.append(node)

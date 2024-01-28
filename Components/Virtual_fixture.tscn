@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://jv514a664gha"]
+
+[ext_resource type="Script" path="res://Components/Virtual_fixture.gd" id="1_4xcqs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0nr4c"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 48
+corner_radius_top_right = 48
+corner_radius_bottom_right = 48
+corner_radius_bottom_left = 48
+anti_aliasing = false
+anti_aliasing_size = 0.618
+
+[node name="VirtualFixture" type="GraphElement"]
+anchors_preset = -1
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4xcqs")
+
+[node name="Color Box" type="PanelContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0nr4c")

@@ -6,30 +6,40 @@
 
 	},
 	"universes": {
-		"689e5054-8c08-4a8d-8844-6fe4bff44eb9": {
+		"a3d62a30-b46b-4d4c-b55c-0609d789db0f": {
 			"desk_data": {
 
 			},
-			"dmx_data": {
-
-			},
 			"fixtures": {
-	// Add more channels as needed
+				"1": {
+					"display_name": "",
+					"fixture_brand": "Generic",
+					"fixture_name": "RGB Fader",
+					"mode": 0,
+					"virtual_fixtures": [
+						{
+							"position_offset": {
+								"x": 200,
+								"y": 0
+							}
+						}
+					]
+				}
 			},
 			"inputs": {
 
 			},
-			"name": "New Universe",
+			"name": "Universe 1",
 			"outputs": {
-				"9ca9cded-6397-4e59-a66c-40c81c21d592": {
-					"ip": "172.0.0.1",
+				"ada123d5-c535-41ae-9634-5e0778d8c763": {
+					"ip": "192.168.1.53",
 					"name": "Art-Net Output",
 					"port": 6454,
 					"type": "Art-Net",
 					"universe": 0
 				}
 			},
-			"uuid": "689e5054-8c08-4a8d-8844-6fe4bff44eb9"
+			"uuid": "a3d62a30-b46b-4d4c-b55c-0609d789db0f"
 		}
 	},
 	"widgets": {

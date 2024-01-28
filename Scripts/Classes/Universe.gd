@@ -23,10 +23,10 @@ var universe = {
 	}
 }
 
-func _set_name(new_name):
+func set_universe_name(new_name):
 	universe.name = new_name
 
-func _get_name():
+func get_universe_name():
 	return universe.name
 
 func get_uuid():
@@ -46,15 +46,16 @@ func new_output(type=""):
 	return change_output_type(uuid, type)
 
 func new_fixture(manifest, options):
-		
 	if options.channel in universe.fixtures:
 		return false
 	
 	for i in range(options.quantity):
+		print("Making new fixture")
+		
 		var channel_index = options.channel + options.offset
 		channel_index += (len(manifest.modes.values()[options.mode].channels)) * i
 		var uuid = Globals.new_uuid()
-		var new_fixture = Fixture.new().from(self, manifest, channel_index, options.mode, options.name, uuid)
+		var new_fixture = Fixture.new().from(self, manifest, channel_index, options.mode, options.name, uuid, options.get("virtual_fixtures", []))
 		
 		universe.fixtures[channel_index] = new_fixture
 		
@@ -104,23 +105,42 @@ func _compile_and_send():
 	
 func serialize():
 	var serialized_outputs = {}
+	var serialized_fixtures = {}
 	
 	for output_uuid in universe.outputs.keys():
 		serialized_outputs[output_uuid] = universe.outputs[output_uuid].serialize()
 	
+	for fixture_channel in universe.fixtures.keys():
+		var serialized_fixture = universe.fixtures[fixture_channel].serialize()
+		if serialized_fixture:
+			serialized_fixtures[fixture_channel] = serialized_fixture
+		
+	
 	return {
 		"name":universe.name,
 		"uuid":universe.uuid,
-		"fixtures":{},
+		"fixtures":serialized_fixtures,
 		"inputs":{},
 		"outputs":serialized_outputs,
-		"dmx_data":{},
 		"desk_data":universe.desk_data
 	}
 
 func from(serialized_universe):
 	universe.name = serialized_universe.name
 	universe.uuid = serialized_universe.uuid
+	
+	for fixture_channel in serialized_universe.fixtures:
+		var fixture = serialized_universe.fixtures[fixture_channel]
+		print(fixture)
+		var options = {
+			"channel":int(fixture_channel),
+			"mode":fixture.mode,
+			"name":fixture.display_name,
+			"quantity":1,
+			"offset":0,
+			"virtual_fixtures":fixture.get("virtual_fixtures", [])
+		}
+		new_fixture(Globals.fixtures[fixture.fixture_brand][fixture.fixture_name], options)
 	
 	for output_uuid in serialized_universe.outputs:
 		var input = serialized_universe.outputs[output_uuid]
