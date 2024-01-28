@@ -73,3 +73,7 @@ func update_virtual_fixtures():
 	
 func add_virtual_fixture(node):
 	virtual_fixtures.append(node)
+
+func delete():
+	for virtual_fixture in virtual_fixtures:
+		virtual_fixture.delete() 

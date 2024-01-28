@@ -4,7 +4,8 @@ var control_node
 
 func _ready():
 	self.add_theme_stylebox_override("panel", self.get_theme_stylebox("panel").duplicate())
-
+	set_highlighted(false)
+	
 func set_item_name(name):
 	$Container/Name.text = name
 

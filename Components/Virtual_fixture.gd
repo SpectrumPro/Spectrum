@@ -15,3 +15,6 @@ func serialize():
 			"y":position_offset.y
 		}
 	}
+
+func delete():
+	self.queue_free()

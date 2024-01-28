@@ -8,9 +8,17 @@ func _ready():
 	Globals.subscribe("active_fixtures", self.set_active_fixtures)
 
 func delete_request(node):
-	var fixture_info = node.get_meta("fixture_info")
-	fixture_info.universe.remove_fixture(fixture_info.channel)
-
+	var confirmation_dialog = Globals.components.accept_dialog.instantiate()
+	confirmation_dialog.dialog_text = "Are you sure you want to delete this? This action can not be undone"
+	confirmation_dialog.confirmed.connect((
+	func(node):
+		var fixture = node.get_meta("fixture")
+		fixture.config.universe.remove_fixture(fixture)
+		
+		Globals.call_subscription("reload_fixtures")
+	).bind(node))
+	add_child(confirmation_dialog)
+	
 func edit_request(node):
 	print(node.get_meta("fixture_info"))
 
@@ -27,10 +35,10 @@ func on_edit_mode_changed(edit_mode):
 
 func reload_fixtures():
 	for node in Globals.nodes.physical_fixture_list.get_children():
+		node.get_parent().remove_child(node)
 		node.queue_free()
 	
-	await get_tree().process_frame 
-	#print(Globals.universes.values())
+
 	for universe in Globals.universes.values():
 		print(universe.get_fixtures())
 		for fixture in universe.get_fixtures().values():
@@ -39,12 +47,14 @@ func reload_fixtures():
 			
 			var node_to_add = Globals.components.list_item.instantiate()
 			node_to_add.control_node = self
-			node_to_add.set_item_name(fixture.config.fixture_name)
+			node_to_add.set_item_name(fixture.config.fixture_name + " | " + universe.get_universe_name() + " CH: " + str(fixture.config.channel) + "-" + str(fixture.config.channel+fixture.config.length-1))
 			node_to_add.name = fixture.config.uuid
 			print(node_to_add.name)
 			node_to_add.set_meta("fixture", fixture)
 			Globals.nodes.physical_fixture_list.add_child(node_to_add)
-
+			
+	set_active_fixtures(active_fixtures)
+	
 func set_active_fixtures(fixtures):
 	for fixture in active_fixtures:
 		Globals.nodes.physical_fixture_list.get_node(fixture.config.uuid).set_highlighted(false)

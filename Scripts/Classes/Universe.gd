@@ -61,8 +61,14 @@ func new_fixture(manifest, options):
 		
 	Globals.call_subscription("reload_fixtures")
 	
-func remove_fixture(channel):
-	pass
+func remove_fixture(fixture):
+	universe.fixtures.erase(fixture.config.channel)
+	fixture.delete()
+	
+	var active_fixtures = Globals.get_value("active_fixtures")
+	if fixture in active_fixtures:
+		active_fixtures.erase(fixture)
+		Globals.set_value("active_fixtures", active_fixtures)
 	
 func get_fixtures():
 	return universe.fixtures
