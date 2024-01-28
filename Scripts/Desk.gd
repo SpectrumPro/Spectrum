@@ -8,6 +8,8 @@ var current_universe
 var current_command = {}
 var control_mode = "channels"
 
+var active_fixtures = []
+
 var command_tree = {
 	"SET":{
 		"_":self.command_set
@@ -18,6 +20,8 @@ var command_tree = {
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	load_dmx_faders()
+	Globals.subscribe("reload_universes_callback", self.reload_universes)
+	Globals.subscribe("active_fixtures", self.active_fixtures_changed)
 
 func load_dmx_faders():
 	for i in range(1, 513):
@@ -34,7 +38,7 @@ func reload_universes():
 		Globals.nodes.desk_universe_option.add_item(Globals.universes[universe]._get_name())
 	if len(Globals.universes) == 0:
 		current_universe = null
-		Globals.nodes.desk_universe_option.item_selected.emit(0)
+	Globals.nodes.desk_universe_option.item_selected.emit(0)
 	
 func slider_changed(value, channel):
 	if current_universe:
@@ -51,8 +55,12 @@ func reload_values(universe):
 	dmx_data = new_desk_data
 	
 func _on_desk_universe_option_item_selected(index):
+	if len(Globals.universes) == 0:return
 	current_universe = Globals.universes[Globals.universes.keys()[index]]
 	reload_values(current_universe)
+
+func active_fixtures_changed(fixtures):
+	active_fixtures = fixtures
 
 
  # ------------------ Control Panel Function --------------------
@@ -128,6 +136,11 @@ func _on_delete_pressed():
 	update_command_input()
 
 
+func _on_color_picker_color_changed(color):
+	for fixture in active_fixtures:
+		fixture.set_color_rgb(color.r,color.g,color.b)
+
+
 #----------------------- Command Functions --------------------------
 
 
@@ -164,3 +177,5 @@ func command_set(args):
 
 func set_error(args):
 	Globals.nodes.command_input.text = "ERROR IN LAST COMMAND"
+
+

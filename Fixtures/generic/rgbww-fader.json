@@ -1,101 +1,57 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "RGBWW Fader",
-  "shortName": "RGBWW",
-  "categories": ["Color Changer"],
-  "meta": {
-    "authors": ["ameisso"],
-    "createDate": "2019-01-21",
-    "lastModifyDate": "2019-01-21"
-  },
-  "availableChannels": {
-    "Red": {
-      "fineChannelAliases": ["Red fine", "Red fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Red"
-      }
-    },
-    "Green": {
-      "fineChannelAliases": ["Green fine", "Green fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Green"
-      }
-    },
-    "Blue": {
-      "fineChannelAliases": ["Blue fine", "Blue fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Blue"
-      }
-    },
-    "Warm White": {
-      "fineChannelAliases": ["Warm White fine", "Warm White fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Warm White"
-      }
-    },
-    "Cold White": {
-      "fineChannelAliases": ["Cold White fine", "Cold White fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Cold White"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "RGBWW Fader",
+    "date": "21-01-2019",
+    "author": ["ameisso", "Liam Sherwin"],
+    "categories": ["Color Changer"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/rgbww-fader"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
+  "modes": {
+    "5": {
       "channels": [
-        "Red",
-        "Green",
-        "Blue",
-        "Warm White",
-        "Cold White"
+        "ColorIntensityRed",
+        "ColorIntensityGreen",
+        "ColorIntensityBlue",
+        "ColorIntensityWarmWhite",
+        "ColorIntensityColdWhite"
       ]
     },
-    {
-      "name": "16 Bit",
-      "shortName": "16bit",
+    "10": {
       "channels": [
-        "Red",
-        "Red fine",
-        "Green",
-        "Green fine",
-        "Blue",
-        "Blue fine",
-        "Warm White",
-        "Warm White fine",
-        "Cold White",
-        "Cold White fine"
+        "ColorIntensityRed",
+        "ColorIntensityRedFine",
+        "ColorIntensityGreen",
+        "ColorIntensityGreenFine",
+        "ColorIntensityBlue",
+        "ColorIntensityBlueFine",
+        "ColorIntensityWarmWhite",
+        "ColorIntensityWarmWhiteFine",
+        "ColorIntensityColdWhite",
+        "ColorIntensityColdWhiteFine"
       ]
     },
-    {
-      "name": "24 Bit",
-      "shortName": "24bit",
+    "15": {
       "channels": [
-        "Red",
-        "Red fine",
-        "Red fine^2",
-        "Green",
-        "Green fine",
-        "Green fine^2",
-        "Blue",
-        "Blue fine",
-        "Blue fine^2",
-        "Warm White",
-        "Warm White fine",
-        "Warm White fine^2",
-        "Cold White",
-        "Cold White fine",
-        "Cold White fine^2"
+        "ColorIntensityRed",
+        "ColorIntensityRedFine",
+        "ColorIntensityRedFine^2",
+        "ColorIntensityGreen",
+        "ColorIntensityGreenFine",
+        "ColorIntensityGreenFine^2",
+        "ColorIntensityBlue",
+        "ColorIntensityBlueFine",
+        "ColorIntensityBlueFine^2",
+        "ColorIntensityWarmWhite",
+        "ColorIntensityWarmWhiteFine",
+        "ColorIntensityWarmWhiteFine^2",
+        "ColorIntensityColdWhite",
+        "ColorIntensityColdWhiteFine",
+        "ColorIntensityColdWhiteFine^2"
       ]
     }
-  ],
-  "fixtureKey": "rgbww-fader",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/rgbww-fader"
+  }
 }

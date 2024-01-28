@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c3lrdtiw05qft"]
+[gd_scene load_steps=3 format=3 uid="uid://c3lrdtiw05qft"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_460tm"]
+[ext_resource type="Script" path="res://Scripts/Add_fixture.gd" id="2_q8wav"]
 
 [node name="PanelContainer" type="PanelContainer"]
 anchors_preset = 15
@@ -11,6 +12,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_460tm")
+script = ExtResource("2_q8wav")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -41,9 +43,12 @@ layout_mode = 2
 layout_mode = 2
 text = "Channel"
 
-[node name="SpinBox" type="SpinBox" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="Channel" type="SpinBox" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+min_value = 1.0
+max_value = 512.0
+value = 1.0
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -53,14 +58,9 @@ layout_mode = 2
 text = "Universe"
 
 [node name="Fixture Universe Option" type="OptionButton" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 10
-item_count = 2
-popup/item_0/text = "Universe 1"
-popup/item_0/id = 0
-popup/item_1/text = "Universe 2"
-popup/item_1/id = 1
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -96,9 +96,12 @@ size_flags_vertical = 10
 layout_mode = 2
 text = "Quantity"
 
-[node name="SpinBox" type="SpinBox" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5"]
+[node name="Quantity" type="SpinBox" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5"]
 layout_mode = 2
 size_flags_horizontal = 10
+min_value = 1.0
+max_value = 512.0
+value = 1.0
 
 [node name="HBoxContainer6" type="HBoxContainer" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -108,7 +111,7 @@ size_flags_vertical = 8
 layout_mode = 2
 text = "Offset"
 
-[node name="SpinBox" type="SpinBox" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6"]
+[node name="Offset" type="SpinBox" parent="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6"]
 layout_mode = 2
 size_flags_horizontal = 10
 
@@ -120,3 +123,8 @@ size_flags_vertical = 8
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Add Fixture"
+
+[connection signal="value_changed" from="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer/Channel" to="." method="_on_channel_value_changed"]
+[connection signal="value_changed" from="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5/Quantity" to="." method="_on_quantity_value_changed"]
+[connection signal="value_changed" from="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6/Offset" to="." method="_on_offset_value_changed"]
+[connection signal="pressed" from="MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button" to="." method="_on_add_fixture_button_pressed"]

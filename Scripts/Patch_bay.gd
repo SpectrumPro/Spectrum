@@ -101,9 +101,7 @@ func reload_universes():
 		
 		Globals.nodes.universe_list.add_child(node_to_add)
 	
-	Globals.nodes.add_fixture_menu.reload_universes()
-	Globals.nodes.desk.reload_universes()
-	
+	Globals.call_subscription("reload_universes_callback")
 func new_channel_override():
 	var node_to_add = Globals.components.list_item.instantiate()
 	node_to_add.set_item_name("Channel Override")

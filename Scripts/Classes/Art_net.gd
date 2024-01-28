@@ -1,5 +1,5 @@
 extends Node
-class_name ArtNet
+class_name Art_Net
 
 var _udp_peer = PacketPeerUDP.new()
 
@@ -78,6 +78,7 @@ func get_port():
 
 func get_universe():
 	return config.universe
+	
 func serialize():
 	return config
 

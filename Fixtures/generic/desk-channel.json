@@ -1,48 +1,25 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "Desk Channel",
-  "shortName": "DeskCh",
-  "categories": ["Dimmer"],
-  "meta": {
-    "authors": ["Flo Edelmann"],
-    "createDate": "2017-07-17",
-    "lastModifyDate": "2018-07-21"
-  },
-  "availableChannels": {
-    "Intensity": {
-      "fineChannelAliases": ["Intensity fine", "Intensity fine^2"],
-      "capability": {
-        "type": "Intensity"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "Desk Channel",
+    "date": "21-07-2018",
+    "author": ["Flo Edelmann", "Liam Sherwin"],
+    "categories": ["Dimmer"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/desk-channel",
+      "OFLLibrary": "https://open-fixture-library.org/generic/desk-channel"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
-      "channels": [
-        "Intensity"
-      ]
+  "modes": {
+    "1 Channel": {
+      "channels": ["Intensity"]
     },
-    {
-      "name": "16 bit",
-      "shortName": "16bit",
-      "channels": [
-        "Intensity",
-        "Intensity fine"
-      ]
+    "2 Channel": {
+      "channels": ["Intensity", "IntensityFine"]
     },
-    {
-      "name": "24 bit",
-      "shortName": "24bit",
-      "channels": [
-        "Intensity",
-        "Intensity fine",
-        "Intensity fine^2"
-      ]
+    "3 Channel": {
+      "channels": ["Intensity", "IntensityFine", "IntensityFine2"]
     }
-  ],
-  "fixtureKey": "desk-channel",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/desk-channel"
+  }
 }

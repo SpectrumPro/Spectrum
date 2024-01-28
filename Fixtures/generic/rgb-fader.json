@@ -1,75 +1,45 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "RGB Fader",
-  "shortName": "RGB",
-  "categories": ["Color Changer"],
-  "meta": {
-    "authors": ["Flo Edelmann"],
-    "createDate": "2017-07-17",
-    "lastModifyDate": "2018-07-21"
-  },
-  "availableChannels": {
-    "Red": {
-      "fineChannelAliases": ["Red fine", "Red fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Red"
-      }
-    },
-    "Green": {
-      "fineChannelAliases": ["Green fine", "Green fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Green"
-      }
-    },
-    "Blue": {
-      "fineChannelAliases": ["Blue fine", "Blue fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Blue"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "RGB Fader",
+    "date": "27-1-2024",
+    "author": ["Liam Sherwin"],
+    "categories": ["Color Changer"],
+    "links": {
+      "Website": "https://spectrum.liamsherwin.tech"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
+  "modes": {
+    "3 Channel": {
       "channels": [
-        "Red",
-        "Green",
-        "Blue"
+        "ColorIntensityRed",
+        "ColorIntensityGreen",
+        "ColorIntensityBlue"
       ]
     },
-    {
-      "name": "16 bit",
-      "shortName": "16bit",
+    "6 Channel": {
       "channels": [
-        "Red",
-        "Red fine",
-        "Green",
-        "Green fine",
-        "Blue",
-        "Blue fine"
+        "ColorIntensityRed",
+        "ColorIntensityRedFine",
+        "ColorIntensityGreen",
+        "ColorIntensityGreenFine",
+        "ColorIntensityBlue",
+        "ColorIntensityBlueFine"
       ]
     },
-    {
-      "name": "24 bit",
-      "shortName": "24bit",
+    "9 Channel": {
       "channels": [
-        "Red",
-        "Red fine",
-        "Red fine^2",
-        "Green",
-        "Green fine",
-        "Green fine^2",
-        "Blue",
-        "Blue fine",
-        "Blue fine^2"
+        "ColorIntensityRed",
+        "ColorIntensityRedFine",
+        "ColorIntensityRedFine2",
+        "ColorIntensityGreen",
+        "ColorIntensityGreenFine",
+        "ColorIntensityGreenFine2",
+        "ColorIntensityBlue",
+        "ColorIntensityBlueFine",
+        "ColorIntensityBlueFine2"
       ]
     }
-  ],
-  "fixtureKey": "rgb-fader",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/rgb-fader"
+  }
 }

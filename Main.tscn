@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=77 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://Assets/Icons/Cue_list.svg" id="7_wiftu"]
 [ext_resource type="Texture2D" uid="uid://cw7e02n080in3" path="res://Assets/Icons/Effect.svg" id="8_43gv6"]
 [ext_resource type="Script" path="res://Scripts/Popup_window.gd" id="10_yavq3"]
-[ext_resource type="Texture2D" uid="uid://caqaoek70pjxk" path="res://Assets/Icons/Virtual_fixture.svg" id="11_8n5cs"]
 [ext_resource type="Script" path="res://Scripts/Fixtures.gd" id="11_523ge"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
 [ext_resource type="Texture2D" uid="uid://dis005hfepinf" path="res://Assets/Icons/Fixture.svg" id="12_qh3k3"]
@@ -28,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="17_jo4vo"]
 [ext_resource type="Script" path="res://Scripts/Desk.gd" id="20_0lfsq"]
 [ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Add_fixture.tscn" id="25_owwqo"]
-[ext_resource type="Script" path="res://Scripts/Add_fixture.gd" id="25_w0caf"]
+[ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
 
@@ -617,7 +616,6 @@ theme_override_constants/margin_bottom = 10
 script = ExtResource("11_523ge")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Fixtures/Fixtures"]
-visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer"]
@@ -629,11 +627,6 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/MarginContainer/PanelContainer"]
 layout_mode = 2
-
-[node name="New Virtual Fixture" type="Button" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-text = "New Virtual Fixture"
-icon = ExtResource("11_8n5cs")
 
 [node name="New Physical Fixture" type="Button" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -649,32 +642,16 @@ icon = ExtResource("13_qhavw")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HSplitContainer" type="HSplitContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PanelContainer" type="PanelContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Virtual Fixtures" type="VBoxContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer"]
+[node name="PanelContainer3" type="PanelContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Physical Fixtures" type="VBoxContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer"]
+[node name="Physical Fixtures" type="VBoxContainer" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer3/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -693,6 +670,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Panel" type="Panel" parent="TabContainer/Fixtures/Fixtures"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="TabContainer/Fixtures/Fixtures/Panel"]
@@ -933,7 +911,6 @@ shortcut = SubResource("Shortcut_bt3s2")
 text = "DELETE"
 
 [node name="PanelContainer" type="PanelContainer" parent="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer"]
@@ -1386,9 +1363,10 @@ title = "Add Fixture"
 initial_position = 5
 size = Vector2i(870, 635)
 visible = false
-script = ExtResource("25_w0caf")
+always_on_top = true
+script = ExtResource("27_nmwy1")
 
-[node name="TabContainer" parent="Add Fixture" instance=ExtResource("25_owwqo")]
+[node name="Add Fixture" parent="Add Fixture" instance=ExtResource("25_owwqo")]
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -1431,6 +1409,7 @@ text = "Beta Version 0.3.0
 [connection signal="pressed" from="TabContainer/Functions/Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Scene" to="TabContainer/Functions/Functions" method="_on_new_scene_pressed"]
 [connection signal="pressed" from="TabContainer/Functions/Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Effect" to="TabContainer/Functions/Functions" method="_on_new_effect_pressed"]
 [connection signal="pressed" from="TabContainer/Functions/Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Cue List" to="TabContainer/Functions/Functions" method="_on_new_cue_list_pressed"]
+[connection signal="pressed" from="TabContainer/Fixtures/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Physical Fixture" to="TabContainer/Fixtures/Fixtures" method="_on_new_physical_fixture_pressed"]
 [connection signal="item_selected" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option" to="TabContainer/Desk/Desk" method="_on_desk_universe_option_item_selected"]
 [connection signal="pressed" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/7" to="TabContainer/Desk/Desk" method="_on_7_pressed"]
 [connection signal="pressed" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/8" to="TabContainer/Desk/Desk" method="_on_8_pressed"]
@@ -1449,6 +1428,7 @@ text = "Beta Version 0.3.0
 [connection signal="pressed" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4/BY" to="TabContainer/Desk/Desk" method="_on_by_pressed"]
 [connection signal="pressed" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer5/EXECUTE" to="TabContainer/Desk/Desk" method="_on_execute_pressed"]
 [connection signal="pressed" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer5/DELETE" to="TabContainer/Desk/Desk" method="_on_delete_pressed"]
+[connection signal="color_changed" from="TabContainer/Desk/Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/ColorPicker" to="TabContainer/Desk/Desk" method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Universe" to="TabContainer/Patch Bay/Patch Bay" method="_on_new_universe_pressed"]
 [connection signal="text_changed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name" to="TabContainer/Patch Bay/Patch Bay" method="_on_universe_name_text_changed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Input" to="TabContainer/Patch Bay/Patch Bay" method="_on_new_input_pressed"]

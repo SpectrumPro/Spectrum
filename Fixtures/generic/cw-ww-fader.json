@@ -1,91 +1,34 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "CW/WW Fader",
-  "categories": ["Dimmer", "Color Changer"],
-  "meta": {
-    "authors": ["sonarkon"],
-    "createDate": "2019-06-23",
-    "lastModifyDate": "2019-06-23"
-  },
-  "availableChannels": {
-    "Warm White": {
-      "fineChannelAliases": ["Warm White fine", "Warm White fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Warm White"
-      }
-    },
-    "Cold White": {
-      "fineChannelAliases": ["Cold White fine", "Cold White fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Cold White"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "CW/WW Fader",
+    "date": "23-06-2019",
+    "author": ["sonarkon", "Liam Sherwin"],
+    "categories": ["Dimmer", "Color Changer"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/cw-ww-fader",
+      "OFLLibrary": "https://open-fixture-library.org/generic/cw-ww-fader"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit W/C",
-      "shortName": "8bit-wc",
-      "channels": [
-        "Warm White",
-        "Cold White"
-      ]
+  "modes": {
+    "8 bit W/C": {
+      "channels": ["WarmWhite", "ColdWhite"]
     },
-    {
-      "name": "8 bit C/W",
-      "shortName": "8bit-cw",
-      "channels": [
-        "Cold White",
-        "Warm White"
-      ]
+    "8 bit C/W": {
+      "channels": ["ColdWhite", "WarmWhite"]
     },
-    {
-      "name": "16 bit W/C",
-      "shortName": "16bit-wc",
-      "channels": [
-        "Warm White",
-        "Warm White fine",
-        "Cold White",
-        "Cold White fine"
-      ]
+    "16 bit W/C": {
+      "channels": ["WarmWhite", "WarmWhiteFine", "ColdWhite", "ColdWhiteFine"]
     },
-    {
-      "name": "16 bit C/W",
-      "shortName": "16bit-cw",
-      "channels": [
-        "Cold White",
-        "Cold White fine",
-        "Warm White",
-        "Warm White fine"
-      ]
+    "16 bit C/W": {
+      "channels": ["ColdWhite", "ColdWhiteFine", "WarmWhite", "WarmWhiteFine"]
     },
-    {
-      "name": "24 bit W/C",
-      "shortName": "24bit-wc",
-      "channels": [
-        "Warm White",
-        "Warm White fine",
-        "Warm White fine^2",
-        "Cold White",
-        "Cold White fine",
-        "Cold White fine^2"
-      ]
+    "24 bit W/C": {
+      "channels": ["WarmWhite", "WarmWhiteFine", "WarmWhiteFine2", "ColdWhite", "ColdWhiteFine", "ColdWhiteFine2"]
     },
-    {
-      "name": "24 bit C/W",
-      "shortName": "24bit-cw",
-      "channels": [
-        "Cold White",
-        "Cold White fine",
-        "Cold White fine^2",
-        "Warm White",
-        "Warm White fine",
-        "Warm White fine^2"
-      ]
+    "24 bit C/W": {
+      "channels": ["ColdWhite", "ColdWhiteFine", "ColdWhiteFine2", "WarmWhite", "WarmWhiteFine", "WarmWhiteFine2"]
     }
-  ],
-  "fixtureKey": "cw-ww-fader",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/cw-ww-fader"
+  }
 }

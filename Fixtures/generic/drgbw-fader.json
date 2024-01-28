@@ -1,130 +1,31 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "DRGBW Fader",
-  "shortName": "DRGBW",
-  "categories": ["Color Changer"],
-  "meta": {
-    "authors": ["ameisso"],
-    "createDate": "2018-02-15",
-    "lastModifyDate": "2018-07-21"
-  },
-  "availableChannels": {
-    "Dimmer": {
-      "fineChannelAliases": ["Dimmer fine", "Dimmer fine^2"],
-      "defaultValue": 0,
-      "capability": {
-        "type": "Intensity"
-      }
-    },
-    "Red": {
-      "fineChannelAliases": ["Red fine", "Red fine^2"],
-      "defaultValue": 0,
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Red"
-      }
-    },
-    "Green": {
-      "fineChannelAliases": ["Green fine", "Green fine^2"],
-      "defaultValue": 0,
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Green"
-      }
-    },
-    "Blue": {
-      "fineChannelAliases": ["Blue fine", "Blue fine^2"],
-      "defaultValue": 0,
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Blue"
-      }
-    },
-    "White": {
-      "fineChannelAliases": ["White fine", "White fine^2"],
-      "defaultValue": 0,
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "White"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "DRGBW Fader",
+    "date": "21-07-2018",
+    "author": ["ameisso", "Liam Sherwin"],
+    "categories": ["Color Changer"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/drgbw-fader",
+      "OFLLibrary": "https://open-fixture-library.org/generic/drgbw-fader"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
-      "channels": [
-        "Dimmer",
-        "Red",
-        "Green",
-        "Blue",
-        "White"
-      ]
+  "modes": {
+    "5 Channel": {
+      "channels": ["Intensity", "ColorIntensityRed", "ColorIntensityGreen", "ColorIntensityBlue", "ColorIntensityWhite"]
     },
-    {
-      "name": "16 bit Dimmer",
-      "shortName": "16bit-dimmer",
-      "channels": [
-        "Dimmer",
-        "Dimmer fine",
-        "Red",
-        "Green",
-        "Blue",
-        "White"
-      ]
+    "6 Channel Dimmer": {
+      "channels": ["Intensity", "IntensityFine", "ColorIntensityRed", "ColorIntensityGreen", "ColorIntensityBlue", "ColorIntensityWhite"]
     },
-    {
-      "name": "16 bit",
-      "shortName": "16bit",
-      "channels": [
-        "Dimmer",
-        "Dimmer fine",
-        "Red",
-        "Red fine",
-        "Green",
-        "Green fine",
-        "Blue",
-        "Blue fine",
-        "White",
-        "White fine"
-      ]
+    "10 Channel": {
+      "channels": ["Intensity", "IntensityFine", "ColorIntensityRed", "ColorIntensityRedFine", "ColorIntensityGreen", "ColorIntensityGreenFine", "ColorIntensityBlue", "ColorIntensityBlueFine", "ColorIntensityWhite", "ColorIntensityWhiteFine"]
     },
-    {
-      "name": "24 bit Dimmer",
-      "shortName": "24bit-dimmer",
-      "channels": [
-        "Dimmer",
-        "Dimmer fine",
-        "Dimmer fine^2",
-        "Red",
-        "Green",
-        "Blue",
-        "White"
-      ]
+    "6 Channel Dimmer2": {
+      "channels": ["Intensity", "IntensityFine", "IntensityFine2", "ColorIntensityRed", "ColorIntensityGreen", "ColorIntensityBlue", "ColorIntensityWhite"]
     },
-    {
-      "name": "24 bit",
-      "shortName": "24bit",
-      "channels": [
-        "Dimmer",
-        "Dimmer fine",
-        "Dimmer fine^2",
-        "Red",
-        "Red fine",
-        "Red fine^2",
-        "Green",
-        "Green fine",
-        "Green fine^2",
-        "Blue",
-        "Blue fine",
-        "Blue fine^2",
-        "White",
-        "White fine",
-        "White fine^2"
-      ]
+    "15 Channel": {
+      "channels": ["Intensity", "IntensityFine", "IntensityFine2", "ColorIntensityRed", "ColorIntensityRedFine", "ColorIntensityRedFine2", "ColorIntensityGreen", "ColorIntensityGreenFine", "ColorIntensityGreenFine2", "ColorIntensityBlue", "ColorIntensityBlueFine", "ColorIntensityBlueFine2", "ColorIntensityWhite", "ColorIntensityWhiteFine", "ColorIntensityWhiteFine2"]
     }
-  ],
-  "fixtureKey": "drgbw-fader",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/drgbw-fader"
+  }
 }

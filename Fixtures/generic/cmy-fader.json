@@ -1,75 +1,51 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "CMY Fader",
-  "shortName": "CMY",
-  "categories": ["Color Changer"],
-  "meta": {
-    "authors": ["Flo Edelmann"],
-    "createDate": "2017-12-12",
-    "lastModifyDate": "2018-07-21"
-  },
-  "availableChannels": {
-    "Cyan": {
-      "fineChannelAliases": ["Cyan fine", "Cyan fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Cyan"
-      }
-    },
-    "Magenta": {
-      "fineChannelAliases": ["Magenta fine", "Magenta fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Magenta"
-      }
-    },
-    "Yellow": {
-      "fineChannelAliases": ["Yellow fine", "Yellow fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Yellow"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "CMY Fader",
+    "date": "2018-07-21",
+    "author": ["Flo Edelmann"],
+    "categories": ["Color Changer"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/cmy-fader",
+      "OFLLibrary": "https://open-fixture-library.org/generic/cmy-fader"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
+  "channels": {
+    "ColorIntensityCyan": 1,
+    "ColorIntensityMagenta": 2,
+    "ColorIntensityYellow": 3
+  },
+  "modes": {
+    "3 Channel": {
       "channels": [
-        "Cyan",
-        "Magenta",
-        "Yellow"
+        "ColorIntensityCyan",
+        "ColorIntensityMagenta",
+        "ColorIntensityYellow"
       ]
     },
-    {
-      "name": "16 bit",
-      "shortName": "16bit",
+    "6 Channel": {
       "channels": [
-        "Cyan",
-        "Cyan fine",
-        "Magenta",
-        "Magenta fine",
-        "Yellow",
-        "Yellow fine"
+        "ColorIntensityCyan",
+        "ColorIntensityCyanFine",
+        "ColorIntensityMagenta",
+        "ColorIntensityMagentaFine",
+        "ColorIntensityYellow",
+        "ColorIntensityYellowFine"
       ]
     },
-    {
-      "name": "24 bit",
-      "shortName": "24bit",
+    "9 Channel": {
       "channels": [
-        "Cyan",
-        "Cyan fine",
-        "Cyan fine^2",
-        "Magenta",
-        "Magenta fine",
-        "Magenta fine^2",
-        "Yellow",
-        "Yellow fine",
-        "Yellow fine^2"
+        "ColorIntensityCyan",
+        "ColorIntensityCyanFine",
+        "ColorIntensityCyanFine2",
+        "ColorIntensityMagenta",
+        "ColorIntensityMagentaFine",
+        "ColorIntensityMagentaFine2",
+        "ColorIntensityYellow",
+        "ColorIntensityYellowFine",
+        "ColorIntensityYellowFine2"
       ]
     }
-  ],
-  "fixtureKey": "cmy-fader",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/cmy-fader"
+  }
 }

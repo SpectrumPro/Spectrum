@@ -3,18 +3,19 @@ class_name Universe
 
 const Art_Net = preload("res://Scripts/Classes/Art_net.gd")
 const Empty = preload("res://Scripts/Classes/Empty.gd")
+const Fixture = preload("res://Scripts/Classes/Fixture.gd")
 
 var universe = {
 	"name": "New Universe",
 	"uuid":Globals.new_uuid(),
-	"fixtures:": {
+	"fixtures": {
 	},
 	"inputs": {
 	},
 	"outputs": {
 		
 	},
-	"dmx_data":{
+	"fixture_data":{
 		
 	},
 	"desk_data":{
@@ -44,6 +45,34 @@ func new_output(type=""):
 	universe.outputs[uuid] = {}
 	return change_output_type(uuid, type)
 
+func new_fixture(manifest, options):
+		
+	if options.channel in universe.fixtures:
+		return false
+	
+	for i in range(options.quantity):
+		var channel_index = options.channel + options.offset
+		channel_index += (len(manifest.modes.values()[options.mode].channels)) * i
+		var uuid = Globals.new_uuid()
+		var new_fixture = Fixture.new().from(self, manifest, channel_index, options.mode, options.name, uuid)
+		
+		universe.fixtures[channel_index] = new_fixture
+		
+	Globals.call_subscription("reload_fixtures")
+	
+func remove_fixture(channel):
+	pass
+	
+func get_fixtures():
+	return universe.fixtures
+	
+func get_fixture(fixture_uuid):
+	pass
+
+func set_fixture_data(data):
+	universe.fixture_data.merge(data, true)
+	_compile_and_send()
+
 func remove_output(uuid):
 	if uuid in universe.outputs.keys():
 		universe.outputs[uuid].free()
@@ -60,17 +89,19 @@ func change_output_type(uuid, type):
 	return universe.outputs[uuid]
 
 func set_desk_data(dmx_data):
-	universe.desk_data.merge(dmx_data, true)
+	universe.desk_data.merge(dmx_data)
 	_compile_and_send()
 
 func get_desk_data():
 	return universe.desk_data
 
 func _compile_and_send():
-	var compiled_dmx_data = universe.desk_data
+	var compiled_dmx_data = universe.fixture_data
+	compiled_dmx_data.merge(universe.desk_data, true)
 	for output in universe.outputs:
 		universe.outputs[output].send_packet(compiled_dmx_data)
-
+	print(compiled_dmx_data)
+	
 func serialize():
 	var serialized_outputs = {}
 	

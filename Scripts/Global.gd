@@ -19,6 +19,7 @@ var subscriptions = {}
 
 var universes = {}
 var fixtures = {}
+var active_fixtures = {}
 
 @onready var components = {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
@@ -56,17 +57,18 @@ var fixtures = {}
 	
 	# Fixtures Tab
 	"fixtures":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/"),
-	"virtual_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer/ScrollContainer/Virtual Fixtures"),
-	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2/ScrollContainer/Physical Fixtures"),
+	"physical_fixture_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer3/ScrollContainer/Physical Fixtures"),
 	"fixture_groups_list":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups"),
 	
 	# Add Fixture Menue
-	"add_fixture_menu":get_tree().root.get_node("Main/Add Fixture"),
-	"fixture_tree":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/Fixture Tree"),
-	"fixture_channel_list":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/Channel List"),
-	"fixture_modes_option":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes"),
-	"fixture_universe_option":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3/Fixture Universe Option"),
-	"add_fixture_button":get_tree().root.get_node("Main/Add Fixture/TabContainer/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button"),
+	
+	"add_fixture_window":get_tree().root.get_node("Main/Add Fixture"),
+	"add_fixture_menu":get_tree().root.get_node("Main/Add Fixture/Add Fixture/"),
+	"fixture_tree":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/Fixture Tree"),
+	"fixture_channel_list":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/Channel List"),
+	"fixture_modes_option":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes"),
+	"fixture_universe_option":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3/Fixture Universe Option"),
+	"add_fixture_button":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button"),
 	
 	# Desk
 	"desk":get_tree().root.get_node("Main/TabContainer/Desk/Desk"),
@@ -192,6 +194,13 @@ func set_value(value_name, value):
 			if node_to_update.is_valid():
 				node_to_update.call(value)
 
+func call_subscription(value_name):
+	if subscriptions.get(value_name):
+		for node_to_update in subscriptions[value_name]:
+			if node_to_update.is_valid():
+				node_to_update.call()
+
+
 func new_uuid():
 	return uuid_util.v4()
 	
@@ -216,7 +225,7 @@ func delete_universe(universe):
 	elif typeof(universe) == 27: 
 		universes[universe.get_uuid()].queue_free()
 		universes.erase(universe.get_uuid())
-	print(universe)
+	print(universes.keys())
 
 func serialize_universes():
 	var serialized_universes = {}
