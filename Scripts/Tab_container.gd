@@ -32,6 +32,14 @@ func create_new_window(tab_index):
 	
 	new_window_node.name = node_to_replace.name
 	new_window_node.close_requested.connect(self.window_close_request.bind(str(node_to_replace.name)))
+	new_window_node.set_initial_position(Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS)
+	new_window_node.size = DisplayServer.window_get_size()
+	
+	var bg = ColorRect.new()
+	bg.color = Color.hex(0x232323ff)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.name = "_window_backdrop"
+	new_window_node.add_child(bg)
 	
 	node_to_replace.replace_by(new_window_node)
 	node_to_replace.queue_free()
@@ -42,6 +50,7 @@ func window_close_request(node_name):
 	
 	new_control_node.name = node_name
 	
+	node_to_replace.remove_child(node_to_replace.get_node("_window_backdrop"))
 	node_to_replace.replace_by(new_control_node)
 	node_to_replace.queue_free()
 
