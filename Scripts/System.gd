@@ -126,6 +126,7 @@ func load_save(file_path):
 	#Add Universes
 	Globals.deserialize_universes(manifest.universes)
 	Globals.call_subscription("reload_universes")
+	Globals.call_subscription("reload_fixtures")
 	
 func _on_load_file_dialog_file_selected(path):
 	load_save(path)

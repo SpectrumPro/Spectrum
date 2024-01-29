@@ -13,11 +13,9 @@ corner_radius_top_left = 48
 corner_radius_top_right = 48
 corner_radius_bottom_right = 48
 corner_radius_bottom_left = 48
-anti_aliasing = false
 anti_aliasing_size = 0.618
 
 [node name="VirtualFixture" type="GraphElement"]
-anchors_preset = -1
 offset_right = 100.0
 offset_bottom = 100.0
 grow_horizontal = 2
@@ -28,3 +26,6 @@ script = ExtResource("1_4xcqs")
 layout_mode = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0nr4c")
+
+[connection signal="node_deselected" from="." to="." method="_on_node_deselected"]
+[connection signal="node_selected" from="." to="." method="_on_node_selected"]

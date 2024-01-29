@@ -1,26 +1,33 @@
 extends GraphEdit
 
+var old_active_fixtures = []
+var locally_selected_fixtures = []
+var add_button
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_add_menu_hbox_button("Add Virtual Fixture", self.add_fixture)
-	_add_menu_hbox_button("Delete Virtual Fixture", self.request_delete)
+	add_button = _add_menu_hbox_button("Add Selected Fixture", self.add_fixture, "Add the selected fixtures to the view", true)
+	_add_menu_hbox_button("Delete", self.request_delete, "Delete the selected virtual fixtures, this does NOT delete the underlying fixture")
+	Globals.subscribe("active_fixtures", self.active_fixtures_changed)
 
-func _add_menu_hbox_button(content, method):
+func _add_menu_hbox_button(content, method, tooltip="", disabled=false):
 	var button = Button.new()
 	if content is Texture2D:
 		button.icon = content
 	else:
 		button.text = content
 	button.pressed.connect(method)
+	button.tooltip_text = tooltip
+	button.disabled = disabled
 	self.get_menu_hbox().add_child(button)
 	return button
 
 func add_fixture():
-	if Globals.get_value("active_fixtures"):
-		for fixture in Globals.get_value("active_fixtures"):
-			var node_to_add = Globals.components.virtual_fixture.instantiate()
-			fixture.add_virtual_fixture(node_to_add)
-			add_child(node_to_add)
+	for fixture in Globals.get_value("active_fixtures"):
+		var node_to_add = Globals.components.virtual_fixture.instantiate()
+		fixture.add_virtual_fixture(node_to_add)
+		node_to_add.control_node = fixture
+		node_to_add.set_highlighted(true)
+		add_child(node_to_add)
 
 func request_delete(node):
 	print(node)
@@ -28,5 +35,25 @@ func request_delete(node):
 func from(config, control_fixture):
 	var node_to_add = Globals.components.virtual_fixture.instantiate()
 	node_to_add.position_offset = Vector2(config.position_offset.x, config.position_offset.y)
+	node_to_add.control_node = control_fixture
 	control_fixture.add_virtual_fixture(node_to_add)
 	add_child(node_to_add)
+  
+func active_fixtures_changed(new_active_fixtures):
+	
+	add_button.disabled = true if new_active_fixtures == [] else false
+	
+	for virtual_fixture in get_children():
+		virtual_fixture.set_highlighted(false)
+	
+	for active_fixture in new_active_fixtures:
+		for virtual_fixture in active_fixture.virtual_fixtures:
+			virtual_fixture.set_highlighted(true)
+
+	old_active_fixtures = new_active_fixtures
+#
+func _on_virtual_fixture_selected(node):
+	Globals.select_fixture(node.control_node)
+	
+func _on_virtual_fixture_deselected(node):
+	Globals.deselect_fixture(node.control_node)

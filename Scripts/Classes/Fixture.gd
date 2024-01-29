@@ -53,12 +53,12 @@ func from(universe, manifest, channel, mode, name, uuid, virtual_fixtures):
 
 func set_color_rgb(r,g,b):
 	if "ColorIntensityRed" in channels:
-		compiled_dmx_data[channels.find("ColorIntensityRed")+config.channel] = int(remap(r, 0.0, 1.0, 0.0, 255.0))
+		compiled_dmx_data[int(channels.find("ColorIntensityRed")+config.channel)] = int(remap(r, 0.0, 1.0, 0.0, 255.0))
 	if "ColorIntensityGreen" in channels:
-		compiled_dmx_data[channels.find("ColorIntensityGreen")+config.channel] = int(remap(g, 0.0, 1.0, 0.0, 255.0))
+		compiled_dmx_data[int(channels.find("ColorIntensityGreen")+config.channel)] = int(remap(g, 0.0, 1.0, 0.0, 255.0))
 	if "ColorIntensityBlue" in channels:
-		compiled_dmx_data[channels.find("ColorIntensityBlue")+config.channel] = int(remap(b, 0.0, 1.0, 0.0, 255.0))
-	#print(compiled_dmx_data)
+		compiled_dmx_data[int(channels.find("ColorIntensityBlue")+config.channel)] = int(remap(b, 0.0, 1.0, 0.0, 255.0))
+	print(channels.find("ColorIntensityBlue")+config.channel)
 	config.universe.set_fixture_data(compiled_dmx_data)
 	
 	parameters.color = Color(r, g, b)

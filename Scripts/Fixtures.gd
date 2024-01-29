@@ -40,25 +40,22 @@ func reload_fixtures():
 	
 
 	for universe in Globals.universes.values():
-		print(universe.get_fixtures())
 		for fixture in universe.get_fixtures().values():
-			
-			print(fixture)
-			
+						
 			var node_to_add = Globals.components.list_item.instantiate()
 			node_to_add.control_node = self
 			node_to_add.set_item_name(fixture.config.fixture_name + " | " + universe.get_universe_name() + " CH: " + str(fixture.config.channel) + "-" + str(fixture.config.channel+fixture.config.length-1))
 			node_to_add.name = fixture.config.uuid
-			print(node_to_add.name)
 			node_to_add.set_meta("fixture", fixture)
 			Globals.nodes.physical_fixture_list.add_child(node_to_add)
 			
 	set_active_fixtures(active_fixtures)
 	
 func set_active_fixtures(fixtures):
-	for fixture in active_fixtures:
-		Globals.nodes.physical_fixture_list.get_node(fixture.config.uuid).set_highlighted(false)
+	for fixture in Globals.nodes.physical_fixture_list.get_children():
+		fixture.set_highlighted(false)
 	active_fixtures = fixtures
+	
 	for fixture in active_fixtures:
 		Globals.nodes.physical_fixture_list.get_node(fixture.config.uuid).set_highlighted(true)
 

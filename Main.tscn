@@ -1190,7 +1190,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
-scroll_offset = Vector2(0, -45)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("23_pdwae")
@@ -1454,6 +1453,8 @@ text = "Beta Version 0.3.0
 [connection signal="pressed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Output" to="TabContainer/Patch Bay/Patch Bay" method="_on_new_output_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Channel Overide" to="TabContainer/Patch Bay/Patch Bay" method="_on_new_channel_overide_pressed"]
 [connection signal="item_selected" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type" to="TabContainer/Patch Bay/Patch Bay" method="_on_io_type_item_selected"]
+[connection signal="node_deselected" from="TabContainer/Virtual Fixtures/Virtual Fixtures" to="TabContainer/Virtual Fixtures/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
+[connection signal="node_selected" from="TabContainer/Virtual Fixtures/Virtual Fixtures" to="TabContainer/Virtual Fixtures/Virtual Fixtures" method="_on_virtual_fixture_selected"]
 [connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]

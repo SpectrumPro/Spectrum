@@ -12,7 +12,8 @@ var edit_mode = true
 
 var values = {
 	"snapping_distance":20,
-	"edit_mode":true
+	"edit_mode":true,
+	"active_fixtures":[]
 }
 
 var subscriptions = {}
@@ -175,11 +176,6 @@ var active_fixtures = {}
 	},
 }
 
-#func _process(_delta):
-	#if Input.is_action_just_pressed("process_loop"):
-		#for universe in universes.values():
-			#print(universe.serialize())
-
 func show_popup(content = []):
 	for i in content:
 		var node_to_add = components.warning.instantiate()
@@ -213,7 +209,6 @@ func call_subscription(value_name):
 			if node_to_update.is_valid():
 				node_to_update.call()
 
-
 func new_uuid():
 	return uuid_util.v4()
 	
@@ -223,8 +218,19 @@ func reload_universe_io_connections(io={}):
 	else:
 		print(universes)
 
-func _ready():
-	pass
+func select_fixture(fixture_to_add):
+	var active_fixtures = get_value("active_fixtures")
+	if fixture_to_add not in active_fixtures:
+		active_fixtures.append(fixture_to_add)
+		print(active_fixtures)
+		set_value("active_fixtures", active_fixtures)
+	
+	
+func deselect_fixture(fixture_to_remove):
+	var active_fixtures = get_value("active_fixtures")
+	active_fixtures.erase(fixture_to_remove)
+	print(active_fixtures)
+	set_value("active_fixtures", active_fixtures)
 
 func new_universe():
 	var universe_to_add = Universe.new()
