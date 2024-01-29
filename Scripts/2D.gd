@@ -29,8 +29,13 @@ func add_fixture():
 		node_to_add.set_highlighted(true)
 		add_child(node_to_add)
 
-func request_delete(node):
-	print(node)
+func request_delete():
+	print("delete")
+	var to_remove = locally_selected_fixtures.duplicate()
+	for virtual_fixture in to_remove:
+		virtual_fixture.control_node.remove_virtual_fixture(virtual_fixture)
+		virtual_fixture.queue_free()
+		locally_selected_fixtures.erase(virtual_fixture)
 
 func from(config, control_fixture):
 	var node_to_add = Globals.components.virtual_fixture.instantiate()
@@ -53,7 +58,10 @@ func active_fixtures_changed(new_active_fixtures):
 	old_active_fixtures = new_active_fixtures
 #
 func _on_virtual_fixture_selected(node):
+	if node not in locally_selected_fixtures:
+		locally_selected_fixtures.append(node)
 	Globals.select_fixture(node.control_node)
 	
 func _on_virtual_fixture_deselected(node):
+	locally_selected_fixtures.erase(node)
 	Globals.deselect_fixture(node.control_node)
