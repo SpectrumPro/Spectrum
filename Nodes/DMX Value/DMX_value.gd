@@ -23,8 +23,6 @@ func set_dmx_data():
 	send()
 	
 func receive(data, slot):
-	print("Got data")
-	print("Got data typed checked")
 	if slot == 0:
 		channel_number = int(data)
 		get_node("Row1/ChanelNumber").set_value_no_signal(data)

@@ -10,14 +10,8 @@ func _ready():
 		get_tree().root.set_content_scale_factor(scale_factor)
 		ui_scale_input.set_value_no_signal(scale_factor)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
 func _on_settings_pressed():
 	self.popup()
-
 
 func _on_close_requested(): 
 	self.hide()
@@ -39,4 +33,3 @@ func _on_v_sync_toggled(toggled_on):
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	else:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-	print(DisplayServer.window_get_vsync_mode())

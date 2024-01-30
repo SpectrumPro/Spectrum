@@ -17,9 +17,6 @@ var outbound_queue = {}
 var center_button
 # Called when the widget enters the scene tree for the first time.
 func _ready():
-	
-	print("Console _ready()")
-	
 	_add_menu_hbox_button("Add Widgets", Globals.nodes.add_widget_popup.add_widget_button_clicked.bind(Vector2(220,100)))
 	_add_menu_hbox_button("Delete Widgets", self.request_delete)
 	_add_menu_hbox_button(Globals.icons.menue, self.show_settings_menu)
@@ -29,6 +26,9 @@ func _ready():
 	
 	Globals.subscribe("edit_mode", edit_mode_toggled)
 	
+	load_widgets_from_file()
+	
+func load_widgets_from_file():
 	var access = DirAccess.open(widget_path)
 	for widget_folder in access.get_directories():
 		var manifest_file_path = widget_path + widget_folder + "/manifest.json"
@@ -170,15 +170,10 @@ func _center_view():
 
 func _on_copy_nodes_request():
 	copyed_widgets = selected_widgets.duplicate(true)
-	print("copying")
-	print(copyed_widgets)
 
 
 func _on_paste_nodes_request():
-	print("Pasting")
-	print(copyed_widgets)
 	for i in copyed_widgets:
-		print(i)
 		add_child(get_node(i))
 
 
@@ -195,7 +190,6 @@ func edit_mode_toggled(edit_mode):
 			node.disabled = not edit_mode
 		get_menu_hbox().get_node(NodePath(center_button.name)).disabled = mouse_default_cursor_shape
 	if not edit_mode:
-		print(self.get_theme())
 		self.add_theme_color_override("selection_stroke",Color.TRANSPARENT)
 		self.add_theme_color_override("selection_fill",Color.TRANSPARENT)
 		for widget in selected_widgets:
@@ -206,5 +200,5 @@ func edit_mode_toggled(edit_mode):
 		for widget in selected_widgets:
 			widget.material = Globals.shaders.invert
 		
-func _on_popup_request(position):
-	Globals.nodes.add_widget_popup.add_widget_button_clicked(position)
+func _on_popup_request(at_position):
+	Globals.nodes.add_widget_popup.add_widget_button_clicked(at_position)

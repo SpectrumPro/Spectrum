@@ -4,7 +4,8 @@ var control_node
 
 func _ready():
 	self.add_theme_stylebox_override("panel", self.get_theme_stylebox("panel").duplicate())
-
+	set_highlighted(false)
+	
 func set_item_name(name):
 	$Container/Name.text = name
 
@@ -28,7 +29,16 @@ func dissable_buttons(dissable):
 	$Container/Edit.disabled = dissable
 
 func _on_delete_pressed():
-	control_node.delete_request(self)
+	if control_node.has_method("delete_request"):
+		control_node.delete_request(self)
 
 func _on_edit_pressed():
-	control_node.edit_request(self)
+	if control_node.has_method("edit_request"):
+		control_node.edit_request(self)
+
+func _on_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.pressed == true:  # Check if the mouse button is released
+			if control_node.has_method("on_selected"):
+				control_node.on_selected(self)
+

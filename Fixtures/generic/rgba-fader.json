@@ -1,88 +1,25 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "RGBA Fader",
-  "shortName": "RGBA",
-  "categories": ["Color Changer"],
-  "meta": {
-    "authors": ["Flo Edelmann"],
-    "createDate": "2017-12-12",
-    "lastModifyDate": "2018-07-21"
-  },
-  "availableChannels": {
-    "Red": {
-      "fineChannelAliases": ["Red fine", "Red fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Red"
-      }
-    },
-    "Green": {
-      "fineChannelAliases": ["Green fine", "Green fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Green"
-      }
-    },
-    "Blue": {
-      "fineChannelAliases": ["Blue fine", "Blue fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Blue"
-      }
-    },
-    "Amber": {
-      "fineChannelAliases": ["Amber fine", "Amber fine^2"],
-      "capability": {
-        "type": "ColorIntensity",
-        "color": "Amber"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "RGBA Fader",
+    "date": "21-07-2018",
+    "author": ["Flo Edelmann", "Liam Sherwin"],
+    "categories": ["Color Changer"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/rgba-fader",
+      "OFLLibrary": "https://open-fixture-library.org/generic/rgba-fader"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
-      "channels": [
-        "Red",
-        "Green",
-        "Blue",
-        "Amber"
-      ]
+  "modes": {
+    "4 Channel": {
+      "channels": ["ColorIntensityRed", "ColorIntensityGreen", "ColorIntensityBlue", "ColorIntensityAmber"]
     },
-    {
-      "name": "16 bit",
-      "shortName": "16bit",
-      "channels": [
-        "Red",
-        "Red fine",
-        "Green",
-        "Green fine",
-        "Blue",
-        "Blue fine",
-        "Amber",
-        "Amber fine"
-      ]
+    "8 Channel": {
+      "channels": ["ColorIntensityRed", "ColorIntensityRedFine", "ColorIntensityGreen", "ColorIntensityGreenFine", "ColorIntensityBlue", "ColorIntensityBlueFine", "ColorIntensityAmber", "ColorIntensityAmberFine"]
     },
-    {
-      "name": "24 bit",
-      "shortName": "24bit",
-      "channels": [
-        "Red",
-        "Red fine",
-        "Red fine^2",
-        "Green",
-        "Green fine",
-        "Green fine^2",
-        "Blue",
-        "Blue fine",
-        "Blue fine^2",
-        "Amber",
-        "Amber fine",
-        "Amber fine^2"
-      ]
+    "12 Channel": {
+      "channels": ["ColorIntensityRed", "ColorIntensityRedFine", "ColorIntensityRedFine2", "ColorIntensityGreen", "ColorIntensityGreenFine", "ColorIntensityGreenFine2", "ColorIntensityBlue", "ColorIntensityBlueFine", "ColorIntensityBlueFine2", "ColorIntensityAmber", "ColorIntensityAmberFine", "ColorIntensityAmberFine2"]
     }
-  ],
-  "fixtureKey": "rgba-fader",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/rgba-fader"
+  }
 }

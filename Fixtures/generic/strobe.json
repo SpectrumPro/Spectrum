@@ -1,45 +1,27 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "Strobe",
-  "categories": ["Strobe"],
-  "meta": {
-    "authors": ["Mikey Rowlands"],
-    "createDate": "2019-11-01",
-    "lastModifyDate": "2019-11-01"
-  },
-  "availableChannels": {
-    "Frequency": {
-      "capability": {
-        "type": "ShutterStrobe",
-        "shutterEffect": "Strobe",
-        "speedStart": "slow",
-        "speedEnd": "fast"
-      }
-    },
-    "Dimmer": {
-      "defaultValue": 0,
-      "capability": {
-        "type": "Intensity"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "Strobe",
+    "date": "01-11-2019",
+    "author": ["Mikey Rowlands", "Liam Sherwin"],
+    "categories": ["Strobe"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/strobe"
     }
   },
-  "modes": [
-    {
-      "name": "Frequency + Dimmer",
+  "modes": {
+    "2 Channel": {
       "channels": [
-        "Frequency",
-        "Dimmer"
+        "ShutterStrobeFrequency",
+        "Intensity"
       ]
     },
-    {
-      "name": "Dimmer + Frequency",
+    "2 Channel Alt": {
       "channels": [
-        "Dimmer",
-        "Frequency"
+        "Intensity",
+        "ShutterStrobeFrequency"
       ]
     }
-  ],
-  "fixtureKey": "strobe",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/strobe"
+  }
 }

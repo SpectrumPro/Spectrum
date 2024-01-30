@@ -1,88 +1,31 @@
 {
-  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/schema-12.4.1/schemas/fixture.json",
-  "name": "Pan/Tilt Fader",
-  "shortName": "PanTilt",
-  "categories": ["Moving Head"],
-  "meta": {
-    "authors": ["Flo Edelmann"],
-    "createDate": "2017-07-17",
-    "lastModifyDate": "2018-09-04"
-  },
-  "availableChannels": {
-    "Pan": {
-      "fineChannelAliases": ["Pan fine", "Pan fine^2"],
-      "defaultValue": "50%",
-      "capability": {
-        "type": "Pan",
-        "angleStart": "0deg",
-        "angleEnd": "540deg"
-      }
-    },
-    "Tilt": {
-      "fineChannelAliases": ["Tilt fine", "Tilt fine^2"],
-      "defaultValue": "50%",
-      "capability": {
-        "type": "Tilt",
-        "angleStart": "0deg",
-        "angleEnd": "180deg"
-      }
+  "schema_version": "1.0",
+  "info": {
+    "brand": "Generic",
+    "name": "Pan/Tilt Fader",
+    "date": "04-09-2018",
+    "author": ["Flo Edelmann", "Liam Sherwin"],
+    "categories": ["Moving Head"],
+    "links": {
+      "Website": "https://open-fixture-library.org/generic/pan-tilt",
+      "OFLLibrary": "https://open-fixture-library.org/generic/pan-tilt"
     }
   },
-  "modes": [
-    {
-      "name": "8 bit",
-      "shortName": "8bit",
-      "channels": [
-        "Pan",
-        "Tilt"
-      ]
+  "modes": {
+    "2 Channel": {
+      "channels": ["Pan", "Tilt"]
     },
-    {
-      "name": "16 bit",
-      "shortName": "16bit",
-      "channels": [
-        "Pan",
-        "Pan fine",
-        "Tilt",
-        "Tilt fine"
-      ]
+    "4 Channel": {
+      "channels": ["Pan", "PanFine", "Tilt", "TiltFine"]
     },
-    {
-      "name": "16 bit (alternate)",
-      "shortName": "16bit-alt",
-      "channels": [
-        "Pan",
-        "Tilt",
-        "Pan fine",
-        "Tilt fine"
-      ]
+    "4 Channel (alternate)": {
+      "channels": ["Pan", "Tilt", "PanFine", "TiltFine"]
     },
-    {
-      "name": "24 bit",
-      "shortName": "24bit",
-      "channels": [
-        "Pan",
-        "Pan fine",
-        "Pan fine^2",
-        "Tilt",
-        "Tilt fine",
-        "Tilt fine^2"
-      ]
+    "6 Channel": {
+      "channels": ["Pan", "PanFine", "PanFine2", "Tilt", "TiltFine", "TiltFine2"]
     },
-    {
-      "name": "24 bit (alternate)",
-      "shortName": "24bit-alt",
-      "channels": [
-        "Pan",
-        "Tilt",
-        "Pan fine",
-        "Tilt fine",
-        "Pan fine^2",
-        "Tilt fine^2"
-      ]
+    "6 Channel (alternate)": {
+      "channels": ["Pan", "Tilt", "PanFine", "TiltFine", "PanFine2", "TiltFine2"]
     }
-  ],
-  "fixtureKey": "pan-tilt",
-  "manufacturerKey": "generic",
-  "oflURL": "https://open-fixture-library.org/generic/pan-tilt"
+  }
 }

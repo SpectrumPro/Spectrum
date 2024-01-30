@@ -30,7 +30,6 @@ func receive(data, _slot):
 	for channel in range(1, 513):
 		formatted_dmx_data.append(data.dmx_channels.get(channel, 0))
 	send_artnet_packet(data.universe-1)
-	print(formatted_dmx_data)
 
 func _on_Control_resize_request(new_minsize):
 	size = new_minsize

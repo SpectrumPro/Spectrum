@@ -16,7 +16,6 @@ func external_input(new_value):
 	$VSlider.value = value
 
 func set_connection(node):
-	print(node)
 	connection = node
 
 func get_connection():
