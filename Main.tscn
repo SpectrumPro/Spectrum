@@ -1409,7 +1409,7 @@ offset_left = -9.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "Beta Version 0.3.0
+text = "Beta Version 0.4.0
 "
 
 [connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
