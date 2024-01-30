@@ -29,6 +29,9 @@ func delete_request(node):
 				Globals.delete_universe(universes[node.get_meta("universe_uuid")])
 				
 				current_universe_uuid = ""
+				current_io_uuid = ""
+				current_io_type = ""
+				current_io = ""
 				Globals.call_subscription("reload_universes")
 				reload_io()
 				
@@ -123,7 +126,6 @@ func new_output():
 	reload_io()
 
 func reload_io():
-	if not current_universe_uuid:return
 	
 	for node in Globals.nodes.universe_outputs.get_children():
 		node.queue_free()
@@ -131,48 +133,44 @@ func reload_io():
 	for node in Globals.nodes.universe_io_controls.get_children():
 		node.queue_free()
 	
-	for uuid in universes[current_universe_uuid].get_all_outputs().keys():
-		var output = universes[current_universe_uuid].get_output(uuid)
-		var node_to_add = Globals.components.list_item.instantiate()
-		node_to_add.set_item_name(output.get_io_name())
-		node_to_add.control_node = self
-		node_to_add.set_meta("output_uuid", uuid)
-		node_to_add.set_meta("type", "output")
-		node_to_add.name = uuid
-		node_to_add.set_highlighted(false)
-		
-		if current_io_uuid == uuid:
-			if output.get_type():
-				Globals.nodes.universe_io_type.selected = output_options.find(output.get_type())
+	if current_universe_uuid:
+		for uuid in universes[current_universe_uuid].get_all_outputs().keys():
+			var output = universes[current_universe_uuid].get_output(uuid)
+			var node_to_add = Globals.components.list_item.instantiate()
+			node_to_add.set_item_name(output.get_io_name())
+			node_to_add.control_node = self
+			node_to_add.set_meta("output_uuid", uuid)
+			node_to_add.set_meta("type", "output")
+			node_to_add.name = uuid
+			node_to_add.set_highlighted(false)
 			
-			for value in output.exposed_values:
-				var value_node_to_add = value.type.new()
-				value_node_to_add.get(value.signal).connect(output.get(value.function))
+			if current_io_uuid == uuid:
+				if output.get_type():
+					Globals.nodes.universe_io_type.selected = output_options.find(output.get_type())
 				
-				for config in value.configs:
-					if value.configs[config] is Callable:
-						value_node_to_add.set(config, value.configs[config].call())
-					else:
-						value_node_to_add.set(config, value.configs[config])
+				for value in output.exposed_values:
+					var value_node_to_add = value.type.new()
+					value_node_to_add.get(value.signal).connect(output.get(value.function))
+					
+					for config in value.configs:
+						if value.configs[config] is Callable:
+							value_node_to_add.set(config, value.configs[config].call())
+						else:
+							value_node_to_add.set(config, value.configs[config])
+					
+					var container = HBoxContainer.new()
+					var lable = Label.new()
+					lable.text = value.name
+					lable.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+					value_node_to_add.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+					container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+					container.add_child(lable)
+					container.add_child(value_node_to_add)
+					Globals.nodes.universe_io_controls.add_child(container)
+
+				node_to_add.set_highlighted(true)
 				
-				var container = HBoxContainer.new()
-				var lable = Label.new()
-				lable.text = value.name
-				lable.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-				value_node_to_add.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-				container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-				container.add_child(lable)
-				container.add_child(value_node_to_add)
-				Globals.nodes.universe_io_controls.add_child(container)
-			#if output.get_type() != "Empty":
-				#for node in Globals.nodes.universe_io_controls.get_children():
-					#if node.name == output.get_type():
-						#node.visible = true
-					#else:
-						#node.visible = false
-			node_to_add.set_highlighted(true)
-			
-		Globals.nodes.universe_outputs.add_child(node_to_add)
+			Globals.nodes.universe_outputs.add_child(node_to_add)
 
 func set_universe_controls_enabled(enabled):
 	for node in Globals.nodes.universe_controls.get_children():
