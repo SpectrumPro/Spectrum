@@ -50,8 +50,7 @@ func new_fixture(manifest, options):
 		return false
 	
 	for i in range(options.quantity):
-		print("Making new fixture")
-		
+
 		var channel_index = options.channel + options.offset
 		channel_index += (len(manifest.modes.values()[options.mode].channels)) * i
 		var uuid = Globals.new_uuid()
@@ -108,7 +107,6 @@ func _compile_and_send():
 	compiled_dmx_data.merge(universe.desk_data, true)
 	for output in universe.outputs:
 		universe.outputs[output].send_packet(compiled_dmx_data)
-	print(compiled_dmx_data)
 	
 func serialize():
 	var serialized_outputs = {}
@@ -138,7 +136,6 @@ func from(serialized_universe):
 	
 	for fixture_channel in serialized_universe.fixtures:
 		var fixture = serialized_universe.fixtures[fixture_channel]
-		print(fixture)
 		var options = {
 			"channel":int(fixture_channel),
 			"mode":fixture.mode,

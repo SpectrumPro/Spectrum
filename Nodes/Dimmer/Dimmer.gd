@@ -26,7 +26,6 @@ func _process_data():
 	elif operation == 1:
 		for i in most_recent_data:
 			dmx_data.dmx_channels[i] = clamp(most_recent_data[i], 0, dimmer_amount)
-	print(dmx_data)
 	queue = dmx_data
 
 func close_request():

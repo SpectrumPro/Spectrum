@@ -27,7 +27,6 @@ func _set_dmx_data():
 	dmx_data.dmx_channels = {}
 	for i in grid_container.get_children():
 		dmx_data.dmx_channels[int(i.get_node("Channel").value)] = int(i.get_node("Value").value)
-	print(dmx_data)
 	queue = dmx_data
 
 func receive(_data, _slot):

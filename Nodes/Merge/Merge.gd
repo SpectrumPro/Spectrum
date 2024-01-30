@@ -26,14 +26,11 @@ func receive(data, slot):
 func node_process():
 	if has_new_data and dmx_0 and dmx_1:
 		has_new_data = false
-		print(dmx_0)
-		print(dmx_1)
 		match operation:
 			0:
 				dmx_data.universe = dmx_0.universe
 				dmx_data.dmx_channels = dmx_0.dmx_channels.duplicate()
 				dmx_data.dmx_channels.merge(dmx_1.dmx_channels)
-				print(dmx_0.universe)
 			1:
 				dmx_data.universe = dmx_1.universe
 				dmx_data.dmx_channels = dmx_1.dmx_channels.duplicate()

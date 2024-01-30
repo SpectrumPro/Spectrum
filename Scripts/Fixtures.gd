@@ -20,7 +20,7 @@ func delete_request(node):
 	add_child(confirmation_dialog)
 	
 func edit_request(node):
-	print(node.get_meta("fixture_info"))
+	pass
 
 func on_selected(node):
 	Globals.set_value("active_fixtures", [node.get_meta("fixture")])

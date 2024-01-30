@@ -146,7 +146,6 @@ func _on_color_picker_color_changed(color):
 
 func command_set(args):
 	if len(args) < 3:return
-	print("Function Set ", args)
 	var channels = []
 	var value = 0
 	var step = 1
@@ -168,7 +167,6 @@ func command_set(args):
 		value = int(str(value).replace("FULL", "255").replace("ZERO", "0"))
 		
 		for channel in channels:
-			print(index % step)
 			if index % step == 0:
 				dmx_data[channel] = value
 			index +=1

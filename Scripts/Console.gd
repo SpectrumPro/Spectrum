@@ -170,15 +170,10 @@ func _center_view():
 
 func _on_copy_nodes_request():
 	copyed_widgets = selected_widgets.duplicate(true)
-	print("copying")
-	print(copyed_widgets)
 
 
 func _on_paste_nodes_request():
-	print("Pasting")
-	print(copyed_widgets)
 	for i in copyed_widgets:
-		print(i)
 		add_child(get_node(i))
 
 
@@ -195,7 +190,6 @@ func edit_mode_toggled(edit_mode):
 			node.disabled = not edit_mode
 		get_menu_hbox().get_node(NodePath(center_button.name)).disabled = mouse_default_cursor_shape
 	if not edit_mode:
-		print(self.get_theme())
 		self.add_theme_color_override("selection_stroke",Color.TRANSPARENT)
 		self.add_theme_color_override("selection_fill",Color.TRANSPARENT)
 		for widget in selected_widgets:

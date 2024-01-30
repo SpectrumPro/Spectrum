@@ -13,7 +13,7 @@ func delete_request(node):
 	node.queue_free()
 
 func edit_request(node):
-	print(node)
+	pass
 
 func on_edit_mode_changed(edit_mode):
 	for function_item in Globals.nodes.scenes_list.get_children():

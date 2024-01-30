@@ -34,7 +34,6 @@ func add_fixture():
 
 
 func request_delete():
-	print("delete")
 	var to_remove = locally_selected_fixtures.duplicate()
 	for virtual_fixture in to_remove:
 		virtual_fixture.control_node.remove_virtual_fixture(virtual_fixture)

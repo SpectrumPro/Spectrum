@@ -48,7 +48,7 @@ var config = {
 
 func connect_to_host():
 	_udp_peer.close()
-	print(_udp_peer.connect_to_host(config.ip, config.port))
+	_udp_peer.connect_to_host(config.ip, config.port)
 
 func get_io_name():
 	return config.name
