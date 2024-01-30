@@ -631,11 +631,13 @@ layout_mode = 2
 
 [node name="New Physical Fixture" type="Button" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
-text = "New Physical Fixture"
+tooltip_text = "Open fixture creation window"
+text = "New Fixture"
 icon = ExtResource("12_qh3k3")
 
 [node name="New Fixture Group" type="Button" parent="TabContainer/Fixtures/Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Work in progress, Create a new fixture group"
 text = "New Fixture Group"
 icon = ExtResource("13_qhavw")
 
@@ -726,6 +728,7 @@ text = "Universe  "
 [node name="Desk Universe Option" type="OptionButton" parent="TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 37)
 layout_mode = 2
+tooltip_text = "Select universe"
 allow_reselect = true
 
 [node name="VSeparator" type="VSeparator" parent="TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
@@ -742,6 +745,7 @@ caret_blink = true
 
 [node name="Open Console" type="Button" parent="TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Work in Progress, Show command output"
 icon = ExtResource("17_656rg")
 
 [node name="PanelContainer2" type="PanelContainer" parent="TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer"]
@@ -996,6 +1000,7 @@ layout_mode = 2
 
 [node name="New Universe" type="Button" parent="TabContainer/Patch Bay/Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Create a new universe"
 text = "New Universe"
 icon = ExtResource("14_13prp")
 
@@ -1049,12 +1054,14 @@ expand_to_text_length = true
 
 [node name="New Input" type="Button" parent="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
 layout_mode = 2
+tooltip_text = "Work in progress, Add a input for the current universe"
 disabled = true
 text = "New Input"
 icon = ExtResource("16_1byph")
 
 [node name="New Output" type="Button" parent="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
 layout_mode = 2
+tooltip_text = "Add a output for the current universe"
 disabled = true
 text = "New Output
 "
@@ -1062,6 +1069,7 @@ icon = ExtResource("17_jo4vo")
 
 [node name="New Channel Overide" type="Button" parent="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
 layout_mode = 2
+tooltip_text = "Work in progress, Add a channel override"
 disabled = true
 text = "New Channel Override"
 icon = ExtResource("15_bwv7p")
@@ -1089,6 +1097,7 @@ layout_mode = 2
 
 [node name="IO Type" type="OptionButton" parent="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Select IO type"
 disabled = true
 alignment = 1
 item_count = 2
@@ -1143,6 +1152,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="TabContainer/3D/3D"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1153,13 +1163,12 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="TabContainer/3D/3D/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1035)
 render_target_update_mode = 0
 
 [node name="Node3D" parent="TabContainer/3D/3D/SubViewportContainer/SubViewport" instance=ExtResource("14_44rt7")]
 
 [node name="Panel" type="Panel" parent="TabContainer/3D/3D"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1190,6 +1199,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+scroll_offset = Vector2(0, -45)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("23_pdwae")
@@ -1370,11 +1380,13 @@ ok_button_text = "Open"
 dialog_hide_on_ok = true
 file_mode = 0
 access = 2
+use_native_dialog = true
 
 [node name="Save File Dialog" type="FileDialog" parent="."]
 initial_position = 5
 size = Vector2i(742, 659)
 access = 2
+use_native_dialog = true
 
 [node name="Add Fixture" type="Window" parent="."]
 title = "Add Fixture"
