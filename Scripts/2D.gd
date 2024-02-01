@@ -4,6 +4,7 @@ var old_active_fixtures = []
 var locally_selected_fixtures = []
 var add_button
 var position_offset = Vector2(100, 100)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	add_button = _add_menu_hbox_button("Add Selected Fixture", self.add_fixture, "Add the selected fixtures to the view", true)
