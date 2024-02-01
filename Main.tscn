@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=80 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
@@ -27,6 +27,8 @@
 [ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="17_jo4vo"]
 [ext_resource type="Script" path="res://Scripts/Desk.gd" id="20_0lfsq"]
 [ext_resource type="Script" path="res://Scripts/2D.gd" id="23_pdwae"]
+[ext_resource type="Script" path="res://Scripts/Sidebar.gd" id="24_33hbs"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="24_oc2jn"]
 [ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Add_fixture.tscn" id="25_owwqo"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -269,7 +271,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 4
+current_tab = 7
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
@@ -688,6 +690,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Desk" type="Control" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Desk" type="MarginContainer" parent="TabContainer/Desk"]
@@ -1187,21 +1190,57 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Virtual Fixtures" type="Control" parent="TabContainer"]
-visible = false
 layout_mode = 2
 
-[node name="Virtual Fixtures" type="GraphEdit" parent="TabContainer/Virtual Fixtures"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Virtual Fixtures"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Virtual Fixtures" type="GraphEdit" parent="TabContainer/Virtual Fixtures/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+scroll_offset = Vector2(-258, 0)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("23_pdwae")
+
+[node name="Sidebar" type="PanelContainer" parent="TabContainer/Virtual Fixtures/HBoxContainer" node_paths=PackedStringArray("contence")]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+script = ExtResource("24_33hbs")
+contence = NodePath("MarginContainer/VBoxContainer/Contence")
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer"]
+layout_mode = 2
+
+[node name="Side Bar Open" type="Button" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("24_oc2jn")
+icon_alignment = 1
+
+[node name="Contence" type="VBoxContainer" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ColorPicker" type="ColorPicker" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence"]
+layout_mode = 2
+color = Color(0, 1, 1, 1)
+edit_alpha = false
+picker_shape = 1
+color_modes_visible = false
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -1267,7 +1306,6 @@ text = "Settings"
 title = "Settings"
 initial_position = 5
 size = Vector2i(500, 300)
-visible = false
 script = ExtResource("6_fan4u")
 
 [node name="TabContainer" type="TabContainer" parent="Settings"]
@@ -1404,10 +1442,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -9.0
-offset_top = -23.0
+offset_left = -103.0
+offset_top = -15.9999
+offset_right = 46.0
+offset_bottom = 7.00012
 grow_horizontal = 0
 grow_vertical = 0
+scale = Vector2(0.692268, 0.692268)
 text = "Beta Version 0.4.0
 "
 
@@ -1464,8 +1505,10 @@ text = "Beta Version 0.4.0
 [connection signal="pressed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Output" to="TabContainer/Patch Bay/Patch Bay" method="_on_new_output_pressed"]
 [connection signal="pressed" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Channel Overide" to="TabContainer/Patch Bay/Patch Bay" method="_on_new_channel_overide_pressed"]
 [connection signal="item_selected" from="TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type" to="TabContainer/Patch Bay/Patch Bay" method="_on_io_type_item_selected"]
-[connection signal="node_deselected" from="TabContainer/Virtual Fixtures/Virtual Fixtures" to="TabContainer/Virtual Fixtures/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
-[connection signal="node_selected" from="TabContainer/Virtual Fixtures/Virtual Fixtures" to="TabContainer/Virtual Fixtures/Virtual Fixtures" method="_on_virtual_fixture_selected"]
+[connection signal="node_deselected" from="TabContainer/Virtual Fixtures/HBoxContainer/Virtual Fixtures" to="TabContainer/Virtual Fixtures/HBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
+[connection signal="node_selected" from="TabContainer/Virtual Fixtures/HBoxContainer/Virtual Fixtures" to="TabContainer/Virtual Fixtures/HBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_selected"]
+[connection signal="pressed" from="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Side Bar Open" to="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar" method="_on_side_bar_open_pressed"]
+[connection signal="color_changed" from="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence/ColorPicker" to="TabContainer/Desk/Desk" method="_on_color_picker_color_changed"]
 [connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]

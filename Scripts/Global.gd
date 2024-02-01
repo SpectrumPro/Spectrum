@@ -84,7 +84,8 @@ var active_fixtures := {}
 	"command_input":get_tree().root.get_node("Main/TabContainer/Desk/Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Command Input"),
 	
 	#Virtual Fixtures
-	"virtual_fixtures":get_tree().root.get_node("Main/TabContainer/Virtual Fixtures/Virtual Fixtures"),
+	"virtual_fixtures":get_tree().root.get_node("Main/TabContainer/Virtual Fixtures/HBoxContainer/Virtual Fixtures"),
+	"virtual_fixtures_sidebar":get_tree().root.get_node("Main/TabContainer/Virtual Fixtures/HBoxContainer/Sidebar"),
 }
 
 @onready var icons := {
