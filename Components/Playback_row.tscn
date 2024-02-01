@@ -1,0 +1,66 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4wtma14pt5uv"]
+
+[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_2wasx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hv2sk"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 24.0
+expand_margin_right = 24.0
+
+[node name="Playback Row" type="MarginContainer"]
+offset_right = 108.0
+offset_bottom = 592.0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Button 1" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "1"
+
+[node name="Button 2" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "2"
+
+[node name="VSlider" type="VSlider" parent="PanelContainer/MarginContainer/VBoxContainer"]
+use_parent_material = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
+mouse_default_cursor_shape = 10
+theme_override_icons/grabber = ExtResource("1_2wasx")
+theme_override_icons/grabber_highlight = ExtResource("1_2wasx")
+theme_override_styles/slider = SubResource("StyleBoxFlat_hv2sk")
+max_value = 255.0
+
+[node name="Button 3" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "3"
+
+[node name="Button 4" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "4"
