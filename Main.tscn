@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=79 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_8afhv"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
 [ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="5_cx6ah"]
 [ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
-[ext_resource type="Script" path="res://Scripts/Settings.gd" id="6_fan4u"]
 [ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://Assets/Icons/Scene.svg" id="6_xdyfm"]
 [ext_resource type="Script" path="res://Scripts/Functions.gd" id="7_5dnuk"]
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://Assets/Icons/Cue_list.svg" id="7_wiftu"]
@@ -30,6 +29,7 @@
 [ext_resource type="Script" path="res://Scripts/Sidebar.gd" id="24_33hbs"]
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="24_oc2jn"]
 [ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Add_fixture.tscn" id="25_owwqo"]
+[ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
@@ -228,15 +228,6 @@ unicode = 112
 
 [sub_resource type="Shortcut" id="Shortcut_sn8ws"]
 events = [SubResource("InputEventKey_7uieo")]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktq0q"]
-bg_color = Color(0.117235, 0.117235, 0.117235, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 7.0
-expand_margin_right = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5sp73"]
 content_margin_left = 5.0
@@ -1206,7 +1197,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
-scroll_offset = Vector2(-258, 0)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("23_pdwae")
@@ -1233,6 +1223,7 @@ icon = ExtResource("24_oc2jn")
 icon_alignment = 1
 
 [node name="Contence" type="VBoxContainer" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ColorPicker" type="ColorPicker" parent="TabContainer/Virtual Fixtures/HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence"]
@@ -1306,70 +1297,18 @@ text = "Settings"
 title = "Settings"
 initial_position = 5
 size = Vector2i(500, 300)
-script = ExtResource("6_fan4u")
+visible = false
+script = ExtResource("27_nmwy1")
 
-[node name="TabContainer" type="TabContainer" parent="Settings"]
+[node name="ColorRect" type="ColorRect" parent="Settings"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
-[node name="General" type="MarginContainer" parent="Settings/TabContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="General" type="VBoxContainer" parent="Settings/TabContainer/General"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/TabContainer/General/General"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Settings/TabContainer/General/General/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-text = "UI Scale"
-
-[node name="UI Scale" type="SpinBox" parent="Settings/TabContainer/General/General/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 0
-min_value = 1.0
-max_value = 10.0
-value = 1.0
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/TabContainer/General/General"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Settings/TabContainer/General/General/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-text = "VSync"
-
-[node name="VSync" type="CheckButton" parent="Settings/TabContainer/General/General/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 0
-
-[node name="Restart Warning" type="Label" parent="Settings/TabContainer/General"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxFlat_ktq0q")
-text = "Restart editor to see effect"
-horizontal_alignment = 1
+[node name="Settings" parent="Settings" instance=ExtResource("27_03pyd")]
 
 [node name="Popups" type="Window" parent="."]
 title = "Warnings"
@@ -1512,10 +1451,8 @@ text = "Beta Version 0.4.0
 [connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
 [connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]
-[connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="_on_settings_pressed"]
+[connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="show"]
 [connection signal="close_requested" from="Settings" to="Settings" method="_on_close_requested"]
-[connection signal="value_changed" from="Settings/TabContainer/General/General/HBoxContainer/UI Scale" to="Settings" method="_on_ui_scale_value_changed"]
-[connection signal="toggled" from="Settings/TabContainer/General/General/HBoxContainer2/VSync" to="Settings" method="_on_v_sync_toggled"]
 [connection signal="close_requested" from="Popups" to="Popups" method="_on_close_requested"]
 [connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
 [connection signal="file_selected" from="Load File Dialog" to="." method="_on_load_file_dialog_file_selected"]

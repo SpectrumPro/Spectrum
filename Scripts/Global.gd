@@ -21,6 +21,8 @@ var universes := {}
 var fixtures := {}
 var active_fixtures := {}
 
+var configFile : ConfigFile
+
 @onready var components := {             
 	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
 	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
