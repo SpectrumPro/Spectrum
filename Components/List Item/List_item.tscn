@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://d0wg6bo67u7cr"]
 
-[ext_resource type="Script" path="res://Components/List_item.gd" id="1_plvbh"]
+[ext_resource type="Script" path="res://Components/List Item/List_item.gd" id="1_plvbh"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://Assets/Icons/Delete.svg" id="2_jm4an"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://Assets/Icons/Edit.svg" id="3_02fjg"]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://3hh7kan3bvww"]
 
-[ext_resource type="Script" path="res://Components/Accept_dialog.gd" id="1_55rlu"]
+[ext_resource type="Script" path="res://Components/Accept Dialog/Accept_dialog.gd" id="1_55rlu"]
 
 [node name="AcceptDialog" type="AcceptDialog"]
 initial_position = 4

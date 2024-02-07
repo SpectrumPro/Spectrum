@@ -24,12 +24,12 @@ var active_fixtures := {}
 var configFile : ConfigFile
 
 @onready var components := {             
-	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
-	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
-	"list_item":ResourceLoader.load("res://Components/List_item.tscn"),
-	"accept_dialog":ResourceLoader.load("res://Components/Accept_dialog.tscn"),
-	"channel_slider":ResourceLoader.load("res://Components/Channel_slider.tscn"),
-	"virtual_fixture":ResourceLoader.load("res://Components/Virtual_fixture.tscn")
+	"close_button":ResourceLoader.load("res://Components/Close Button/Close_button.tscn"),
+	"warning":ResourceLoader.load("res://Components/Warning/Warning.tscn"),
+	"list_item":ResourceLoader.load("res://Components/List Item/List_item.tscn"),
+	"accept_dialog":ResourceLoader.load("res://Components/Accept Dialog/Accept_dialog.tscn"),
+	"channel_slider":ResourceLoader.load("res://Components/Channel Slider/Channel_slider.tscn"),
+	"virtual_fixture":ResourceLoader.load("res://Components/Virtual Fixture/Virtual_fixture.tscn")
 }
 
 @onready var nodes := {

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://drh6naeg211g6"]
 
-[ext_resource type="Script" path="res://Components/Channel_slider.gd" id="1_2ours"]
+[ext_resource type="Script" path="res://Components/Channel Slider/Channel_slider.gd" id="1_2ours"]
 [ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_rvi85"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_ba0og"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c8mveow2s054c"]
 
-[ext_resource type="Script" path="res://Scripts/Warning.gd" id="1_6nrfx"]
+[ext_resource type="Script" path="res://Components/Warning/Warning.gd" id="1_6nrfx"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="2_ms7aw"]
 
 [node name="Warning" type="VBoxContainer"]
