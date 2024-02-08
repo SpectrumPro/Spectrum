@@ -112,7 +112,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 6
+current_tab = 5
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
@@ -136,7 +136,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="3D" parent="TabContainer" instance=ExtResource("10_tx05s")]
-visible = true
 layout_mode = 2
 
 [node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("11_7alyx")]
