@@ -1,0 +1,150 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3y3lh4tdx7m0"]
+
+[ext_resource type="Script" path="res://Panels/Console/Console.gd" id="1_37w0r"]
+[ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="2_8j2yo"]
+
+[node name="Console" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Console" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Console Editor" type="GraphEdit" parent="Console"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
+theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+zoom = 0.7
+minimap_enabled = false
+show_minimap_button = false
+show_arrange_button = false
+script = ExtResource("1_37w0r")
+
+[node name="Add Widget Popup" type="ItemList" parent="Console/Console Editor"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.202083
+anchor_top = 0.136232
+anchor_right = 0.349479
+anchor_bottom = 0.428986
+grow_horizontal = 2
+grow_vertical = 2
+auto_height = true
+script = ExtResource("2_8j2yo")
+metadata/_edit_use_anchors_ = true
+
+[node name="Widget Settings Menu" type="MarginContainer" parent="Console"]
+visible = false
+custom_minimum_size = Vector2(358.28, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Console/Widget Settings Menu"]
+layout_mode = 2
+
+[node name="Appearance" type="VBoxContainer" parent="Console/Widget Settings Menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="Name" type="HBoxContainer" parent="Console/Widget Settings Menu/VBoxContainer/Appearance"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Console/Widget Settings Menu/VBoxContainer/Appearance/Name"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="LineEdit" type="LineEdit" parent="Console/Widget Settings Menu/VBoxContainer/Appearance/Name"]
+custom_minimum_size = Vector2(162.85, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Name"
+
+[node name="Color" type="HBoxContainer" parent="Console/Widget Settings Menu/VBoxContainer/Appearance"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Console/Widget Settings Menu/VBoxContainer/Appearance/Color"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Background Colour"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Console/Widget Settings Menu/VBoxContainer/Appearance/Color"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Colour"
+color = Color(0.109804, 0.109804, 0.109804, 1)
+
+[node name="HSeparator" type="HSeparator" parent="Console/Widget Settings Menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="Patching" type="VBoxContainer" parent="Console/Widget Settings Menu/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Input" type="HBoxContainer" parent="Console/Widget Settings Menu/VBoxContainer/Patching"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Label" type="Label" parent="Console/Widget Settings Menu/VBoxContainer/Patching/Input"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inputs"
+
+[node name="Inputs Button" type="Button" parent="Console/Widget Settings Menu/VBoxContainer/Patching/Input"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Choose"
+
+[node name="Output" type="HBoxContainer" parent="Console/Widget Settings Menu/VBoxContainer/Patching"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Console/Widget Settings Menu/VBoxContainer/Patching/Output"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Outputs
+"
+
+[node name="Inputs Button" type="Button" parent="Console/Widget Settings Menu/VBoxContainer/Patching/Output"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Choose"
+
+[node name="Panel" type="Panel" parent="Console"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Console/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Console will be back in a future Spectrum update, as it undergoes significant changes."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="copy_nodes_request" from="Console/Console Editor" to="Console/Console Editor" method="_on_copy_nodes_request"]
+[connection signal="duplicate_nodes_request" from="Console/Console Editor" to="Console/Console Editor" method="_on_duplicate_nodes_request"]
+[connection signal="gui_input" from="Console/Console Editor" to="Console/Console Editor/Add Widget Popup" method="_on_console_editor_gui_input"]
+[connection signal="node_deselected" from="Console/Console Editor" to="Console/Console Editor" method="_on_widget_deselected"]
+[connection signal="node_selected" from="Console/Console Editor" to="Console/Console Editor" method="_on_widget_selected"]
+[connection signal="paste_nodes_request" from="Console/Console Editor" to="Console/Console Editor" method="_on_paste_nodes_request"]
+[connection signal="popup_request" from="Console/Console Editor" to="Console/Console Editor" method="_on_popup_request"]
+[connection signal="item_clicked" from="Console/Console Editor/Add Widget Popup" to="Console/Console Editor" method="_on_widget_list_item_clicked"]
+[connection signal="item_clicked" from="Console/Console Editor/Add Widget Popup" to="Console/Console Editor/Add Widget Popup" method="_on_item_clicked"]
+[connection signal="text_submitted" from="Console/Widget Settings Menu/VBoxContainer/Appearance/Name/LineEdit" to="Console/Console Editor" method="_on_line_edit_text_submitted"]
+[connection signal="color_changed" from="Console/Widget Settings Menu/VBoxContainer/Appearance/Color/ColorPickerButton" to="Console/Console Editor" method="_on_color_picker_button_color_changed"]
+[connection signal="pressed" from="Console/Widget Settings Menu/VBoxContainer/Patching/Input/Inputs Button" to="Console/Console Editor" method="_on_external_input_pressed"]
+[connection signal="pressed" from="Console/Widget Settings Menu/VBoxContainer/Patching/Output/Inputs Button" to="Console/Console Editor" method="_on_external_input_pressed"]

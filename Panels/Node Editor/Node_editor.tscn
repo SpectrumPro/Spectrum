@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbulvv8qjh8ii"]
+
+[ext_resource type="Script" path="res://Panels/Node Editor/Node_system.gd" id="1_yi4v0"]
+[ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_nq5f8"]
+
+[sub_resource type="Theme" id="Theme_0vxhv"]
+
+[node name="Node Editor" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Node Editor" type="GraphEdit" parent="."]
+custom_minimum_size = Vector2(147.79, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_0vxhv")
+scroll_offset = Vector2(-147.79, 0)
+right_disconnects = true
+show_arrange_button = false
+script = ExtResource("1_yi4v0")
+
+[node name="Label" type="Label" parent="Node Editor"]
+layout_mode = 0
+offset_top = 54.0
+offset_right = 591.0
+offset_bottom = 77.0
+text = "Caution, the node editor is an experimental feature, expect things to break."
+
+[node name="Add Node Popup" type="ItemList" parent="Node Editor"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0109375
+anchor_top = 0.0486177
+anchor_right = 0.0109375
+anchor_bottom = 0.0486177
+offset_right = 186.0
+offset_bottom = 8.0
+auto_height = true
+script = ExtResource("2_nq5f8")
+metadata/_edit_use_anchors_ = true
+
+[connection signal="child_exiting_tree" from="Node Editor" to="Node Editor" method="_on_child_exiting_tree"]
+[connection signal="connection_request" from="Node Editor" to="Node Editor" method="GraphEdit_connection_request"]
+[connection signal="disconnection_request" from="Node Editor" to="Node Editor" method="_on_GraphEdit_disconnection_request"]
+[connection signal="gui_input" from="Node Editor" to="Node Editor" method="_on_gui_input"]
+[connection signal="gui_input" from="Node Editor" to="Node Editor/Add Node Popup" method="_on_node_editor_gui_input"]
+[connection signal="node_deselected" from="Node Editor" to="Node Editor" method="_on_node_deselected"]
+[connection signal="node_selected" from="Node Editor" to="Node Editor" method="_on_node_selected"]
+[connection signal="item_clicked" from="Node Editor/Add Node Popup" to="Node Editor" method="_on_item_list_item_clicked"]
+[connection signal="item_clicked" from="Node Editor/Add Node Popup" to="Node Editor/Add Node Popup" method="_on_item_clicked"]

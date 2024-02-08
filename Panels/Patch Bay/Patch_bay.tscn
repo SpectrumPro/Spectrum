@@ -1,0 +1,186 @@
+[gd_scene load_steps=6 format=3 uid="uid://cdg8rr3v7el85"]
+
+[ext_resource type="Script" path="res://Scripts/Patch_bay.gd" id="1_a7s4o"]
+[ext_resource type="Texture2D" uid="uid://dpj5ee27m3m18" path="res://Assets/Icons/Universe.svg" id="2_2udr1"]
+[ext_resource type="Texture2D" uid="uid://b2vi1f3f4utvw" path="res://Assets/Icons/Input.svg" id="3_iapav"]
+[ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="4_ol682"]
+[ext_resource type="Texture2D" uid="uid://bdnlb80222dah" path="res://Assets/Icons/Channel_lock.svg" id="5_2jsg7"]
+
+[node name="Patch Bay" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Patch Bay" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_a7s4o")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Patch Bay"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Patch Bay/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="Patch Bay/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Patch Bay/VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="New Universe" type="Button" parent="Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Create a new universe"
+text = "New Universe"
+icon = ExtResource("2_2udr1")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Patch Bay/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = -260
+
+[node name="PanelContainer" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Universes" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VSplitContainer" type="VSplitContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2"]
+layout_mode = 2
+split_offset = 200
+
+[node name="PanelContainer" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Universe Controls" type="HBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Universe Name" type="LineEdit" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+placeholder_text = "Universe Name"
+editable = false
+expand_to_text_length = true
+
+[node name="New Input" type="Button" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
+layout_mode = 2
+tooltip_text = "Work in progress, Add a input for the current universe"
+disabled = true
+text = "New Input"
+icon = ExtResource("3_iapav")
+
+[node name="New Output" type="Button" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
+layout_mode = 2
+tooltip_text = "Add a output for the current universe"
+disabled = true
+text = "New Output
+"
+icon = ExtResource("4_ol682")
+
+[node name="New Channel Overide" type="Button" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
+layout_mode = 2
+tooltip_text = "Work in progress, Add a channel override"
+disabled = true
+text = "New Channel Override"
+icon = ExtResource("5_2jsg7")
+
+[node name="GridContainer" type="GridContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Universe Inputs" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer2" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="IO Type" type="OptionButton" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Select IO type"
+disabled = true
+alignment = 1
+item_count = 2
+selected = 0
+popup/item_0/text = "Empty"
+popup/item_0/id = 1
+popup/item_1/text = "Art-Net"
+popup/item_1/id = 0
+
+[node name="HSeparator" type="HSeparator" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="IO Controls" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer3" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="Universe Outputs" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Channel Overrides" type="VBoxContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="pressed" from="Patch Bay/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Universe" to="Patch Bay" method="_on_new_universe_pressed"]
+[connection signal="text_changed" from="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name" to="Patch Bay" method="_on_universe_name_text_changed"]
+[connection signal="pressed" from="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Input" to="Patch Bay" method="_on_new_input_pressed"]
+[connection signal="pressed" from="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Output" to="Patch Bay" method="_on_new_output_pressed"]
+[connection signal="pressed" from="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/New Channel Overide" to="Patch Bay" method="_on_new_channel_overide_pressed"]
+[connection signal="item_selected" from="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type" to="Patch Bay" method="_on_io_type_item_selected"]
