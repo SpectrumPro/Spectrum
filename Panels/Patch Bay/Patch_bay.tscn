@@ -1,15 +1,18 @@
 [gd_scene load_steps=6 format=3 uid="uid://cdg8rr3v7el85"]
 
-[ext_resource type="Script" path="res://Scripts/Patch_bay.gd" id="1_a7s4o"]
+[ext_resource type="Script" path="res://Panels/Patch Bay/Patch_bay.gd" id="1_hs5vn"]
 [ext_resource type="Texture2D" uid="uid://dpj5ee27m3m18" path="res://Assets/Icons/Universe.svg" id="2_2udr1"]
 [ext_resource type="Texture2D" uid="uid://b2vi1f3f4utvw" path="res://Assets/Icons/Input.svg" id="3_iapav"]
 [ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="4_ol682"]
 [ext_resource type="Texture2D" uid="uid://bdnlb80222dah" path="res://Assets/Icons/Channel_lock.svg" id="5_2jsg7"]
 
 [node name="Patch Bay" type="Control"]
-visible = false
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Patch Bay" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -22,7 +25,15 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
-script = ExtResource("1_a7s4o")
+script = ExtResource("1_hs5vn")
+universe_list = NodePath("VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes")
+universe_inputs = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs")
+universe_outputs = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs")
+channel_overrides_list = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides")
+universe_name = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name")
+universe_controls = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls")
+universe_io_controls = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls")
+universe_io_type = NodePath("VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Patch Bay"]
 layout_mode = 2
