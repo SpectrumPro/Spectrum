@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bbulvv8qjh8ii"]
 
 [ext_resource type="Script" path="res://Panels/Node Editor/Node_system.gd" id="1_yi4v0"]
-[ext_resource type="Script" path="res://Scripts/Add_node_popup.gd" id="2_nq5f8"]
+[ext_resource type="Script" path="res://Panels/Node Editor/Add_node_popup.gd" id="2_nq5f8"]
 
 [sub_resource type="Theme" id="Theme_0vxhv"]
 

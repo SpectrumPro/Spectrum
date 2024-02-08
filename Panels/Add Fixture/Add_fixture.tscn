@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c3lrdtiw05qft"]
 
-[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_460tm"]
-[ext_resource type="Script" path="res://Scripts/Add_fixture.gd" id="2_q8wav"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_460tm"]
+[ext_resource type="Script" path="res://Panels/Add Fixture/Add_fixture.gd" id="2_q8wav"]
 
 [node name="PanelContainer" type="PanelContainer"]
 anchors_preset = 15

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b3y3lh4tdx7m0"]
 
 [ext_resource type="Script" path="res://Panels/Console/Console.gd" id="1_37w0r"]
-[ext_resource type="Script" path="res://Scripts/Add_widget_popup.gd" id="2_8j2yo"]
+[ext_resource type="Script" path="res://Panels/Console/Add_widget_popup.gd" id="2_8j2yo"]
 
 [node name="Console" type="Control"]
 visible = false
