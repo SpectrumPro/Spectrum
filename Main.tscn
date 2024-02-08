@@ -1,6 +1,6 @@
 [gd_scene load_steps=30 format=3 uid="uid://p3sohjs1pt37"]
 
-[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Main.theme" id="1_lygr6"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
 [ext_resource type="PackedScene" uid="uid://bbulvv8qjh8ii" path="res://Panels/Node Editor/Node_editor.tscn" id="4_7hj3a"]
@@ -11,10 +11,10 @@
 [ext_resource type="PackedScene" uid="uid://cdg8rr3v7el85" path="res://Panels/Patch Bay/Patch_bay.tscn" id="9_hxqqf"]
 [ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="10_e6e26"]
 [ext_resource type="PackedScene" uid="uid://ms6y8pfljlq2" path="res://Panels/3D/3d.tscn" id="10_tx05s"]
-[ext_resource type="Script" path="res://Scripts/Popup_window.gd" id="10_yavq3"]
+[ext_resource type="Script" path="res://Panels/Popups/Popup_window.gd" id="10_yavq3"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="11_7alyx"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
-[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Add_fixture.tscn" id="25_owwqo"]
+[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="25_owwqo"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -136,6 +136,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="3D" parent="TabContainer" instance=ExtResource("10_tx05s")]
+visible = false
 layout_mode = 2
 
 [node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("11_7alyx")]

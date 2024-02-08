@@ -1,6 +1,6 @@
 [gd_scene load_steps=37 format=3 uid="uid://dhor5xf4xd2ul"]
 
-[ext_resource type="Script" path="res://Scripts/Desk.gd" id="1_u3hof"]
+[ext_resource type="Script" path="res://Panels/Desk/Desk.gd" id="1_u3hof"]
 [ext_resource type="Texture2D" uid="uid://dvb0tqyrkaajq" path="res://Assets/Icons/Terminal.svg" id="2_4btw5"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_if2lg"]

@@ -1,11 +1,14 @@
 [gd_scene load_steps=2 format=3 uid="uid://ms6y8pfljlq2"]
 
-[ext_resource type="PackedScene" uid="uid://c77mf2kr4q4gj" path="res://3D.tscn" id="1_ol11y"]
+[ext_resource type="PackedScene" uid="uid://c77mf2kr4q4gj" path="res://Panels/3D/3D_viewport.tscn" id="1_ir17g"]
 
 [node name="3D" type="Control"]
-visible = false
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="3D" type="Control" parent="."]
 layout_mode = 1
@@ -27,10 +30,10 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="3D/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1920, 1080)
 render_target_update_mode = 0
 
-[node name="Node3D" parent="3D/SubViewportContainer/SubViewport" instance=ExtResource("1_ol11y")]
+[node name="Node3D" parent="3D/SubViewportContainer/SubViewport" instance=ExtResource("1_ir17g")]
 
 [node name="Panel" type="Panel" parent="3D"]
 layout_mode = 1

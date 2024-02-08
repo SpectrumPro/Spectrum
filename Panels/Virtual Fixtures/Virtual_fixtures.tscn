@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dhrijn1m88172"]
 
-[ext_resource type="Script" path="res://Scripts/2D.gd" id="1_y16fu"]
+[ext_resource type="Script" path="res://Panels/Virtual Fixtures/2D.gd" id="1_y16fu"]
 [ext_resource type="Script" path="res://Scripts/Sidebar.gd" id="2_j8tmg"]
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="3_xlq73"]
 

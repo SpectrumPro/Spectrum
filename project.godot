@@ -19,7 +19,7 @@ config/features=PackedStringArray("4.2")
 boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
 boot_splash/image="res://Assets/Icon_small.png"
 boot_splash/fullsize=false
-config/icon="res://icon.png"
+config/icon="res://Assets/Icon.png"
 config/windows_native_icon="res://icon.ico"
 boot_splash/minimum_display_time=500
 
