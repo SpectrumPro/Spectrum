@@ -6,9 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://Assets/Icons/Cue_list.svg" id="4_q8830"]
 
 [node name="Functions" type="Control"]
-visible = false
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Functions" type="MarginContainer" parent="."]
 layout_mode = 1

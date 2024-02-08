@@ -112,7 +112,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 5
+current_tab = 4
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
@@ -124,15 +124,18 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Functions" parent="TabContainer" instance=ExtResource("6_xax7j")]
+visible = false
 layout_mode = 2
 
 [node name="Fixtures" parent="TabContainer" instance=ExtResource("10_e6e26")]
+visible = false
 layout_mode = 2
 
 [node name="Desk" parent="TabContainer" instance=ExtResource("8_12iq0")]
 layout_mode = 2
 
 [node name="Patch Bay" parent="TabContainer" instance=ExtResource("9_hxqqf")]
+visible = false
 layout_mode = 2
 
 [node name="3D" parent="TabContainer" instance=ExtResource("10_tx05s")]

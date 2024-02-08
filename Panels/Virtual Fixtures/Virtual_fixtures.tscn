@@ -6,7 +6,11 @@
 
 [node name="Virtual Fixtures" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -26,11 +30,10 @@ show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("1_y16fu")
 
-[node name="Sidebar" type="PanelContainer" parent="HBoxContainer" node_paths=PackedStringArray("contence")]
+[node name="Sidebar" type="PanelContainer" parent="HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 script = ExtResource("2_j8tmg")
-contence = NodePath("")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Sidebar"]
 layout_mode = 2
