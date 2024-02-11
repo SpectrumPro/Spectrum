@@ -1,22 +1,16 @@
-[gd_scene load_steps=32 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=26 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
-[ext_resource type="PackedScene" uid="uid://bbulvv8qjh8ii" path="res://Panels/Node Editor/Node_editor.tscn" id="4_7hj3a"]
-[ext_resource type="PackedScene" uid="uid://b3y3lh4tdx7m0" path="res://Panels/Console/Console.tscn" id="5_asaop"]
 [ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
-[ext_resource type="PackedScene" uid="uid://k641v8l2l3wp" path="res://Panels/Functions/Functions.tscn" id="6_xax7j"]
 [ext_resource type="PackedScene" uid="uid://dhor5xf4xd2ul" path="res://Panels/Desk/Desk.tscn" id="8_12iq0"]
 [ext_resource type="PackedScene" uid="uid://cdg8rr3v7el85" path="res://Panels/Patch Bay/Patch_bay.tscn" id="9_hxqqf"]
 [ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="10_e6e26"]
-[ext_resource type="PackedScene" uid="uid://ms6y8pfljlq2" path="res://Panels/3D/3d.tscn" id="10_tx05s"]
 [ext_resource type="Script" path="res://Panels/Popups/Popup_window.gd" id="10_yavq3"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="11_7alyx"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
-[ext_resource type="PackedScene" uid="uid://cmklmtt3xnxsi" path="res://Panels/Window Control/Window_control.tscn" id="19_y3usn"]
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="24_oc2jn"]
-[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="25_owwqo"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -114,22 +108,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 7
+current_tab = 3
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
-
-[node name="Node Editor" parent="TabContainer" instance=ExtResource("4_7hj3a")]
-visible = false
-layout_mode = 2
-
-[node name="Console" parent="TabContainer" instance=ExtResource("5_asaop")]
-visible = false
-layout_mode = 2
-
-[node name="Functions" parent="TabContainer" instance=ExtResource("6_xax7j")]
-visible = false
-layout_mode = 2
 
 [node name="Fixtures" parent="TabContainer" instance=ExtResource("10_e6e26")]
 visible = false
@@ -140,10 +122,6 @@ visible = false
 layout_mode = 2
 
 [node name="Patch Bay" parent="TabContainer" instance=ExtResource("9_hxqqf")]
-visible = false
-layout_mode = 2
-
-[node name="3D" parent="TabContainer" instance=ExtResource("10_tx05s")]
 visible = false
 layout_mode = 2
 
@@ -295,17 +273,7 @@ size = Vector2i(742, 659)
 access = 2
 use_native_dialog = true
 
-[node name="Add Fixture" type="Window" parent="."]
-title = "Add Fixture"
-initial_position = 5
-size = Vector2i(870, 635)
-visible = false
-always_on_top = true
-script = ExtResource("27_nmwy1")
-
-[node name="Add Fixture" parent="Add Fixture" instance=ExtResource("25_owwqo")]
-
-[node name="Label" type="Label" parent="."]
+[node name="Debug Text" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -322,10 +290,6 @@ scale = Vector2(0.692268, 0.692268)
 text = "Beta Version 0.4.0
 "
 
-[node name="Window Control" parent="." instance=ExtResource("19_y3usn")]
-visible = false
-layout_mode = 1
-
 [connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
@@ -337,4 +301,3 @@ layout_mode = 1
 [connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
 [connection signal="file_selected" from="Load File Dialog" to="." method="_on_load_file_dialog_file_selected"]
 [connection signal="file_selected" from="Save File Dialog" to="." method="_on_save_file_dialog_file_selected"]
-[connection signal="close_requested" from="Add Fixture" to="Add Fixture" method="_on_close_requested"]

@@ -48,7 +48,7 @@ func from(config, control_fixture):
 	control_fixture.add_virtual_fixture(node_to_add)
 	add_child(node_to_add)
   
-func active_fixtures_changed(new_active_fixtures):
+func active_fixtures_changed(new_active_fixtures:Array):
 	
 	add_button.disabled = true if new_active_fixtures == [] else false
 	

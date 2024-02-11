@@ -24,6 +24,8 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 script = ExtResource("1_xjo7n")
+physical_fixture_list = NodePath("VBoxContainer/VSplitContainer/PanelContainer3/ScrollContainer/Physical Fixtures")
+fixture_groups_list = NodePath("VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer/Fixture Groups")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Fixtures"]
 layout_mode = 2

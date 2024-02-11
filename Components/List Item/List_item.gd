@@ -38,7 +38,7 @@ func _on_edit_pressed():
 
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.pressed == true:  # Check if the mouse button is released
+		if event.pressed == true and event.button_index == MOUSE_BUTTON_LEFT:  # Check if the mouse button is released
 			if control_node.has_method("on_selected"):
 				control_node.on_selected(self)
 

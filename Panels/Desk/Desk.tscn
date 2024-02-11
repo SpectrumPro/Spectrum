@@ -157,6 +157,9 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 script = ExtResource("1_u3hof")
+channel_container = NodePath("VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer/Channel Container")
+universe_option_dropdown = NodePath("VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option")
+command_input = NodePath("VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Command Input")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="Desk"]
 layout_mode = 2

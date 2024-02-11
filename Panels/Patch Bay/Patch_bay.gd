@@ -124,15 +124,6 @@ func new_input():
 
 func new_output():
 	universes[current_universe_uuid].new_output("Empty")
-	#var output_uuid = Globals.new_uuid()
-	#
-	#universes[current_universe_uuid].outputs[output_uuid] = {
-		#"type":"Empty",
-		#"name":"Empty Output",
-		#"settings":{
-			#
-		#}
-	#}
 	reload_io()
 
 func reload_io():
