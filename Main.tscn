@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=32 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
@@ -14,6 +14,8 @@
 [ext_resource type="Script" path="res://Panels/Popups/Popup_window.gd" id="10_yavq3"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="11_7alyx"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
+[ext_resource type="PackedScene" uid="uid://cmklmtt3xnxsi" path="res://Panels/Window Control/Window_control.tscn" id="19_y3usn"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="24_oc2jn"]
 [ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="25_owwqo"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
@@ -112,15 +114,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 4
+current_tab = 7
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
 
 [node name="Node Editor" parent="TabContainer" instance=ExtResource("4_7hj3a")]
+visible = false
 layout_mode = 2
 
 [node name="Console" parent="TabContainer" instance=ExtResource("5_asaop")]
+visible = false
 layout_mode = 2
 
 [node name="Functions" parent="TabContainer" instance=ExtResource("6_xax7j")]
@@ -132,6 +136,7 @@ visible = false
 layout_mode = 2
 
 [node name="Desk" parent="TabContainer" instance=ExtResource("8_12iq0")]
+visible = false
 layout_mode = 2
 
 [node name="Patch Bay" parent="TabContainer" instance=ExtResource("9_hxqqf")]
@@ -143,16 +148,25 @@ visible = false
 layout_mode = 2
 
 [node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("11_7alyx")]
-visible = false
 layout_mode = 2
+
+[node name="Open Drop Down" type="Button" parent="."]
+layout_mode = 2
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 44.0
+offset_bottom = 42.0
+size_flags_horizontal = 2
+icon = ExtResource("24_oc2jn")
+icon_alignment = 1
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -443.0
-offset_right = -3.0
+offset_left = -495.915
+offset_right = -3.91504
 offset_bottom = 45.0
 grow_horizontal = 0
 
@@ -165,8 +179,9 @@ horizontal_alignment = 1
 script = ExtResource("3_l3bnx")
 
 [node name="Edit Mode" type="Button" parent="Menu Buttons"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_styles/normal = SubResource("StyleBoxFlat_6m6og")
 theme_override_styles/hover = SubResource("StyleBoxFlat_6m6og")
@@ -178,15 +193,17 @@ shortcut_feedback = false
 text = "Edit Mode"
 
 [node name="Save" type="Button" parent="Menu Buttons"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 size_flags_vertical = 4
 shortcut = SubResource("Shortcut_dsn3a")
 text = "Save"
 
 [node name="Load" type="Button" parent="Menu Buttons"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 size_flags_vertical = 4
 shortcut = SubResource("Shortcut_aauib")
 text = "Load
@@ -200,8 +217,9 @@ text = "New
 "
 
 [node name="Settings" type="Button" parent="Menu Buttons"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 size_flags_vertical = 4
 shortcut = SubResource("Shortcut_sn8ws")
 text = "Settings"
@@ -295,14 +313,18 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -103.0
-offset_top = -15.9999
+offset_top = -16.0
 offset_right = 46.0
-offset_bottom = 7.00012
+offset_bottom = 7.0
 grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(0.692268, 0.692268)
 text = "Beta Version 0.4.0
 "
+
+[node name="Window Control" parent="." instance=ExtResource("19_y3usn")]
+visible = false
+layout_mode = 1
 
 [connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
