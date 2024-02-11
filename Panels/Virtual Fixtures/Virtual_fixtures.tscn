@@ -30,10 +30,11 @@ show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("1_y16fu")
 
-[node name="Sidebar" type="PanelContainer" parent="HBoxContainer"]
+[node name="Sidebar" type="PanelContainer" parent="HBoxContainer" node_paths=PackedStringArray("contence")]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 script = ExtResource("2_j8tmg")
+contence = NodePath("MarginContainer/VBoxContainer/Contence")
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Sidebar"]
 layout_mode = 2
