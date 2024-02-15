@@ -1,14 +1,14 @@
 extends Control
 
-var active_fixtures = []
+var active_fixtures : Array[Fixture] = []
 
-func _ready():
+func _ready() -> void:
 	Globals.subscribe("edit_mode", self.on_edit_mode_changed)
 	Globals.subscribe("reload_fixtures", self.reload_fixtures)
 	Globals.subscribe("active_fixtures", self.set_active_fixtures)
 
-func delete_request(node):
-	var confirmation_dialog = Globals.components.accept_dialog.instantiate()
+func delete_request(node:Control):
+	var confirmation_dialog : AcceptDialog = Globals.components.accept_dialog.instantiate()
 	confirmation_dialog.dialog_text = "Are you sure you want to delete this? This action can not be undone"
 	confirmation_dialog.confirmed.connect((
 	func(node):
@@ -22,11 +22,13 @@ func delete_request(node):
 func edit_request(node):
 	pass
 
-func on_selected(node):
-	Globals.set_value("active_fixtures", [node.get_meta("fixture")])
+func on_selected(node:Control):
+	if Input.is_key_pressed(KEY_SHIFT):
+		pass
+	else:
+		Globals.set_value("active_fixtures", [node.get_meta("fixture")])
 
 func on_edit_mode_changed(edit_mode):
-
 	for function_item in Globals.nodes.physical_fixture_list.get_children():
 		function_item.dissable_buttons(not edit_mode)
 		
@@ -38,7 +40,6 @@ func reload_fixtures():
 		node.get_parent().remove_child(node)
 		node.queue_free()
 	
-
 	for universe in Globals.universes.values():
 		for fixture in universe.get_fixtures().values():
 						
@@ -51,7 +52,7 @@ func reload_fixtures():
 			
 	set_active_fixtures(active_fixtures)
 	
-func set_active_fixtures(fixtures):
+func set_active_fixtures(fixtures:Array[Fixture]):
 	for fixture in Globals.nodes.physical_fixture_list.get_children():
 		fixture.set_highlighted(false)
 	active_fixtures = fixtures

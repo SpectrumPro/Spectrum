@@ -1,0 +1,443 @@
+[gd_scene load_steps=37 format=3 uid="uid://dhor5xf4xd2ul"]
+
+[ext_resource type="Script" path="res://Panels/Desk/Desk.gd" id="1_u3hof"]
+[ext_resource type="Texture2D" uid="uid://dvb0tqyrkaajq" path="res://Assets/Icons/Terminal.svg" id="2_4btw5"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_if2lg"]
+device = -1
+keycode = 4194445
+unicode = 55
+
+[sub_resource type="Shortcut" id="Shortcut_wobsc"]
+events = [SubResource("InputEventKey_if2lg")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_5nh0y"]
+device = -1
+keycode = 4194446
+unicode = 56
+
+[sub_resource type="Shortcut" id="Shortcut_eqle4"]
+events = [SubResource("InputEventKey_5nh0y")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_8uu75"]
+device = -1
+keycode = 4194447
+unicode = 57
+
+[sub_resource type="Shortcut" id="Shortcut_6xurk"]
+events = [SubResource("InputEventKey_8uu75")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_j5gov"]
+device = -1
+keycode = 4194435
+unicode = 45
+
+[sub_resource type="Shortcut" id="Shortcut_in8pi"]
+events = [SubResource("InputEventKey_j5gov")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_5gd3q"]
+device = -1
+keycode = 4194442
+unicode = 52
+
+[sub_resource type="Shortcut" id="Shortcut_swbon"]
+events = [SubResource("InputEventKey_5gd3q")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_4mv26"]
+device = -1
+keycode = 4194443
+unicode = 53
+
+[sub_resource type="Shortcut" id="Shortcut_2dskk"]
+events = [SubResource("InputEventKey_4mv26")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_7f8wf"]
+device = -1
+keycode = 4194444
+unicode = 54
+
+[sub_resource type="Shortcut" id="Shortcut_g31ig"]
+events = [SubResource("InputEventKey_7f8wf")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_wwxv5"]
+device = -1
+keycode = 4194437
+unicode = 43
+
+[sub_resource type="Shortcut" id="Shortcut_gattb"]
+events = [SubResource("InputEventKey_wwxv5")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_7pm07"]
+device = -1
+keycode = 4194439
+unicode = 49
+
+[sub_resource type="Shortcut" id="Shortcut_f5oot"]
+events = [SubResource("InputEventKey_7pm07")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_8xkop"]
+device = -1
+keycode = 4194440
+unicode = 50
+
+[sub_resource type="Shortcut" id="Shortcut_pkgtc"]
+events = [SubResource("InputEventKey_8xkop")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_wph3p"]
+device = -1
+keycode = 4194441
+unicode = 51
+
+[sub_resource type="Shortcut" id="Shortcut_367qd"]
+events = [SubResource("InputEventKey_wph3p")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_c7h36"]
+device = -1
+keycode = 4194433
+unicode = 42
+
+[sub_resource type="Shortcut" id="Shortcut_iksl3"]
+events = [SubResource("InputEventKey_c7h36")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_lbgl2"]
+device = -1
+keycode = 4194438
+unicode = 48
+
+[sub_resource type="Shortcut" id="Shortcut_fiym5"]
+events = [SubResource("InputEventKey_lbgl2")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_x4vlh"]
+device = -1
+keycode = 4194434
+unicode = 47
+
+[sub_resource type="Shortcut" id="Shortcut_8adse"]
+events = [SubResource("InputEventKey_x4vlh")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_o2nk0"]
+device = -1
+keycode = 4194310
+
+[sub_resource type="Shortcut" id="Shortcut_jfmp7"]
+events = [SubResource("InputEventKey_o2nk0")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_j7xtp"]
+device = -1
+keycode = 4194436
+unicode = 46
+
+[sub_resource type="Shortcut" id="Shortcut_bt3s2"]
+events = [SubResource("InputEventKey_j7xtp")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_u657g"]
+device = -1
+keycode = 4194328
+
+[sub_resource type="Shortcut" id="Shortcut_cvtlu"]
+events = [SubResource("InputEventKey_u657g")]
+
+[node name="Desk" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Desk" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_u3hof")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="Desk"]
+layout_mode = 2
+split_offset = -35
+
+[node name="PanelContainer" type="PanelContainer" parent="Desk/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Desk/VSplitContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Universe Label" type="Label" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Universe  "
+
+[node name="Desk Universe Option" type="OptionButton" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 37)
+layout_mode = 2
+tooltip_text = "Select universe"
+allow_reselect = true
+
+[node name="VSeparator" type="VSeparator" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Command Label" type="Label" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Command"
+
+[node name="Command Input" type="LineEdit" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+caret_blink = true
+
+[node name="Open Console" type="Button" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Work in Progress, Show command output"
+icon = ExtResource("2_4btw5")
+
+[node name="PanelContainer2" type="PanelContainer" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Channel Container" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="Desk/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="7" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_wobsc")
+text = "7"
+
+[node name="8" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_eqle4")
+text = "8"
+
+[node name="9" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_6xurk")
+text = "9"
+
+[node name="ZERO" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+shortcut = SubResource("Shortcut_in8pi")
+text = "ZERO"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="4" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_swbon")
+text = "4"
+
+[node name="5" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_2dskk")
+text = "5"
+
+[node name="6" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_g31ig")
+text = "6"
+
+[node name="FULL" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+shortcut = SubResource("Shortcut_gattb")
+text = "FULL"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="1" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_f5oot")
+text = "1"
+
+[node name="2" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_pkgtc")
+text = "2"
+
+[node name="3" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_367qd")
+text = "3"
+
+[node name="THRU" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+shortcut = SubResource("Shortcut_iksl3")
+text = "THRU"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="0" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(204.06, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_fiym5")
+text = "0"
+
+[node name="AT" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+shortcut = SubResource("Shortcut_8adse")
+text = "AT"
+
+[node name="BY" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+text = "BY"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="EXECUTE" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer5"]
+custom_minimum_size = Vector2(204, 100)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_jfmp7")
+text = "EXECUTE"
+
+[node name="DELETE" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer5"]
+custom_minimum_size = Vector2(204, 100.44)
+layout_mode = 2
+action_mode = 0
+shortcut = SubResource("Shortcut_bt3s2")
+text = "DELETE"
+
+[node name="PanelContainer" type="PanelContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="ColorPicker" type="ColorPicker" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/sv_width = 300
+theme_override_constants/sv_height = 292
+edit_alpha = false
+picker_shape = 2
+sampler_visible = false
+color_modes_visible = false
+sliders_visible = false
+hex_visible = false
+presets_visible = false
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="SAVE" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+text = "SAVE"
+
+[node name="LOAD" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+text = "LOAD"
+
+[node name="SELECT" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+text = "SELECT
+"
+
+[node name="ALT" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+toggle_mode = true
+shortcut = SubResource("Shortcut_cvtlu")
+shortcut_feedback = false
+text = "ALT"
+
+[node name="CLEAR" type="Button" parent="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 100.44)
+layout_mode = 2
+text = "CLEAR"
+
+[connection signal="item_selected" from="Desk/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Desk Universe Option" to="Desk" method="_on_desk_universe_option_item_selected"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/7" to="Desk" method="_on_7_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/8" to="Desk" method="_on_8_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/9" to="Desk" method="_on_9_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/ZERO" to="Desk" method="_on_zero_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/4" to="Desk" method="_on_4_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/5" to="Desk" method="_on_5_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/6" to="Desk" method="_on_6_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer2/FULL" to="Desk" method="_on_full_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3/1" to="Desk" method="_on_1_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3/2" to="Desk" method="_on_2_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3/3" to="Desk" method="_on_3_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer3/THRU" to="Desk" method="_on_thru_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4/0" to="Desk" method="_on_0_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4/AT" to="Desk" method="_on_at_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer4/BY" to="Desk" method="_on_by_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer5/EXECUTE" to="Desk" method="_on_execute_pressed"]
+[connection signal="pressed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer5/DELETE" to="Desk" method="_on_delete_pressed"]
+[connection signal="color_changed" from="Desk/VSplitContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/ColorPicker" to="Desk" method="_on_color_picker_color_changed"]

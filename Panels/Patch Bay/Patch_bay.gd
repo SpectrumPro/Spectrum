@@ -15,7 +15,17 @@ var output_options = [
 ]
 var universes = Globals.universes
 
+@export var universe_list: NodePath
+@export var universe_inputs: NodePath
+@export var universe_outputs: NodePath
+@export var channel_overrides_list: NodePath
+@export var universe_name: NodePath
+@export var universe_controls: NodePath
+@export var universe_io_controls: NodePath
+@export var universe_io_type: NodePath
+
 func _ready():
+	print(universe_list)
 	Globals.subscribe("edit_mode", self.on_edit_mode_changed)
 	Globals.subscribe("reload_universes", self.reload_universes)
 
@@ -46,7 +56,7 @@ func delete_request(node):
 				current_io_type = ""
 				current_io = ""
 				
-				Globals.nodes.universe_io_type.disabled = true
+				get_node(universe_io_type).disabled = true
 				
 				reload_io()
 				
@@ -57,7 +67,7 @@ func edit_request(node):
 	match node.get_meta("type"):
 		"universe":
 			current_universe_uuid = node.get_meta("universe_uuid")
-			Globals.nodes.universe_name.text = universes[current_universe_uuid].get_universe_name()
+			get_node(universe_name).text = universes[current_universe_uuid].get_universe_name()
 			
 			set_universe_controls_enabled(true)
 			reload_io()
@@ -66,15 +76,15 @@ func edit_request(node):
 			current_io_type = "output"
 			current_io = universes[current_universe_uuid].get_output(current_io_uuid)
 			
-			Globals.nodes.universe_io_type.disabled = false
+			get_node(universe_io_type).disabled = false
 			
 			reload_io()
 
 func on_edit_mode_changed(edit_mode):
-	for function_item in Globals.nodes.universe_list.get_children():
+	for function_item in get_node(universe_name).get_children():
 		function_item.dissable_buttons(not edit_mode)
 		
-	for function_item in Globals.nodes.channel_overrides_list.get_children():
+	for function_item in get_node(channel_overrides_list).get_children():
 		function_item.dissable_buttons(not edit_mode)
 
 func new_universe():
@@ -83,7 +93,7 @@ func new_universe():
 	Globals.call_subscription("reload_universes")
 
 func reload_universes():
-	for node in Globals.nodes.universe_list.get_children():
+	for node in get_node(universe_list).get_children():
 		node.queue_free()
 	for uuid in universes:
 		var universe = universes[uuid]
@@ -98,19 +108,19 @@ func reload_universes():
 		if current_universe_uuid == uuid:
 			node_to_add.set_highlighted(true)
 		
-		Globals.nodes.universe_list.add_child(node_to_add)
+		get_node(universe_list).add_child(node_to_add)
 	
 func new_channel_override():
 	var node_to_add = Globals.components.list_item.instantiate()
 	node_to_add.set_item_name("Channel Override")
 	node_to_add.control_node = self
-	Globals.nodes.channel_overrides_list.add_child(node_to_add)
+	get_node(channel_overrides_list).add_child(node_to_add)
 	
 func new_input():
 	var node_to_add = Globals.components.list_item.instantiate()
 	node_to_add.set_item_name("Empty Input")
 	node_to_add.control_node = self
-	Globals.nodes.universe_inputs.add_child(node_to_add)
+	get_node(universe_inputs).add_child(node_to_add)
 
 func new_output():
 	universes[current_universe_uuid].new_output("Empty")
@@ -127,10 +137,10 @@ func new_output():
 
 func reload_io():
 	
-	for node in Globals.nodes.universe_outputs.get_children():
+	for node in get_node(universe_outputs).get_children():
 		node.queue_free()
 	
-	for node in Globals.nodes.universe_io_controls.get_children():
+	for node in get_node(universe_io_controls).get_children():
 		node.queue_free()
 	
 	if current_universe_uuid:
@@ -146,7 +156,7 @@ func reload_io():
 			
 			if current_io_uuid == uuid:
 				if output.get_type():
-					Globals.nodes.universe_io_type.selected = output_options.find(output.get_type())
+					get_node(universe_io_type).selected = output_options.find(output.get_type())
 				
 				for value in output.exposed_values:
 					var value_node_to_add = value.type.new()
@@ -166,21 +176,21 @@ func reload_io():
 					container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 					container.add_child(lable)
 					container.add_child(value_node_to_add)
-					Globals.nodes.universe_io_controls.add_child(container)
+					get_node(universe_io_controls).add_child(container)
 
 				node_to_add.set_highlighted(true)
 				
-			Globals.nodes.universe_outputs.add_child(node_to_add)
+			get_node(universe_outputs).add_child(node_to_add)
 
 func set_universe_controls_enabled(enabled):
-	for node in Globals.nodes.universe_controls.get_children():
+	for node in get_node(universe_controls).get_children():
 		if node is LineEdit:
 			node.editable = enabled
 		elif node is BaseButton:
 			node.disabled = not enabled
 	
 	if not enabled:
-		Globals.nodes.universe_name.text = ""
+		get_node(universe_name).text = ""
 
 # Button Callbacks
 

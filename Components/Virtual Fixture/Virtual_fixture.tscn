@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://jv514a664gha"]
 
-[ext_resource type="Script" path="res://Components/Virtual_fixture.gd" id="1_4xcqs"]
+[ext_resource type="Script" path="res://Components/Virtual Fixture/Virtual_fixture.gd" id="1_4xcqs"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0nr4c"]
 bg_color = Color(0, 0, 0, 1)

@@ -1,0 +1,169 @@
+[gd_scene load_steps=5 format=3 uid="uid://k641v8l2l3wp"]
+
+[ext_resource type="Script" path="res://Panels/Functions/Functions.gd" id="1_uwvo7"]
+[ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://Assets/Icons/Scene.svg" id="2_iqhgr"]
+[ext_resource type="Texture2D" uid="uid://cw7e02n080in3" path="res://Assets/Icons/Effect.svg" id="3_prjry"]
+[ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://Assets/Icons/Cue_list.svg" id="4_q8830"]
+
+[node name="Functions" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Functions" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_uwvo7")
+
+[node name="Panel" type="Panel" parent="Functions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Functions/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Functions are a work in progress and will be available in a future version of Spectrum."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Functions"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Functions/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="Functions/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Functions/VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="New Scene" type="Button" parent="Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Scene"
+icon = ExtResource("2_iqhgr")
+
+[node name="New Effect" type="Button" parent="Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Effect"
+icon = ExtResource("3_prjry")
+
+[node name="New Cue List" type="Button" parent="Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "New Cue List"
+icon = ExtResource("4_q8830")
+
+[node name="PanelContainer2" type="PanelContainer" parent="Functions/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Functions/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Scenes" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Scenes" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Scenes"]
+layout_mode = 2
+text = "Scenes"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="Effects" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Effects" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Effects"]
+layout_mode = 2
+text = "Effects"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="Cues" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cues" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues"]
+layout_mode = 2
+text = "Cues
+"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Scene" to="Functions" method="_on_new_scene_pressed"]
+[connection signal="pressed" from="Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Effect" to="Functions" method="_on_new_effect_pressed"]
+[connection signal="pressed" from="Functions/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Cue List" to="Functions" method="_on_new_cue_list_pressed"]

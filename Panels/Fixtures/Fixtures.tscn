@@ -1,0 +1,99 @@
+[gd_scene load_steps=4 format=3 uid="uid://pe1tet2410en"]
+
+[ext_resource type="Script" path="res://Panels/Fixtures/Fixtures.gd" id="1_xjo7n"]
+[ext_resource type="Texture2D" uid="uid://dis005hfepinf" path="res://Assets/Icons/Fixture.svg" id="2_tonwl"]
+[ext_resource type="Texture2D" uid="uid://ds5mmj3a0ukl4" path="res://Assets/Icons/Fixture_group.svg" id="3_dj1r6"]
+
+[node name="Fixtures" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Fixtures" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_xjo7n")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Fixtures"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Fixtures/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="Fixtures/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Fixtures/VBoxContainer/MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="New Physical Fixture" type="Button" parent="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Open fixture creation window"
+text = "New Fixture"
+icon = ExtResource("2_tonwl")
+
+[node name="New Fixture Group" type="Button" parent="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Work in progress, Create a new fixture group"
+text = "New Fixture Group"
+icon = ExtResource("3_dj1r6")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="Fixtures/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer3" type="PanelContainer" parent="Fixtures/VBoxContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Fixtures/VBoxContainer/VSplitContainer/PanelContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Physical Fixtures" type="VBoxContainer" parent="Fixtures/VBoxContainer/VSplitContainer/PanelContainer3/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="Fixtures/VBoxContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Fixtures/VBoxContainer/VSplitContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Fixture Groups" type="VBoxContainer" parent="Fixtures/VBoxContainer/VSplitContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="Fixtures"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fixtures/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Fixtures are a work in progress and will be available in a future version of Spectrum."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Physical Fixture" to="Fixtures" method="_on_new_physical_fixture_pressed"]

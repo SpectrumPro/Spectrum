@@ -1,0 +1,67 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhrijn1m88172"]
+
+[ext_resource type="Script" path="res://Panels/Virtual Fixtures/2D.gd" id="1_y16fu"]
+[ext_resource type="Script" path="res://Scripts/Sidebar.gd" id="2_j8tmg"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="3_xlq73"]
+
+[node name="Virtual Fixtures" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Virtual Fixtures" type="GraphEdit" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
+theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+show_minimap_button = false
+show_arrange_button = false
+script = ExtResource("1_y16fu")
+
+[node name="Sidebar" type="PanelContainer" parent="HBoxContainer" node_paths=PackedStringArray("contence")]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+script = ExtResource("2_j8tmg")
+contence = NodePath("MarginContainer/VBoxContainer/Contence")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Sidebar"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Sidebar/MarginContainer"]
+layout_mode = 2
+
+[node name="Side Bar Open" type="Button" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_xlq73")
+icon_alignment = 1
+
+[node name="Contence" type="VBoxContainer" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ColorPicker" type="ColorPicker" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence"]
+layout_mode = 2
+color = Color(0, 1, 1, 1)
+edit_alpha = false
+picker_shape = 1
+color_modes_visible = false
+
+[connection signal="node_deselected" from="HBoxContainer/Virtual Fixtures" to="HBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
+[connection signal="node_selected" from="HBoxContainer/Virtual Fixtures" to="HBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_selected"]
+[connection signal="pressed" from="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Side Bar Open" to="HBoxContainer/Sidebar" method="_on_side_bar_open_pressed"]

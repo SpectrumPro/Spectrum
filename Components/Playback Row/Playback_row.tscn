@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c4wtma14pt5uv"]
 
-[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_2wasx"]
+[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_g8a7l"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hv2sk"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
@@ -50,8 +50,8 @@ size_flags_horizontal = 1
 size_flags_vertical = 3
 mouse_force_pass_scroll_events = false
 mouse_default_cursor_shape = 10
-theme_override_icons/grabber = ExtResource("1_2wasx")
-theme_override_icons/grabber_highlight = ExtResource("1_2wasx")
+theme_override_icons/grabber = ExtResource("1_g8a7l")
+theme_override_icons/grabber_highlight = ExtResource("1_g8a7l")
 theme_override_styles/slider = SubResource("StyleBoxFlat_hv2sk")
 max_value = 255.0
 

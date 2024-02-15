@@ -24,12 +24,12 @@ var active_fixtures := {}
 var configFile : ConfigFile
 
 @onready var components := {             
-	"close_button":ResourceLoader.load("res://Components/Close_button.tscn"),
-	"warning":ResourceLoader.load("res://Components/Warning.tscn"),
-	"list_item":ResourceLoader.load("res://Components/List_item.tscn"),
-	"accept_dialog":ResourceLoader.load("res://Components/Accept_dialog.tscn"),
-	"channel_slider":ResourceLoader.load("res://Components/Channel_slider.tscn"),
-	"virtual_fixture":ResourceLoader.load("res://Components/Virtual_fixture.tscn")
+	"close_button":ResourceLoader.load("res://Components/Close Button/Close_button.tscn"),
+	"warning":ResourceLoader.load("res://Components/Warning/Warning.tscn"),
+	"list_item":ResourceLoader.load("res://Components/List Item/List_item.tscn"),
+	"accept_dialog":ResourceLoader.load("res://Components/Accept Dialog/Accept_dialog.tscn"),
+	"channel_slider":ResourceLoader.load("res://Components/Channel Slider/Channel_slider.tscn"),
+	"virtual_fixture":ResourceLoader.load("res://Components/Virtual Fixture/Virtual_fixture.tscn")
 }
 
 @onready var nodes := {
@@ -55,15 +55,15 @@ var configFile : ConfigFile
 	"cues_list":get_tree().root.get_node("Main/TabContainer/Functions/Functions/VBoxContainer/PanelContainer2/HBoxContainer/Cues/ScrollContainer/VBoxContainer/Cues"),
 	
 	# Patch Bay Tab
-	"patch_bay":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/"),
-	"universe_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes"),
-	"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
-	"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs"),
-	"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
-	"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
-	"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
-	"universe_io_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"),
-	"universe_io_type":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type"),
+	#"patch_bay":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/"),
+	#"universe_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/Universes"),
+	#"universe_inputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer/Universe Inputs"),
+	#"universe_outputs":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer3/ScrollContainer/Universe Outputs"),
+	#"channel_overrides_list":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer2/ScrollContainer/Channel Overrides"),
+	#"universe_name":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls/Universe Name"),
+	#"universe_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"),
+	#"universe_io_controls":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Controls"),
+	#"universe_io_type":get_tree().root.get_node("Main/TabContainer/Patch Bay/Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer/IO Type"),
 	
 	# Fixtures Tab
 	"fixtures":get_tree().root.get_node("Main/TabContainer/Fixtures/Fixtures/"),
@@ -198,9 +198,9 @@ func subscribe(value_name:String, callback:Callable) -> void:
 func set_value(value_name:String, value:Variant) -> void:
 	values[value_name] = value
 	if subscriptions.get(value_name):
-		for node_to_update in subscriptions[value_name]:
-			if node_to_update.is_valid():
-				node_to_update.call(value)
+		for function_to_call in subscriptions[value_name]:
+			if function_to_call.is_valid():
+				function_to_call.call(value)
 
 func get_value(value_name:String) -> Variant:
 	return values.get(value_name, null)
