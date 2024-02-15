@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cdg8rr3v7el85"]
+[gd_scene load_steps=7 format=3 uid="uid://cdg8rr3v7el85"]
 
 [ext_resource type="Script" path="res://Panels/Patch Bay/Patch_bay.gd" id="1_hs5vn"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_m0x8c"]
 [ext_resource type="Texture2D" uid="uid://dpj5ee27m3m18" path="res://Assets/Icons/Universe.svg" id="2_2udr1"]
 [ext_resource type="Texture2D" uid="uid://b2vi1f3f4utvw" path="res://Assets/Icons/Input.svg" id="3_iapav"]
 [ext_resource type="Texture2D" uid="uid://cfmbh53rnl2sq" path="res://Assets/Icons/Output.svg" id="4_ol682"]
@@ -13,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_m0x8c")
 
 [node name="Patch Bay" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -103,6 +105,7 @@ editable = false
 expand_to_text_length = true
 
 [node name="New Input" type="Button" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/Universe Controls"]
+visible = false
 layout_mode = 2
 tooltip_text = "Work in progress, Add a input for the current universe"
 disabled = true
@@ -127,9 +130,10 @@ icon = ExtResource("5_2jsg7")
 [node name="GridContainer" type="GridContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-columns = 3
+columns = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -146,16 +150,12 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="IO Type" type="OptionButton" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 tooltip_text = "Select IO type"
 disabled = true
 alignment = 1
-item_count = 2
-selected = 0
-popup/item_0/text = "Empty"
-popup/item_0/id = 1
-popup/item_1/text = "Art-Net"
-popup/item_1/id = 0
+allow_reselect = true
 
 [node name="HSeparator" type="HSeparator" parent="Patch Bay/VBoxContainer/HSplitContainer/PanelContainer2/VSplitContainer/PanelContainer/VBoxContainer/GridContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2

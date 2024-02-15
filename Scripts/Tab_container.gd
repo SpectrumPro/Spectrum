@@ -5,12 +5,13 @@ var last_click_time : int = 0
 var double_click_threshold : float = 0.5  # Adjust this as needed
 
 func _ready() -> void:
-	set_tab_button_icon(get_current_tab(), load("res://Assets/Icons/close.svg"))
+	#set_tab_button_icon(get_current_tab(), load("res://Assets/Icons/close.svg"))
+	pass
 
 func _on_tab_clicked(tab_index:int) -> void:
-	if not get_current_tab() == get_previous_tab():
-		set_tab_button_icon(get_current_tab(), load("res://Assets/Icons/close.svg"))
-		set_tab_button_icon(get_previous_tab(), Texture2D.new())
+	#if not get_current_tab() == get_previous_tab():
+		#set_tab_button_icon(get_current_tab(), load("res://Assets/Icons/close.svg"))
+		#set_tab_button_icon(get_previous_tab(), Texture2D.new())
 	
 	var current_time : float = Time.get_ticks_msec() / 1000.0
 	if current_time - last_click_time < double_click_threshold:

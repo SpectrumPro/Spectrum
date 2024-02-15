@@ -10,6 +10,20 @@ var options = {
 	"offset":0,
 	"name":""
 }
+	#"add_fixture_window":get_tree().root.get_node("Main/Add Fixture"),
+	#"add_fixture_menu":get_tree().root.get_node("Main/Add Fixture/Add Fixture/"),
+	#"fixture_tree":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/Fixture Tree"),
+	#"fixture_channel_list":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/Channel List"),
+	#"fixture_modes_option":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes"),
+	#"fixture_universe_option":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3/Fixture Universe Option"),
+	#"add_fixture_button":get_tree().root.get_node("Main/Add Fixture/Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button"),
+	#
+	
+@export var fixture_tree: NodePath
+@export var fixture_channel_list: NodePath
+@export var fixture_modes_option: NodePath
+@export var fixture_universe_option: NodePath
+@export var add_fixture_button: NodePath
 
 func _ready():
 	var access = DirAccess.open(fixture_path)
@@ -28,7 +42,7 @@ func _ready():
 			else:
 				Globals.fixtures[manifest.info.brand] = {manifest.info.name:manifest}
 	
-	var tree = Globals.nodes.fixture_tree
+	var tree = get_node(fixture_tree)
 	var root = tree.create_item()
 	tree.hide_root = true
 	
@@ -41,27 +55,28 @@ func _ready():
 			var fixture_item = tree.create_item(manufacturer_item)
 			fixture_item.set_text(0, Globals.fixtures[manufacturer][fixture].info.name)
 	
-	Globals.nodes.fixture_tree.item_selected.connect(self._item_selected)
-	Globals.nodes.fixture_modes_option.item_selected.connect(self._mode_item_selected)
+	get_node(fixture_tree).item_selected.connect(self._item_selected)
+	get_node(fixture_modes_option).item_selected.connect(self._mode_item_selected)
 	
 	Globals.subscribe("reload_universes", self.reload_universes)
+	reload_universes()
 
 func reload_menue():
 	if not current_fixture:return
 	
-	Globals.nodes.fixture_channel_list.clear()
+	get_node(fixture_channel_list).clear()
 
 	for channel in current_fixture.modes.values()[options.mode].channels:
-		Globals.nodes.fixture_channel_list.add_item(str(channel))
+		get_node(fixture_channel_list).add_item(str(channel))
 	
-	Globals.nodes.fixture_modes_option.clear()
+	get_node(fixture_modes_option).clear()
 	for mode in current_fixture.modes:
-		Globals.nodes.fixture_modes_option.add_item(mode)
-	Globals.nodes.fixture_modes_option.selected = options.mode
+		get_node(fixture_modes_option).add_item(mode)
+	get_node(fixture_modes_option).selected = options.mode
 	
 
 func _item_selected():
-	var selected = Globals.nodes.fixture_tree.get_selected()
+	var selected = get_node(fixture_tree).get_selected()
 	if not selected.get_parent().get_parent(): return
 	
 	var manufacturer = selected.get_parent().get_text(0)
@@ -77,12 +92,13 @@ func _mode_item_selected(index):
 	reload_menue()
 	
 func reload_universes():
-	Globals.nodes.fixture_universe_option.clear()
+	get_node(fixture_universe_option).clear()
 	for universe in Globals.universes.values():
-		Globals.nodes.fixture_universe_option.add_item(universe.get_universe_name())
+		get_node(fixture_universe_option).add_item(universe.get_universe_name())
+
 func _on_add_fixture_button_pressed():
-	if Globals.nodes.fixture_universe_option.selected < 0: return
-	Globals.universes.values()[Globals.nodes.fixture_universe_option.selected].new_fixture(current_fixture, options)
+	if get_node(fixture_universe_option).selected < 0: return
+	Globals.universes.values()[get_node(fixture_universe_option).selected].new_fixture(current_fixture, options)
 
 
 func _on_quantity_value_changed(value):

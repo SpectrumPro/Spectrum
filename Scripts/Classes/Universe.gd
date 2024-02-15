@@ -1,8 +1,6 @@
-extends Node
+extends Object
 class_name Universe
 
-const Art_Net = preload("res://Scripts/Classes/Art_net.gd")
-const Empty = preload("res://Scripts/Classes/Empty.gd")
 const Fixture = preload("res://Scripts/Classes/Fixture.gd")
 
 var universe = {
@@ -40,10 +38,12 @@ func get_output(uuid=""):
 		return universe.outputs[uuid]
 	return
 
-func new_output(type=""):
+func new_output(type=EmptyOutput):
 	var uuid = Globals.new_uuid()
-	universe.outputs[uuid] = {}
-	return change_output_type(uuid, type)
+	var new_output: DataIOPlugin = type.new()
+	new_output.set_uuid(uuid)
+	universe.outputs[uuid] = new_output
+	return new_output
 
 func new_fixture(manifest, options):
 	if options.channel in universe.fixtures:
@@ -83,15 +83,13 @@ func set_fixture_data(data):
 func remove_output(output):
 	universe.outputs.erase(output.get_uuid())
 	output.delete()
+	output.free()
 
 func change_output_type(uuid, type):
-	if not type: type == "Empty"
-	match type:
-		"Empty":
-			universe.outputs[uuid] = Empty.new()
-		"Art-Net":
-			universe.outputs[uuid] = Art_Net.new()
-			universe.outputs[uuid].connect_to_host()
+	if not type: type == EmptyOutput
+	universe.outputs[uuid].delete()
+	universe.outputs[uuid].free()
+	universe.outputs[uuid] = type.new()
 	universe.outputs[uuid].set_uuid(uuid)
 	return universe.outputs[uuid]
 
@@ -150,9 +148,9 @@ func from(serialized_universe):
 		var input = serialized_universe.outputs[output_uuid]
 		match input.type:
 			"Empty":
-				universe.outputs[output_uuid] = Empty.new()
+				universe.outputs[output_uuid] = EmptyInput.new()
 			"Art-Net":
-				universe.outputs[output_uuid] = Art_Net.new()
+				universe.outputs[output_uuid] = Art_Net_Output.new()
 				universe.outputs[output_uuid].from(input)
 				universe.outputs[output_uuid].connect_to_host()
 

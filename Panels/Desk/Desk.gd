@@ -1,46 +1,48 @@
 extends Control
 
-var dmx_data = {}
-var universe = 1
+var dmx_data : Dictionary = {}
+var current_universe : Universe
 
-var current_universe
+var current_command : Dictionary = {}
+var control_mode : String = "channels"
 
-var current_command = {}
-var control_mode = "channels"
+var active_fixtures : Array = []
 
-var active_fixtures = []
-
-var command_tree = {
+var command_tree : Dictionary = {
 	"SET":{
 		"_":self.command_set
 	},
 	"_":self.set_error
 }
 
+@export var channel_container: NodePath
+@export var universe_option_dropdown: NodePath
+@export var command_input: NodePath
+
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	load_dmx_faders()
 	Globals.subscribe("reload_universes", self.reload_universes)
 	Globals.subscribe("active_fixtures", self.active_fixtures_changed)
 
-func load_dmx_faders():
+func load_dmx_faders() -> void:
 	for i in range(1, 513):
-		var node_to_add = Globals.components.channel_slider.instantiate()
+		var node_to_add : Control = Globals.components.channel_slider.instantiate()
 		node_to_add.set_channel_name("#" + str(i))
 		node_to_add.callback = self.slider_changed
 		node_to_add.id = i
 		node_to_add.name = str(i)
-		Globals.nodes.desk_channel_container.add_child(node_to_add)
+		get_node(channel_container).add_child(node_to_add)
 
-func reload_universes():
-	Globals.nodes.desk_universe_option.clear()
+func reload_universes() -> void:
+	get_node(universe_option_dropdown).clear()
 	for universe in Globals.universes:
-		Globals.nodes.desk_universe_option.add_item(Globals.universes[universe].get_universe_name())
+		get_node(universe_option_dropdown).add_item(Globals.universes[universe].get_universe_name())
 	if len(Globals.universes) == 0:
 		current_universe = null
-	Globals.nodes.desk_universe_option.item_selected.emit(0)
+	get_node(universe_option_dropdown).item_selected.emit(0)
 	
-func slider_changed(value, channel):
+func slider_changed(value:int, channel:int) -> void:
 	if current_universe:
 		if value == 0:
 			dmx_data.erase(channel)
@@ -48,32 +50,32 @@ func slider_changed(value, channel):
 			dmx_data[channel] = value
 		current_universe.set_desk_data(dmx_data)
 
-func reload_values(universe):
-	var new_desk_data = universe.get_desk_data()
+func reload_values(universe:Universe) -> void:
+	var new_desk_data : Dictionary = universe.get_desk_data()
 	for i in range(1, 513):
-		Globals.nodes.desk_channel_container.get_node(str(i)).set_value(new_desk_data.get(i, 0))
+		get_node(channel_container).get_node(str(i)).set_value(new_desk_data.get(i, 0))
 	dmx_data = new_desk_data
 	
-func _on_desk_universe_option_item_selected(index):
+func _on_desk_universe_option_item_selected(index:int) -> void:
 	if len(Globals.universes) == 0:return
 	current_universe = Globals.universes[Globals.universes.keys()[index]]
 	reload_values(current_universe)
 
-func active_fixtures_changed(fixtures):
+func active_fixtures_changed(fixtures:Array) -> void:
 	active_fixtures = fixtures
 
 
  # ------------------ Control Panel Function --------------------
 
 
-func update_command_input():
+func update_command_input() -> void:
 	var output = ""
 	for i in current_command.values():
 		output += str(i) + " "
 	
-	Globals.nodes.command_input.text = output
+	get_node(command_input).text = output
 
-func on_keypad_button_pressed(number):
+func on_keypad_button_pressed(number:int) -> void:
 	var index = len(current_command)
 	if index == 0:
 		current_command[index] = "SET"
@@ -84,19 +86,19 @@ func on_keypad_button_pressed(number):
 		current_command[index] = number
 	update_command_input()
 
-func _on_0_pressed(): on_keypad_button_pressed(0)
-func _on_1_pressed(): on_keypad_button_pressed(1)
-func _on_2_pressed(): on_keypad_button_pressed(2)
-func _on_3_pressed(): on_keypad_button_pressed(3)
-func _on_4_pressed(): on_keypad_button_pressed(4)
-func _on_5_pressed(): on_keypad_button_pressed(5)
-func _on_6_pressed(): on_keypad_button_pressed(6)
-func _on_7_pressed(): on_keypad_button_pressed(7)
-func _on_8_pressed(): on_keypad_button_pressed(8)
-func _on_9_pressed(): on_keypad_button_pressed(9)
+func _on_0_pressed() -> void: on_keypad_button_pressed(0)
+func _on_1_pressed() -> void: on_keypad_button_pressed(1)
+func _on_2_pressed() -> void: on_keypad_button_pressed(2)
+func _on_3_pressed() -> void: on_keypad_button_pressed(3)
+func _on_4_pressed() -> void: on_keypad_button_pressed(4)
+func _on_5_pressed() -> void: on_keypad_button_pressed(5)
+func _on_6_pressed() -> void: on_keypad_button_pressed(6)
+func _on_7_pressed() -> void: on_keypad_button_pressed(7)
+func _on_8_pressed() -> void: on_keypad_button_pressed(8)
+func _on_9_pressed() -> void: on_keypad_button_pressed(9)
 
 
-func _on_execute_pressed():
+func _on_execute_pressed() -> void:
 	if not current_command:return
 	var command_tree_branch = command_tree
 	var index = 0
@@ -117,26 +119,26 @@ func _on_execute_pressed():
 			return
 		index +=1
 		
-func _on_decimal_pressed():
+func _on_decimal_pressed() -> void:
 	pass # Replace with function body.
 
 
-func on_action_pressed(type):
+func on_action_pressed(type:String) -> void:
 	current_command[len(current_command)] = type
 	update_command_input()
 
-func _on_at_pressed(): on_action_pressed("AT")
-func _on_full_pressed():on_action_pressed("FULL")
-func _on_zero_pressed(): on_action_pressed("ZERO")
-func _on_thru_pressed(): on_action_pressed("THRU")
-func _on_by_pressed(): on_action_pressed("BY")
+func _on_at_pressed() -> void: on_action_pressed("AT")
+func _on_full_pressed() -> void:on_action_pressed("FULL")
+func _on_zero_pressed() -> void: on_action_pressed("ZERO")
+func _on_thru_pressed() -> void: on_action_pressed("THRU")
+func _on_by_pressed() -> void: on_action_pressed("BY")
 
-func _on_delete_pressed():
+func _on_delete_pressed() -> void:
 	current_command.erase(len(current_command) - 1)
 	update_command_input()
 
 
-func _on_color_picker_color_changed(color):
+func _on_color_picker_color_changed(color:Color) -> void:
 	for fixture in active_fixtures:
 		fixture.set_color_rgb(color.r,color.g,color.b)
 
@@ -144,7 +146,7 @@ func _on_color_picker_color_changed(color):
 #----------------------- Command Functions --------------------------
 
 
-func command_set(args):
+func command_set(args:Array) -> void:
 	if len(args) < 3:return
 	var channels = []
 	var value = 0
@@ -173,7 +175,7 @@ func command_set(args):
 		current_universe.set_desk_data(dmx_data)
 		reload_values(current_universe)
 
-func set_error(args):
-	Globals.nodes.command_input.text = "ERROR IN LAST COMMAND"
+func set_error(args:Array) -> void:
+	get_node(command_input).text = "ERROR IN LAST COMMAND"
 
 
