@@ -1,12 +1,12 @@
 extends Node
 
 const uuid_util = preload('res://Scripts/Classes/Uuid.gd')
-const ArtNet = preload('res://Scripts/Classes/Art_net.gd')
 const Universe = preload('res://Scripts/Classes/Universe.gd')
 
 var node_path := "res://Nodes/"
 var widget_path := "res://Widgets/"
 var fixture_path := "res://Fixtures/"
+var io_plugin_path := "res://IO Plugins/"
 var edit_mode := true
 
 var values := {
@@ -22,6 +22,9 @@ var fixtures := {}
 var active_fixtures := {}
 
 var configFile : ConfigFile
+
+var input_plugins : Dictionary
+var output_plugins : Dictionary
 
 @onready var _root_node : Control = get_tree().root.get_node("Main")
 
@@ -180,6 +183,22 @@ var configFile : ConfigFile
 	},
 }
 
+func _ready() -> void:
+	load_io_plugins()
+	
+func load_io_plugins() -> void:
+	var output_plugin_folder : DirAccess = DirAccess.open(io_plugin_path + "Output Plugins")
+	for plugin in output_plugin_folder.get_files():
+		var uninitialized_plugin = ResourceLoader.load(io_plugin_path + "Output Plugins" + "/" + plugin)
+		var initialized_plugin = uninitialized_plugin.new()
+		var plugin_name: String = initialized_plugin.get_name()
+		
+		if plugin_name in output_plugins.keys():
+			plugin_name = plugin_name +  " " + new_uuid()
+		
+		output_plugins[plugin_name] = uninitialized_plugin 
+		initialized_plugin.free()
+
 func show_popup(content: Array[Dictionary] = []) -> void:
 	for i in content:
 		var node_to_add = components.warning.instantiate()
@@ -240,7 +259,7 @@ func new_universe() -> Universe:
 func delete_universe(universe:Universe) -> void: 
 	universe.delete()
 	universes.erase(universe.get_uuid())
-	universe.queue_free()
+	universe.free()
 	
 	call_subscription("reload_universes")
 	call_subscription("reload_fixtures")

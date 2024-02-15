@@ -2,10 +2,9 @@ extends PanelContainer
 
 var control_node
 
-func _ready():
+func _init():
 	self.add_theme_stylebox_override("panel", self.get_theme_stylebox("panel").duplicate())
-	set_highlighted(false)
-	
+
 func set_item_name(name):
 	$Container/Name.text = name
 
@@ -14,6 +13,7 @@ func set_color(color):
 
 func set_highlighted(highlighted):
 	if highlighted:
+		print("setting highligted")
 		self.get_theme_stylebox("panel").border_width_bottom = 5
 		self.get_theme_stylebox("panel").border_width_top = 5
 		self.get_theme_stylebox("panel").border_width_left = 5

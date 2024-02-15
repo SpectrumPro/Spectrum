@@ -1,5 +1,5 @@
-extends Node
-class_name Art_Net
+extends DataIOPlugin
+class_name Art_Net_Output
 
 var _udp_peer = PacketPeerUDP.new()
 
@@ -8,8 +8,8 @@ var exposed_values = [
 		"name":"Ip Address",
 		"type":LineEdit,
 		"signal":"text_submitted",
-		"function":"set_ip_addr",
-		"configs":{
+		"function":self.set_ip_addr,
+		"parameters":{
 			"placeholder_text":"172.0.0.1",
 			"text":self.get_ip_addr
 		}
@@ -18,8 +18,8 @@ var exposed_values = [
 		"name":"Port",
 		"type":SpinBox,
 		"signal":"value_changed",
-		"function":"set_port",
-		"configs": {
+		"function":self.set_port,
+		"parameters": {
 			"max_value":65535,
 			"value":self.get_port
 		}
@@ -28,8 +28,8 @@ var exposed_values = [
 		"name":"Art-Net Universe",
 		"type":SpinBox,
 		"signal":"value_changed",
-		"function":"set_universe",
-		"configs":{
+		"function":self.set_universe,
+		"parameters":{
 			"max_value":9223370000000000000,
 			"rounded":"true",
 			"value":self.get_universe
@@ -41,23 +41,15 @@ var config = {
 	"ip":"172.0.0.1",
 	"port":6454,
 	"universe":0,
-	"name":"Art-Net Output", 
-	"type":"Art-Net",
-	"uuid":""
 }
+
+func _init():
+	self.set_type("output")
+	self.set_name("Art-Net")
 
 func connect_to_host():
 	_udp_peer.close()
 	_udp_peer.connect_to_host(config.ip, config.port)
-
-func get_io_name():
-	return config.name
-
-func set_io_name(new_name):
-	config.name = new_name
-
-func get_type():
-	return config.type
 
 func set_ip_addr(new_ip_address):
 	config.ip = new_ip_address
@@ -79,13 +71,7 @@ func get_port():
 
 func get_universe():
 	return config.universe
-	
-func get_uuid():
-	return config.uuid
-	
-func set_uuid(new_uuid):
-	config.uuid = new_uuid
-	
+
 func serialize():
 	return config
 
@@ -97,9 +83,8 @@ func _disconnect():
 
 func delete():
 	_disconnect()
-	self.queue_free()
 
-func send_packet(dmx_data):
+func send_packet(dmx_data) -> void:
 	# Construct Art-Net packet
 	var packet = PackedByteArray()
 
