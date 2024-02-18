@@ -138,7 +138,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Add Fixture"
 
+[connection signal="item_selected" from="Add Fixture/MarginContainer/HSplitContainer/Fixture Tree" to="Add Fixture" method="_on_fixture_tree_item_selected"]
 [connection signal="value_changed" from="Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer/Channel" to="Add Fixture" method="_on_channel_value_changed"]
+[connection signal="item_selected" from="Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes" to="Add Fixture" method="_on_modes_item_selected"]
 [connection signal="value_changed" from="Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5/Quantity" to="Add Fixture" method="_on_quantity_value_changed"]
 [connection signal="value_changed" from="Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6/Offset" to="Add Fixture" method="_on_offset_value_changed"]
 [connection signal="pressed" from="Add Fixture/MarginContainer/HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button" to="Add Fixture" method="_on_add_fixture_button_pressed"]

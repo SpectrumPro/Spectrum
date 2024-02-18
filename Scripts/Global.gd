@@ -185,6 +185,7 @@ var output_plugins : Dictionary
 
 func _ready() -> void:
 	load_io_plugins()
+	load_fixtures()
 	
 func load_io_plugins() -> void:
 	var output_plugin_folder : DirAccess = DirAccess.open(io_plugin_path + "Output Plugins")
@@ -198,6 +199,23 @@ func load_io_plugins() -> void:
 		
 		output_plugins[plugin_name] = uninitialized_plugin 
 		initialized_plugin.free()
+
+func load_fixtures() -> void:
+	var access = DirAccess.open(fixture_path)
+	
+	for fixture_folder in access.get_directories():
+		
+		for fixture in access.open(fixture_path+"/"+fixture_folder).get_files():
+			
+			var manifest_file = FileAccess.open(fixture_path+fixture_folder+"/"+fixture, FileAccess.READ)
+			var manifest = JSON.parse_string(manifest_file.get_as_text())
+			
+			manifest.info.file_path = fixture_path+fixture_folder+"/"+fixture
+			
+			if fixtures.has(manifest.info.brand):
+				fixtures[manifest.info.brand][manifest.info.name] = manifest
+			else:
+				fixtures[manifest.info.brand] = {manifest.info.name:manifest}
 
 func show_popup(content: Array[Dictionary] = []) -> void:
 	for i in content:
