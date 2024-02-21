@@ -64,7 +64,6 @@ func _reload_menu() -> void:
 	
 	for channel: String in current_fixture.modes.values()[options.mode].channels:
 		self.get_node(fixture_channel_list).add_item(channel)
-	
 
 
 func _reload_universes() -> void:

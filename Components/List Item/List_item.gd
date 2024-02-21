@@ -13,7 +13,6 @@ func set_color(color):
 
 func set_highlighted(highlighted):
 	if highlighted:
-		print("setting highligted")
 		self.get_theme_stylebox("panel").border_width_bottom = 5
 		self.get_theme_stylebox("panel").border_width_top = 5
 		self.get_theme_stylebox("panel").border_width_left = 5

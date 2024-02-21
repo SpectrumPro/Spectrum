@@ -1,8 +1,30 @@
-[gd_scene load_steps=4 format=3 uid="uid://pe1tet2410en"]
+[gd_scene load_steps=11 format=3 uid="uid://pe1tet2410en"]
 
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_g8n3l"]
 [ext_resource type="Script" path="res://Panels/Fixtures/Fixtures.gd" id="1_xjo7n"]
 [ext_resource type="Texture2D" uid="uid://dis005hfepinf" path="res://Assets/Icons/Fixture.svg" id="2_tonwl"]
 [ext_resource type="Texture2D" uid="uid://ds5mmj3a0ukl4" path="res://Assets/Icons/Fixture_group.svg" id="3_dj1r6"]
+[ext_resource type="Texture2D" uid="uid://cwv0ml7wy07au" path="res://Assets/Icons/Checklist.svg" id="5_7ecew"]
+[ext_resource type="Texture2D" uid="uid://su38vnysxa1c" path="res://Assets/Icons/Unchecked.svg" id="6_c3kim"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_6ywj7"]
+device = -1
+ctrl_pressed = true
+keycode = 65
+unicode = 97
+
+[sub_resource type="Shortcut" id="Shortcut_svqby"]
+events = [SubResource("InputEventKey_6ywj7")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_jvtdl"]
+device = -1
+shift_pressed = true
+ctrl_pressed = true
+keycode = 65
+unicode = 65
+
+[sub_resource type="Shortcut" id="Shortcut_vy8ba"]
+events = [SubResource("InputEventKey_jvtdl")]
 
 [node name="Fixtures" type="Control"]
 layout_mode = 3
@@ -11,6 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_g8n3l")
 
 [node name="Fixtures" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -51,6 +74,18 @@ layout_mode = 2
 tooltip_text = "Work in progress, Create a new fixture group"
 text = "New Fixture Group"
 icon = ExtResource("3_dj1r6")
+
+[node name="Select All" type="Button" parent="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Select All"
+shortcut = SubResource("Shortcut_svqby")
+icon = ExtResource("5_7ecew")
+
+[node name="Select None" type="Button" parent="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Select All"
+shortcut = SubResource("Shortcut_vy8ba")
+icon = ExtResource("6_c3kim")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="Fixtures/VBoxContainer"]
 layout_mode = 2
@@ -99,3 +134,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="pressed" from="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/New Physical Fixture" to="Fixtures" method="_on_new_physical_fixture_pressed"]
+[connection signal="pressed" from="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/Select All" to="Fixtures" method="_on_select_all_pressed"]
+[connection signal="pressed" from="Fixtures/VBoxContainer/MarginContainer/PanelContainer/HBoxContainer/Select None" to="Fixtures" method="_on_select_none_pressed"]

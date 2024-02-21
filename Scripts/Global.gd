@@ -254,6 +254,7 @@ func new_uuid() -> String:
 	return uuid_util.v4()
 
 func select_fixture(fixture_to_add:Fixture) -> Array:
+	
 	var active_fixtures = get_value("active_fixtures")
 	if fixture_to_add not in active_fixtures:
 		active_fixtures.append(fixture_to_add)
