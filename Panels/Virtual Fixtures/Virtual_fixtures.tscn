@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dhrijn1m88172"]
+[gd_scene load_steps=10 format=3 uid="uid://dhrijn1m88172"]
 
-[ext_resource type="Script" path="res://Panels/Virtual Fixtures/2D.gd" id="1_y16fu"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_hwlxv"]
+[ext_resource type="Script" path="res://Panels/Virtual Fixtures/Virtual_fixtures.gd" id="1_y16fu"]
 [ext_resource type="Script" path="res://Scripts/Sidebar.gd" id="2_j8tmg"]
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="3_xlq73"]
+[ext_resource type="Texture2D" uid="uid://be3tq05v1ne7n" path="res://Assets/Icons/Horizontal_distribute.svg" id="5_0jdj6"]
+[ext_resource type="Texture2D" uid="uid://bn4jkekidjyne" path="res://Assets/Icons/Vertical_distribute.svg" id="6_ivvmw"]
+[ext_resource type="Texture2D" uid="uid://vm1u4mv102e3" path="res://Assets/Icons/Grid.svg" id="7_krdug"]
+[ext_resource type="PackedScene" uid="uid://ccibt4jo4f1jt" path="res://Components/Knob/Encoder.tscn" id="7_ny1u7"]
+[ext_resource type="Texture2D" uid="uid://th5chd6y3ygu" path="res://Assets/Icons/Rotate.svg" id="8_8ml5j"]
 
 [node name="Virtual Fixtures" type="Control"]
 layout_mode = 3
@@ -11,6 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_hwlxv")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -20,7 +27,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Virtual Fixtures" type="GraphEdit" parent="HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Virtual Fixtures" type="GraphEdit" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -30,11 +41,165 @@ show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("1_y16fu")
 
-[node name="Sidebar" type="PanelContainer" parent="HBoxContainer" node_paths=PackedStringArray("contence")]
+[node name="Bottom Bar" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer"]
+layout_mode = 2
+
+[node name="Open" type="Button" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+icon = ExtResource("3_xlq73")
+icon_alignment = 1
+
+[node name="Content" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer" node_paths=PackedStringArray("contence")]
+layout_mode = 2
+size_flags_horizontal = 3
 script = ExtResource("2_j8tmg")
-contence = NodePath("MarginContainer/VBoxContainer/Contence")
+contence = NodePath(".")
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content"]
+layout_mode = 2
+
+[node name="PanelContainer2" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="HAlign" type="Button" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("5_0jdj6")
+icon_alignment = 1
+
+[node name="VAlign" type="Button" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("6_ivvmw")
+icon_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="HAlign" type="Button" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("7_krdug")
+icon_alignment = 1
+
+[node name="VAlign" type="Button" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("8_8ml5j")
+icon_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Encoder" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/VBoxContainer2/PanelContainer" instance=ExtResource("7_ny1u7")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 3
+rotation_offset = 90
+angle_gap = 0
+wrap_around_value = true
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+prefix = "Gap:"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="Encoder" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/VBoxContainer3/PanelContainer" instance=ExtResource("7_ny1u7")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 3
+rotation_offset = 90
+angle_gap = 0
+wrap_around_value = true
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer2/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+prefix = "Phase:"
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Encoder" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer/VBoxContainer2/PanelContainer" instance=ExtResource("7_ny1u7")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 3
+rotation_offset = 90
+angle_gap = 0
+wrap_around_value = true
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+prefix = "Rotation:"
+suffix = "°"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="Encoder" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer/VBoxContainer3/PanelContainer" instance=ExtResource("7_ny1u7")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_vertical = 3
+rotation_offset = 90
+angle_gap = 0
+wrap_around_value = true
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content/PanelContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+prefix = "Phase:"
+
+[node name="Sidebar" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Sidebar"]
 layout_mode = 2
@@ -51,9 +216,11 @@ layout_mode = 2
 icon = ExtResource("3_xlq73")
 icon_alignment = 1
 
-[node name="Contence" type="VBoxContainer" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer"]
+[node name="Contence" type="VBoxContainer" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer" node_paths=PackedStringArray("contence")]
 visible = false
 layout_mode = 2
+script = ExtResource("2_j8tmg")
+contence = NodePath(".")
 
 [node name="ColorPicker" type="ColorPicker" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence"]
 layout_mode = 2
@@ -62,6 +229,7 @@ edit_alpha = false
 picker_shape = 1
 color_modes_visible = false
 
-[connection signal="node_deselected" from="HBoxContainer/Virtual Fixtures" to="HBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
-[connection signal="node_selected" from="HBoxContainer/Virtual Fixtures" to="HBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_selected"]
-[connection signal="pressed" from="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Side Bar Open" to="HBoxContainer/Sidebar" method="_on_side_bar_open_pressed"]
+[connection signal="node_deselected" from="HBoxContainer/VBoxContainer/Virtual Fixtures" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
+[connection signal="node_selected" from="HBoxContainer/VBoxContainer/Virtual Fixtures" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_selected"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Open" to="HBoxContainer/VBoxContainer/Bottom Bar/MarginContainer/HBoxContainer/Content" method="_on_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Side Bar Open" to="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence" method="_on_button_pressed"]
