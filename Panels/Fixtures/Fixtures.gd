@@ -1,42 +1,66 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
 extends Control
 
-var active_fixtures : Array = []
-	
 @export var physical_fixture_list: NodePath
 @export var fixture_groups_list: NodePath
 
+var active_fixtures : Array = []
+var last_selected_node: Control
+
 func _ready() -> void:
-	Globals.subscribe("edit_mode", self.on_edit_mode_changed)
 	Globals.subscribe("reload_fixtures", self.reload_fixtures)
 	Globals.subscribe("active_fixtures", self.set_active_fixtures)
 
+
 func delete_request(node:Control) -> void :
-	var confirmation_dialog : AcceptDialog = Globals.components.accept_dialog.instantiate()
+	## Called when the delete button is clicked on a fixture List_Item
+	
+	var confirmation_dialog: AcceptDialog = Globals.components.accept_dialog.instantiate()
 	confirmation_dialog.dialog_text = "Are you sure you want to delete this? This action can not be undone"
+	
 	confirmation_dialog.confirmed.connect((
 	func(node):
-		var fixture : Fixture = node.get_meta("fixture")
+		
+		var fixture: Fixture = node.get_meta("fixture")
 		fixture.config.universe.remove_fixture(fixture)
 		
 		Globals.call_subscription("reload_fixtures")
 	).bind(node))
-	add_child(confirmation_dialog)
 	
+	add_child(confirmation_dialog)
+
+
 func edit_request(node:Control) -> void:
+	## WIP function to edit a fixture, change channel, type, universe, ect
 	pass
 
-func on_selected(node:Control) -> void:
-	if Input.is_key_pressed(KEY_SHIFT):
-		pass
-	else:
-		Globals.set_value("active_fixtures", [node.get_meta("fixture")])
 
-func on_edit_mode_changed(edit_mode:bool) -> void:
-	for function_item in get_node(physical_fixture_list).get_children():
-		function_item.dissable_buttons(not edit_mode)
+func on_selected(selected_node:Control) -> void:
+	## Called when the user clicks on a fixture List_Item
+	
+	if Input.is_key_pressed(KEY_SHIFT) and last_selected_node:
+		var children: Array[Node] = self.get_node(physical_fixture_list).get_children()
+		var pos_1: int = children.find(last_selected_node)
+		var pos_2: int = children.find(selected_node)
 		
-	for function_item in get_node(fixture_groups_list).get_children():
-		function_item.dissable_buttons(not edit_mode)
+		if pos_1 > pos_2:
+			var x = pos_1
+			pos_1 = pos_2
+			pos_2 = x
+		
+		var fixtures_to_select: Array = []
+		
+		for i in range(pos_1, pos_2+1):
+			fixtures_to_select.append(children[i].get_meta("fixture"))
+		
+		Globals.set_value("active_fixtures", fixtures_to_select)
+		
+	else:
+		last_selected_node = selected_node
+		Globals.set_value("active_fixtures", [selected_node.get_meta("fixture")])
+
 
 func reload_fixtures() -> void:
 	for node in get_node(physical_fixture_list).get_children():
@@ -53,7 +77,8 @@ func reload_fixtures() -> void:
 			get_node(physical_fixture_list).add_child(node_to_add)
 			
 	set_active_fixtures(active_fixtures)
-	
+
+
 func set_active_fixtures(fixtures:Array) -> void:
 	for fixture in get_node(physical_fixture_list).get_children():
 		fixture.set_highlighted(false)
@@ -61,9 +86,26 @@ func set_active_fixtures(fixtures:Array) -> void:
 	
 	for fixture in active_fixtures:
 		get_node(physical_fixture_list).get_node(fixture.config.uuid).set_highlighted(true)
+	pass
+
 
 func _on_new_physical_fixture_pressed() -> void:
 	Globals.open_panel_in_window("add_fixture")
 
+
 func _on_new_fixture_group_pressed() -> void:
 	pass
+
+
+func _on_select_all_pressed() -> void:
+	
+	var fixtures_to_select: Array = []
+	
+	for list_item: Control in get_node(physical_fixture_list).get_children():
+		fixtures_to_select.append(list_item.get_meta("fixture"))
+	
+	Globals.set_value("active_fixtures", fixtures_to_select)
+
+
+func _on_select_none_pressed() -> void:
+	Globals.set_value("active_fixtures", [])
