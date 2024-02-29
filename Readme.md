@@ -1,44 +1,35 @@
-<br/>
 <p align="center">
-  <a href="https://github.com/SpectrumPro/Spectrum-Website/">
-	<img src="https://serv.hnz.li/spectrum/logo/default.png" alt="Logo" width="80" height="80">
-  </a>
-
-  <h3 align="center">Spectrum</h3>
-  <br>
-
+    <img src="https://github.com/SpectrumPro/Spectrum/blob/master/Assets/Icon.png?raw=true" alt="Spectrum Logo" width="150" height="150">
+    <h1 align="center">Spectrum</h1>
 </p>
 
 ![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=spectrum-website) ![Contributors](https://img.shields.io/github/contributors/SpectrumPro/spectrum?color=dark-green) ![GitHub issues](https://img.shields.io/github/issues/SpectrumPro/Spectrum) ![GitHub License](https://img.shields.io/github/license/SpectrumPro/Spectrum)
 
-# Spectrum: Node-Based DMX Control System
+## Spectrum: The Modular DMX Control System
 
-Welcome to Spectrum, a powerful and intuitive node-based DMX control system designed for lighting professionals and enthusiasts. Created in the Godot game engine, Spectrum allows you to seamlessly orchestrate complex lighting setups through a visual and modular interface.
+Welcome to Spectrum, a powerful and intuitive DMX control system designed for everyone. Spectrum allows you to create complex lighting setups through a visual and fully modular interface.
 
-### Key Features:
-- **Node-Based Control:** Design your lighting effects using a visual node graph, making it easy to create, modify, and organize DMX control logic.
-- **Real-Time Preview (Comming Soon!):** See your lighting effects come to life with a real-time preview, ensuring that your vision is accurately translated to the final result.
-- **Modular Architecture:** Build and customize your lighting setups by connecting modular nodes, providing flexibility and adaptability to suit various scenarios.
-- **DMX Integration:** Spectrum seamlessly integrates with DMX hardware, offering precise control over a wide range of lighting fixtures for concerts, events, installations, and more.
-- **Art-Net Support:** Spectrum supports Art-Net, allowing for efficient communication with a variety of DMX devices over Ethernet.
+Spectrum arose from the absence of DMX control programs offering a fully modular interface. Disheartened by the high prices, or lack of modularity in existing software options, I embarked on creating Spectrum. It's a fully modular DMX controller built in the Godot engine, utilizing the Model-View-Controller system. This design facilitates extremely easy customization of the software to suit individual needs.
+
+The user interface of Spectrum utilizes dockable panels extensively. Panels serve as the primary means of interaction within Spectrum, encompassing various UI components. These range from straightforward menus like the settings menu to fully customizable workspaces, enabling users to craft virtual consoles complete with sliders, buttons, and additional panels. In Spectrum, panels can be positioned within the main tab bar, docked to any side (top, bottom, left, or right) of the application, or utilized as separate windows.
+
+## Development
+
+Currently, Spectrum is in the early stages of development, which translates to significant instability. This instability primarily stems from the transition from the old development test codebase to the new Model-View-Controller based system.
 
 ### Screen Shots
-![Spectrum Screen Shot](https://serv.hnz.li/spectrum/screenshots/v2-spectrum.png)
-![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/2.png?raw=true)
+![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/Desk.png?raw=true)
+![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/Fixtures.png?raw=true)
+![Spectrum Screen Shot](https://github.com/SpectrumPro/Spectrum/blob/master/.github/VirtualFixtures.png?raw=true)
 
-### Contributing:
-We welcome contributions from the community! Whether it's bug fixes, feature enhancements, or documentation improvements, your input helps make Spectrum better for everyone. Check out our [contribution guidelines](contributing.md) to get started.
-
-### Note: Spectrum is in VERY early development.
-Please be aware that Spectrum is still in its early stages of development. While it already boasts powerful features, expect regular updates and improvements as we work towards a stable and feature-rich release. Your feedback and contributions are invaluable in shaping the future of Spectrum.
+### Note: Spectrum is in early development.
+Please be aware that Spectrum is still in its early stages of development. While it already boasts powerful features, expect regular updates and improvements as we work towards a stable and feature-rich release.
 
 ### License
 
 Distributed under the MPL License. See [LICENSE](https://github.com/SpectrumPro/Spectrum/blob/master/LICENSE) for more information.
 
-### Contributors
 
-[<img src="https://github.com/not-my-username.png" width="60px;"/>](https://github.com/not-my-username) - Lead Development 
-[<img src="https://serv.hnz.li/logo/default.png" width="60px;"/>](https://github.com/HuskyNZ) - Website, CDN, Windows Installer
+<br>
 
-Spectrum, it's Assets, Images, and Code is Copyrighted © [Liam Sherwin](https://liamsherwin.tech) (Unless otherwise specified)
+###### Spectrum, it's Assets, Images, and Code is Copyrighted © [Liam Sherwin](https://liamsherwin.tech) (Unless otherwise specified)
