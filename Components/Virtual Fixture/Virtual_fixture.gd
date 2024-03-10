@@ -1,14 +1,22 @@
 extends GraphElement
 
-var control_node
+var fixture: Fixture
 var color_override = false
 var is_highlight = false
-# Called when the node enters the scene tree for the first time.
+
+
+func _init(debug_text="") -> void:
+	print(debug_text)
+
 func _ready():
 	$"Color Box".add_theme_stylebox_override("panel", $"Color Box".get_theme_stylebox("panel").duplicate())
 
 func set_color_rgb(color):
 	$"Color Box".get_theme_stylebox("panel").bg_color = color
+
+func set_fixture(control_fixture: Fixture) -> void:
+	fixture = control_fixture
+	fixture.color_changed.connect(self.set_color_rgb)
 
 func serialize():
 	return {

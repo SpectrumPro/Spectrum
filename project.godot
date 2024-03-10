@@ -30,6 +30,7 @@ driver/enable_input=true
 
 [autoload]
 
+Spectrum="*res://core/engine/Engine.gd"
 Globals="*res://Scripts/Global.gd"
 
 [debug]

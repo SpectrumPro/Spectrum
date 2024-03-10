@@ -1,7 +1,5 @@
 extends Node
 
-const uuid_util = preload('res://Scripts/Classes/Uuid.gd')
-const Universe = preload('res://Scripts/Classes/Universe.gd')
 
 var node_path := "res://Nodes/"
 var widget_path := "res://Widgets/"
@@ -251,7 +249,7 @@ func call_subscription(value_name:String) -> void:
 				node_to_update.call()
 
 func new_uuid() -> String:
-	return uuid_util.v4()
+	return UUID_Util.v4()
 
 func select_fixture(fixture_to_add:Fixture) -> Array:
 	

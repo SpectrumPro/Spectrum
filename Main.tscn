@@ -1,16 +1,15 @@
-[gd_scene load_steps=26 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=25 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
-[ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
+[ext_resource type="Script" path="res://core/components/system.gd" id="5_qili6"]
 [ext_resource type="PackedScene" uid="uid://dhor5xf4xd2ul" path="res://Panels/Desk/Desk.tscn" id="8_12iq0"]
 [ext_resource type="PackedScene" uid="uid://cdg8rr3v7el85" path="res://Panels/Patch Bay/Patch_bay.tscn" id="9_hxqqf"]
 [ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="10_e6e26"]
 [ext_resource type="Script" path="res://Panels/Popups/Popup_window.gd" id="10_yavq3"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="11_7alyx"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
-[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="24_oc2jn"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -127,16 +126,6 @@ layout_mode = 2
 
 [node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("11_7alyx")]
 layout_mode = 2
-
-[node name="Open Drop Down" type="Button" parent="."]
-layout_mode = 2
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 44.0
-offset_bottom = 42.0
-size_flags_horizontal = 2
-icon = ExtResource("24_oc2jn")
-icon_alignment = 1
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1

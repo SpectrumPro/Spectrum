@@ -1,7 +1,4 @@
-extends Object
-class_name Universe
-
-const Fixture = preload("res://Scripts/Classes/Fixture.gd")
+class_name Universe extends Object
 
 var universe = {
 	"name": "New Universe",
@@ -54,7 +51,12 @@ func new_fixture(manifest, options):
 		var channel_index = options.channel + options.offset
 		channel_index += (len(manifest.modes.values()[options.mode].channels)) * i
 		var uuid = Globals.new_uuid()
-		var new_fixture = Fixture.new().from(self, manifest, channel_index, options.mode, options.name, uuid, options.get("virtual_fixtures", []))
+		var new_fixture = Fixture.new({
+			"universe": self,
+			"channel": options.channel,
+			"mode": options.mode,
+			"manifest": manifest
+		})
 		
 		universe.fixtures[channel_index] = new_fixture
 		

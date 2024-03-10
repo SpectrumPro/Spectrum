@@ -51,9 +51,7 @@ func _add_fixture() -> void:
 	for fixture: Fixture in Globals.get_value("active_fixtures"):
 		var node_to_add: Control = Globals.components.virtual_fixture.instantiate()
 		
-		fixture.add_virtual_fixture(node_to_add)
-		
-		node_to_add.control_node = fixture
+		node_to_add.set_fixture(fixture)
 		node_to_add.set_highlighted(true)
 		node_to_add.position_offset += _position_offset
 		_position_offset += Vector2(5, 5)
@@ -81,7 +79,7 @@ func _active_fixtures_changed(new_active_fixtures: Array) -> void:
 		virtual_fixture.set_highlighted(false)
 	
 	for active_fixture: Fixture in new_active_fixtures:
-		for virtual_fixture in active_fixture.virtual_fixtures:
+		for virtual_fixture in active_fixture.get_user_meta("virtual_fixtures", []):
 			virtual_fixture.set_highlighted(true)
 	
 	_old_active_fixtures = new_active_fixtures
@@ -111,7 +109,7 @@ func from(config: Dictionary, control_fixture: Fixture) -> void:
 	var node_to_add: Control = Globals.components.virtual_fixture.instantiate()
 	
 	node_to_add._position_offset = Vector2(config._position_offset.x, config._position_offset.y)
-	node_to_add.control_node = control_fixture
+	node_to_add.set_fixture(control_fixture)
 	control_fixture.add_virtual_fixture(node_to_add)
 	
 	self.add_child(node_to_add)
@@ -120,9 +118,9 @@ func from(config: Dictionary, control_fixture: Fixture) -> void:
 func _on_virtual_fixture_selected(node) -> void:
 	if node not in _selected_virtual_fixtures:
 		_selected_virtual_fixtures.append(node)
-	Globals.select_fixture(node.control_node)
+	Globals.select_fixture(node.fixture)
 
 
 func _on_virtual_fixture_deselected(node) -> void:
 	_selected_virtual_fixtures.erase(node)
-	Globals.deselect_fixture(node.control_node)
+	Globals.deselect_fixture(node.fixture)

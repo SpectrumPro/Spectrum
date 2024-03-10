@@ -2,6 +2,7 @@
 # All rights reserved.
 
 extends Control
+## GUI element for managing fixtures, and fixture groups
 
 @export var physical_fixture_list: NodePath
 @export var fixture_groups_list: NodePath
@@ -71,8 +72,8 @@ func reload_fixtures() -> void:
 		for fixture in universe.get_fixtures().values():
 			var node_to_add : Control = Globals.components.list_item.instantiate()
 			node_to_add.control_node = self
-			node_to_add.set_item_name(fixture.config.fixture_name + " | " + universe.get_universe_name() + " CH: " + str(fixture.config.channel) + "-" + str(fixture.config.channel+fixture.config.length-1))
-			node_to_add.name = fixture.config.uuid
+			node_to_add.set_item_name(fixture.meta.fixture_name + " | " + universe.get_universe_name() + " CH: " + str(fixture.channel) + "-" + str(fixture.channel+fixture.length-1))
+			node_to_add.name = fixture.uuid
 			node_to_add.set_meta("fixture", fixture)
 			get_node(physical_fixture_list).add_child(node_to_add)
 			
@@ -84,8 +85,8 @@ func set_active_fixtures(fixtures:Array) -> void:
 		fixture.set_highlighted(false)
 	active_fixtures = fixtures
 	
-	for fixture in active_fixtures:
-		get_node(physical_fixture_list).get_node(fixture.config.uuid).set_highlighted(true)
+	for fixture: Fixture in active_fixtures:
+		get_node(physical_fixture_list).get_node(fixture.uuid).set_highlighted(true)
 	pass
 
 
