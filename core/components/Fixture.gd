@@ -49,9 +49,9 @@ func _init(i: Dictionary = {}) -> void:
 
 func serialize() -> Dictionary:
 	## Returnes serialized infomation about this fixture
-	
+	print(uuid)
 	return {
-		"universe":universe.uuid,
+		"universe":universe.get_uuid(),
 		"channel":channel,
 		"mode":mode,
 		"meta":meta,

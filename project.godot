@@ -30,8 +30,8 @@ driver/enable_input=true
 
 [autoload]
 
-Spectrum="*res://core/engine/Engine.gd"
 Globals="*res://Scripts/Global.gd"
+Core="*res://core/engine/Engine.gd"
 
 [debug]
 

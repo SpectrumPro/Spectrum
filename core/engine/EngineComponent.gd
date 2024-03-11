@@ -8,7 +8,6 @@ var uuid: String = "" ## Uuid of the current component
 var user_meta: Dictionary ## Infomation that can be stored by other scripts
 
 func _init() -> void:
-	print("EngineComponent")
 	uuid = UUID_Util.v4()
 
 
