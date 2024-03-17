@@ -109,7 +109,7 @@ func _compile_and_send():
 	## Will compile all dmx data in a future version, currently just sends dmx data
 	var compiled_dmx_data = dmx_data
 	
-	for output: DataIOPlugin in outputs:
+	for output: DataIOPlugin in outputs.values():
 		output.send_packet(compiled_dmx_data)
 
 

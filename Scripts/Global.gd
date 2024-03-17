@@ -33,7 +33,8 @@ var output_plugins : Dictionary
 	"accept_dialog":ResourceLoader.load("res://Components/Accept Dialog/Accept_dialog.tscn"),
 	"channel_slider":ResourceLoader.load("res://Components/Channel Slider/Channel_slider.tscn"),
 	"virtual_fixture":ResourceLoader.load("res://Components/Virtual Fixture/Virtual_fixture.tscn"),
-	"window":ResourceLoader.load("res://Components/Window/Window.tscn")
+	"window":ResourceLoader.load("res://Components/Window/Window.tscn"),
+	"trigger_button":ResourceLoader.load("res://Components/Trigger Button/TriggerButton.tscn")
 }
 
 @onready var panels : Dictionary = {             

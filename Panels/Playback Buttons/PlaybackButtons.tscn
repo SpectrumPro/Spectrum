@@ -2,12 +2,16 @@
 
 [ext_resource type="Script" path="res://Panels/Playback Buttons/PlaybackButtons.gd" id="1_0mir5"]
 
-[node name="PlaybackButtons" type="Control"]
-layout_mode = 3
-anchors_preset = 0
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
 
 [node name="PlaybackButtons" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 2
+size_flags_horizontal = 6
 script = ExtResource("1_0mir5")
+metadata/_edit_use_anchors_ = true

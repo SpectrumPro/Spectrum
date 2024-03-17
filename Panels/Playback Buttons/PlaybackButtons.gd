@@ -16,11 +16,9 @@ func _reload_buttons(_scene) -> void:
 		old_button.queue_free()
 	
 	for scene: Scene in Core.scenes.values():
-		var button_to_add: Button = Button.new()
+		var button_to_add: Button = Globals.components.trigger_button.instantiate()
 		
 		button_to_add.text = scene.name
-		button_to_add.custom_minimum_size = Vector2(50, 50)
-		button_to_add.toggle_mode = true
 		button_to_add.toggled.connect(
 			func(state):
 				scene.enabled = state

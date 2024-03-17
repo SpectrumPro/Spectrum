@@ -23,6 +23,40 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Sidebar2" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Sidebar2"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Sidebar2/MarginContainer"]
+layout_mode = 2
+
+[node name="Side Bar Open" type="Button" parent="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_xlq73")
+icon_alignment = 1
+
+[node name="Contence" type="VBoxContainer" parent="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer" node_paths=PackedStringArray("contence")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_j8tmg")
+contence = NodePath("../../../../Sidebar/MarginContainer/VBoxContainer/Contence")
+
+[node name="PanelContainer" parent="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer/Contence" instance=ExtResource("5_uh5xn")]
+layout_mode = 2
+size_flags_vertical = 1
+
+[node name="Button" type="Button" parent="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer/Contence"]
+layout_mode = 2
+size_flags_vertical = 10
+text = "Save"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -33,7 +67,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
-scroll_offset = Vector2(-224, -14)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("1_y16fu")
@@ -75,16 +108,9 @@ edit_alpha = false
 picker_shape = 1
 color_modes_visible = false
 
-[node name="PlaybackButtons" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence" instance=ExtResource("5_uh5xn")]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence"]
-layout_mode = 2
-size_flags_vertical = 10
-text = "Save"
-
+[connection signal="pressed" from="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer/Side Bar Open" to="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer/Contence" method="_on_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer/Contence/Button" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_save_pressed"]
 [connection signal="node_deselected" from="HBoxContainer/VBoxContainer/Virtual Fixtures" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_deselected"]
 [connection signal="node_selected" from="HBoxContainer/VBoxContainer/Virtual Fixtures" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_virtual_fixture_selected"]
 [connection signal="pressed" from="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Side Bar Open" to="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence" method="_on_button_pressed"]
 [connection signal="color_changed" from="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence/ColorPicker" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_color_picker_color_changed"]
-[connection signal="pressed" from="HBoxContainer/Sidebar/MarginContainer/VBoxContainer/Contence/Button" to="HBoxContainer/VBoxContainer/Virtual Fixtures" method="_on_save_pressed"]
