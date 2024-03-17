@@ -69,20 +69,20 @@ func serialize() -> Dictionary:
 	}
 
 
-func set_color_rgb(r,g,b) -> void:
-	## Sets the color of this fixture in 0-255 RBG values
-	
+func set_color(color: Color) -> void:
+	## Sets the color of this fixture
 	if "ColorIntensityRed" in channels:
-		_compiled_dmx_data[int(channels.find("ColorIntensityRed") + channel)] = int(r)
+		_compiled_dmx_data[int(channels.find("ColorIntensityRed") + channel)] = color.r8
 	if "ColorIntensityGreen" in channels:
-		_compiled_dmx_data[int(channels.find("ColorIntensityGreen") + channel)] = int(g)
+		_compiled_dmx_data[int(channels.find("ColorIntensityGreen") + channel)] = color.g8
 	if "ColorIntensityBlue" in channels:
-		_compiled_dmx_data[int(channels.find("ColorIntensityBlue") + channel)] = int(b)
-	universe.set_fixture_data(_compiled_dmx_data)
+		_compiled_dmx_data[int(channels.find("ColorIntensityBlue") + channel)] = color.b8
 	
-	_parameters.color = Color(r, g, b)
-	
+	_parameters.color = color
 	color_changed.emit(_parameters.color)
+	
+	universe.set_data(_compiled_dmx_data)
+	
 
 
 func set_selected(state: bool) -> void:

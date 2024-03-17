@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5h003o3qi1wl"]
+
+[ext_resource type="Script" path="res://Panels/Playback Buttons/PlaybackButtons.gd" id="1_0mir5"]
+
+[node name="PlaybackButtons" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="PlaybackButtons" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_0mir5")

@@ -16,10 +16,13 @@ signal fixture_added(fixture: Array[Fixture])
 signal fixture_removed(fixture_uuid: Array[String])
 signal fixture_selection_changed(selected_fixtures: Array[Fixture])
 
+signal scene_added(scene: Scene)
+signal scene_removed(scene_uuid: String)
+
 
 var universes: Dictionary = {}
 var fixtures_definitions: Dictionary = {}
-
+var scenes: Dictionary = {} 
 var selected_fixtures: Array[Fixture] = []
 
 var input_plugins: Dictionary = {}
@@ -32,10 +35,14 @@ const output_plugin_path: String = "res://core/io_plugins/output_plugins/"
 var current_file_name: String = ""
 var current_file_path: String = ""
 
+var programmer = Programmer.new()
+
 var _system: System = System.new()
 
 
 func _ready() -> void:
+	programmer.engine = self
+	
 	OS.set_low_processor_usage_mode(true)
 	reload_io_plugins()
 	reload_fixtures()
@@ -201,3 +208,15 @@ func deselect_fixtures(fixtures: Array[Fixture]) -> void:
 			fixture.set_selected(false)
 	
 	fixture_selection_changed.emit(selected_fixtures)
+
+
+func new_scene(scene: Scene = Scene.new(), no_signal: bool = false) -> Scene:
+	## Adds a scene to this engine, creats a new one if none is passed
+	
+	scenes[scene.uuid] = scene
+	
+	if not no_signal:
+		scene_added.emit(scene)
+	
+	return scene
+

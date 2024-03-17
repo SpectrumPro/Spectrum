@@ -4,19 +4,20 @@ var fixture: Fixture
 var color_override = false
 var is_highlight = false
 
-
-func _init(debug_text="") -> void:
-	print(debug_text)
-
 func _ready():
 	$"Color Box".add_theme_stylebox_override("panel", $"Color Box".get_theme_stylebox("panel").duplicate())
 
-func set_color_rgb(color):
+func set_color(color):
 	$"Color Box".get_theme_stylebox("panel").bg_color = color
 
 func set_fixture(control_fixture: Fixture) -> void:
+	## Sets the fixture this virtual fixture is atached to
+	
+	if is_instance_valid(fixture):
+		fixture.color_changed.disconnect(self.set_color)
+	
 	fixture = control_fixture
-	fixture.color_changed.connect(self.set_color_rgb)
+	fixture.color_changed.connect(self.set_color)
 
 func serialize():
 	return {

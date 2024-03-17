@@ -14,6 +14,8 @@ signal output_removed(output_uuid: String)
 var fixtures: Dictionary = {} ## Dictionary containing all the fixtures in this universe
 var outputs: Dictionary = {} ## Dictionary containing all the outputs in this universe
 
+var dmx_data: Dictionary = {}
+
 var engine: CoreEngine ## The CoreEngine class this universe belongs to
 
 func new_output(type = EmptyOutput, no_signal: bool = false) -> DataIOPlugin:
@@ -95,20 +97,29 @@ func delete():
 	
 	for output in outputs.values():
 		remove_output(output)
-		
 
 
+func set_data(data: Dictionary):
+	## Set dmx data, layers will be added soom
+	dmx_data.merge(data, true)
+	_compile_and_send()
+
+
+func _compile_and_send():
+	## Will compile all dmx data in a future version, currently just sends dmx data
+	var compiled_dmx_data = dmx_data
 	
+	for output: DataIOPlugin in outputs:
+		output.send_packet(compiled_dmx_data)
+
+
 #func get_fixtures():
 	#return universe.fixtures
 	#
 #func get_fixture(fixture_uuid):
 	#pass
 #
-#func set_fixture_data(data):
-	#universe.fixture_data.merge(data, true)
-	#_compile_and_send()
-#
+
 
 
 
@@ -120,12 +131,7 @@ func delete():
 #func get_desk_data():
 	#return universe.desk_data
 #
-#func _compile_and_send():
-	#var compiled_dmx_data = universe.fixture_data
-	#compiled_dmx_data.merge(universe.desk_data, true)
-	#for output in universe.outputs:
-		#universe.outputs[output].send_packet(compiled_dmx_data)
-	#
+
 #func serialize():
 	#var serialized_outputs = {}
 	#var serialized_fixtures = {}

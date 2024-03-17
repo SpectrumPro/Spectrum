@@ -65,7 +65,6 @@ func _request_delete() -> void:
 	var to_remove: Array = _selected_virtual_fixtures.duplicate()
 	
 	for virtual_fixture: Control in to_remove:
-		virtual_fixture.control_node.remove_virtual_fixture(virtual_fixture)
 		virtual_fixture.queue_free()
 		_selected_virtual_fixtures.erase(virtual_fixture)
 
@@ -124,3 +123,11 @@ func _on_virtual_fixture_selected(node) -> void:
 func _on_virtual_fixture_deselected(node) -> void:
 	_selected_virtual_fixtures.erase(node)
 	Core.deselect_fixtures([node.fixture])
+
+
+func _on_color_picker_color_changed(color: Color) -> void:
+	Core.programmer.set_color(Core.selected_fixtures, color)
+
+
+func _on_save_pressed() -> void:
+	Core.programmer.save_to_scene()
