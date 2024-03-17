@@ -4,9 +4,11 @@
 class_name Fixture extends EngineComponent
 ## Engine class to control parameters of fixtures
 
-signal color_changed(color: Color) ## Emmited when the color of this fixture is changed 
-signal mode_changed(mode: int) ## Emmited when the mode of the fixture is changed
-signal channel_changed(new_channel: int) ## Emmited when the channel of the fixture is changed
+signal color_changed(color: Color) ## Emitted when the color of this fixture is changed 
+signal mode_changed(mode: int) ## Emitted when the mode of the fixture is changed
+signal channel_changed(new_channel: int) ## Emitted when the channel of the fixture is changed
+
+signal selected(selected: bool)
 
 ## Contains metadata infomation about this fixture
 var meta: Dictionary = { 
@@ -23,6 +25,8 @@ var mode: int ## Current mode
 var manifest: Dictionary ## Fixture manifest
 var channels: Array ## Channels this fixture uses, and what they do
 var channel_ranges: Dictionary ## What happenes at each channel, at each value
+
+var is_selected: bool = false
 
 var _compiled_dmx_data: Dictionary
 var _parameters: Dictionary
@@ -44,6 +48,11 @@ func _init(i: Dictionary = {}) -> void:
 	
 	meta.fixture_brand = i.manifest.info.brand
 	meta.fixture_name = i.manifest.info.name
+	
+	self.name_changed.connect(
+		func(new_name: String):
+			universe.fixture_name_changed.emit(self, new_name)
+	)
 	
 	super._init()
 
@@ -74,3 +83,14 @@ func set_color_rgb(r,g,b) -> void:
 	_parameters.color = Color(r, g, b)
 	
 	color_changed.emit(_parameters.color)
+
+
+func set_selected(state: bool) -> void:
+	is_selected = state
+	selected.emit(state)
+
+
+func delete() -> bool:
+	## Called when this fixture is about to be deleted
+	
+	return true

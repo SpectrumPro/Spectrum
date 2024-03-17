@@ -11,8 +11,10 @@ var active_fixtures : Array = []
 var last_selected_node: Control
 
 func _ready() -> void:
-	Globals.subscribe("reload_fixtures", self.reload_fixtures)
-	Globals.subscribe("active_fixtures", self.set_active_fixtures)
+	Core.fixture_added.connect(self._reload_fixtures)
+	Core.fixture_removed.connect(self._reload_fixtures)
+	
+	Core.fixture_selection_changed.connect(self.set_active_fixtures)
 
 
 func delete_request(node:Control) -> void :
@@ -25,9 +27,8 @@ func delete_request(node:Control) -> void :
 	func(node):
 		
 		var fixture: Fixture = node.get_meta("fixture")
-		fixture.config.universe.remove_fixture(fixture)
+		fixture.universe.remove_fixture(fixture)
 		
-		Globals.call_subscription("reload_fixtures")
 	).bind(node))
 	
 	add_child(confirmation_dialog)
@@ -51,28 +52,31 @@ func on_selected(selected_node:Control) -> void:
 			pos_1 = pos_2
 			pos_2 = x
 		
-		var fixtures_to_select: Array = []
+		var fixtures_to_select: Array[Fixture] = []
 		
 		for i in range(pos_1, pos_2+1):
 			fixtures_to_select.append(children[i].get_meta("fixture"))
 		
-		Globals.set_value("active_fixtures", fixtures_to_select)
+		Core.set_fixture_selection(fixtures_to_select)
 		
 	else:
 		last_selected_node = selected_node
-		Globals.set_value("active_fixtures", [selected_node.get_meta("fixture")])
+		Core.set_fixture_selection([selected_node.get_meta("fixture")])
 
 
-func reload_fixtures() -> void:
+func _reload_fixtures(_fixture=null) -> void:
+	## Reload the list of fixtures
+	
+	print("reloading")
 	for node in get_node(physical_fixture_list).get_children():
 		node.get_parent().remove_child(node)
 		node.queue_free()
 	
-	for universe in Globals.universes.values():
-		for fixture in universe.get_fixtures().values():
+	for universe: Universe in Core.universes.values():
+		for fixture: Fixture in universe.fixtures.values():
 			var node_to_add : Control = Globals.components.list_item.instantiate()
 			node_to_add.control_node = self
-			node_to_add.set_item_name(fixture.meta.fixture_name + " | " + universe.get_universe_name() + " CH: " + str(fixture.channel) + "-" + str(fixture.channel+fixture.length-1))
+			node_to_add.set_item_name(fixture.meta.fixture_name + " | " + universe.name + " CH: " + str(fixture.channel) + "-" + str(fixture.channel+fixture.length-1))
 			node_to_add.name = fixture.uuid
 			node_to_add.set_meta("fixture", fixture)
 			get_node(physical_fixture_list).add_child(node_to_add)
@@ -100,13 +104,13 @@ func _on_new_fixture_group_pressed() -> void:
 
 func _on_select_all_pressed() -> void:
 	
-	var fixtures_to_select: Array = []
+	var fixtures_to_select: Array[Fixture] = []
 	
 	for list_item: Control in get_node(physical_fixture_list).get_children():
 		fixtures_to_select.append(list_item.get_meta("fixture"))
 	
-	Globals.set_value("active_fixtures", fixtures_to_select)
+	Core.set_fixture_selection(fixtures_to_select)
 
 
 func _on_select_none_pressed() -> void:
-	Globals.set_value("active_fixtures", [])
+	Core.set_fixture_selection([])

@@ -1,5 +1,9 @@
 extends DataIOPlugin
-class_name Art_Net_Output
+class_name ArtNetOutput
+
+var meta = {
+	"name": "Art Net Output"
+}
 
 var _udp_peer = PacketPeerUDP.new()
 
@@ -45,7 +49,8 @@ var config = {
 
 func _init():
 	self.set_type("output")
-	self.set_name("Art-Net")
+	self.name = meta.name
+	super._init()
 
 func connect_to_host():
 	_udp_peer.close()

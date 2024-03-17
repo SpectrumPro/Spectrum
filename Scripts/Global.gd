@@ -182,38 +182,38 @@ var output_plugins : Dictionary
 }
 
 func _ready() -> void:
-	load_io_plugins()
-	load_fixtures()
+	pass
+	#load_fixtures()
 	
-func load_io_plugins() -> void:
-	var output_plugin_folder : DirAccess = DirAccess.open(io_plugin_path + "Output Plugins")
-	for plugin in output_plugin_folder.get_files():
-		var uninitialized_plugin = ResourceLoader.load(io_plugin_path + "Output Plugins" + "/" + plugin)
-		var initialized_plugin = uninitialized_plugin.new()
-		var plugin_name: String = initialized_plugin.get_name()
-		
-		if plugin_name in output_plugins.keys():
-			plugin_name = plugin_name +  " " + new_uuid()
-		
-		output_plugins[plugin_name] = uninitialized_plugin 
-		initialized_plugin.free()
-
-func load_fixtures() -> void:
-	var access = DirAccess.open(fixture_path)
-	
-	for fixture_folder in access.get_directories():
-		
-		for fixture in access.open(fixture_path+"/"+fixture_folder).get_files():
-			
-			var manifest_file = FileAccess.open(fixture_path+fixture_folder+"/"+fixture, FileAccess.READ)
-			var manifest = JSON.parse_string(manifest_file.get_as_text())
-			
-			manifest.info.file_path = fixture_path+fixture_folder+"/"+fixture
-			
-			if fixtures.has(manifest.info.brand):
-				fixtures[manifest.info.brand][manifest.info.name] = manifest
-			else:
-				fixtures[manifest.info.brand] = {manifest.info.name:manifest}
+#func load_io_plugins() -> void:
+	#var output_plugin_folder : DirAccess = DirAccess.open(io_plugin_path + "Output Plugins")
+	#for plugin in output_plugin_folder.get_files():
+		#var uninitialized_plugin = ResourceLoader.load(io_plugin_path + "Output Plugins" + "/" + plugin)
+		#var initialized_plugin = uninitialized_plugin.new()
+		#var plugin_name: String = initialized_plugin.get_name()
+		#
+		#if plugin_name in output_plugins.keys():
+			#plugin_name = plugin_name +  " " + new_uuid()
+		#
+		#output_plugins[plugin_name] = uninitialized_plugin 
+		#initialized_plugin.free()
+#
+#func load_fixtures() -> void:
+	#var access = DirAccess.open(fixture_path)
+	#
+	#for fixture_folder in access.get_directories():
+		#
+		#for fixture in access.open(fixture_path+"/"+fixture_folder).get_files():
+			#
+			#var manifest_file = FileAccess.open(fixture_path+fixture_folder+"/"+fixture, FileAccess.READ)
+			#var manifest = JSON.parse_string(manifest_file.get_as_text())
+			#
+			#manifest.info.file_path = fixture_path+fixture_folder+"/"+fixture
+			#
+			#if fixtures.has(manifest.info.brand):
+				#fixtures[manifest.info.brand][manifest.info.name] = manifest
+			#else:
+				#fixtures[manifest.info.brand] = {manifest.info.name:manifest}
 
 func show_popup(content: Array[Dictionary] = []) -> void:
 	for i in content:
@@ -248,50 +248,50 @@ func call_subscription(value_name:String) -> void:
 			if node_to_update.is_valid():
 				node_to_update.call()
 
-func new_uuid() -> String:
-	return UUID_Util.v4()
-
-func select_fixture(fixture_to_add:Fixture) -> Array:
-	
-	var active_fixtures = get_value("active_fixtures")
-	if fixture_to_add not in active_fixtures:
-		active_fixtures.append(fixture_to_add)
-
-		set_value("active_fixtures", active_fixtures)
-
-	return active_fixtures
-	
-func deselect_fixture(fixture_to_remove:Fixture) -> Array:
-	var active_fixtures = get_value("active_fixtures")
-	active_fixtures.erase(fixture_to_remove)
-	
-	set_value("active_fixtures", active_fixtures)
-	return active_fixtures
-	
-func new_universe() -> Universe:
-	var new_universe = Universe.new()
-	universes[new_universe.get_uuid()] = new_universe
-	return new_universe
-
-func delete_universe(universe:Universe) -> void: 
-	universe.delete()
-	universes.erase(universe.get_uuid())
-	universe.free()
-	
-	call_subscription("reload_universes")
-	call_subscription("reload_fixtures")
-
-func serialize_universes() -> Dictionary:
-	var serialized_universes = {}
-	for universe_uuid in universes:
-		serialized_universes[universe_uuid] = universes[universe_uuid].serialize()
-	return serialized_universes
-
-func deserialize_universes(new_universes:Dictionary):
-	for universe_uuid in new_universes:
-		var universe_to_add = Universe.new()
-		universe_to_add.from(new_universes[universe_uuid])
-		universes[universe_uuid] = universe_to_add
+#func new_uuid() -> String:
+	#return UUID_Util.v4()
+#
+#func select_fixture(fixture_to_add:Fixture) -> Array:
+	#
+	#var active_fixtures = get_value("active_fixtures")
+	#if fixture_to_add not in active_fixtures:
+		#active_fixtures.append(fixture_to_add)
+#
+		#set_value("active_fixtures", active_fixtures)
+#
+	#return active_fixtures
+	#
+#func deselect_fixture(fixture_to_remove:Fixture) -> Array:
+	#var active_fixtures = get_value("active_fixtures")
+	#active_fixtures.erase(fixture_to_remove)
+	#
+	#set_value("active_fixtures", active_fixtures)
+	#return active_fixtures
+	#
+#func new_universe() -> Universe:
+	#var new_universe = Universe.new()
+	#universes[new_universe.get_uuid()] = new_universe
+	#return new_universe
+#
+#func delete_universe(universe:Universe) -> void: 
+	#universe.delete()
+	#universes.erase(universe.get_uuid())
+	#universe.free()
+	#
+	#call_subscription("reload_universes")
+	#call_subscription("reload_fixtures")
+#
+#func serialize_universes() -> Dictionary:
+	#var serialized_universes = {}
+	#for universe_uuid in universes:
+		#serialized_universes[universe_uuid] = universes[universe_uuid].serialize()
+	#return serialized_universes
+#
+#func deserialize_universes(new_universes:Dictionary):
+	#for universe_uuid in new_universes:
+		#var universe_to_add = Universe.new()
+		#universe_to_add.from(new_universes[universe_uuid])
+		#universes[universe_uuid] = universe_to_add
 
 func open_panel_in_window(panel_name:String) -> Variant:
 	if panel_name in panels:

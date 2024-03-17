@@ -4,29 +4,49 @@
 class_name EngineComponent extends Object
 ## Base class for an engine components, contains functions for storing metadata, and uuid's
 
+signal user_meta_changed(origin: EngineComponent, key: String, value: Variant) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted
+signal name_changed(new_name: String) ## Emitted when the name of this object has changed
+
 var uuid: String = "" ## Uuid of the current component
+var name: String = "" ## The name of this object, only use when displaying to users, do not use it as a reference 
 var user_meta: Dictionary ## Infomation that can be stored by other scripts
+
 
 func _init() -> void:
 	uuid = UUID_Util.v4()
+	print(self)
 
 
-func set_user_meta(key: String, value: Variant):
+func set_user_meta(key: String, value: Variant, no_signal: bool = false):
 	## Sets user_meta from the given value
 	
 	user_meta[key] = value
+	
+	if not no_signal:
+		user_meta_changed.emit(self, key, value)
 
 
-func get_user_meta(key: String, default=null) -> Variant: 
+func get_user_meta(key: String, default = null) -> Variant: 
 	## Returns user_meta from the given key, if the key is not found, default is returned
 	
 	return user_meta.get(key, default)
 
 
-func delete_user_meta(key: String) -> bool:
+func delete_user_meta(key: String, no_signal: bool = false) -> bool:
 	## Delets an item from user-meta, returning true if item was found and deleted, and false if not
 	
+	if not no_signal:
+		user_meta_changed.emit(self, key)
+	
 	return user_meta.erase(key)
+
+
+func change_name(new_name: String, no_signal: bool = false) -> void:
+	## Changes the name of this object
+	name = new_name
+	
+	if not no_signal:
+		name_changed.emit(new_name)
 
 
 func serialize() -> Dictionary:
@@ -43,7 +63,7 @@ func serialize() -> Dictionary:
 func serialize_meta() -> Dictionary:
 	## Returnes serialized user_meta
 	
-	var serialized_user_meta: Dictionary
+	var serialized_user_meta: Dictionary = {}
 	
 	for key: String in user_meta:
 		if user_meta[key] is Object and "uuid" in user_meta[key]:

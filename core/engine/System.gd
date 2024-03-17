@@ -9,7 +9,7 @@ var save_file: Dictionary = {}
 func save(engine: CoreEngine, file_name: String, file_path: String) -> Error:
 	## Saves the current state of the given engine to a file
 	
-	save_file.universes = Globals.serialize_universes()
+	save_file.universes = engine.serialize_universes()
 	return Utils.save_json_to_file(file_path, file_name, save_file)
 
 #extends Object

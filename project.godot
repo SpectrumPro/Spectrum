@@ -35,6 +35,7 @@ Core="*res://core/engine/Engine.gd"
 
 [debug]
 
+gdscript/warnings/unused_parameter=0
 gdscript/warnings/shadowed_variable=0
 gdscript/warnings/shadowed_variable_base_class=0
 gdscript/warnings/shadowed_global_identifier=0
@@ -82,4 +83,5 @@ miditest={
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true

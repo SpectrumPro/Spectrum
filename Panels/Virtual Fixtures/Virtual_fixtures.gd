@@ -24,7 +24,7 @@ func _ready() -> void:
 	_add_menu_hbox_button(ResourceLoader.load("res://Assets/Icons/Horizontal_distribute.svg"), self._align.bind(ORIENTATION_HORIZONTAL), "Align the selected fixtures horizontally" )
 	_add_menu_hbox_button(ResourceLoader.load("res://Assets/Icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality" )
 	
-	Globals.subscribe("active_fixtures", self._active_fixtures_changed)
+	Core.fixture_selection_changed.connect(self._active_fixtures_changed)
 
 
 func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = "", disabled: bool = false) -> Button:
@@ -48,7 +48,7 @@ func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = 
 func _add_fixture() -> void:
 	## Adds the currently selected virtual fixtures to the view
 	
-	for fixture: Fixture in Globals.get_value("active_fixtures"):
+	for fixture: Fixture in Core.selected_fixtures:
 		var node_to_add: Control = Globals.components.virtual_fixture.instantiate()
 		
 		node_to_add.set_fixture(fixture)
@@ -118,9 +118,9 @@ func from(config: Dictionary, control_fixture: Fixture) -> void:
 func _on_virtual_fixture_selected(node) -> void:
 	if node not in _selected_virtual_fixtures:
 		_selected_virtual_fixtures.append(node)
-	Globals.select_fixture(node.fixture)
+	Core.select_fixtures([node.fixture])
 
 
 func _on_virtual_fixture_deselected(node) -> void:
 	_selected_virtual_fixtures.erase(node)
-	Globals.deselect_fixture(node.fixture)
+	Core.deselect_fixtures([node.fixture])

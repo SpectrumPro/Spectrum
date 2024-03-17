@@ -1,13 +1,12 @@
-[gd_scene load_steps=22 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=21 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
 [ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
+[ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="3_u55oi"]
+[ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="5_8370q"]
 [ext_resource type="Script" path="res://Scripts/Menu_buttons.gd" id="7_gussm"]
-[ext_resource type="PackedScene" uid="uid://dhor5xf4xd2ul" path="res://Panels/Desk/Desk.tscn" id="8_12iq0"]
 [ext_resource type="PackedScene" uid="uid://cdg8rr3v7el85" path="res://Panels/Patch Bay/Patch_bay.tscn" id="9_hxqqf"]
-[ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="10_e6e26"]
-[ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="11_7alyx"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -97,24 +96,20 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 3
+current_tab = 1
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 script = ExtResource("3_nk5d5")
 
-[node name="Fixtures" parent="TabContainer" instance=ExtResource("10_e6e26")]
-visible = false
-layout_mode = 2
-
-[node name="Desk" parent="TabContainer" instance=ExtResource("8_12iq0")]
+[node name="Fixtures" parent="TabContainer" instance=ExtResource("3_u55oi")]
 visible = false
 layout_mode = 2
 
 [node name="Patch Bay" parent="TabContainer" instance=ExtResource("9_hxqqf")]
-visible = false
 layout_mode = 2
 
-[node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("11_7alyx")]
+[node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("5_8370q")]
+visible = false
 layout_mode = 2
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
