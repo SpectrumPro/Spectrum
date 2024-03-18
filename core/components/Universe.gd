@@ -18,11 +18,12 @@ var dmx_data: Dictionary = {}
 
 var engine: CoreEngine ## The CoreEngine class this universe belongs to
 
-func new_output(type = EmptyOutput, no_signal: bool = false) -> DataIOPlugin:
+func new_output(type = ArtNetOutput, no_signal: bool = false) -> DataIOPlugin:
 	## Adds a new output of type to this universe
 	
 	var new_output: DataIOPlugin = type.new()
 	
+	new_output.file_name = engine.output_plugins[new_output.meta.name].file_name
 	outputs[new_output.uuid] = new_output
 	
 	if not no_signal:
@@ -113,6 +114,26 @@ func _compile_and_send():
 		output.send_packet(compiled_dmx_data)
 
 
+func serialize() -> Dictionary:
+	## Serializes this universe
+	
+	var serialized_outputs = {}
+	var serialized_fixtures = {}
+	
+	for output: DataIOPlugin in outputs.values():
+		serialized_outputs[output.uuid] = output.serialize()
+	
+	for fixture: Fixture in fixtures.values():
+		serialized_fixtures[fixture.uuid] = fixture.serialize()
+		
+	
+	return {
+		"name":name,
+		"fixtures":serialized_fixtures,
+		"outputs":serialized_outputs,
+		"user_meta":serialize_meta()
+	}
+
 #func get_fixtures():
 	#return universe.fixtures
 	#
@@ -132,27 +153,7 @@ func _compile_and_send():
 	#return universe.desk_data
 #
 
-#func serialize():
-	#var serialized_outputs = {}
-	#var serialized_fixtures = {}
-	#
-	#for output_uuid in universe.outputs.keys():
-		#serialized_outputs[output_uuid] = universe.outputs[output_uuid].serialize()
-	#
-	#for fixture_channel in universe.fixtures.keys():
-		#var serialized_fixture = universe.fixtures[fixture_channel].serialize()
-		#if serialized_fixture:
-			#serialized_fixtures[fixture_channel] = serialized_fixture
-		#
-	#
-	#return {
-		#"name":universe.name,
-		#"uuid":universe.uuid,
-		#"fixtures":serialized_fixtures,
-		#"inputs":{},
-		#"outputs":serialized_outputs,
-		#"desk_data":universe.desk_data
-	#}
+
 #
 #func from(serialized_universe):
 	#universe.name = serialized_universe.name

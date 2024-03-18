@@ -1,53 +1,49 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
 extends Control
+## GUI element for managing functions
 
-var functions = {
-	"scenes":{},
-	"effects":{},
-	"cues":{},
-}
+@export var functions_list: NodePath
 
-func _ready():
-	Globals.subscribe("edit_mode", self.on_edit_mode_changed)
+func _ready() -> void:
+	Core.scene_added.connect(self._reload_functions)
+	Core.scene_removed.connect(self._reload_functions)
 
-func delete_request(node):
-	node.queue_free()
 
-func edit_request(node):
+func delete_request(node:Control) -> void :
+	## Called when the delete button is clicked on a function List_Item
+	
+	var confirmation_dialog: AcceptDialog = Globals.components.accept_dialog.instantiate()
+	confirmation_dialog.dialog_text = "Are you sure you want to delete this? This action can not be undone"
+	
+	confirmation_dialog.confirmed.connect((
+	func(node):
+		
+		var scene: Scene = node.get_meta("function")
+		scene.engine.remove_scene(scene)
+		
+	).bind(node))
+	
+	add_child(confirmation_dialog)
+
+
+func edit_request(node:Control) -> void:
+	## WIP function to edit a fixture, change channel, type, universe, ect
 	pass
 
-func on_edit_mode_changed(edit_mode):
-	for function_item in Globals.nodes.scenes_list.get_children():
-		function_item.dissable_buttons(not edit_mode)
-		
-	for function_item in Globals.nodes.effects_list.get_children():
-		function_item.dissable_buttons(not edit_mode)
-		
-	for function_item in Globals.nodes.cues_list.get_children():
-		function_item.dissable_buttons(not edit_mode)
-
-func new_scene():
-	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_item_name("Scene")
-	node_to_add.control_node = self
-	Globals.nodes.scenes_list.add_child(node_to_add)
+func _reload_functions(_scene=null) -> void:
+	## Reload the list of fixtures
 	
-func new_effect():
-	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_item_name("Effect")
-	node_to_add.control_node = self	
-	Globals.nodes.effects_list.add_child(node_to_add)
+	for node in get_node(functions_list).get_children():
+		node.get_parent().remove_child(node)
+		node.queue_free()
 	
-func new_cue():
-	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_item_name("Cue")
-	node_to_add.control_node = self	
-	Globals.nodes.cues_list.add_child(node_to_add)
-	
-func _on_new_scene_pressed():
-	new_scene()
-
-func _on_new_effect_pressed():
-	new_effect()
-
-func _on_new_cue_list_pressed():
-	new_cue()
+	for scene: Scene in Core.scenes.values():
+		var node_to_add : Control = Globals.components.list_item.instantiate()
+		node_to_add.control_node = self
+		node_to_add.set_item_name(scene.name)
+		node_to_add.name = scene.uuid
+		node_to_add.set_meta("function", scene)
+		get_node(functions_list).add_child(node_to_add)
+			

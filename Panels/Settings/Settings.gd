@@ -36,7 +36,7 @@ func load_settings() -> void:
 		var section_node := add_section_node(section)
 		for setting in settings[section].keys():
 			var config : Dictionary = settings[section][setting]
-			var value : Variant = config_file.get_value(section, setting, null)
+			var value : Variant = config_file.get_value(section, setting, "")
 			if value:
 				config.function.call(value)
 			var input_node = add_setting_node(section_node, setting, value, config.input, config.signal, config.function, config.setter, config.get("configs", {}), config.get("tooltip", ""))

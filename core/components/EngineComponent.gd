@@ -8,7 +8,7 @@ signal user_meta_changed(origin: EngineComponent, key: String, value: Variant) #
 signal name_changed(new_name: String) ## Emitted when the name of this object has changed
 
 var uuid: String = "" ## Uuid of the current component
-var name: String = "" ## The name of this object, only use when displaying to users, do not use it as a reference 
+var name: String = "": set = _set_name ## The name of this object, only use when displaying to users, do not use it as a reference 
 var user_meta: Dictionary ## Infomation that can be stored by other scripts
 
 
@@ -41,6 +41,10 @@ func delete_user_meta(key: String, no_signal: bool = false) -> bool:
 	return user_meta.erase(key)
 
 
+func _set_name(new_name) -> void:
+	name = new_name
+
+
 func change_name(new_name: String, no_signal: bool = false) -> void:
 	## Changes the name of this object
 	name = new_name
@@ -69,6 +73,10 @@ func serialize_meta() -> Dictionary:
 		if user_meta[key] is Object and "uuid" in user_meta[key]:
 			serialized_user_meta[key] = user_meta[key].uuid
 		else:
-				serialized_user_meta[key] = user_meta[key]
+			serialized_user_meta[key] = user_meta[key]
 	
 	return serialized_user_meta
+
+
+func delete() -> void:
+	pass

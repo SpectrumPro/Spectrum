@@ -81,9 +81,9 @@ func _set_universe_controls_enabled(enabled:bool) -> void:
 
 
 func _new_output() -> void:
-	## Adds a new EmptyOutput plugin to the currently selected universe
+	## Adds a new ArtNetOutput plugin to the currently selected universe
 	
-	_current_universe.new_output(EmptyOutput)
+	_current_universe.new_output(ArtNetOutput)
 
 
 func _change_io_config(io: DataIOPlugin = null) -> void:
@@ -275,7 +275,7 @@ func _on_io_type_item_selected(index:int) -> void:
 	## Called when the user selects an IO type from the list dropdown
 	
 	_current_universe.remove_output(_current_io)
-	_current_io = _current_universe.new_output(Core.output_plugins.values()[index])
+	_current_io = _current_universe.new_output(Core.output_plugins.values()[index].plugin)
 	
 	_reload_io()
 
@@ -293,5 +293,4 @@ func _on_new_output_pressed() -> void:
 
 
 func _on_universe_name_text_changed(new_text) -> void:
-	_current_universe.set_universe_name(new_text)
-	Core.universe_updated.emit(Core.UPDATE_MODE_MODIFY, _current_universe.uuid)
+	_current_universe.name = new_text

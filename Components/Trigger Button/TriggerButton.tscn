@@ -11,6 +11,7 @@ anchor_bottom = 0.0648148
 theme = ExtResource("1_v6l20")
 theme_override_font_sizes/font_size = 9
 toggle_mode = true
+action_mode = 0
 text = "Button"
 clip_text = true
 script = ExtResource("1_3rl6v")

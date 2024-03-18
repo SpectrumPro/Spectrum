@@ -56,6 +56,8 @@ func _add_fixture() -> void:
 		node_to_add.position_offset += _position_offset
 		_position_offset += Vector2(5, 5)
 		
+		fixture.set_user_meta("virtual_fixture", true)
+		
 		self.add_child(node_to_add)
 
 
@@ -65,6 +67,7 @@ func _request_delete() -> void:
 	var to_remove: Array = _selected_virtual_fixtures.duplicate()
 	
 	for virtual_fixture: Control in to_remove:
+		virtual_fixture.fixture.delete_user_meta("virtual_fixture")
 		virtual_fixture.queue_free()
 		_selected_virtual_fixtures.erase(virtual_fixture)
 
@@ -91,7 +94,6 @@ func _align(orientation: int) -> void:
 		return
 		
 	var base_position: Vector2 = _selected_virtual_fixtures[0].position_offset
-	var i: int = 0
 	
 	for virtual_fixture: Control in _selected_virtual_fixtures:
 		virtual_fixture.position_offset = base_position

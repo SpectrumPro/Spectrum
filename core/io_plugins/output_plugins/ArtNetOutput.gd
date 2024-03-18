@@ -1,5 +1,5 @@
-extends DataIOPlugin
-class_name ArtNetOutput
+class_name ArtNetOutput extends DataIOPlugin
+
 
 var meta = {
 	"name": "Art Net Output"
@@ -45,11 +45,13 @@ var config = {
 	"ip":"172.0.0.1",
 	"port":6454,
 	"universe":0,
+	"file_name":""
 }
 
 func _init():
 	self.set_type("output")
 	self.name = meta.name
+	
 	super._init()
 
 func connect_to_host():
@@ -78,7 +80,13 @@ func get_universe():
 	return config.universe
 
 func serialize():
-	return config
+	return {
+		"ip": config.ip,
+		"port": config.port,
+		"universe": config.universe,
+		"name": self.name,
+		"file_name": self.file_name
+	}
 
 func from(serialized_data):
 	config = serialized_data

@@ -6,6 +6,7 @@ extends Control
 
 func _ready() -> void:
 	Core.scene_added.connect(self._reload_buttons)
+	Core.scene_removed.connect(self._reload_buttons)
 
 
 func _reload_buttons(_scene) -> void:

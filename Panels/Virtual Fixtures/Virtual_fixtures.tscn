@@ -46,7 +46,7 @@ icon_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("2_j8tmg")
-contence = NodePath("../../../../Sidebar/MarginContainer/VBoxContainer/Contence")
+contence = NodePath(".")
 
 [node name="PanelContainer" parent="HBoxContainer/Sidebar2/MarginContainer/VBoxContainer/Contence" instance=ExtResource("5_uh5xn")]
 layout_mode = 2

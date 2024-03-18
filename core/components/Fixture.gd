@@ -15,7 +15,6 @@ var meta: Dictionary = {
 	"fixture_brand":"",
 	"fixture_name":"",
 	"display_name":"",
-	"file_path":"",
 }
 
 var universe: Universe ## The universe this fixture is patched to
@@ -27,6 +26,10 @@ var channels: Array ## Channels this fixture uses, and what they do
 var channel_ranges: Dictionary ## What happenes at each channel, at each value
 
 var is_selected: bool = false
+
+## Contains all the parameters inputted by other function in spectrum, ie scenes, programmer, ect. 
+## Each input it added to this dict with a id for each item, allowing for HTP and LTP calculations
+var current_input_data: Dictionary = {} 
 
 var _compiled_dmx_data: Dictionary
 var _parameters: Dictionary
@@ -60,17 +63,30 @@ func serialize() -> Dictionary:
 	## Returnes serialized infomation about this fixture
 	print(uuid)
 	return {
-		"universe":universe.get_uuid(),
+		"universe":universe.uuid,
 		"channel":channel,
 		"mode":mode,
 		"meta":meta,
 		"user_meta": serialize_meta(),
-		"uuid":uuid
 	}
 
 
-func set_color(color: Color) -> void:
-	## Sets the color of this fixture
+func recompile_data() -> void:
+	## Compiles dmx data from this fixture
+	
+	var highest_valued_data: Dictionary
+	
+	for input_data_id in current_input_data:
+		for input_data in current_input_data[input_data_id]:
+			match input_data:
+				"color":
+					highest_valued_data["color"] = Utils.get_htp_color(highest_valued_data.get("color", Color()), current_input_data[input_data_id][input_data])
+		
+	universe.set_data(_compiled_dmx_data)
+	_set_color(highest_valued_data.get("color", Color.BLACK))
+
+
+func _set_color(color: Color) -> void:
 	if "ColorIntensityRed" in channels:
 		_compiled_dmx_data[int(channels.find("ColorIntensityRed") + channel)] = color.r8
 	if "ColorIntensityGreen" in channels:
@@ -80,17 +96,31 @@ func set_color(color: Color) -> void:
 	
 	_parameters.color = color
 	color_changed.emit(_parameters.color)
+
+
+func set_color(color: Color, id: String = "overide") -> void:
+	## Sets the color of this fixture
 	
-	universe.set_data(_compiled_dmx_data)
+	if color == Color.BLACK:
+		_remove_current_input_data(id, "color")
+	else:
+		_add_current_input_data(id, "color", color)
 	
+	recompile_data()
+
+
+func _add_current_input_data(id: String, key: String, value: Variant) -> void:
+	if id not in current_input_data:
+		current_input_data[id] = {}
+	current_input_data[id][key] = value
+
+
+func _remove_current_input_data(id: String, key: String) -> void:
+	current_input_data.get("id", {}).erase(key)
+	if not current_input_data.get("id", false):
+		current_input_data.erase(id)
 
 
 func set_selected(state: bool) -> void:
 	is_selected = state
 	selected.emit(state)
-
-
-func delete() -> bool:
-	## Called when this fixture is about to be deleted
-	
-	return true

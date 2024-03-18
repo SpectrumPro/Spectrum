@@ -42,6 +42,7 @@ var _system: System = System.new()
 
 func _ready() -> void:
 	programmer.engine = self
+
 	
 	OS.set_low_processor_usage_mode(true)
 	reload_io_plugins()
@@ -49,7 +50,12 @@ func _ready() -> void:
 
 
 func save(file_name: String = current_file_name, file_path: String = current_file_name) -> Error:
-	return _system.save(self, file_name, file_path)
+	var save_file: Dictionary = {}
+	
+	save_file.universes = serialize_universes()
+	save_file.scenes = serialize_scenes()
+	
+	return Utils.save_json_to_file(file_path, file_name, save_file)
 
 
 func new_universe(name: String = "New Universe", no_signal: bool = false) -> Universe:
@@ -126,14 +132,25 @@ func delete_universe(universe: Universe, no_signal: bool = false) -> bool:
 		
 
 func serialize_universes() -> Dictionary:
-	## Serializes all universes and returnes them in a dictnary 
+	## Serializes all universes and returnes them in a dictionary 
 	
 	var serialized_universes: Dictionary = {}
 	
-	for universe_uuid: String in universes:
-		serialized_universes[universe_uuid] = universes[universe_uuid].serialize()
+	for universe: Universe in universes.values():
+		serialized_universes[universe.uuid] = universe.serialize()
 		
 	return serialized_universes
+
+
+func serialize_scenes() -> Dictionary:
+	## Serializes all scenes and returnes them in a dictionary 
+	
+	var serialized_scenes: Dictionary = {}
+	
+	for scene: Scene in scenes.values():
+		serialized_scenes[scene.uuid] = scene.serialize()
+	
+	return serialized_scenes
 
 
 func reload_io_plugins() -> void:
@@ -152,7 +169,7 @@ func reload_io_plugins() -> void:
 		if plugin_name in output_plugins.keys():
 			plugin_name = plugin_name +  " " + UUID_Util.v4()
 		
-		output_plugins[plugin_name] = uninitialized_plugin 
+		output_plugins[plugin_name] = {"plugin":uninitialized_plugin, "file_name":plugin}
 		initialized_plugin.free()
 
 
@@ -213,6 +230,7 @@ func deselect_fixtures(fixtures: Array[Fixture]) -> void:
 func new_scene(scene: Scene = Scene.new(), no_signal: bool = false) -> Scene:
 	## Adds a scene to this engine, creats a new one if none is passed
 	
+	scene.engine = self
 	scenes[scene.uuid] = scene
 	
 	if not no_signal:
@@ -220,3 +238,21 @@ func new_scene(scene: Scene = Scene.new(), no_signal: bool = false) -> Scene:
 	
 	return scene
 
+
+func remove_scene(scene: Scene, no_signal: bool = false) -> void:
+	## Removes a scene from this engine
+	
+	var uuid: String = scene.uuid
+	
+	scenes.erase(uuid)
+	scene.delete()
+	scene.free()
+	
+	
+	if not no_signal:
+		scene_removed.emit(uuid)
+
+
+func animate(function: Callable, from: Variant, to: Variant, duration: int) -> void:
+	var animation = get_tree().create_tween()
+	animation.tween_method(function, from, to, duration)

@@ -16,4 +16,4 @@ func _on_button_pressed() -> void:
 		#contence.visible = false
 	#else:
 		#contence.visible = true
-	is_open = not is_open
+	is_open = not contence.visible
