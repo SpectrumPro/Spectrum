@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://djm2s80n0ci54"]
+
+[ext_resource type="Script" path="res://Components/File Load Menu/FileLoadMenu.gd" id="1_bjt7g"]
+
+[node name="FileLoadMenu" type="FileDialog"]
+title = "Open a File"
+position = Vector2i(0, 36)
+size = Vector2i(582, 449)
+visible = true
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+use_native_dialog = true
+script = ExtResource("1_bjt7g")
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

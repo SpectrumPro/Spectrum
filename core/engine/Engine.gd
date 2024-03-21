@@ -58,6 +58,12 @@ func save(file_name: String = current_file_name, file_path: String = current_fil
 	return Utils.save_json_to_file(file_path, file_name, save_file)
 
 
+func load(file_path) -> void:
+	var saved_file = FileAccess.open(file_path, FileAccess.READ)
+	var serialized_data = JSON.parse_string(saved_file.get_as_text())
+	print(serialized_data)
+
+
 func new_universe(name: String = "New Universe", no_signal: bool = false) -> Universe:
 	## Adds a new universe
 	

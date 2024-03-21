@@ -219,5 +219,6 @@ text = "Beta Version 0.4.0
 [connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="pressed" from="Menu Buttons/Save" to="Menu Buttons" method="_on_save_pressed"]
+[connection signal="pressed" from="Menu Buttons/Load" to="Menu Buttons" method="_on_load_pressed"]
 [connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="show"]
 [connection signal="close_requested" from="Settings" to="Settings" method="_on_close_requested"]
