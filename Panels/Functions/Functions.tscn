@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cedqo06n6en8u"]
+[gd_scene load_steps=4 format=3 uid="uid://cedqo06n6en8u"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_un5lg"]
 [ext_resource type="Script" path="res://Panels/Functions/Functions.gd" id="2_bfwkh"]
+[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://Components/ItemListView/ItemListView.tscn" id="3_knoqd"]
 
 [node name="Functions" type="Control"]
 layout_mode = 3
@@ -24,21 +25,11 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 script = ExtResource("2_bfwkh")
-functions_list = NodePath("VBoxContainer/PanelContainer3/ScrollContainer/Functions")
+item_list_view = NodePath("ItemListView")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Functions"]
+[node name="ItemListView" parent="Functions" instance=ExtResource("3_knoqd")]
 layout_mode = 2
+show_new = false
+allow_multi_select = false
 
-[node name="PanelContainer3" type="PanelContainer" parent="Functions/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Functions/VBoxContainer/PanelContainer3"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Functions" type="VBoxContainer" parent="Functions/VBoxContainer/PanelContainer3/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[connection signal="delete_requested" from="Functions/ItemListView" to="Functions" method="_on_item_list_view_delete_requested"]

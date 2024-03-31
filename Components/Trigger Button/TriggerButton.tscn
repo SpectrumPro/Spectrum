@@ -8,14 +8,28 @@ custom_minimum_size = Vector2(70, 70)
 anchors_preset = -1
 anchor_right = 0.0364583
 anchor_bottom = 0.0648148
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme = ExtResource("1_v6l20")
 theme_override_font_sizes/font_size = 9
 toggle_mode = true
 action_mode = 0
-text = "Button"
 clip_text = true
 script = ExtResource("1_3rl6v")
 metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+text_overrun_behavior = 3
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="toggled" from="." to="." method="_on_toggled"]

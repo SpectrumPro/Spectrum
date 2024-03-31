@@ -91,7 +91,6 @@ func set_active_fixtures(fixtures:Array) -> void:
 	
 	for fixture: Fixture in active_fixtures:
 		get_node(physical_fixture_list).get_node(fixture.uuid).set_highlighted(true)
-	pass
 
 
 func _on_new_physical_fixture_pressed() -> void:

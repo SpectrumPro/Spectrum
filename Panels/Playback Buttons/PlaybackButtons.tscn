@@ -2,16 +2,26 @@
 
 [ext_resource type="Script" path="res://Panels/Playback Buttons/PlaybackButtons.gd" id="1_0mir5"]
 
-[node name="PanelContainer" type="PanelContainer"]
+[node name="PlaybackButtons" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -2.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PlaybackButtons" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 6
+horizontal_scroll_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="ScrollContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 18
 script = ExtResource("1_0mir5")
-metadata/_edit_use_anchors_ = true
+
+[connection signal="resized" from="ScrollContainer/GridContainer" to="ScrollContainer/GridContainer" method="_on_resized"]
