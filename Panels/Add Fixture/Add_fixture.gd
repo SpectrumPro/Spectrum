@@ -25,7 +25,7 @@ var options: Dictionary = {
 
 func _ready() -> void:
 	Core.universe_added.connect(self._reload_universes)
-	Core.universe_removed.connect(self._reload_universes)
+	Core.universes_removed.connect(self._reload_universes)
 	_reload_universes()
 	_reload_fixture_tree()
 

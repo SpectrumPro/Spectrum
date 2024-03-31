@@ -54,9 +54,7 @@ func set_value_no_signal(value: int) -> int:
 	else:
 		rotation = clampi(remap(value, min_value, max_value, _gap_min, _gap_max), _gap_min, _gap_max)
 		new_value = clampi(value, min_value, max_value)
-	
-	print(rotation)
-	
+		
 	$TextureRect.rotation_degrees = rotation + rotation_offset
 	$Label.text = str(new_value)
 	

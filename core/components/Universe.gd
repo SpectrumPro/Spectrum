@@ -11,10 +11,14 @@ signal fixture_deleted(fixture_uuids: Array[String])
 signal output_added(output: DataIOPlugin)
 signal output_removed(output_uuid: String)
 
+signal selected(is_selected: bool)
+
 var fixtures: Dictionary = {} ## Dictionary containing all the fixtures in this universe
 var outputs: Dictionary = {} ## Dictionary containing all the outputs in this universe
 
 var dmx_data: Dictionary = {}
+
+var is_selected: bool = false
 
 var engine: CoreEngine ## The CoreEngine class this universe belongs to
 
@@ -133,6 +137,11 @@ func serialize() -> Dictionary:
 		"outputs":serialized_outputs,
 		"user_meta":serialize_meta()
 	}
+
+
+func set_selected(state: bool) -> void:
+	is_selected = state
+	selected.emit(state)
 
 #func get_fixtures():
 	#return universe.fixtures

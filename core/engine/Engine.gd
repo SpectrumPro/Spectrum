@@ -9,7 +9,9 @@ signal universe_output_added(universe: Universe, output: DataIOPlugin) ## Emitte
 signal universe_output_removed(universe: Universe, output_uuid: String)
 
 signal universe_added(universe: Universe)
-signal universe_removed(universe_uuid: String)
+signal universes_removed(universe_uuids: Array[String])
+
+signal universe_selection_changed(selected_universes: Array[Universe])
 
 signal fixture_name_changed(fixture: Fixture, new_name)
 signal fixture_added(fixture: Array[Fixture])
@@ -17,13 +19,14 @@ signal fixture_removed(fixture_uuid: Array[String])
 signal fixture_selection_changed(selected_fixtures: Array[Fixture])
 
 signal scene_added(scene: Scene)
-signal scene_removed(scene_uuid: String)
+signal scenes_removed(scene_uuids: Array)
 
 
 var universes: Dictionary = {}
 var fixtures_definitions: Dictionary = {}
 var scenes: Dictionary = {} 
 var selected_fixtures: Array[Fixture] = []
+var selected_universes: Array[Universe] = []
 
 var input_plugins: Dictionary = {}
 var output_plugins: Dictionary = {}
@@ -42,13 +45,13 @@ var _system: System = System.new()
 
 func _ready() -> void:
 	programmer.engine = self
-
 	
 	OS.set_low_processor_usage_mode(true)
 	reload_io_plugins()
 	reload_fixtures()
 
 
+#region Save Load
 func save(file_name: String = current_file_name, file_path: String = current_file_name) -> Error:
 	var save_file: Dictionary = {}
 	
@@ -62,8 +65,10 @@ func load(file_path) -> void:
 	var saved_file = FileAccess.open(file_path, FileAccess.READ)
 	var serialized_data = JSON.parse_string(saved_file.get_as_text())
 	print(serialized_data)
+#endregion
 
 
+#region Universes
 func new_universe(name: String = "New Universe", no_signal: bool = false) -> Universe:
 	## Adds a new universe
 	
@@ -115,27 +120,40 @@ func _connect_universe_signals(universe: Universe):
 	)
 
 
-func delete_universe(universe: Universe, no_signal: bool = false) -> bool: 
-	## Deletes a universe
+func remove_universe(universe: Universe, no_signal: bool = false) -> bool: 
+	## Removes a universe
 	
 	if universe in universes.values():
 		
 		universe.delete()
 		universes.erase(universe.uuid)
+		selected_universes.erase(universe)
 		
 		var uuid: String = universe.uuid
 		
 		universe.free()
 		
 		if not no_signal:
-			print("sending signal")
-			universe_removed.emit(uuid)
+			universes_removed.emit([uuid])
 		
 		return true
 
 	else:
 		return false
-		
+
+
+func remove_universes(universes_to_remove: Array, no_signal: bool = false) -> void:
+	## Removes mutiple universes at once
+	
+	var uuids: Array = []
+	
+	for universe: Universe in universes_to_remove:
+		uuids.append(universe.uuid)
+		remove_universe(universe, true)
+	
+	if not no_signal:
+		universes_removed.emit(uuids)
+
 
 func serialize_universes() -> Dictionary:
 	## Serializes all universes and returnes them in a dictionary 
@@ -148,17 +166,40 @@ func serialize_universes() -> Dictionary:
 	return serialized_universes
 
 
-func serialize_scenes() -> Dictionary:
-	## Serializes all scenes and returnes them in a dictionary 
+func select_universes(universes_to_select: Array, no_signal: bool = false) -> void:
+	## Selects all the fixtures passed to this function
 	
-	var serialized_scenes: Dictionary = {}
+	for universe: Universe in universes_to_select:
+		if universe not in selected_universes:
+			selected_universes.append(universe)
+			universe.set_selected(true)
 	
-	for scene: Scene in scenes.values():
-		serialized_scenes[scene.uuid] = scene.serialize()
-	
-	return serialized_scenes
+	if not no_signal:
+		universe_selection_changed.emit(selected_universes)
 
 
+func set_universe_selection(universes_to_select: Array) -> void:
+	## Changes the selection to be the fixtures passed to this function
+	
+	deselect_universes(selected_universes, true)
+	select_universes(universes_to_select)
+
+
+func deselect_universes(universes_to_deselect: Array, no_signal: bool = false) -> void:
+	## Selects all the fixtures passed to this function
+	
+	for universe: Universe in universes_to_deselect:
+		if universe in selected_universes:
+			selected_universes.erase(universe)
+			universe.set_selected(true)
+	
+	if not no_signal:
+		universe_selection_changed.emit(selected_universes)
+
+#endregion
+
+
+#region IO
 func reload_io_plugins() -> void:
 	## Loads all output plugins from the folder
 	
@@ -177,6 +218,10 @@ func reload_io_plugins() -> void:
 		
 		output_plugins[plugin_name] = {"plugin":uninitialized_plugin, "file_name":plugin}
 		initialized_plugin.free()
+#endregion
+
+
+#region Fixtures 
 
 
 func reload_fixtures() -> void:
@@ -201,28 +246,25 @@ func reload_fixtures() -> void:
 				fixtures_definitions[manifest.info.brand] = {manifest.info.name:manifest}
 
 
-func select_fixtures(fixtures: Array[Fixture]) -> void:
-	## Selects all the fixtures pass to this function
+func select_fixtures(fixtures: Array[Fixture], no_signal: bool = false) -> void:
+	## Selects all the fixtures passed to this function
 	
 	for fixture: Fixture in fixtures:
 		if fixture not in selected_fixtures:
 			selected_fixtures.append(fixture)
 			fixture.set_selected(true)
 	
-	fixture_selection_changed.emit(selected_fixtures)
+	if not no_signal:
+		fixture_selection_changed.emit(selected_fixtures)
 
 
 func set_fixture_selection(fixtures: Array[Fixture]) -> void:
 	## Changes the selection to be the fixtures passed to this function
 	
-	for fixture: Fixture in selected_fixtures:
-		fixture.set_selected(false)
-		
-	selected_fixtures = []
-	
+	deselect_fixtures(selected_fixtures, true)
 	select_fixtures(fixtures)
 
-func deselect_fixtures(fixtures: Array[Fixture]) -> void:
+func deselect_fixtures(fixtures: Array[Fixture], no_signal: bool = false) -> void:
 	## Deselects all the fixtures pass to this function
 	
 	for fixture: Fixture in fixtures:
@@ -230,8 +272,12 @@ func deselect_fixtures(fixtures: Array[Fixture]) -> void:
 			selected_fixtures.erase(fixture)
 			fixture.set_selected(false)
 	
-	fixture_selection_changed.emit(selected_fixtures)
+	if not no_signal:
+		fixture_selection_changed.emit(selected_fixtures)
+#endregion
 
+
+#region Scenes
 
 func new_scene(scene: Scene = Scene.new(), no_signal: bool = false) -> Scene:
 	## Adds a scene to this engine, creats a new one if none is passed
@@ -245,18 +291,35 @@ func new_scene(scene: Scene = Scene.new(), no_signal: bool = false) -> Scene:
 	return scene
 
 
-func remove_scene(scene: Scene, no_signal: bool = false) -> void:
+func remove_scenes(scenes_to_remove: Array, no_signal: bool = false) -> void:
 	## Removes a scene from this engine
 	
-	var uuid: String = scene.uuid
+	var uuids: Array = []
 	
-	scenes.erase(uuid)
-	scene.delete()
-	scene.free()
+	for scene: Scene in scenes_to_remove:
+		uuids.append(scene.uuid)
+		scenes.erase(scene.uuid)
+		
+		scene.delete()
+		scene.free()
 	
 	
 	if not no_signal:
-		scene_removed.emit(uuid)
+		scenes_removed.emit(uuids)
+
+
+func serialize_scenes() -> Dictionary:
+	## Serializes all scenes and returnes them in a dictionary 
+	
+	var serialized_scenes: Dictionary = {}
+	
+	for scene: Scene in scenes.values():
+		serialized_scenes[scene.uuid] = scene.serialize()
+	
+	return serialized_scenes
+
+
+#endregion
 
 
 func animate(function: Callable, from: Variant, to: Variant, duration: int) -> void:

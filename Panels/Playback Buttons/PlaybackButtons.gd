@@ -6,7 +6,7 @@ extends Control
 
 func _ready() -> void:
 	Core.scene_added.connect(self._reload_buttons)
-	Core.scene_removed.connect(self._reload_buttons)
+	Core.scenes_removed.connect(self._reload_buttons)
 
 
 func _reload_buttons(_scene) -> void:
@@ -19,10 +19,14 @@ func _reload_buttons(_scene) -> void:
 	for scene: Scene in Core.scenes.values():
 		var button_to_add: Button = Globals.components.trigger_button.instantiate()
 		
-		button_to_add.text = scene.name
+		button_to_add.set_label_text(scene.name)
 		button_to_add.toggled.connect(
 			func(state):
 				scene.enabled = state
 		)
 		
 		self.add_child(button_to_add)
+
+
+func _on_resized() -> void:
+	self.columns = int(self.size.x / 110)

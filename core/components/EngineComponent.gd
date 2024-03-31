@@ -14,7 +14,6 @@ var user_meta: Dictionary ## Infomation that can be stored by other scripts
 
 func _init() -> void:
 	uuid = UUID_Util.v4()
-	print(self)
 
 
 func set_user_meta(key: String, value: Variant, no_signal: bool = false):
