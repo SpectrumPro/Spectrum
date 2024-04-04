@@ -5,12 +5,8 @@ class_name CoreEngine extends Node
 ## The core engine that powers Spectrum
 
 signal universe_name_changed(universe: Universe, new_name: String) ## Emitted when any of the universes in this engine have there name changed
-signal universe_output_added(universe: Universe, output: DataIOPlugin) ## Emitted when of the universes 
-signal universe_output_removed(universe: Universe, output_uuid: String)
-
 signal universe_added(universe: Universe)
 signal universes_removed(universe_uuids: Array[String])
-
 signal universe_selection_changed(selected_universes: Array[Universe])
 
 signal fixture_name_changed(fixture: Fixture, new_name)
@@ -40,8 +36,10 @@ var current_file_path: String = ""
 
 var programmer = Programmer.new()
 
-var _system: System = System.new()
+var frequency = 45.0
+var min_interval = 1.0 / frequency
 
+var _system: System = System.new()
 
 func _ready() -> void:
 	programmer.engine = self
@@ -94,27 +92,17 @@ func _connect_universe_signals(universe: Universe):
 			universe_name_changed.emit(universe, new_name)
 	)
 	
-	universe.output_added.connect(
-		func(output: DataIOPlugin): 
-			universe_output_added.emit(universe, output)
-	)
-	
-	universe.output_removed.connect(
-		func(output_uuid: String):
-			universe_output_removed.emit(universe, output_uuid)
-	)
-	
 	universe.fixture_name_changed.connect(
 		func(fixture: Fixture, new_name: String):
 			fixture_name_changed.emit(fixture, new_name)
 	)
 	
-	universe.fixture_added.connect(
+	universe.fixtures_added.connect(
 		func(fixtures: Array[Fixture]):
 			fixture_added.emit(fixtures)
 	)
 	
-	universe.fixture_deleted.connect(
+	universe.fixtures_deleted.connect(
 		func(fixture_uuids: Array[String]):
 			fixture_removed.emit(fixture_uuids)
 	)
@@ -179,7 +167,7 @@ func select_universes(universes_to_select: Array, no_signal: bool = false) -> vo
 
 
 func set_universe_selection(universes_to_select: Array) -> void:
-	## Changes the selection to be the fixtures passed to this function
+	## Changes the selection to be the universes passed to this function
 	
 	deselect_universes(selected_universes, true)
 	select_universes(universes_to_select)

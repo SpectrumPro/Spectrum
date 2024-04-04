@@ -31,5 +31,5 @@ func _on_item_list_view_add_requested() -> void:
 	Core.new_universe()
 
 
-func _on_item_list_view_take_requested(items: Array) -> void:
+func _on_item_list_view_selection_changed(items: Array) -> void:
 	Core.set_universe_selection(items)

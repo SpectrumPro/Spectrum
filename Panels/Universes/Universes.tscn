@@ -18,8 +18,8 @@ item_list_view = NodePath("ItemListView")
 
 [node name="ItemListView" parent="." instance=ExtResource("2_nny3h")]
 layout_mode = 2
-show_edit = false
+buttons_enabled = null
 
 [connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]
-[connection signal="take_requested" from="ItemListView" to="." method="_on_item_list_view_take_requested"]
+[connection signal="selection_changed" from="ItemListView" to="." method="_on_item_list_view_selection_changed"]

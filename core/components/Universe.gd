@@ -5,22 +5,20 @@ class_name Universe extends EngineComponent
 ## Enngie class for handling universes, and there outputs
 
 signal fixture_name_changed(fixture: Fixture, new_name: String)
-signal fixture_added(fixtures: Array[Fixture])
-signal fixture_deleted(fixture_uuids: Array[String])
+signal fixtures_added(fixtures: Array[Fixture])
+signal fixtures_deleted(fixture_uuids: Array[String])
 
-signal output_added(output: DataIOPlugin)
-signal output_removed(output_uuid: String)
-
-signal selected(is_selected: bool)
+signal outputs_added(outputs: Array[DataIOPlugin])
+signal outputs_removed(output_uuids: Array[String])
 
 var fixtures: Dictionary = {} ## Dictionary containing all the fixtures in this universe
 var outputs: Dictionary = {} ## Dictionary containing all the outputs in this universe
 
 var dmx_data: Dictionary = {}
 
-var is_selected: bool = false
-
 var engine: CoreEngine ## The CoreEngine class this universe belongs to
+
+var _last_execution_time: int = 0
 
 func new_output(type = ArtNetOutput, no_signal: bool = false) -> DataIOPlugin:
 	## Adds a new output of type to this universe
@@ -31,7 +29,7 @@ func new_output(type = ArtNetOutput, no_signal: bool = false) -> DataIOPlugin:
 	outputs[new_output.uuid] = new_output
 	
 	if not no_signal:
-		output_added.emit(new_output)
+		outputs_added.emit([new_output])
 	
 	return new_output
 
@@ -46,7 +44,20 @@ func remove_output(output: DataIOPlugin, no_signal: bool = false) -> void:
 	output.free()
 	
 	if not no_signal:
-		output_removed.emit(uuid)
+		outputs_removed.emit([uuid])
+
+
+func remove_outputs(outputs_to_remove: Array, no_signal: bool = false):
+	## Remove more than one output at once
+	
+	var uuids: Array[String] = []
+	
+	for output: DataIOPlugin in outputs_to_remove:
+		uuids.append(output.uuid)
+		remove_output(output, true)
+	
+	if not no_signal:
+		outputs_removed.emit(uuids)
 
 
 func new_fixture(manifest: Dictionary, mode:int, channel: int = -1, quantity:int = 1, offset:int = 0, no_signal: bool = false):
@@ -72,7 +83,7 @@ func new_fixture(manifest: Dictionary, mode:int, channel: int = -1, quantity:int
 		just_added_fixtures.append(new_fixture)
 		
 	if not no_signal:
-		fixture_added.emit(just_added_fixtures)
+		fixtures_added.emit(just_added_fixtures)
 
 
 func remove_fixture(fixture: Fixture, no_signal: bool = false):
@@ -89,7 +100,7 @@ func remove_fixture(fixture: Fixture, no_signal: bool = false):
 	
 	if not no_signal:
 		var uuids: Array[String] = [fixture_uuid]
-		fixture_deleted.emit(uuids)
+		fixtures_deleted.emit(uuids)
 
 
 func is_channel_used(channels: Array) -> bool: 
@@ -111,11 +122,14 @@ func set_data(data: Dictionary):
 
 
 func _compile_and_send():
-	## Will compile all dmx data in a future version, currently just sends dmx data
-	var compiled_dmx_data = dmx_data
+	var current_time = Time.get_ticks_msec() / 1000.0
 	
-	for output: DataIOPlugin in outputs.values():
-		output.send_packet(compiled_dmx_data)
+	if current_time - _last_execution_time >= engine.min_interval:
+		var compiled_dmx_data: Dictionary = dmx_data
+		for output in outputs.values():
+			output.send_packet(compiled_dmx_data)
+		
+		_last_execution_time = current_time
 
 
 func serialize() -> Dictionary:
@@ -139,9 +153,6 @@ func serialize() -> Dictionary:
 	}
 
 
-func set_selected(state: bool) -> void:
-	is_selected = state
-	selected.emit(state)
 
 #func get_fixtures():
 	#return universe.fixtures

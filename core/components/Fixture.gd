@@ -8,8 +8,6 @@ signal color_changed(color: Color) ## Emitted when the color of this fixture is 
 signal mode_changed(mode: int) ## Emitted when the mode of the fixture is changed
 signal channel_changed(new_channel: int) ## Emitted when the channel of the fixture is changed
 
-signal selected(selected: bool)
-
 ## Contains metadata infomation about this fixture
 var meta: Dictionary = { 
 	"fixture_brand":"",
@@ -25,7 +23,6 @@ var manifest: Dictionary ## Fixture manifest
 var channels: Array ## Channels this fixture uses, and what they do
 var channel_ranges: Dictionary ## What happenes at each channel, at each value
 
-var is_selected: bool = false
 
 ## Contains all the parameters inputted by other function in spectrum, ie scenes, programmer, ect. 
 ## Each input it added to this dict with a id for each item, allowing for HTP and LTP calculations
@@ -118,9 +115,4 @@ func _add_current_input_data(id: String, key: String, value: Variant) -> void:
 func _remove_current_input_data(id: String, key: String) -> void:
 	current_input_data.get("id", {}).erase(key)
 	if not current_input_data.get("id", false):
-		current_input_data.erase(id)
-
-
-func set_selected(state: bool) -> void:
-	is_selected = state
-	selected.emit(state)
+		current_input_data.erase(id) 

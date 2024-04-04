@@ -20,6 +20,7 @@ signal selection_changed(items: Array)
 @export var show_delete: bool = true : set = set_show_delete
 @export var show_separators: bool = true : set = set_show_separators
 
+@export var buttons_enabled: bool = true : set = set_buttons_enabled
 @export var allow_multi_select: bool = true
 
 @onready var item_container: VBoxContainer = self.get_node("PanelContainer2/ScrollContainer/ItemContainer")
@@ -96,11 +97,11 @@ func _update_selected() -> void:
 	for item: Control in currently_selected_items:
 		item.set_highlighted(true)
 		
-	selection_changed.emit(currently_selected_items)
+	selection_changed.emit(get_objects_from_nodes(currently_selected_items))
 
 
 func get_objects_from_nodes(items: Array) -> Array:
-	## Converts a list of list Item nodes into three objects they are representing
+	## Converts a list of list Item nodes into the objects they are representing
 	
 	var object_list: Array = []
 	
@@ -108,6 +109,16 @@ func get_objects_from_nodes(items: Array) -> Array:
 		object_list.append(object_refs[item])
 	
 	return object_list
+
+
+func set_buttons_enabled(state: bool):
+	
+	buttons_enabled = state
+	
+	for node: Node in $ToolBarContainer/HBoxContainer.get_children():
+		if node is Button:
+			node.disabled = not buttons_enabled
+
 
 #region Button Callbacks
 

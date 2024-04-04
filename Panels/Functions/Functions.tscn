@@ -1,35 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://cedqo06n6en8u"]
+[gd_scene load_steps=3 format=3 uid="uid://cedqo06n6en8u"]
 
-[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_un5lg"]
 [ext_resource type="Script" path="res://Panels/Functions/Functions.gd" id="2_bfwkh"]
 [ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://Components/ItemListView/ItemListView.tscn" id="3_knoqd"]
 
-[node name="Functions" type="Control"]
-layout_mode = 3
+[node name="Functions" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_un5lg")
-
-[node name="Functions" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
 script = ExtResource("2_bfwkh")
 item_list_view = NodePath("ItemListView")
 
-[node name="ItemListView" parent="Functions" instance=ExtResource("3_knoqd")]
+[node name="ItemListView" parent="." instance=ExtResource("3_knoqd")]
 layout_mode = 2
-show_new = false
+buttons_enabled = null
 allow_multi_select = false
 
-[connection signal="delete_requested" from="Functions/ItemListView" to="Functions" method="_on_item_list_view_delete_requested"]
+[connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]

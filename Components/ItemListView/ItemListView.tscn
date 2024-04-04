@@ -20,6 +20,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_fhj3g")
 script = ExtResource("2_xkuya")
+buttons_enabled = null
 
 [node name="ToolBarContainer" type="PanelContainer" parent="."]
 layout_mode = 2

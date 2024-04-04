@@ -1,8 +1,8 @@
 [gd_scene load_steps=22 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
+[ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IO Controls/IOControls.tscn" id="3_k6wx5"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
-[ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
 [ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="3_u55oi"]
 [ext_resource type="PackedScene" uid="uid://03t7su6t2rq2" path="res://Panels/Universes/Universes.tscn" id="4_8kgbc"]
 [ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://Panels/Functions/Functions.tscn" id="4_35sxj"]
@@ -99,12 +99,17 @@ grow_horizontal = 2
 grow_vertical = 2
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
-script = ExtResource("3_nk5d5")
 
-[node name="Fixtures" parent="TabContainer" instance=ExtResource("3_u55oi")]
+[node name="Universes" type="HSplitContainer" parent="TabContainer"]
 layout_mode = 2
 
-[node name="Universes" parent="TabContainer" instance=ExtResource("4_8kgbc")]
+[node name="Universes" parent="TabContainer/Universes" instance=ExtResource("4_8kgbc")]
+layout_mode = 2
+
+[node name="IO Controls" parent="TabContainer/Universes" instance=ExtResource("3_k6wx5")]
+layout_mode = 2
+
+[node name="Fixtures" parent="TabContainer" instance=ExtResource("3_u55oi")]
 visible = false
 layout_mode = 2
 

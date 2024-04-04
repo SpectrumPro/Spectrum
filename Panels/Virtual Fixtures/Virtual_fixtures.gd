@@ -15,6 +15,8 @@ var _add_fixture_button: Button
 
 var _position_offset: Vector2 = Vector2(100, 100)
 
+var last_execution_time = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	## Add extra buttons to GraphEdit menu, and subscribe to global variables
@@ -128,7 +130,12 @@ func _on_virtual_fixture_deselected(node) -> void:
 
 
 func _on_color_picker_color_changed(color: Color) -> void:
-	Core.programmer.set_color(Core.selected_fixtures, color)
+	var current_time = Time.get_ticks_msec() / 1000.0
+	
+	if current_time - last_execution_time >= Core.min_interval:
+		Core.programmer.set_color(Core.selected_fixtures, color)
+		print(color)
+		last_execution_time = current_time
 
 
 func _on_save_pressed() -> void:

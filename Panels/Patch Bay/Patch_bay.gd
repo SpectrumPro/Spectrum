@@ -19,7 +19,7 @@ var _current_io: DataIOPlugin
 
 func _ready() -> void:
 	Core.universe_added.connect(self._reload_universes)
-	Core.universe_removed.connect(self._reload_universes)
+	Core.universes_removed.connect(self._reload_universes)
 
 
 func _new_universe() -> Universe:
