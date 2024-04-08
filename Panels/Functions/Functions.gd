@@ -25,3 +25,7 @@ func _on_item_list_view_delete_requested(items: Array) -> void:
 	
 	Core.remove_scenes(items)
 	
+
+
+func _on_item_list_view_selection_changed(items: Array) -> void:
+	self.get_node(item_list_view).set_selected(items)

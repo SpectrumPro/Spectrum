@@ -106,6 +106,19 @@ func remove_fixture(fixture: Fixture, no_signal: bool = false):
 		fixtures_deleted.emit(uuids)
 
 
+func remove_fixtures(fixtures_to_remove: Array, no_signal: bool = false) -> void:
+	## Removes mutiple fixtures at once
+	
+	var uuids: Array = []
+	
+	for fixture: Fixture in fixtures_to_remove:
+		uuids.append(fixture.uuid)
+		remove_fixture(fixture, true)
+	
+	if not no_signal:
+		fixtures_deleted.emit(uuids)
+
+
 func is_channel_used(channels: Array) -> bool: 
 	## Checks if any of the channels in channels are used by another fixture
 	return false

@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IO Controls/IOControls.tscn" id="3_k6wx5"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
-[ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="3_u55oi"]
+[ext_resource type="PackedScene" uid="uid://d12eb0smjpwuk" path="res://Panels/Fixtures/Fixtures.tscn" id="3_u55oi"]
 [ext_resource type="PackedScene" uid="uid://03t7su6t2rq2" path="res://Panels/Universes/Universes.tscn" id="4_8kgbc"]
 [ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://Panels/Functions/Functions.tscn" id="4_35sxj"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="5_8370q"]
@@ -109,11 +109,11 @@ layout_mode = 2
 [node name="IO Controls" parent="TabContainer/Universes" instance=ExtResource("3_k6wx5")]
 layout_mode = 2
 
-[node name="Fixtures" parent="TabContainer" instance=ExtResource("3_u55oi")]
+[node name="Functions" parent="TabContainer" instance=ExtResource("4_35sxj")]
 visible = false
 layout_mode = 2
 
-[node name="Functions" parent="TabContainer" instance=ExtResource("4_35sxj")]
+[node name="Fixtures" parent="TabContainer" instance=ExtResource("3_u55oi")]
 visible = false
 layout_mode = 2
 

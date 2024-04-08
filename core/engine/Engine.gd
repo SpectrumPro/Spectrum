@@ -5,7 +5,7 @@ class_name CoreEngine extends Node
 ## The core engine that powers Spectrum
 
 signal universe_name_changed(universe: Universe, new_name: String) ## Emitted when any of the universes in this engine have there name changed
-signal universe_added(universe: Universe)
+signal universes_added(universe: Array[Universe])
 signal universes_removed(universe_uuids: Array[String])
 signal universe_selection_changed(selected_universes: Array[Universe])
 
@@ -100,7 +100,7 @@ func new_universe(name: String = "New Universe", no_signal: bool = false, serial
 	universes[new_universe.uuid] = new_universe
 
 	if not no_signal:
-		universe_added.emit(new_universe)
+		universes_added.emit([new_universe])
 	
 	_connect_universe_signals(new_universe)
 	
@@ -258,7 +258,7 @@ func reload_fixtures() -> void:
 				fixtures_definitions[manifest.info.brand] = {manifest.info.name:manifest}
 
 
-func select_fixtures(fixtures: Array[Fixture], no_signal: bool = false) -> void:
+func select_fixtures(fixtures: Array, no_signal: bool = false) -> void:
 	## Selects all the fixtures passed to this function
 	
 	for fixture: Fixture in fixtures:
@@ -270,16 +270,16 @@ func select_fixtures(fixtures: Array[Fixture], no_signal: bool = false) -> void:
 		fixture_selection_changed.emit(selected_fixtures)
 
 
-func set_fixture_selection(fixtures: Array[Fixture]) -> void:
+func set_fixture_selection(fixtures: Array) -> void:
 	## Changes the selection to be the fixtures passed to this function
 	
 	deselect_fixtures(selected_fixtures, true)
 	select_fixtures(fixtures)
 
-func deselect_fixtures(fixtures: Array[Fixture], no_signal: bool = false) -> void:
+func deselect_fixtures(fixtures: Array, no_signal: bool = false) -> void:
 	## Deselects all the fixtures pass to this function
 	
-	for fixture: Fixture in fixtures:
+	for fixture: Fixture in fixtures.duplicate():
 		if fixture in selected_fixtures:
 			selected_fixtures.erase(fixture)
 			fixture.set_selected(false)

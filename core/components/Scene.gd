@@ -28,6 +28,13 @@ func set_enabled(is_enabled: bool) -> void:
 			Core.animate(func(color): fixture.set_color(color, uuid), fixture.current_input_data[uuid].color, Color.BLACK, fade_out_speed)
 
 
+func set_save_data(saved_data: Dictionary) -> void:
+	save_data = saved_data
+	
+	for fixture: Fixture in save_data.keys():
+		fixture.delete_request.connect(func(deleted_fixture: Fixture): save_data.erase(deleted_fixture))
+
+
 func serialize() -> Dictionary:
 	## Serializes this scene and returnes it in a dictionary
 	
@@ -46,7 +53,7 @@ func load_from(serialized_data: Dictionary) -> void:
 	fade_in_speed = serialized_data.get("fade_in_speed", fade_in_speed)
 	fade_out_speed = serialized_data.get("fade_out_speed", fade_out_speed)
 	
-	save_data = deserialize_save_data(serialized_data.get("save_data", {}))
+	set_save_data(deserialize_save_data(serialized_data.get("save_data", {})))
 
 
 func serialize_save_data() -> Dictionary:

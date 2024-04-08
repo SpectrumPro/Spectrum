@@ -9,13 +9,13 @@ extends Control
 
 func _ready() -> void:
 	print(item_list_view)
-	Core.universe_added.connect(self._reload_universes)
+	Core.universes_added.connect(self._reload_universes)
 	Core.universes_removed.connect(self._reload_universes)
 	Core.universe_name_changed.connect(self._reload_universes)
 	Core.universe_selection_changed.connect(self._universe_selection_changed)
 
 
-func _reload_universes(_scene=null) -> void:
+func _reload_universes(_universes=null) -> void:
 	## Reload the list of fixtures
 	
 	self.get_node(item_list_view).remove_all()

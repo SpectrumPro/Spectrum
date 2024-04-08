@@ -49,6 +49,8 @@ func _init(i: Dictionary = {}) -> void:
 	meta.fixture_brand = i.manifest.info.brand
 	meta.fixture_name = i.manifest.info.name
 	
+	self.name = i.manifest.info.brand + " | " + i.manifest.info.name
+	
 	if "uuid" in i:
 		self.uuid = i.uuid
 	

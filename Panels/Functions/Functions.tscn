@@ -17,3 +17,4 @@ layout_mode = 2
 allow_multi_select = false
 
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]
+[connection signal="selection_changed" from="ItemListView" to="." method="_on_item_list_view_selection_changed"]

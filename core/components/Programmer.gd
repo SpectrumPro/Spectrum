@@ -25,7 +25,7 @@ func save_to_scene(name: String = "New Scene") -> Scene:
 	
 	var new_scene: Scene = Scene.new()
 	
-	new_scene.save_data = save_data.duplicate(true)
+	new_scene.set_save_data(save_data.duplicate(true))
 	new_scene.name = name
 	
 	engine.new_scene(new_scene)
