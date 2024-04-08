@@ -5,7 +5,7 @@ extends Control
 ## Temp ui panel for triggering scenes
 
 func _ready() -> void:
-	Core.scene_added.connect(self._reload_buttons)
+	Core.scenes_added.connect(self._reload_buttons)
 	Core.scenes_removed.connect(self._reload_buttons)
 
 

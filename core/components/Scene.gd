@@ -39,6 +39,16 @@ func serialize() -> Dictionary:
 	}
 
 
+func load_from(serialized_data: Dictionary) -> void:
+	
+	self.name = serialized_data.get("name", "")
+	
+	fade_in_speed = serialized_data.get("fade_in_speed", fade_in_speed)
+	fade_out_speed = serialized_data.get("fade_out_speed", fade_out_speed)
+	
+	save_data = deserialize_save_data(serialized_data.get("save_data", {}))
+
+
 func serialize_save_data() -> Dictionary:
 	## Serializes save_data and returnes as a dictionary
 	
@@ -50,3 +60,21 @@ func serialize_save_data() -> Dictionary:
 			serialized_save_data[fixture.uuid][save_key] = Utils.serialize_variant(save_data[fixture][save_key])
 	
 	return serialized_save_data
+
+
+func deserialize_save_data(serialized_data: Dictionary) -> Dictionary:
+	## Deserializes save_data and returnes as a dictionary
+	
+	var deserialized_save_data: Dictionary = {}
+	
+	for fixture_uuid: String in serialized_data:
+		var fixture_save: Dictionary = serialized_data[fixture_uuid]
+		
+		var deserialized_fixture_save = {}
+		
+		for saved_property: String in fixture_save:
+			deserialized_fixture_save[saved_property] = Utils.deserialize_variant(fixture_save[saved_property])
+		
+		deserialized_save_data[engine.fixtures[fixture_uuid]] = deserialized_fixture_save
+		
+	return deserialized_save_data

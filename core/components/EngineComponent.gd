@@ -16,7 +16,9 @@ var is_selected: bool = false: set = set_selected
 
 
 func _init() -> void:
-	uuid = UUID_Util.v4()
+	
+	if not uuid:
+		uuid = UUID_Util.v4()
 
 
 func set_selected(state: bool) -> void:

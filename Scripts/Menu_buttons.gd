@@ -1,5 +1,10 @@
 extends HBoxContainer
 
+
+func _ready():
+	Core.load(OS.get_environment("HOME") + "/Documents/Spectrum/Test1.spshow")
+
+
 func _on_save_pressed() -> void:
 	
 	var menu: FileDialog = Globals.components.file_save_menu.instantiate()

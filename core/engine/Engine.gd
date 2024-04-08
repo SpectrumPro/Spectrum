@@ -14,11 +14,12 @@ signal fixture_added(fixture: Array[Fixture])
 signal fixture_removed(fixture_uuid: Array[String])
 signal fixture_selection_changed(selected_fixtures: Array[Fixture])
 
-signal scene_added(scene: Scene)
+signal scenes_added(scene: Array[Scene])
 signal scenes_removed(scene_uuids: Array)
 
 
 var universes: Dictionary = {}
+var fixtures: Dictionary = {}
 var fixtures_definitions: Dictionary = {}
 var scenes: Dictionary = {} 
 var selected_fixtures: Array[Fixture] = []
@@ -47,6 +48,7 @@ func _ready() -> void:
 	reload_fixtures()
 
 
+
 #region Save Load
 func save(file_name: String = current_file_name, file_path: String = current_file_name) -> Error:
 	var save_file: Dictionary = {}
@@ -58,19 +60,42 @@ func save(file_name: String = current_file_name, file_path: String = current_fil
 
 
 func load(file_path) -> void:
+	## Loads a save file and deserialize the data
+	
 	var saved_file = FileAccess.open(file_path, FileAccess.READ)
-	var serialized_data = JSON.parse_string(saved_file.get_as_text())
-	print(serialized_data)
+	var serialized_data: Dictionary = JSON.parse_string(saved_file.get_as_text())
+	
+	## Loops through each universe in the save file (if any), and loads them into the engine
+	for universe_uuid: String in serialized_data.get("universes", {}):
+		var serialized_universe: Dictionary = serialized_data.universes[universe_uuid]
+		
+		var new_universe: Universe = new_universe(serialized_universe.name, false, serialized_universe, universe_uuid)
+		universes[new_universe.uuid] = new_universe
+	
+	for scene_uuid: String in serialized_data.get("scenes", {}):
+		var serialized_scene: Dictionary = serialized_data.scenes[scene_uuid]
+		
+		var new_scene: Scene = new_scene(Scene.new(), true, serialized_scene, scene_uuid)
+		
+		scenes_added.emit(scenes)
 #endregion
 
 
 #region Universes
-func new_universe(name: String = "New Universe", no_signal: bool = false) -> Universe:
+func new_universe(name: String = "New Universe", no_signal: bool = false, serialised_data: Dictionary = {}, uuid: String = "") -> Universe:
 	## Adds a new universe
 	
 	var new_universe: Universe = Universe.new()
-	new_universe.name = name 
+	
 	new_universe.engine = self
+	
+	if serialised_data:
+		new_universe.load_from(serialised_data)
+	else:
+		new_universe.name = name
+	
+	if uuid:
+		new_universe.uuid = uuid
 	
 	universes[new_universe.uuid] = new_universe
 
@@ -203,7 +228,7 @@ func reload_io_plugins() -> void:
 		if plugin_name in output_plugins.keys():
 			plugin_name = plugin_name +  " " + UUID_Util.v4()
 		
-		output_plugins[plugin_name] = {"plugin":uninitialized_plugin, "file_name":plugin}
+		output_plugins[plugin] = {"plugin":uninitialized_plugin, "plugin_name":plugin_name}
 		initialized_plugin.free()
 #endregion
 
@@ -266,14 +291,22 @@ func deselect_fixtures(fixtures: Array[Fixture], no_signal: bool = false) -> voi
 
 #region Scenes
 
-func new_scene(scene: Scene = Scene.new(), no_signal: bool = false) -> Scene:
+func new_scene(scene: Scene = Scene.new(), no_signal: bool = false, serialized_data: Dictionary = {}, uuid: String = "") -> Scene:
 	## Adds a scene to this engine, creats a new one if none is passed
 	
+	if uuid:
+		scene.uuid = uuid
+	
 	scene.engine = self
+	
+	if serialized_data:
+		scene.load_from(serialized_data)
+	
+	
 	scenes[scene.uuid] = scene
 	
 	if not no_signal:
-		scene_added.emit(scene)
+		scenes_added.emit([scene])
 	
 	return scene
 

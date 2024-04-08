@@ -8,7 +8,7 @@ extends Control
 
 
 func _ready() -> void:
-	Core.scene_added.connect(self._reload_functions)
+	Core.scenes_added.connect(self._reload_functions)
 	Core.scenes_removed.connect(self._reload_functions)
 
 

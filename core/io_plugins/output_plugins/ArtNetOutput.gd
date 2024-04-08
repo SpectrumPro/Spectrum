@@ -1,10 +1,5 @@
 class_name ArtNetOutput extends DataIOPlugin
 
-
-var meta = {
-	"name": "Art Net Output"
-}
-
 var _udp_peer = PacketPeerUDP.new()
 
 var exposed_values = [
@@ -45,12 +40,15 @@ var config = {
 	"ip":"127.0.0.1",
 	"port":6454,
 	"universe":0,
-	"file_name":""
 }
 
-func _init():
+func _init(serialised_data: Dictionary = {}):
 	self.set_type("output")
-	self.name = meta.name
+	
+	self.name = serialised_data.get("name", "Art Net Output")
+	config.ip = serialised_data.get("config", {}).get("ip", config.ip)
+	config.port = serialised_data.get("config", {}).get("port", config.port)
+	config.universe = serialised_data.get("config", {}).get("univeres", config.universe)
 	
 	super._init()
 
@@ -81,11 +79,14 @@ func get_universe():
 
 func serialize():
 	return {
-		"ip": config.ip,
-		"port": config.port,
-		"universe": config.universe,
+		"config":{
+			"ip": config.ip,
+			"port": config.port,
+			"universe": config.universe,
+		},
 		"name": self.name,
-		"file_name": self.file_name
+		"file": self.get_script().get_path().split("/")[-1],
+		"user_meta": self.serialize_meta()
 	}
 
 func from(serialized_data):

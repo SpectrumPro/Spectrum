@@ -19,11 +19,21 @@ static func save_json_to_file(file_path: String, file_name: String, json: Dictio
 
 
 static func serialize_variant(variant: Variant) -> Variant:
-	print("type: ", typeof(variant))
 	match typeof(variant):
 		TYPE_COLOR:
-			return variant.to_html()
+			return "#" + variant.to_html()
 			
+	return ERR_INVALID_DATA
+
+
+static func deserialize_variant(variant: Variant) -> Variant:
+	match typeof(variant):
+		TYPE_STRING:
+			match variant[0]:
+				"#":
+					print(variant.right(8))
+					return Color.from_string(variant.right(8), Color.BLACK)
+	
 	return ERR_INVALID_DATA
 
 

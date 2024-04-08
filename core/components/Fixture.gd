@@ -49,6 +49,9 @@ func _init(i: Dictionary = {}) -> void:
 	meta.fixture_brand = i.manifest.info.brand
 	meta.fixture_name = i.manifest.info.name
 	
+	if "uuid" in i:
+		self.uuid = i.uuid
+	
 	self.name_changed.connect(
 		func(new_name: String):
 			universe.fixture_name_changed.emit(self, new_name)

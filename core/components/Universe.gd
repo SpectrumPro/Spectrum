@@ -25,7 +25,6 @@ func new_output(type = ArtNetOutput, no_signal: bool = false) -> DataIOPlugin:
 	
 	var new_output: DataIOPlugin = type.new()
 	
-	new_output.file_name = engine.output_plugins[new_output.meta.name].file_name
 	outputs[new_output.uuid] = new_output
 	
 	if not no_signal:
@@ -60,7 +59,7 @@ func remove_outputs(outputs_to_remove: Array, no_signal: bool = false):
 		outputs_removed.emit(uuids)
 
 
-func new_fixture(manifest: Dictionary, mode:int, channel: int = -1, quantity:int = 1, offset:int = 0, no_signal: bool = false):
+func new_fixture(manifest: Dictionary, mode:int, channel: int = -1, quantity:int = 1, offset:int = 0, uuid: String = "", no_signal: bool = false) -> bool:
 	## Adds a new fixture to this universe, if the channels are already in use false it returned
 	
 	if is_channel_used(range(channel, len(manifest.modes.values()[mode].channels))):
@@ -78,13 +77,16 @@ func new_fixture(manifest: Dictionary, mode:int, channel: int = -1, quantity:int
 			"mode": mode,
 			"manifest": manifest
 		})
+
 		
 		fixtures[channel_index] = new_fixture
+		engine.fixtures[new_fixture.uuid] = new_fixture
 		just_added_fixtures.append(new_fixture)
 		
 	if not no_signal:
 		fixtures_added.emit(just_added_fixtures)
-
+	
+	return true
 
 func remove_fixture(fixture: Fixture, no_signal: bool = false):
 	## Removes a fixture from this universe
@@ -95,6 +97,7 @@ func remove_fixture(fixture: Fixture, no_signal: bool = false):
 		engine.deselect_fixtures([fixture])
 	
 	fixtures.erase(fixture.channel)
+	engine.fixtures.erase(fixture.uuid)
 	fixture.delete()
 	fixture.free()
 	
@@ -152,6 +155,49 @@ func serialize() -> Dictionary:
 		"user_meta":serialize_meta()
 	}
 
+
+func load_from(serialised_data: Dictionary) -> void:
+	## Loads this universe from a serialised universe
+	
+	self.name = serialised_data.get("name", "")
+	
+	fixtures = {}
+	outputs = {}
+	
+	for fixture_uuid: String in serialised_data.get("fixtures", {}):
+		var serialised_fixture: Dictionary = serialised_data.fixtures[fixture_uuid]
+		
+		var fixture_brand: String = serialised_fixture.get("meta", {}).get("fixture_brand", "Generic")
+		var fixture_name: String = serialised_fixture.get("meta", {}).get("fixture_name", "Dimmer")
+		
+		var fixture_manifest: Dictionary = Core.fixtures_definitions[fixture_brand][fixture_name]
+		var channel: int = serialised_fixture.get("channel", 1)
+		
+		var new_fixture = Fixture.new({
+			"universe": self,
+			"channel": channel,
+			"mode": serialised_fixture.get("mode", 0),
+			"manifest": fixture_manifest,
+			"uuid": fixture_uuid
+		})
+		
+		
+		fixtures[channel] = new_fixture
+		engine.fixtures[new_fixture.uuid] = new_fixture
+		
+	
+	fixtures_added.emit(fixtures.values())
+	
+	
+	for output_uuid: String in serialised_data.get("outputs"):
+		var serialised_output: Dictionary = serialised_data.outputs[output_uuid]
+		
+		var new_output: DataIOPlugin = engine.output_plugins[serialised_output.file].plugin.new(serialised_output)
+		new_output.uuid = output_uuid
+		
+		outputs[new_output.uuid] = new_output
+	
+	outputs_added.emit(outputs.values())
 
 
 #func get_fixtures():
