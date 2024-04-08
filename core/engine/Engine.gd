@@ -37,8 +37,9 @@ var current_file_path: String = ""
 
 var programmer = Programmer.new()
 
-var frequency = 45.0
-var min_interval = 1.0 / frequency
+var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
+
+var last_call_time: float = 0.0
 
 func _ready() -> void:
 	programmer.engine = self

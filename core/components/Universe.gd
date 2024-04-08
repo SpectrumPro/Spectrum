@@ -18,7 +18,7 @@ var dmx_data: Dictionary = {}
 
 var engine: CoreEngine ## The CoreEngine class this universe belongs to
 
-var _last_execution_time: int = 0
+var last_call_time: float = 0.0
 
 func new_output(type = ArtNetOutput, no_signal: bool = false) -> DataIOPlugin:
 	## Adds a new output of type to this universe
@@ -138,14 +138,15 @@ func set_data(data: Dictionary):
 
 
 func _compile_and_send():
-	var current_time = Time.get_ticks_msec() / 1000.0
+	var current_time = Time.get_ticks_msec() / 1000.0  # Convert milliseconds to seconds
 	
-	if current_time - _last_execution_time >= engine.min_interval:
+	if current_time - last_call_time >= Core.call_interval:
 		var compiled_dmx_data: Dictionary = dmx_data
 		for output in outputs.values():
 			output.send_packet(compiled_dmx_data)
 		
-		_last_execution_time = current_time
+
+		last_call_time = current_time
 
 
 func serialize() -> Dictionary:
