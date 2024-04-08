@@ -29,4 +29,4 @@ func _reload_buttons(_scene) -> void:
 
 
 func _on_resized() -> void:
-	self.columns = int(self.size.x / 110)
+	self.columns = clamp(int(self.size.x / 110), 1, INF)
