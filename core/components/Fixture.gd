@@ -71,7 +71,7 @@ func serialize() -> Dictionary:
 func recompile_data() -> void:
 	## Compiles dmx data from this fixture
 	
-	var highest_valued_data: Dictionary
+	var highest_valued_data: Dictionary = {}
 	
 	for input_data_id in current_input_data:
 		for input_data in current_input_data[input_data_id]:

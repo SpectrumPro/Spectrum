@@ -39,8 +39,6 @@ var programmer = Programmer.new()
 var frequency = 45.0
 var min_interval = 1.0 / frequency
 
-var _system: System = System.new()
-
 func _ready() -> void:
 	programmer.engine = self
 	
@@ -137,6 +135,7 @@ func remove_universes(universes_to_remove: Array, no_signal: bool = false) -> vo
 	
 	for universe: Universe in universes_to_remove:
 		uuids.append(universe.uuid)
+		deselect_universes([universe], no_signal)
 		remove_universe(universe, true)
 	
 	if not no_signal:
@@ -168,7 +167,7 @@ func select_universes(universes_to_select: Array, no_signal: bool = false) -> vo
 
 func set_universe_selection(universes_to_select: Array) -> void:
 	## Changes the selection to be the universes passed to this function
-	
+
 	deselect_universes(selected_universes, true)
 	select_universes(universes_to_select)
 
@@ -176,10 +175,10 @@ func set_universe_selection(universes_to_select: Array) -> void:
 func deselect_universes(universes_to_deselect: Array, no_signal: bool = false) -> void:
 	## Selects all the fixtures passed to this function
 	
-	for universe: Universe in universes_to_deselect:
+	for universe: Universe in universes_to_deselect.duplicate():
 		if universe in selected_universes:
 			selected_universes.erase(universe)
-			universe.set_selected(true)
+			universe.set_selected(false)
 	
 	if not no_signal:
 		universe_selection_changed.emit(selected_universes)

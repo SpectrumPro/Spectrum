@@ -45,13 +45,17 @@ func add_items(items: Array) -> void:
 	## Adds an item to the list
 	
 	for item in items:
-		if "uuid" in item and "name" in item:
+		if _is_valid_object(item):
 			var new_item_node: Control = Globals.components.list_item.instantiate()
 			new_item_node.set_item_name(item.name)
 			
 			new_item_node.control_node = self
 			new_item_node.name = item.uuid
-			new_item_node.select_requested.connect(self.on_list_item_select_request)
+			new_item_node.select_requested.connect(self._on_list_item_select_request)
+			
+			if item.get("is_selected") == true:
+				new_item_node.set_highlighted(item.is_selected)
+				currently_selected_items.append(item)
 			
 			item_container.add_child(new_item_node)
 			object_refs[new_item_node] = item
@@ -60,44 +64,13 @@ func add_items(items: Array) -> void:
 func remove_all() -> void:
 	## Removes all items from the list
 	
+	object_refs = {}
+	last_selected_item = null
+	currently_selected_items = []
+	
 	for item in item_container.get_children():
 		item_container.remove_child(item)
 		item.queue_free()
-
-
-func on_list_item_select_request(selected_item: Control) -> void:
-	if Input.is_key_pressed(KEY_SHIFT) and last_selected_item and allow_multi_select:
-		var children: Array[Node] = item_container.get_children()
-		var pos_1: int = children.find(last_selected_item)
-		var pos_2: int = children.find(selected_item)
-		
-		if pos_1 > pos_2:
-			var x = pos_1
-			pos_1 = pos_2
-			pos_2 = x
-		
-		var items_to_select: Array = []
-		
-		for i in range(pos_1, pos_2+1):
-			items_to_select.append(children[i])
-		
-		currently_selected_items = items_to_select
-		
-	else:
-		last_selected_item = selected_item
-		currently_selected_items = [selected_item]
-	
-	_update_selected()
-
-
-func _update_selected() -> void:
-	for item: Control in item_container.get_children():
-		item.set_highlighted(false)
-	
-	for item: Control in currently_selected_items:
-		item.set_highlighted(true)
-		
-	selection_changed.emit(get_objects_from_nodes(currently_selected_items))
 
 
 func get_objects_from_nodes(items: Array) -> Array:
@@ -120,6 +93,63 @@ func set_buttons_enabled(state: bool):
 			node.disabled = not buttons_enabled
 
 
+func set_selected(items: Array) -> void:
+	## Sets the selected list items
+	
+	currently_selected_items = []
+	
+	for item in items:
+		if _is_valid_object(item):
+			if item_container.has_node(item.uuid):
+				currently_selected_items.append(item)
+	
+	if currently_selected_items and not last_selected_item:
+		last_selected_item = item_container.get_node(currently_selected_items[-1].uuid)
+	
+	_update_selected()
+
+
+func _on_list_item_select_request(selected_item: Control) -> void:
+	if Input.is_key_pressed(KEY_SHIFT) and last_selected_item and allow_multi_select:
+		var children: Array[Node] = item_container.get_children()
+		var pos_1: int = children.find(last_selected_item)
+		var pos_2: int = children.find(selected_item)
+		
+		if pos_1 > pos_2:
+			var x = pos_1
+			pos_1 = pos_2
+			pos_2 = x
+		
+		var items_to_select: Array = []
+		
+		for i in range(pos_1, pos_2+1):
+			items_to_select.append(children[i])
+		
+		selection_changed.emit(get_objects_from_nodes(items_to_select))
+		
+	else:
+		last_selected_item = selected_item
+		selection_changed.emit(get_objects_from_nodes([selected_item]))
+
+
+
+func _update_selected(no_signal: bool = false) -> void:
+	for item: Control in item_container.get_children():
+		item.set_highlighted(false)
+	
+	for item: Object in currently_selected_items:
+		item_container.get_node(item.uuid).set_highlighted(true)
+
+
+func _is_valid_object(object: Variant) -> bool:
+	## Checks if an object is valid for use in an item list, object must have a uuid and name
+	
+	if object is Object and "uuid" in object and "name" in object:
+		return true
+	else:
+		return false
+
+
 #region Button Callbacks
 
 func _on_new_pressed() -> void:
@@ -127,35 +157,39 @@ func _on_new_pressed() -> void:
 
 
 func _on_select_all_pressed() -> void:
-	currently_selected_items = item_container.get_children()
-	_update_selected()
+	if object_refs:
+		print("_on_select_all_pressed")
+		selection_changed.emit(get_objects_from_nodes( item_container.get_children()))
 
 
 func _on_select_none_pressed() -> void:
-	currently_selected_items = []
-	_update_selected()
+	if object_refs:
+		selection_changed.emit([])
 
 
 func _on_select_invert_pressed() -> void:
-	var all_items: Array = item_container.get_children()
-	
-	for item: Control in currently_selected_items:
-		all_items.erase(item)
+	if object_refs:
+		var all_items: Array = object_refs.values()
 		
-	currently_selected_items = all_items
-	_update_selected()
+		for item: Object in currently_selected_items:
+			all_items.erase(item)
+		
+		selection_changed.emit(all_items)
 
 
 func _on_take_selection_pressed() -> void:
-	take_requested.emit(get_objects_from_nodes(currently_selected_items))
+	if currently_selected_items:
+		take_requested.emit(currently_selected_items)
 
 
 func _on_edit_pressed() -> void:
-	edit_requested.emit(get_objects_from_nodes(currently_selected_items))
+	if currently_selected_items:
+		edit_requested.emit(currently_selected_items)
 
 
 func _on_delete_pressed() -> void:
-	delete_requested.emit(get_objects_from_nodes(currently_selected_items))
+	if currently_selected_items:
+		delete_requested.emit(currently_selected_items)
 
 #endregion
 

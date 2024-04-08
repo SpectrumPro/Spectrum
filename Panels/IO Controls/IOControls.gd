@@ -15,6 +15,10 @@ func _reload_universes(selected_universes: Array[Universe] = [current_universe])
 	
 	## Check if mutiple universes (or none) are selected, if so dont update the output list, only clear it
 	if len(selected_universes) == 1:
+		
+		if current_universe:
+			_dissconnect()
+		
 		current_universe = selected_universes[0]
 		
 		current_universe.outputs_added.connect(self._reload_io)
@@ -24,13 +28,18 @@ func _reload_universes(selected_universes: Array[Universe] = [current_universe])
 		
 	else:
 		if current_universe:
-			current_universe.outputs_added.disconnect(self._reload_io)
-			current_universe.outputs_removed.disconnect(self._reload_io)
+			_dissconnect()
 		
 		current_universe = null
 		self.get_node(item_list_view).buttons_enabled = false
 	
 	_reload_io()
+
+
+func  _dissconnect() -> void:
+	current_universe.outputs_added.disconnect(self._reload_io)
+	current_universe.outputs_removed.disconnect(self._reload_io)
+
 
 func _reload_io(_io=null) -> void:
 	## Reloads the list of io devices
@@ -50,3 +59,6 @@ func _on_item_list_view_delete_requested(items: Array) -> void:
 func _on_item_list_view_add_requested() -> void:
 	current_universe.new_output()
 
+
+func _on_item_list_view_selection_changed(items: Array) -> void:
+	self.get_node(item_list_view).set_selected(items)

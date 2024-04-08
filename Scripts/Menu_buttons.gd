@@ -1,7 +1,16 @@
 extends HBoxContainer
 
 func _on_save_pressed() -> void:
-	print(Core.save("Debug_show.spsave", OS.get_environment("HOME")))
+	
+	var menu: FileDialog = Globals.components.file_save_menu.instantiate()
+	
+	menu.confirmed.connect(
+		func():
+			print(Core.save(menu.current_file, menu.current_dir))
+	)
+	
+	get_tree().root.add_child(menu)
+	
 
 
 func _on_load_pressed() -> void:

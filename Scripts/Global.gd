@@ -35,7 +35,8 @@ var output_plugins : Dictionary
 	"virtual_fixture":ResourceLoader.load("res://Components/Virtual Fixture/Virtual_fixture.tscn"),
 	"window":ResourceLoader.load("res://Components/Window/Window.tscn"),
 	"trigger_button":ResourceLoader.load("res://Components/Trigger Button/TriggerButton.tscn"),
-	"file_load_menu": ResourceLoader.load("res://Components/File Load Menu/FileLoadMenu.tscn")
+	"file_load_menu": ResourceLoader.load("res://Components/File Load Menu/FileLoadMenu.tscn"),
+	"file_save_menu": ResourceLoader.load("res://Components/File Save Menu/FileSaveMenu.tscn")
 }
 
 @onready var panels : Dictionary = {             

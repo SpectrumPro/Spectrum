@@ -14,7 +14,7 @@ var exposed_values = [
 		"signal":"text_submitted",
 		"function":self.set_ip_addr,
 		"parameters":{
-			"placeholder_text":"172.0.0.1",
+			"placeholder_text":"127.0.0.1",
 			"text":self.get_ip_addr
 		}
 	},
@@ -42,7 +42,7 @@ var exposed_values = [
 ]
 
 var config = {
-	"ip":"172.0.0.1",
+	"ip":"127.0.0.1",
 	"port":6454,
 	"universe":0,
 	"file_name":""
