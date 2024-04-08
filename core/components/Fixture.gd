@@ -23,6 +23,8 @@ var manifest: Dictionary ## Fixture manifest
 var channels: Array ## Channels this fixture uses, and what they do
 var channel_ranges: Dictionary ## What happenes at each channel, at each value
 
+var position: Vector2 = Vector2.ZERO
+
 
 ## Contains all the parameters inputted by other function in spectrum, ie scenes, programmer, ect. 
 ## Each input it added to this dict with a id for each item, allowing for HTP and LTP calculations
@@ -46,6 +48,10 @@ func _init(i: Dictionary = {}) -> void:
 	channel_ranges = i.manifest.get("channels", {})
 	channels = i.manifest.modes.values()[mode].channels
 	
+	var p = Utils.deserialize_variant(i.get("position", ""))
+	if p is Vector2:
+		position = p
+	
 	meta.fixture_brand = i.manifest.info.brand
 	meta.fixture_name = i.manifest.info.name
 	
@@ -68,6 +74,7 @@ func serialize() -> Dictionary:
 		"universe":universe.uuid,
 		"channel":channel,
 		"mode":mode,
+		"position":Utils.serialize_variant(position),
 		"meta":meta,
 		"user_meta": serialize_meta(),
 	}

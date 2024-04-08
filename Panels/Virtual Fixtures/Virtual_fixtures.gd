@@ -55,38 +55,42 @@ func _add_fixture() -> void:
 		
 		node_to_add.set_fixture(fixture)
 		node_to_add.set_highlighted(true)
+		
+		if not fixture.user_meta.get("virtual_fixtures"):
+			fixture.user_meta.virtual_fixtures = []
+		
+		node_to_add.virtual_fixture_index = len(fixture.user_meta.virtual_fixtures)
 		node_to_add.position_offset += _position_offset
 		_position_offset += Vector2(5, 5)
 		
-		fixture.set_user_meta("virtual_fixture", true)
+		fixture.user_meta.virtual_fixtures.append(node_to_add.position_offset)
 		
 		self.add_child(node_to_add)
 
 
 func _request_delete() -> void:
 	## Deletes a virtual fixtures from the current view
-	
 	var to_remove: Array = _selected_virtual_fixtures.duplicate()
 	
 	for virtual_fixture: Control in to_remove:
-		virtual_fixture.fixture.delete_user_meta("virtual_fixture")
+		virtual_fixture.fixture.user_meta.virtual_fixtures.remove_at(virtual_fixture.virtual_fixture_index)
 		virtual_fixture.queue_free()
 		_selected_virtual_fixtures.erase(virtual_fixture)
 
-  
+  #
 func _active_fixtures_changed(new_active_fixtures: Array) -> void:
 	## Function to update highlighting on virtual fixtures, when their corresponding fixture is selected
 	
 	_add_fixture_button.disabled = true if new_active_fixtures == [] else false
 	
-	for virtual_fixture: Control in get_children():
-		virtual_fixture.set_highlighted(false)
-	
-	for active_fixture: Fixture in new_active_fixtures:
-		for virtual_fixture in active_fixture.get_user_meta("virtual_fixtures", []):
-			virtual_fixture.set_highlighted(true)
-	
-	_old_active_fixtures = new_active_fixtures
+	#for virtual_fixture: Control in get_children():
+		#virtual_fixture.set_highlighted(false)
+	#
+	#for active_fixture: Fixture in new_active_fixtures:
+		#for virtual_fixture in active_fixture.get_user_meta("virtual_fixtures", []):
+			#virtual_fixture.set_highlighted(true)
+	#
+	#_old_active_fixtures = new_active_fixtures
 
 
 func _align(orientation: int) -> void:
@@ -99,6 +103,7 @@ func _align(orientation: int) -> void:
 	
 	for virtual_fixture: Control in _selected_virtual_fixtures:
 		virtual_fixture.position_offset = base_position
+		virtual_fixture.fixture.user_meta.virtual_fixtures[virtual_fixture.virtual_fixture_index] = base_position
 		
 		if orientation:
 			base_position.x += 100

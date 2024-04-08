@@ -3,6 +3,7 @@ extends GraphElement
 var fixture: Fixture
 var color_override = false
 var is_highlight = false
+var virtual_fixture_index: int = 0
 
 func _ready():
 	$"Color Box".add_theme_stylebox_override("panel", $"Color Box".get_theme_stylebox("panel").duplicate())
@@ -18,6 +19,7 @@ func set_fixture(control_fixture: Fixture) -> void:
 	
 	fixture = control_fixture
 	fixture.color_changed.connect(self.set_color)
+	fixture.selected.connect(self.set_highlighted)
 
 func serialize():
 	return {
@@ -47,3 +49,7 @@ func _on_node_deselected():
 	color_override = false
 	if is_highlight:set_highlighted(true)
 	else:$"Color Box".get_theme_stylebox("panel").border_color = Color.BLACK
+
+
+func _on_dragged(from: Vector2, to: Vector2) -> void:
+	fixture.user_meta.virtual_fixtures[virtual_fixture_index] = to
