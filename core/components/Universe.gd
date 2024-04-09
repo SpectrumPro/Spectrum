@@ -25,6 +25,8 @@ func new_output(type = ArtNetOutput, no_signal: bool = false) -> DataIOPlugin:
 	
 	var new_output: DataIOPlugin = type.new()
 	
+	engine.output_timer.connect(new_output.send_packet)
+	
 	outputs[new_output.uuid] = new_output
 	
 	if not no_signal:
@@ -138,15 +140,15 @@ func set_data(data: Dictionary):
 
 
 func _compile_and_send():
-	var current_time = Time.get_ticks_msec() / 1000.0  # Convert milliseconds to seconds
-	
-	if current_time - last_call_time >= Core.call_interval:
-		var compiled_dmx_data: Dictionary = dmx_data
-		for output in outputs.values():
-			output.send_packet(compiled_dmx_data)
+	#var current_time = Time.get_ticks_msec() / 1000.0  # Convert milliseconds to seconds
+	#
+	#if current_time - last_call_time >= Core.call_interval:
+	var compiled_dmx_data: Dictionary = dmx_data
+	for output in outputs.values():
+		output.set_data(compiled_dmx_data)
 		
 
-		last_call_time = current_time
+		#last_call_time = current_time
 
 
 func serialize() -> Dictionary:
@@ -208,6 +210,8 @@ func load_from(serialised_data: Dictionary) -> void:
 		
 		var new_output: DataIOPlugin = engine.output_plugins[serialised_output.file].plugin.new(serialised_output)
 		new_output.uuid = output_uuid
+		engine.output_timer.connect(new_output.send_packet)
+		
 		
 		outputs[new_output.uuid] = new_output
 	

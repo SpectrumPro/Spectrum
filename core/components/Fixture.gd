@@ -31,7 +31,6 @@ var position: Vector2 = Vector2.ZERO
 var current_input_data: Dictionary = {} 
 
 var _compiled_dmx_data: Dictionary
-var _parameters: Dictionary
 
 
 func _init(i: Dictionary = {}) -> void:
@@ -89,10 +88,11 @@ func recompile_data() -> void:
 		for input_data in current_input_data[input_data_id]:
 			match input_data:
 				"color":
-					highest_valued_data["color"] = Utils.get_htp_color(highest_valued_data.get("color", Color()), current_input_data[input_data_id][input_data])
-		
-	universe.set_data(_compiled_dmx_data)
+					highest_valued_data["color"] = Utils.get_htp_color(highest_valued_data.get("color", Color()), current_input_data[input_data_id].color)
+	
 	_set_color(highest_valued_data.get("color", Color.BLACK))
+	
+	universe.set_data(_compiled_dmx_data)
 
 
 func _set_color(color: Color) -> void:
@@ -103,8 +103,7 @@ func _set_color(color: Color) -> void:
 	if "ColorIntensityBlue" in channels:
 		_compiled_dmx_data[int(channels.find("ColorIntensityBlue") + channel)] = color.b8
 	
-	_parameters.color = color
-	color_changed.emit(_parameters.color)
+	color_changed.emit(color)
 
 
 func set_color(color: Color, id: String = "overide") -> void:

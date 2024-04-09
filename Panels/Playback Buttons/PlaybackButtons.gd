@@ -25,6 +25,8 @@ func _reload_buttons(_scene) -> void:
 				scene.enabled = state
 		)
 		
+		button_to_add.set_pressed_no_signal(scene.enabled)
+		
 		self.add_child(button_to_add)
 
 

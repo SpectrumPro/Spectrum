@@ -139,7 +139,6 @@ func _on_color_picker_color_changed(color: Color) -> void:
 	
 	if current_time - last_call_time >= Core.call_interval:
 		Core.programmer.set_color(Core.selected_fixtures, color)
-		print(color)
 		
 		last_call_time = current_time
 

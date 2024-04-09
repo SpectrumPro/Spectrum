@@ -2,6 +2,8 @@ class_name ArtNetOutput extends DataIOPlugin
 
 var _udp_peer = PacketPeerUDP.new()
 
+var _current_data: Dictionary = {}
+
 var exposed_values = [
 	{
 		"name":"Ip Address",
@@ -54,30 +56,19 @@ func _init(serialised_data: Dictionary = {}):
 	
 	connect_to_host()
 
+
 func connect_to_host():
 	_udp_peer.close()
 	_udp_peer.connect_to_host(config.ip, config.port)
 
-func set_ip_addr(new_ip_address):
-	config.ip = new_ip_address
-	connect_to_host()
 
-func set_port(new_port):
-	config.port = new_port
-	connect_to_host()
-
-func set_universe(new_universe):
-	config.universe = new_universe
-	connect_to_host()
+func _disconnect():
+	_udp_peer.close()
 	
-func get_ip_addr():
-	return config.ip
 
-func get_port():
-	return config.port
+func set_data(data) -> void :
+	_current_data = data
 
-func get_universe():
-	return config.universe
 
 func serialize():
 	return {
@@ -90,40 +81,45 @@ func serialize():
 		"file": self.get_script().get_path().split("/")[-1],
 		"user_meta": self.serialize_meta()
 	}
+#
+#func from(serialized_data):
+	#config = serialized_data
 
-func from(serialized_data):
-	config = serialized_data
-
-func _disconnect():
-	_udp_peer.close()
 
 func delete():
 	_disconnect()
 
-func send_packet(dmx_data) -> void:
+
+func send_packet() -> void:
+	
+	print(_current_data)
+	if not _current_data:
+		return
+	
+	
 	# Construct Art-Net packet
 	var packet = PackedByteArray()
-
+	
 	# Art-Net ID ('Art-Net')
 	packet.append_array([65, 114, 116, 45, 78, 101, 116, 0])
-
+	
 	# OpCode: ArtDMX (0x5000)
 	packet.append_array([0, 80])
-
+	
 	# Protocol Version: 14 (0x000e)
 	packet.append_array([0, 14])
-
+	
 	# ArtDMX packet
 	# Sequence Number
 	packet.append(0)
-
+	
 	# Physical Port (Set to 0 if not needed)
 	packet.append(0)
-
+	
 	# Universe (16-bit)
 	packet.append(int(config.universe) % 256)  # Lower 8 bits
 	packet.append(int(config.universe) / 256)  # Upper 8 bits
-
+	
 	# Length (16-bit)
 #	packet.append_array([512 % 256, int(512 / 255)])
 	packet.append(02)
@@ -131,9 +127,37 @@ func send_packet(dmx_data) -> void:
 	
 	# DMX Channels
 	for channel in range(1, 513):
-		packet.append(dmx_data.get(channel, 0))
-
+		packet.append(_current_data.get(channel, 0))
+	
 	# Send the packet
 #	_udp_peer.set_dest_address(ip, port)
 	_udp_peer.put_packet(packet)
 	
+	_current_data = {}
+	
+
+func set_ip_addr(new_ip_address):
+	config.ip = new_ip_address
+	connect_to_host()
+
+
+func set_port(new_port):
+	config.port = new_port
+	connect_to_host()
+
+
+func set_universe(new_universe):
+	config.universe = new_universe
+	connect_to_host()
+
+
+func get_ip_addr():
+	return config.ip
+
+
+func get_port():
+	return config.port
+
+
+func get_universe():
+	return config.universe

@@ -17,6 +17,7 @@ signal fixture_selection_changed(selected_fixtures: Array[Fixture])
 signal scenes_added(scene: Array[Scene])
 signal scenes_removed(scene_uuids: Array)
 
+signal output_timer() ## Emited [call_interval] number of times per second
 
 var universes: Dictionary = {}
 var fixtures: Dictionary = {}
@@ -39,7 +40,7 @@ var programmer = Programmer.new()
 
 var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
 
-var last_call_time: float = 0.0
+var accumulated_time: float = 0.0
 
 func _ready() -> void:
 	programmer.engine = self
@@ -48,6 +49,18 @@ func _ready() -> void:
 	reload_io_plugins()
 	reload_fixtures()
 
+
+func _process(delta: float) -> void:
+	# Accumulate the time
+	accumulated_time += delta
+	
+	# Check if enough time has passed since the last function call
+	if accumulated_time >= call_interval:
+		# Call the function
+		output_timer.emit()
+		
+		# Subtract the interval from the accumulated time
+		accumulated_time -= call_interval
 
 
 #region Save Load
