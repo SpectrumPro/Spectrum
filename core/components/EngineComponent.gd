@@ -7,7 +7,7 @@ class_name EngineComponent extends Object
 signal user_meta_changed(origin: EngineComponent, key: String, value: Variant) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted
 signal name_changed(new_name: String) ## Emitted when the name of this object has changed
 signal selected(is_selected: bool)
-signal delete_request()
+signal delete_request(origin: EngineComponent)
 
 var uuid: String = "" ## Uuid of the current component
 var name: String = "": set = _set_name ## The name of this object, only use when displaying to users, do not use it as a reference 
@@ -91,4 +91,4 @@ func serialize_meta() -> Dictionary:
 
 
 func delete() -> void:
-	delete_request.emit()
+	delete_request.emit(self)

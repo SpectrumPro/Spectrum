@@ -6,7 +6,7 @@ class_name Universe extends EngineComponent
 
 signal fixture_name_changed(fixture: Fixture, new_name: String)
 signal fixtures_added(fixtures: Array[Fixture])
-signal fixtures_deleted(fixture_uuids: Array[String])
+signal fixtures_deleted(fixture_uuids: Array)
 
 signal outputs_added(outputs: Array[DataIOPlugin])
 signal outputs_removed(output_uuids: Array[String])
@@ -104,8 +104,7 @@ func remove_fixture(fixture: Fixture, no_signal: bool = false):
 	fixture.free()
 	
 	if not no_signal:
-		var uuids: Array[String] = [fixture_uuid]
-		fixtures_deleted.emit(uuids)
+		fixtures_deleted.emit([fixture_uuid])
 
 
 func remove_fixtures(fixtures_to_remove: Array, no_signal: bool = false) -> void:
@@ -127,10 +126,10 @@ func is_channel_used(channels: Array) -> bool:
 
 
 func delete():
-	## Called when this universe is about to be deleted, it will remove all outputs from this universe
+	## Called when this universe is about to be deleted, it will remove all outputs and fixtures from this universe
 	
-	for output in outputs.values():
-		remove_output(output)
+	remove_fixtures(fixtures.values())
+	remove_outputs(outputs.values())
 
 
 func set_data(data: Dictionary):

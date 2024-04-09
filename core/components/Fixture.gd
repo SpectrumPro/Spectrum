@@ -95,6 +95,17 @@ func recompile_data() -> void:
 	universe.set_data(_compiled_dmx_data)
 
 
+func delete() -> void:
+	delete_request.emit(self)
+	
+	var empty_data: Dictionary = {}
+	
+	for i in _compiled_dmx_data:
+		empty_data[i] = 0
+	
+	universe.set_data(empty_data)
+
+
 func _set_color(color: Color) -> void:
 	if "ColorIntensityRed" in channels:
 		_compiled_dmx_data[int(channels.find("ColorIntensityRed") + channel)] = color.r8

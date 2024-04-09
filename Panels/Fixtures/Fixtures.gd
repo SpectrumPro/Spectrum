@@ -15,7 +15,7 @@ func _ready() -> void:
 	Core.fixture_selection_changed.connect(self._reload_fixtures)
 
 
-func _reload_fixtures(_scene=null) -> void:
+func _reload_fixtures(_fixture=null) -> void:
 	## Reload the list of fixtures
 	
 	self.get_node(item_list_view).remove_all()

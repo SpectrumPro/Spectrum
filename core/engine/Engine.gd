@@ -11,7 +11,7 @@ signal universe_selection_changed(selected_universes: Array[Universe])
 
 signal fixture_name_changed(fixture: Fixture, new_name)
 signal fixture_added(fixture: Array[Fixture])
-signal fixture_removed(fixture_uuid: Array[String])
+signal fixture_removed(fixture_uuid: Array)
 signal fixture_selection_changed(selected_fixtures: Array[Fixture])
 
 signal scenes_added(scene: Array[Scene])
@@ -140,7 +140,7 @@ func _connect_universe_signals(universe: Universe):
 	)
 	
 	universe.fixtures_deleted.connect(
-		func(fixture_uuids: Array[String]):
+		func(fixture_uuids: Array):
 			fixture_removed.emit(fixture_uuids)
 	)
 

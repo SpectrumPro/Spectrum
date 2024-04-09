@@ -92,10 +92,10 @@ func delete():
 
 func send_packet() -> void:
 	
-	print(_current_data)
 	if not _current_data:
 		return
 	
+	print(_current_data)
 	
 	# Construct Art-Net packet
 	var packet = PackedByteArray()

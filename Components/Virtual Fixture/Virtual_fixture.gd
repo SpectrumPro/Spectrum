@@ -38,7 +38,7 @@ func set_highlighted(highlight):
 		else:
 			$"Color Box".get_theme_stylebox("panel").border_color = Color.BLACK
 
-func delete():
+func delete(_fixture = null):
 	self.get_parent()._selected_virtual_fixtures.erase(self)
 	self.queue_free()
 
