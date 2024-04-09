@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=23 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IO Controls/IOControls.tscn" id="3_k6wx5"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://03t7su6t2rq2" path="res://Panels/Universes/Universes.tscn" id="4_8kgbc"]
 [ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://Panels/Functions/Functions.tscn" id="4_35sxj"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="5_8370q"]
+[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="6_wm8dh"]
 [ext_resource type="Script" path="res://Scripts/Menu_buttons.gd" id="7_gussm"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
@@ -97,10 +98,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+current_tab = 2
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
 [node name="Universes" type="HSplitContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Universes" parent="TabContainer/Universes" instance=ExtResource("4_8kgbc")]
@@ -113,8 +116,14 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="Fixtures" parent="TabContainer" instance=ExtResource("3_u55oi")]
-visible = false
+[node name="Fixtures" type="HSplitContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="Fixtures" parent="TabContainer/Fixtures" instance=ExtResource("3_u55oi")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Add Fixture" parent="TabContainer/Fixtures" instance=ExtResource("6_wm8dh")]
 layout_mode = 2
 
 [node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("5_8370q")]
