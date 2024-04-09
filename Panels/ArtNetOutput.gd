@@ -51,6 +51,8 @@ func _init(serialised_data: Dictionary = {}):
 	config.universe = serialised_data.get("config", {}).get("univeres", config.universe)
 	
 	super._init()
+	
+	connect_to_host()
 
 func connect_to_host():
 	_udp_peer.close()
