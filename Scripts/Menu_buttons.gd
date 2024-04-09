@@ -2,7 +2,7 @@ extends HBoxContainer
 
 
 func _ready():
-	Core.load(OS.get_environment("HOME") + "/Documents/Spectrum/Test1.spshow")
+	#Core.load(OS.get_environment("HOME") + "/Documents/Spectrum/Test1.spshow")
 	pass
 
 func _on_save_pressed() -> void:
