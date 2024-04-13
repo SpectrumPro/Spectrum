@@ -1,16 +1,14 @@
-[gd_scene load_steps=26 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=23 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
+[ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IO Controls/IOControls.tscn" id="3_k6wx5"]
 [ext_resource type="Script" path="res://Scripts/fps.gd" id="3_l3bnx"]
-[ext_resource type="Script" path="res://Scripts/Tab_container.gd" id="3_nk5d5"]
-[ext_resource type="Script" path="res://Scripts/System.gd" id="5_qili6"]
-[ext_resource type="PackedScene" uid="uid://dhor5xf4xd2ul" path="res://Panels/Desk/Desk.tscn" id="8_12iq0"]
-[ext_resource type="PackedScene" uid="uid://cdg8rr3v7el85" path="res://Panels/Patch Bay/Patch_bay.tscn" id="9_hxqqf"]
-[ext_resource type="PackedScene" uid="uid://pe1tet2410en" path="res://Panels/Fixtures/Fixtures.tscn" id="10_e6e26"]
-[ext_resource type="Script" path="res://Panels/Popups/Popup_window.gd" id="10_yavq3"]
-[ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="11_7alyx"]
-[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="11_mn7am"]
-[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://Assets/Icons/menu.svg" id="24_oc2jn"]
+[ext_resource type="PackedScene" uid="uid://d12eb0smjpwuk" path="res://Panels/Fixtures/Fixtures.tscn" id="3_u55oi"]
+[ext_resource type="PackedScene" uid="uid://03t7su6t2rq2" path="res://Panels/Universes/Universes.tscn" id="4_8kgbc"]
+[ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://Panels/Functions/Functions.tscn" id="4_35sxj"]
+[ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="5_8370q"]
+[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="6_wm8dh"]
+[ext_resource type="Script" path="res://Scripts/Menu_buttons.gd" id="7_gussm"]
 [ext_resource type="PackedScene" uid="uid://nd4u83us3lgo" path="res://Panels/Settings/Settings.tscn" id="27_03pyd"]
 [ext_resource type="Script" path="res://Scripts/Window.gd" id="27_nmwy1"]
 
@@ -75,13 +73,6 @@ unicode = 112
 [sub_resource type="Shortcut" id="Shortcut_sn8ws"]
 events = [SubResource("InputEventKey_7uieo")]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5sp73"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.12549, 0.12549, 0.12549, 0)
-
 [node name="Main" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -90,7 +81,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_lygr6")
-script = ExtResource("5_qili6")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -108,35 +98,36 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 3
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
-script = ExtResource("3_nk5d5")
 
-[node name="Fixtures" parent="TabContainer" instance=ExtResource("10_e6e26")]
+[node name="Universes" type="HSplitContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="Universes" parent="TabContainer/Universes" instance=ExtResource("4_8kgbc")]
+layout_mode = 2
+
+[node name="IO Controls" parent="TabContainer/Universes" instance=ExtResource("3_k6wx5")]
+layout_mode = 2
+
+[node name="Functions" parent="TabContainer" instance=ExtResource("4_35sxj")]
 visible = false
 layout_mode = 2
 
-[node name="Desk" parent="TabContainer" instance=ExtResource("8_12iq0")]
+[node name="Fixtures" type="HSplitContainer" parent="TabContainer"]
 visible = false
 layout_mode = 2
 
-[node name="Patch Bay" parent="TabContainer" instance=ExtResource("9_hxqqf")]
+[node name="Fixtures" parent="TabContainer/Fixtures" instance=ExtResource("3_u55oi")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Add Fixture" parent="TabContainer/Fixtures" instance=ExtResource("6_wm8dh")]
+layout_mode = 2
+
+[node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("5_8370q")]
 visible = false
 layout_mode = 2
-
-[node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("11_7alyx")]
-layout_mode = 2
-
-[node name="Open Drop Down" type="Button" parent="."]
-layout_mode = 2
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 44.0
-offset_bottom = 42.0
-size_flags_horizontal = 2
-icon = ExtResource("24_oc2jn")
-icon_alignment = 1
 
 [node name="Menu Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -147,6 +138,7 @@ offset_left = -495.915
 offset_right = -3.91504
 offset_bottom = 45.0
 grow_horizontal = 0
+script = ExtResource("7_gussm")
 
 [node name="Label" type="Label" parent="Menu Buttons"]
 custom_minimum_size = Vector2(76, 0)
@@ -219,60 +211,6 @@ color = Color(0.0666667, 0.0666667, 0.0666667, 1)
 
 [node name="Settings" parent="Settings" instance=ExtResource("27_03pyd")]
 
-[node name="Popups" type="Window" parent="."]
-title = "Warnings"
-initial_position = 5
-size = Vector2i(570, 330)
-visible = false
-script = ExtResource("10_yavq3")
-
-[node name="VBoxContainer" type="PanelContainer" parent="Popups"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PanelContainer" type="VBoxContainer" parent="Popups/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Popups/VBoxContainer/PanelContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_5sp73")
-
-[node name="Content" type="VBoxContainer" parent="Popups/VBoxContainer/PanelContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HSeparator" type="HSeparator" parent="Popups/VBoxContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="Close" type="Button" parent="Popups/VBoxContainer/PanelContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-text = "Close"
-icon = ExtResource("11_mn7am")
-
-[node name="Load File Dialog" type="FileDialog" parent="."]
-title = "Open a File"
-initial_position = 5
-size = Vector2i(532, 439)
-ok_button_text = "Open"
-dialog_hide_on_ok = true
-file_mode = 0
-access = 2
-use_native_dialog = true
-
-[node name="Save File Dialog" type="FileDialog" parent="."]
-initial_position = 5
-size = Vector2i(742, 659)
-access = 2
-use_native_dialog = true
-
 [node name="Debug Text" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -292,12 +230,7 @@ text = "Beta Version 0.4.0
 
 [connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
-[connection signal="toggled" from="Menu Buttons/Edit Mode" to="." method="_on_edit_mode_toggled"]
-[connection signal="pressed" from="Menu Buttons/Save" to="." method="_on_save_pressed"]
-[connection signal="pressed" from="Menu Buttons/Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Menu Buttons/Save" to="Menu Buttons" method="_on_save_pressed"]
+[connection signal="pressed" from="Menu Buttons/Load" to="Menu Buttons" method="_on_load_pressed"]
 [connection signal="pressed" from="Menu Buttons/Settings" to="Settings" method="show"]
 [connection signal="close_requested" from="Settings" to="Settings" method="_on_close_requested"]
-[connection signal="close_requested" from="Popups" to="Popups" method="_on_close_requested"]
-[connection signal="pressed" from="Popups/VBoxContainer/PanelContainer/Close" to="Popups" method="_on_close_pressed"]
-[connection signal="file_selected" from="Load File Dialog" to="." method="_on_load_file_dialog_file_selected"]
-[connection signal="file_selected" from="Save File Dialog" to="." method="_on_save_file_dialog_file_selected"]

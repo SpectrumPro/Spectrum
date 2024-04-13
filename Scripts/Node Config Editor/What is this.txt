@@ -1,1 +1,0 @@
-If you're wondering what the 'Node Config Editor' is, it is a GUI that will allow you to create your own nodes using logic. Development on this has been postponed to a later release, but when that will be, no one knows.

@@ -1,53 +1,31 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
 extends Control
+## GUI element for managing functions
 
-var functions = {
-	"scenes":{},
-	"effects":{},
-	"cues":{},
-}
+@export var item_list_view: NodePath
 
-func _ready():
-	Globals.subscribe("edit_mode", self.on_edit_mode_changed)
 
-func delete_request(node):
-	node.queue_free()
+func _ready() -> void:
+	Core.scenes_added.connect(self._reload_functions)
+	Core.scenes_removed.connect(self._reload_functions)
 
-func edit_request(node):
-	pass
 
-func on_edit_mode_changed(edit_mode):
-	for function_item in Globals.nodes.scenes_list.get_children():
-		function_item.dissable_buttons(not edit_mode)
-		
-	for function_item in Globals.nodes.effects_list.get_children():
-		function_item.dissable_buttons(not edit_mode)
-		
-	for function_item in Globals.nodes.cues_list.get_children():
-		function_item.dissable_buttons(not edit_mode)
-
-func new_scene():
-	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_item_name("Scene")
-	node_to_add.control_node = self
-	Globals.nodes.scenes_list.add_child(node_to_add)
+func _reload_functions(_scene=null) -> void:
+	## Reload the list of fixtures
 	
-func new_effect():
-	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_item_name("Effect")
-	node_to_add.control_node = self	
-	Globals.nodes.effects_list.add_child(node_to_add)
+	self.get_node(item_list_view).remove_all()
+	self.get_node(item_list_view).add_items(Core.scenes.values())
 	
-func new_cue():
-	var node_to_add = Globals.components.list_item.instantiate()
-	node_to_add.set_item_name("Cue")
-	node_to_add.control_node = self	
-	Globals.nodes.cues_list.add_child(node_to_add)
+
+
+func _on_item_list_view_delete_requested(items: Array) -> void:
+	## Called when the delete button is pressed on the ItemListView
 	
-func _on_new_scene_pressed():
-	new_scene()
+	Core.remove_scenes(items)
+	
 
-func _on_new_effect_pressed():
-	new_effect()
 
-func _on_new_cue_list_pressed():
-	new_cue()
+func _on_item_list_view_selection_changed(items: Array) -> void:
+	self.get_node(item_list_view).set_selected(items)

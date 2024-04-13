@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3 uid="uid://baortk0rwrhup"]
+
+[ext_resource type="Script" path="res://Panels/Playbacks/Playbacks.gd" id="1_io88g"]
+
+[node name="MarginContainer" type="MarginContainer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Playbacks" type="PanelContainer" parent="."]
+layout_mode = 2
+script = ExtResource("1_io88g")
+
+[node name="PanelContainer" type="PanelContainer" parent="Playbacks"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Playbacks/PanelContainer"]
+custom_minimum_size = Vector2(0, 600)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Playbacks/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Playbacks/PanelContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Button" type="Button" parent="Playbacks/PanelContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "+"

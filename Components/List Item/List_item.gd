@@ -1,4 +1,10 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
 extends PanelContainer
+## GUI component for a list item
+
+signal select_requested(from: Control) ## Emmited when this control is clicked on
 
 var control_node
 
@@ -27,17 +33,8 @@ func dissable_buttons(dissable):
 	$Container/Delete.disabled = dissable
 	$Container/Edit.disabled = dissable
 
-func _on_delete_pressed():
-	if control_node.has_method("delete_request"):
-		control_node.delete_request(self)
-
-func _on_edit_pressed():
-	if control_node.has_method("edit_request"):
-		control_node.edit_request(self)
-
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed == true and event.button_index == MOUSE_BUTTON_LEFT:  # Check if the mouse button is released
-			if control_node.has_method("on_selected"):
-				control_node.on_selected(self)
+			select_requested.emit(self)
 
