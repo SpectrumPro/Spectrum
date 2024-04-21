@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Spectrum V0.4.0"
+config/name="Spectrum Client"
 config/description="Realtime node based DMX controller"
 config/version="0.4.0"
 run/main_scene="res://Main.tscn"
@@ -32,6 +32,8 @@ driver/enable_input=true
 
 Globals="*res://Scripts/Global.gd"
 Core="*res://core/engine/Engine.gd"
+MainSocketClient="*res://Scripts/Websocket/WebSocketClient.gd"
+Client="*res://Client.gd"
 
 [debug]
 

@@ -14,6 +14,7 @@ item_list_view = NodePath("ItemListView")
 
 [node name="ItemListView" parent="." instance=ExtResource("3_knoqd")]
 layout_mode = 2
+show_new = false
 allow_multi_select = false
 
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]

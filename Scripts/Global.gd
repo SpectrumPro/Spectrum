@@ -46,8 +46,6 @@ var output_plugins : Dictionary
 	"desk":ResourceLoader.load("res://Panels/Desk/Desk.tscn"),
 	"fixtures":ResourceLoader.load("res://Panels/Fixtures/Fixtures.tscn"),
 	"node_editor":ResourceLoader.load("res://Panels/Node Editor/Node_editor.tscn"),
-	"patch_bay":ResourceLoader.load("res://Panels/Patch Bay/Patch_bay.tscn"),
-	"popups":ResourceLoader.load("res://Panels/Patch Bay/Patch_bay.tscn"),
 	"settings":ResourceLoader.load("res://Panels/Settings/Settings.tscn"),
 	"virtual_fixtures":ResourceLoader.load("res://Panels/Virtual Fixtures/Virtual_fixtures.tscn"),
 	"window_control":ResourceLoader.load("res://Panels/Window Control/Window_control.tscn"),
@@ -142,7 +140,7 @@ var output_plugins : Dictionary
 }
 
 func _ready() -> void:
-	pass
+	OS.set_low_processor_usage_mode(true)
 	#load_fixtures()
 	
 #func load_io_plugins() -> void:

@@ -31,6 +31,7 @@ var last_selected_item: Control
 var object_refs: Dictionary
 
 func _ready() -> void:
+	set_show_separators(show_separators)
 	set_show_tool_bar(show_tool_bar)
 	set_show_new(show_new)
 	set_show_select(show_select)
@@ -38,7 +39,6 @@ func _ready() -> void:
 	set_show_take(show_take)
 	set_show_edit(show_edit)
 	set_show_delete(show_delete)
-	set_show_separators(show_separators)
 
 
 func add_items(items: Array) -> void:

@@ -16,10 +16,9 @@ var user_meta: Dictionary ## Infomation that can be stored by other scripts
 var is_selected: bool = false: set = set_selected
 
 
-func _init() -> void:
+func _init(p_uuid: String = UUID_Util.v4()) -> void:
+	uuid = p_uuid
 	
-	if not uuid:
-		uuid = UUID_Util.v4()
 
 
 func set_selected(state: bool) -> void:
