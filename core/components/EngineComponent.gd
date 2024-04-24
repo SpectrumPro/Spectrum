@@ -1,93 +1,93 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-class_name EngineComponent extends Object
+class_name EngineComponent extends RefCounted
 ## Base class for an engine components, contains functions for storing metadata, and uuid's
 
-signal user_meta_changed(origin: EngineComponent, key: String, value: Variant) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted
+signal user_meta_changed(key: String, value: Variant, user_meta: Dictionary) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted
 signal name_changed(new_name: String) ## Emitted when the name of this object has changed
-signal selected(is_selected: bool)
-signal delete_request(origin: EngineComponent)
+signal delete_request() ## Emited when this object is about to be deleted
 
-var uuid: String = "" ## Uuid of the current component
-var name: String = "": set = _set_name ## The name of this object, only use when displaying to users, do not use it as a reference 
-var user_meta: Dictionary ## Infomation that can be stored by other scripts
-
-var is_selected: bool = false: set = set_selected
+var name: String = "": set = set_name ## The name of this object
+var user_meta: Dictionary ## Infomation that can be stored by other scripts / clients, this data will get saved to disk and send to all clients
+var uuid: String = "" ## Uuid of the current component, do not modify at runtime unless you know what you are doing, things will break
 
 
 func _init(p_uuid: String = UUID_Util.v4()) -> void:
 	uuid = p_uuid
-	
 
 
-func set_selected(state: bool) -> void:
-	## Sets the selection state of this component
-	
-	is_selected = state
-	selected.emit(state)
-
-
+## Sets user_meta from the given value
 func set_user_meta(key: String, value: Variant, no_signal: bool = false):
-	## Sets user_meta from the given value
 	
 	user_meta[key] = value
 	
 	if not no_signal:
-		user_meta_changed.emit(self, key, value)
+		user_meta_changed.emit(key, value, user_meta)
 
 
+## Returns the value from user meta at the given key, if the key is not found, default is returned
 func get_user_meta(key: String, default = null) -> Variant: 
-	## Returns user_meta from the given key, if the key is not found, default is returned
 	
 	return user_meta.get(key, default)
 
 
+## Returns all user meta
+func get_all_user_meta() -> Dictionary:
+
+	return user_meta
+
+
+## Delets an item from user meta, returning true if item was found and deleted, and false if not
 func delete_user_meta(key: String, no_signal: bool = false) -> bool:
-	## Delets an item from user-meta, returning true if item was found and deleted, and false if not
 	
 	if not no_signal:
-		user_meta_changed.emit(self, key)
+		user_meta_changed.emit(key, null, user_meta)
+
 	
 	return user_meta.erase(key)
 
 
-func _set_name(new_name) -> void:
+## Sets the name of this component
+func set_name(new_name) -> void:
 	name = new_name
+	name_changed.emit(name)
 
 
-func change_name(new_name: String, no_signal: bool = false) -> void:
-	## Changes the name of this object
-	name = new_name
-	
-	if not no_signal:
-		name_changed.emit(new_name)
-
-
+## Returns serialized version of this component
 func serialize() -> Dictionary:
-	## When this object gets serialize all user metadata that is an Object, will be checked for a uuid propity.
-	## If one is present it will be used as the serialized version of that object. If none is present, it will be ignored. 
-	## Other user_meta that is not an object will be directly added to the serialized data.
 	
-	return {
-		"uuid":uuid,
-		"user_meta":serialize_meta()
-	}
+	var serialized_data: Dictionary = {}
+
+	# Check if child class has on_serialize_request method, if so call it, and append it to EngineComponent's serialized data
+	if self.has_method("on_serialize_request"):
+		serialized_data = self.get("on_serialize_request").call()
+	
+	serialized_data.uuid = uuid
+	serialized_data.name = name
+	serialized_data.meta = get_all_user_meta()
+
+	return serialized_data
+
+
+## Always call this function when you want to delete this component. 
+## As godot uses reference counting, this object will not truly be deleted untill no other script holds a refernce to it.
+func delete() -> void:
+
+	# Check if child class has on_delete_request method, if so call it
+	if self.has_method("on_delete_request"):
+		self.get("on_delete_request").call()
+
+	delete_request.emit()
+
+	print(self, "Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
+
+
+## Debug function to tell if this component is freed from memory
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		print("\"", self.name, "\" Is being freed")
 
 
 func serialize_meta() -> Dictionary:
-	## Returnes serialized user_meta
-	
-	var serialized_user_meta: Dictionary = {}
-	
-	for key: String in user_meta:
-		if user_meta[key] is Object and "uuid" in user_meta[key]:
-			serialized_user_meta[key] = user_meta[key].uuid
-		else:
-			serialized_user_meta[key] = user_meta[key]
-	
-	return serialized_user_meta
-
-
-func delete() -> void:
-	delete_request.emit(self)
+	return {}

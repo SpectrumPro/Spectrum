@@ -29,7 +29,7 @@ func new_universe() -> void:
 	Client.send(request)
 
 
-func on_universes_added(p_universes: Array) -> void:
+func on_universes_added(p_universes: Array, all_uuids: Array) -> void:
 	
 	var new_universes: Array[Universe]
 	new_universes.assign(p_universes)
@@ -39,3 +39,14 @@ func on_universes_added(p_universes: Array) -> void:
 		universes[universe.uuid] = universe
 	
 	universes_added.emit(universes)
+
+
+func remove_universes(universes_to_remove):
+	Client.send({
+		"for":"engine",
+		"call":"remove_universes",
+		"args":[universes_to_remove]
+	})
+
+func on_universes_removed(universe_uuids: Array) -> void:
+	print(universe_uuids)

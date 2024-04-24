@@ -28,7 +28,7 @@ func _universe_selection_changed(selected_universes: Array) -> void:
 
 func _on_item_list_view_delete_requested(items: Array) -> void:
 	## Called when the delete button is pressed on the ItemListView
-	Core.remove_universes(items)
+	Core.remove_universes(Core.universes.values())
 	
 
 func _on_item_list_view_add_requested() -> void:
@@ -36,4 +36,5 @@ func _on_item_list_view_add_requested() -> void:
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:
-	Core.set_universe_selection(items)
+	#Core.set_universe_selection(items)
+	self.get_node(item_list_view).set_selected(items)

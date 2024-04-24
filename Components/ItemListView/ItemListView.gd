@@ -158,7 +158,6 @@ func _on_new_pressed() -> void:
 
 func _on_select_all_pressed() -> void:
 	if object_refs:
-		print("_on_select_all_pressed")
 		selection_changed.emit(get_objects_from_nodes( item_container.get_children()))
 
 

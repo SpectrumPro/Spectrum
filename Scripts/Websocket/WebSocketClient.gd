@@ -1,5 +1,5 @@
 extends Node
-class_name WebSocketClient
+class_name SocketClient
 
 @export var handshake_headers: PackedStringArray
 @export var supported_protocols := PackedStringArray(["spectrum-json"])

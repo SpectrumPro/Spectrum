@@ -1,5 +1,5 @@
 extends Node
-class_name WebSocketServer
+class_name SocketServer
 
 signal message_received(peer_id: int, message)
 signal client_connected(peer_id: int)
