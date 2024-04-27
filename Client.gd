@@ -12,7 +12,7 @@ var _networked_objects_delete_callbacks: Dictionary = {}
 func _ready() -> void:
 	MainSocketClient.connected_to_server.connect(func(): print("connected"))
 	MainSocketClient.message_received.connect(self._on_message_receved)
-	MainSocketClient.connect_to_url("ws://3.26.62.126:3824")
+	MainSocketClient.connect_to_url("ws://127.0.0.1:3824")
 
 
 ## Send a message to the server, all data passed is automatically converted to strings, and serialised
