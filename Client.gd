@@ -7,11 +7,12 @@ extends Node
 var _networked_objects: Dictionary = {} ## Contains a list of networked objects, stores their functions and data types of there args
 var _callbacks: Dictionary = {} ## Contains a list of callbacks, stored as callback id:callable
 
+var _networked_objects_delete_callbacks: Dictionary = {}
 
 func _ready() -> void:
 	MainSocketClient.connected_to_server.connect(func(): print("connected"))
 	MainSocketClient.message_received.connect(self._on_message_receved)
-	MainSocketClient.connect_to_url("ws://127.0.0.1:3824")
+	MainSocketClient.connect_to_url("ws://3.26.62.126:3824")
 
 
 ## Send a message to the server, all data passed is automatically converted to strings, and serialised
@@ -25,14 +26,26 @@ func send(data: Dictionary, callback: Callable = Callable()) -> void:
 
 
 ## Add a network object
-func add_networked_object(object_name: String, object: Object) -> void:
+func add_networked_object(object_name: String, object: Object, delete_signal: Signal = Signal()) -> void:
+	
+	if object_name in _networked_objects.keys():
+		return
+	
 	var new_networked_config: Dictionary = {
 		"object": object,
 		"functions": {},
 	}
-
+	
 	var method_list: Array = object.get_script().get_script_method_list()
-
+	
+	if not delete_signal.is_null():
+		_networked_objects_delete_callbacks[object_name] = {
+			"callable":_on_networked_object_delete_request.bind(object_name),
+			"signal":delete_signal
+			}
+		 
+		delete_signal.connect(_networked_objects_delete_callbacks[object_name].callable, CONNECT_ONE_SHOT)
+	
 	# Loop through each function on the object that is being added, and create a dictionary containing the avaibal function, and their args
 	for index: int in range(len(method_list)):
 		
@@ -48,17 +61,25 @@ func add_networked_object(object_name: String, object: Object) -> void:
 		# Loop through all the args in this method, and note down there name and type
 		for arg: Dictionary in method_list[index].args:
 			method.args[arg.name] = arg.type
-
+		
 		new_networked_config.functions[method_list[index].name] = method
-
-	_networked_objects[object_name] = new_networked_config 
 	
-	print(_networked_objects)
+	_networked_objects[object_name] = new_networked_config 
 
 
 ## Remove a network object
-func remove_networked_object(name: String) -> void:
-	_networked_objects.erase(name)
+func remove_networked_object(object_name: String) -> void:
+	print("Removing Networked Object: ", object_name)
+	if _networked_objects_delete_callbacks.has(object_name):
+		(_networked_objects_delete_callbacks[object_name].signal as Signal).disconnect(_networked_objects_delete_callbacks[object_name].callback)
+		_networked_objects_delete_callbacks.erase(object_name)
+		
+	_networked_objects.erase(object_name)
+
+
+## Callback function connected to networked_object.delete_signal
+func _on_networked_object_delete_request(object_name):
+	remove_networked_object(object_name)
 
 
 ## Called when a message is receved from the server 

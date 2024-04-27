@@ -6,11 +6,10 @@ class_name CoreEngine extends Node
 
 signal universe_name_changed(universe: Universe, new_name: String) ## Emitted when any of the universes in this engine have there name changed
 signal universes_added(universe: Array[Universe])
-signal universes_removed(universe_uuids: Array[String])
+signal universes_removed(universes: Array[Universe])
 signal universe_selection_changed(selected_universes: Array[Universe])
 
 var universes: Dictionary = {}
-
 
 func _ready() -> void:
 	Client.add_networked_object("engine", self)
@@ -20,7 +19,7 @@ func new_universe() -> void:
 	
 	var request: Dictionary = {
 		"for":"engine",
-		"call":"new_universe",
+		"call":"add_universe",
 		"args":[
 			"New Universe " + str(len(universes) + 1)
 		]
@@ -31,12 +30,10 @@ func new_universe() -> void:
 
 func on_universes_added(p_universes: Array, all_uuids: Array) -> void:
 	
-	var new_universes: Array[Universe]
-	new_universes.assign(p_universes)
-	print(new_universes)
-	
-	for universe: Universe in new_universes:
-		universes[universe.uuid] = universe
+	for universe in p_universes:
+		if universe is Universe:
+			print(universe.name)
+			universes[universe.uuid] = universe
 	
 	universes_added.emit(universes)
 
@@ -48,5 +45,17 @@ func remove_universes(universes_to_remove):
 		"args":[universes_to_remove]
 	})
 
-func on_universes_removed(universe_uuids: Array) -> void:
-	print(universe_uuids)
+
+func on_universes_removed(universes_to_remove: Array) -> void:
+	var just_removed_universes: Array = []
+	
+	for universe: Universe in universes_to_remove:
+		# Check if this universe is part of this engine
+		if universe in universes.values():
+			universes.erase(universe.uuid)
+			universes_removed.emit([universe])
+			
+		else:
+			print("Universe: ", universe.uuid, " is not part of this engine")
+			
+	universes_removed.emit(just_removed_universes)

@@ -24,7 +24,7 @@ static func objects_to_uuids(data):
 		TYPE_OBJECT:
 			return {
 					"_object_ref": str(data.get("uuid")),
-					"_serialized_object": data.serialize(),
+					#"_serialized_object": data.serialize(),
 					"_file_path": data.get_script().get_path()
 				}
 		TYPE_DICTIONARY:
@@ -59,8 +59,8 @@ static func uuids_to_objects(data: Variant, networked_objects: Dictionary, callb
 					if uninitialized_object:
 						var initialized_object = uninitialized_object.new(data._object_ref)
 						
-						if initialized_object.has_method("load_from"):
-							initialized_object.load_from(data._serialized_object)
+						if initialized_object.has_method("load"):
+							initialized_object.load(data._serialized_object)
 							
 							if callback.is_valid() and "uuid" in initialized_object:
 								callback.call(initialized_object.uuid, initialized_object)

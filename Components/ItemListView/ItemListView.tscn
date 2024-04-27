@@ -1,6 +1,5 @@
-[gd_scene load_steps=10 format=3 uid="uid://c6smssfk7gn2w"]
+[gd_scene load_steps=9 format=3 uid="uid://c6smssfk7gn2w"]
 
-[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_fhj3g"]
 [ext_resource type="Script" path="res://Components/ItemListView/ItemListView.gd" id="2_xkuya"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://Assets/Icons/Add.svg" id="3_kvafp"]
 [ext_resource type="Texture2D" uid="uid://c6x6e8xi6lupf" path="res://Assets/Icons/Checked.svg" id="4_21ueo"]
@@ -18,7 +17,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource("1_fhj3g")
 script = ExtResource("2_xkuya")
 
 [node name="ToolBarContainer" type="PanelContainer" parent="."]

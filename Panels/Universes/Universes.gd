@@ -6,13 +6,13 @@ extends Control
 
 @export var item_list_view: NodePath
 
+var currently_selected_universes: Array = []
 
 func _ready() -> void:
 	print(item_list_view)
 	Core.universes_added.connect(self._reload_universes)
 	Core.universes_removed.connect(self._reload_universes)
 	Core.universe_name_changed.connect(self._reload_universes)
-	Core.universe_selection_changed.connect(self._universe_selection_changed)
 
 
 func _reload_universes(_universes=null) -> void:
@@ -22,13 +22,9 @@ func _reload_universes(_universes=null) -> void:
 	self.get_node(item_list_view).add_items(Core.universes.values())
 
 
-func _universe_selection_changed(selected_universes: Array) -> void:
-	self.get_node(item_list_view).set_selected(selected_universes)
-	
-
 func _on_item_list_view_delete_requested(items: Array) -> void:
 	## Called when the delete button is pressed on the ItemListView
-	Core.remove_universes(Core.universes.values())
+	Core.remove_universes(currently_selected_universes)
 	
 
 func _on_item_list_view_add_requested() -> void:
@@ -36,5 +32,5 @@ func _on_item_list_view_add_requested() -> void:
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:
-	#Core.set_universe_selection(items)
-	self.get_node(item_list_view).set_selected(items)
+	currently_selected_universes = items
+	self.get_node(item_list_view).set_selected(currently_selected_universes)
