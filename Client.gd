@@ -71,7 +71,7 @@ func add_networked_object(object_name: String, object: Object, delete_signal: Si
 func remove_networked_object(object_name: String) -> void:
 	print("Removing Networked Object: ", object_name)
 	if _networked_objects_delete_callbacks.has(object_name):
-		(_networked_objects_delete_callbacks[object_name].signal as Signal).disconnect(_networked_objects_delete_callbacks[object_name].callback)
+		(_networked_objects_delete_callbacks[object_name].signal as Signal).disconnect(_networked_objects_delete_callbacks[object_name].callable)
 		_networked_objects_delete_callbacks.erase(object_name)
 		
 	_networked_objects.erase(object_name)
@@ -90,8 +90,8 @@ func _on_message_receved(message: Variant) -> void:
 	if not message is Dictionary:
 		return
 	
-	# Conver all seralized objects to objects refs
-	var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects, add_networked_object)
+	# Convert all seralized objects to objects refs
+	var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 	
 	# If command has the "signal" value, check if its a valid function in the network object specifyed in the command.for value
 	if "signal" in command and command.get("for") in _networked_objects:

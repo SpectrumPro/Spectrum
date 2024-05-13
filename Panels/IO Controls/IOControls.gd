@@ -9,11 +9,12 @@ extends Control
 var current_universe: Universe
 
 func _ready() -> void:
-	Core.universe_selection_changed.connect(self._reload_universes)
+	Values.connect_to_selection_value("selected_universes", self._reload_universes)
 
-func _reload_universes(selected_universes: Array[Universe] = [current_universe]) -> void:
-	
-	## Check if mutiple universes (or none) are selected, if so dont update the output list, only clear it
+func _reload_universes(selected_universes: Array) -> void:
+	 
+	print("reloading io list, with: ", selected_universes)
+	# Check if mutiple universes (or none) are selected, if so dont update the output list, only clear it
 	if len(selected_universes) == 1:
 		
 		if current_universe:
@@ -57,7 +58,7 @@ func _on_item_list_view_delete_requested(items: Array) -> void:
 
 
 func _on_item_list_view_add_requested() -> void:
-	current_universe.new_output()
+	current_universe.add_output("", ArtNetOutput.new())
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:

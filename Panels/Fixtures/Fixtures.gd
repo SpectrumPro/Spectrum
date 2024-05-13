@@ -8,11 +8,11 @@ extends Control
 
 
 func _ready() -> void:
-	Core.fixture_added.connect(self._reload_fixtures)
-	Core.fixture_removed.connect(self._reload_fixtures)
+	Core.fixtures_added.connect(self._reload_fixtures)
+	Core.fixtures_removed.connect(self._reload_fixtures)
 	Core.universes_added.connect(self._reload_fixtures)
 	Core.universes_removed.connect(self._reload_fixtures)
-	Core.fixture_selection_changed.connect(self._reload_fixtures)
+	Values.connect_to_selection_value("selected_fixtures", self._reload_fixtures)
 
 
 func _reload_fixtures(_fixture=null) -> void:
@@ -20,7 +20,6 @@ func _reload_fixtures(_fixture=null) -> void:
 	
 	self.get_node(item_list_view).remove_all()
 	self.get_node(item_list_view).add_items(Core.fixtures.values())
-	
 
 
 func _on_item_list_view_delete_requested(items: Array) -> void:
@@ -30,9 +29,8 @@ func _on_item_list_view_delete_requested(items: Array) -> void:
 		fixture.universe.remove_fixture(fixture)
 
 
-
 func _on_item_list_view_add_requested() -> void:
-	Globals.open_panel_in_window("add_fixture")
+	Interface.open_panel_in_window("add_fixture")
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:

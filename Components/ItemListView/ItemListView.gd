@@ -46,16 +46,12 @@ func add_items(items: Array) -> void:
 	
 	for item in items:
 		if _is_valid_object(item):
-			var new_item_node: Control = Globals.components.list_item.instantiate()
+			var new_item_node: Control = Interface.components.list_item.instantiate()
 			new_item_node.set_item_name(item.name)
 			
 			new_item_node.control_node = self
 			new_item_node.name = item.uuid
 			new_item_node.select_requested.connect(self._on_list_item_select_request)
-			
-			if item.get("is_selected") == true:
-				new_item_node.set_highlighted(item.is_selected)
-				currently_selected_items.append(item)
 			
 			item_container.add_child(new_item_node)
 			object_refs[new_item_node] = item

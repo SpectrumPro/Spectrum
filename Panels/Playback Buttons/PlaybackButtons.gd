@@ -17,7 +17,7 @@ func _reload_buttons(_scene) -> void:
 		old_button.queue_free()
 	
 	for scene: Scene in Core.scenes.values():
-		var button_to_add: Button = Globals.components.trigger_button.instantiate()
+		var button_to_add: Button = Interface.components.trigger_button.instantiate()
 		
 		button_to_add.set_label_text(scene.name)
 		button_to_add.toggled.connect(

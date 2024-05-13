@@ -11,8 +11,7 @@ extends Control
 @export var add_fixture_button: NodePath
 @export var error_lable: NodePath
 
-var fixture_path: String = Globals.fixture_path
-var current_fixture: Dictionary = {}
+var current_fixture: Dictionary = {} ## Fixture manifest for the currently selected fixture
 
 var options: Dictionary = {
 	"channel":1,
@@ -27,11 +26,15 @@ func _ready() -> void:
 	Core.universes_added.connect(self._reload_universes)
 	Core.universes_removed.connect(self._reload_universes)
 	_reload_universes()
-	_reload_fixture_tree()
+	
+	Core.fixtures_definitions_updated.connect(self._reload_fixture_tree)
+	if Core.fixtures_definitions:
+		_reload_fixture_tree()
+	
 
 
+## Reload the fixture tree, where the parent elements are the brand, and child elements being the fixtures
 func _reload_fixture_tree() -> void:
-	## Reload the fixture tree, where the parent elements are the brand, and child elements being the fixtures
 	
 	self.get_node(fixture_tree).clear()
 	
@@ -49,8 +52,8 @@ func _reload_fixture_tree() -> void:
 			fixture_item.set_text(0, Core.fixtures_definitions[manufacturer][fixture].info.name)
 
 
+## Reloads the channel list and mode option button ui elements
 func _reload_menu() -> void:
-	## Reloads the channel list and mode option button ui elements
 	
 	self.get_node(fixture_channel_list).clear()
 	self.get_node(fixture_modes_option).clear()
@@ -67,8 +70,8 @@ func _reload_menu() -> void:
 		self.get_node(fixture_channel_list).add_item(channel)
 
 
+## Reload the list of universes
 func _reload_universes(_universes=null) -> void:
-	## Reload the list of universes
 	
 	self.get_node(fixture_universe_option).clear()
 	
@@ -76,8 +79,8 @@ func _reload_universes(_universes=null) -> void:
 		self.get_node(fixture_universe_option).add_item(universe.name)
 
 
+## Called when an item from the fixure tree is selected
 func _on_fixture_tree_item_selected() -> void:
-	## Called when an item from the fixure tree is selected
 	
 	var selected: TreeItem = self.get_node(fixture_tree).get_selected()
 	
@@ -102,7 +105,7 @@ func _on_add_fixture_button_pressed() -> void:
 	if self.get_node(fixture_universe_option).selected < 0:
 		return
 		
-	Core.universes.values()[self.get_node(fixture_universe_option).selected].new_fixture(
+	Core.universes.values()[self.get_node(fixture_universe_option).selected].add_fixtures_from_manifest(
 		current_fixture, 
 		options.mode, 
 		options.channel, 

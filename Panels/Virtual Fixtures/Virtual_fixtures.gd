@@ -51,7 +51,7 @@ func _add_fixture() -> void:
 	## Adds the currently selected virtual fixtures to the view
 	
 	for fixture: Fixture in Core.selected_fixtures:
-		var node_to_add: Control = Globals.components.virtual_fixture.instantiate()
+		var node_to_add: Control = Interface.components.virtual_fixture.instantiate()
 		
 		node_to_add.set_fixture(fixture)
 		node_to_add.set_highlighted(true)
@@ -114,7 +114,7 @@ func _align(orientation: int) -> void:
 func from(config: Dictionary, control_fixture: Fixture) -> void:
 	## Function to load a virtual fixture, from a stored config in a save file
 	
-	var node_to_add: Control = Globals.components.virtual_fixture.instantiate()
+	var node_to_add: Control = Interface.components.virtual_fixture.instantiate()
 	
 	node_to_add._position_offset = Vector2(config._position_offset.x, config._position_offset.y)
 	node_to_add.set_fixture(control_fixture)

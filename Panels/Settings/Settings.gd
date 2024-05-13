@@ -28,7 +28,7 @@ var settings : Dictionary = {
 
 func _ready() -> void:
 	config_file.load("user://spectrum.cfg")
-	Globals.configFile = config_file
+	Interface.configFile = config_file
 	load_settings()
 
 func load_settings() -> void:
