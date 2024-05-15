@@ -10,12 +10,13 @@ extends Control
 func _ready() -> void:
 	Core.fixtures_added.connect(self._reload_fixtures)
 	Core.fixtures_removed.connect(self._reload_fixtures)
+	Core.fixture_name_changed.connect(self._reload_fixtures)
 	Core.universes_added.connect(self._reload_fixtures)
 	Core.universes_removed.connect(self._reload_fixtures)
 	Values.connect_to_selection_value("selected_fixtures", self._on_item_list_view_selection_changed)
 
 
-func _reload_fixtures(_fixture=null) -> void:
+func _reload_fixtures(arg1=null, arg2=null) -> void:
 	## Reload the list of fixtures
 	
 	self.get_node(item_list_view).remove_all()

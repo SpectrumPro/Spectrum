@@ -40,6 +40,9 @@ var scenes: Dictionary = {}
 var fixtures_definitions: Dictionary = {} 
 
 
+## Dictionary containing all of the output plugins, sotred in [member CoreEngine.output_plugin_path]
+var output_plugins: Dictionary = {}
+
 ## Folowing functions are for connecting universe signals to engine signals, they are defined as vairables so they can be dissconnected when universe is to be deleted
 func _universe_on_name_changed(new_name: String, universe: Universe): 
 	universe_name_changed.emit(universe, new_name)
@@ -70,10 +73,13 @@ func _universe_on_fixtures_removed(p_fixtures: Array):
 ## This allows the callable to be dissconnected from the universe, and freed from memory
 var _universe_signal_connections: Dictionary = {}
 
+const output_plugin_path: String = "res://core/output_plugins/" ## File path for output plugin definitons
 
 func _ready() -> void:
 	Client.add_networked_object("engine", self)
 	
+	output_plugins = get_io_plugins(output_plugin_path)
+	print(output_plugins)
 	MainSocketClient.connected_to_server.connect(func() :
 		Client.send({
 			"for": "engine",
@@ -82,8 +88,31 @@ func _ready() -> void:
 			fixtures_definitions = responce
 			fixtures_definitions_updated.emit()
 		)
+		
+		Client.send({
+			"for": "engine",
+			"call": "serialize",
+		}, func (responce):
+			print(responce)
+			load_from(responce)
+		)
 	
 	)
+
+
+## Returns all output plugins into a dictionary containing the uninitialized object, from the folder defined in [param folder]
+func get_io_plugins(folder: String) -> Dictionary:
+	
+	var uninitialized_output_plugins: Dictionary = {}
+	
+	var output_plugin_folder : DirAccess = DirAccess.open(folder)
+	
+	for plugin in output_plugin_folder.get_files():
+		var uninitialized_plugin = ResourceLoader.load(folder + plugin)
+		
+		uninitialized_output_plugins[plugin] = uninitialized_plugin
+	
+	return uninitialized_output_plugins
 
 
 ## Add a universe
@@ -100,6 +129,11 @@ func new_universe() -> void:
 
 ## INTERNAL: called when a universe or universes are added to the server
 func on_universes_added(p_universes: Array, all_uuids: Array) -> void:
+	_add_universes(p_universes)
+
+
+## INTERNAL: adds a universe or universes to this engine
+func _add_universes(p_universes: Array) -> void:
 	var just_added_universes: Array[Universe]
 	
 	for universe in p_universes:
@@ -113,7 +147,6 @@ func on_universes_added(p_universes: Array, all_uuids: Array) -> void:
 	
 	if just_added_universes:
 		universes_added.emit(just_added_universes)
-
 
 ## Connects all the signals of the new universe to the signals of this engine
 func _connect_universe_signals(universe: Universe):
@@ -172,3 +205,12 @@ func on_universes_removed(universes_to_remove: Array) -> void:
 	
 	if just_removed_universes:
 		universes_removed.emit(just_removed_universes)
+
+
+func load_from(serialized_data: Dictionary) -> void:
+	for universe_uuid: String in serialized_data.get("universes", {}).keys():
+		var new_universe: Universe = Universe.new(universe_uuid)
+		
+		_add_universes([new_universe])
+		
+		new_universe.load(serialized_data.universes[universe_uuid])

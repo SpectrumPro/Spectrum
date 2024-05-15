@@ -25,6 +25,7 @@ var options: Dictionary = {
 func _ready() -> void:
 	Core.universes_added.connect(self._reload_universes)
 	Core.universes_removed.connect(self._reload_universes)
+	Core.universe_name_changed.connect(self._reload_universes)
 	_reload_universes()
 	
 	Core.fixtures_definitions_updated.connect(self._reload_fixture_tree)
@@ -71,7 +72,7 @@ func _reload_menu() -> void:
 
 
 ## Reload the list of universes
-func _reload_universes(_universes=null) -> void:
+func _reload_universes(arg1=null, arg2=null) -> void:
 	
 	self.get_node(fixture_universe_option).clear()
 	

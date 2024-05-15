@@ -14,7 +14,7 @@ func _ready() -> void:
 	Values.connect_to_selection_value("selected_universes", self._on_selection_changed)
 
 
-func _reload_universes(_universes=null) -> void:
+func _reload_universes(arg1=null, arg2=null) -> void:
 	## Reload the list of fixtures
 	
 	self.get_node(item_list_view).remove_all()
