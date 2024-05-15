@@ -14,6 +14,8 @@ signal connected_to_server()
 signal connection_closed()
 signal message_received(message: Variant)
 
+func _ready() -> void:
+	socket.inbound_buffer_size = 50 * 1024 * 1024 # Set buffer size to 50MB
 
 func connect_to_url(url) -> int:
 	socket.supported_protocols = supported_protocols

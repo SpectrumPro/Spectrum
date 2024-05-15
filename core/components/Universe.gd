@@ -63,7 +63,6 @@ func on_outputs_removed(p_outputs: Array) -> void:
 	
 	for output in p_outputs:
 		if output in outputs.values():
-			print(output.name)
 			
 			just_removed_outputs.append(output)
 			outputs.erase(output.uuid)
@@ -83,6 +82,7 @@ func add_fixtures_from_manifest(fixture_manifest: Dictionary, mode:int, start_ch
 		"args": [fixture_manifest, mode, start_channel, quantity, offset]
 	})
 
+
 ## INTERNAL: called when an fixture or fixtures are added to this universe
 func on_fixtures_added(p_fixtures: Array, fixture_uuids: Array) -> void:
 	var just_added_fixtures: Array[Fixture]
@@ -91,17 +91,31 @@ func on_fixtures_added(p_fixtures: Array, fixture_uuids: Array) -> void:
 		if fixture is Fixture:
 			
 			Client.add_networked_object(fixture.uuid, fixture, fixture.delete_requested)
-			fixture.delete_requested.connect(self.on_fixtures_removed.bind([fixture]), CONNECT_ONE_SHOT)
+			fixture.delete_requested.connect(self._remove_fixtures.bind([fixture]), CONNECT_ONE_SHOT)
 			just_added_fixtures.append(fixture)
 			fixtures[fixture.uuid] = fixture
 	
 	if just_added_fixtures:
 		fixtures_added.emit(just_added_fixtures)
-		print(fixtures)
 
 
-func on_fixtures_removed(p_fixtures: Array) -> void:
-	pass
+## INTERNAL: called when an fixture or fixtures are added to this universe
+func on_fixtures_removed(p_fixtures: Array, fixture_uuids: Array) -> void:
+	_remove_fixtures(p_fixtures)
+
+
+## INTERNAL: removes a fixture / fixtures from this universe
+func _remove_fixtures(p_fixtures: Array) -> void:
+	var just_removed_fixtures: Array[Fixture]
+	
+	for fixture in p_fixtures:
+		if fixture in fixtures.values():
+			
+			just_removed_fixtures.append(fixture)
+			fixtures.erase(fixture.uuid)
+	
+	if just_removed_fixtures:
+		fixtures_removed.emit(just_removed_fixtures)
 
 
 ## Serializes this universe

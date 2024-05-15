@@ -40,11 +40,11 @@ func add_networked_object(object_name: String, object: Object, delete_signal: Si
 	
 	if not delete_signal.is_null():
 		_networked_objects_delete_callbacks[object_name] = {
-			"callable":_on_networked_object_delete_request.bind(object_name),
+			"callable":remove_networked_object.bind(object_name),
 			"signal":delete_signal
 			}
 		 
-		delete_signal.connect(_networked_objects_delete_callbacks[object_name].callable, CONNECT_ONE_SHOT)
+		delete_signal.connect(_networked_objects_delete_callbacks[object_name].callable)
 	
 	# Loop through each function on the object that is being added, and create a dictionary containing the avaibal function, and their args
 	for index: int in range(len(method_list)):
@@ -77,11 +77,6 @@ func remove_networked_object(object_name: String) -> void:
 	_networked_objects.erase(object_name)
 
 
-## Callback function connected to networked_object.delete_signal
-func _on_networked_object_delete_request(object_name):
-	remove_networked_object(object_name)
-
-
 ## Called when a message is receved from the server 
 func _on_message_receved(message: Variant) -> void:
 	
@@ -91,15 +86,14 @@ func _on_message_receved(message: Variant) -> void:
 		return
 	
 	# Convert all seralized objects to objects refs
-	var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 	
 	# If command has the "signal" value, check if its a valid function in the network object specifyed in the command.for value
-	if "signal" in command and command.get("for") in _networked_objects:
+	if "signal" in message and message.get("for") in _networked_objects:
 		var networked_object: Dictionary = _networked_objects[message.for]
 		
 		# Check if the function still exists, in case it is no longer valid
-		if networked_object.object.has_method(command.signal):
-			
+		if networked_object.object.has_method(message.signal):
+			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 			var method: Dictionary = networked_object.functions[command.signal]
 			
 			# Loop through all the args passed from the server, and check the type of them against the function in the networked object
@@ -119,10 +113,11 @@ func _on_message_receved(message: Variant) -> void:
 			(networked_object.object.get(command.signal) as Callable).callv(command.get("args", []))
 	
 	# Check if it has "callback_id"
-	if "callback_id" in command:
+	if "callback_id" in message:
 		
 		# Check if the callback_id in regestered in _callbacks
-		if command.get("callback_id", "") in _callbacks:
+		if message.get("callback_id", "") in _callbacks:
+			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 			if command.get("response"):
 				_callbacks[command.callback_id].call(command.response)
 			else:

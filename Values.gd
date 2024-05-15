@@ -59,13 +59,11 @@ func disconnect_from_selection_value(value_name: String, callback: Callable):
 
 ## Set a selection value
 func set_selection_value(value_name: String, value: Array): 
-	print("Setting selection on: ", value_name)
 	if not has_user_signal(value_name + "_selection_value_callback"):
 		add_user_signal(value_name + "_selection_value_callback")
 	
 	if not selection_values.get(value_name, null) == value:
 		selection_values[value_name] = value
-		print(" Emiting: ", value_name + "_selection_value_callback")
 		emit_signal(value_name + "_selection_value_callback", selection_values[value_name])
 
 
@@ -88,7 +86,6 @@ func remove_from_selection_value(value_name: String, array_to_remove: Array):
 		new_array.erase(item)
 	
 	set_selection_value(value_name, new_array)
-	print("Removing items from selection_value, now: ", get_selection_value(value_name))
 
 ## Get a selection value, returnes the value, otherwise default
 func get_selection_value(value_name: String, default: Variant = null) -> Variant:
