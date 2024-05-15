@@ -32,6 +32,17 @@ var current_input_data: Dictionary = {}
 
 var _compiled_dmx_data: Dictionary
 
+func set_color(color: Color, id: String) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "set_color",
+		"args": [color, id]
+	})
+
+
+## INTERNAL: called when the color of this fixture is changed on the server
+func on_color_changed(new_color: Color) -> void:
+	color_changed.emit(new_color)
 
 #func _init(i: Dictionary = {}) -> void:
 	### Init function to create a new fixture, from a set of prexisting infomation. If no infomation is passed a blank fixture is returne

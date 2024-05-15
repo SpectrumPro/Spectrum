@@ -26,7 +26,7 @@ func _ready() -> void:
 	_add_menu_hbox_button(ResourceLoader.load("res://Assets/Icons/Horizontal_distribute.svg"), self._align.bind(ORIENTATION_HORIZONTAL), "Align the selected fixtures horizontally" )
 	_add_menu_hbox_button(ResourceLoader.load("res://Assets/Icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality" )
 	
-	Core.fixture_selection_changed.connect(self._active_fixtures_changed)
+	Values.connect_to_selection_value("selected_fixtures", self._active_fixtures_changed)
 
 
 func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = "", disabled: bool = false) -> Button:
@@ -50,7 +50,7 @@ func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = 
 func _add_fixture() -> void:
 	## Adds the currently selected virtual fixtures to the view
 	
-	for fixture: Fixture in Core.selected_fixtures:
+	for fixture: Fixture in Values.get_selection_value("selected_fixtures"):
 		var node_to_add: Control = Interface.components.virtual_fixture.instantiate()
 		
 		node_to_add.set_fixture(fixture)
@@ -83,14 +83,14 @@ func _active_fixtures_changed(new_active_fixtures: Array) -> void:
 	
 	_add_fixture_button.disabled = true if new_active_fixtures == [] else false
 	
-	#for virtual_fixture: Control in get_children():
-		#virtual_fixture.set_highlighted(false)
-	#
-	#for active_fixture: Fixture in new_active_fixtures:
-		#for virtual_fixture in active_fixture.get_user_meta("virtual_fixtures", []):
-			#virtual_fixture.set_highlighted(true)
-	#
-	#_old_active_fixtures = new_active_fixtures
+	for virtual_fixture: Control in get_children():
+		virtual_fixture.set_highlighted(false)
+	
+	for active_fixture: Fixture in new_active_fixtures:
+		for virtual_fixture in active_fixture.get_user_meta("virtual_fixtures", []):
+			virtual_fixture.set_highlighted(true)
+	
+	_old_active_fixtures = new_active_fixtures
 
 
 func _align(orientation: int) -> void:
@@ -126,19 +126,20 @@ func from(config: Dictionary, control_fixture: Fixture) -> void:
 func _on_virtual_fixture_selected(node) -> void:
 	if node not in _selected_virtual_fixtures:
 		_selected_virtual_fixtures.append(node)
-	Core.select_fixtures([node.fixture])
+	Values.add_to_selection_value("selected_fixtures", [node.fixture])
 
 
 func _on_virtual_fixture_deselected(node) -> void:
 	_selected_virtual_fixtures.erase(node)
-	Core.deselect_fixtures([node.fixture])
+	Values.remove_from_selection_value("selected_fixtures", [node.fixture])
+	
 
 
 func _on_color_picker_color_changed(color: Color) -> void:
 	var current_time = Time.get_ticks_msec() / 1000.0  # Convert milliseconds to seconds
 	
 	if current_time - last_call_time >= Core.call_interval:
-		Core.programmer.set_color(Core.selected_fixtures, color)
+		Core.programmer.set_color(Values.get_selection_value("selected_fixtures"), color)
 		
 		last_call_time = current_time
 

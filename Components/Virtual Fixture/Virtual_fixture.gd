@@ -16,11 +16,11 @@ func set_fixture(control_fixture: Fixture) -> void:
 	
 	if is_instance_valid(fixture):
 		fixture.color_changed.disconnect(self.set_color)
+		fixture.delete_request.disconnect(self.delete)
 	
 	fixture = control_fixture
 	fixture.color_changed.connect(self.set_color)
-	fixture.selected.connect(self.set_highlighted)
-	fixture.delete_request.connect(self.delete)
+	fixture.delete_requested.connect(self.delete)
 
 func serialize():
 	return {

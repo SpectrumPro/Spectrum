@@ -8,11 +8,11 @@ var save_data: Dictionary = {} ## Current data in the programmer
 
 var engine: CoreEngine ## The CoreEngine this programmer is atached to
 
-func set_color(fixtures: Array[Fixture], color: Color) -> void:
+func set_color(fixtures: Array, color: Color) -> void:
 	## Sets the color of all the fixtures in fixtures, to color
 	
 	for fixture: Fixture in fixtures:
-		fixture.set_color(color)
+		fixture.set_color(color, "programmer")
 		
 		if fixture not in save_data:
 			save_data[fixture] = {}

@@ -43,6 +43,12 @@ var fixtures_definitions: Dictionary = {}
 ## Dictionary containing all of the output plugins, sotred in [member CoreEngine.output_plugin_path]
 var output_plugins: Dictionary = {}
 
+## Output frequency of this engine, defaults to 45hz. defined as 1.0 / desired frequency
+var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
+
+## The programmer used for programming vixtures, and saving them to scenes, this programmer is not a networked object, and i only stored localy
+var programmer: Programmer = Programmer.new()
+
 ## Folowing functions are for connecting universe signals to engine signals, they are defined as vairables so they can be dissconnected when universe is to be deleted
 func _universe_on_name_changed(new_name: String, universe: Universe): 
 	universe_name_changed.emit(universe, new_name)
