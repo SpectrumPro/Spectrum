@@ -13,7 +13,7 @@ func _ready() -> void:
 	Core.fixture_name_changed.connect(self._reload_fixtures)
 	Core.universes_added.connect(self._reload_fixtures)
 	Core.universes_removed.connect(self._reload_fixtures)
-	Values.connect_to_selection_value("selected_fixtures", self._on_item_list_view_selection_changed)
+	Values.connect_to_selection_value("selected_fixtures", self.get_node(item_list_view).set_selected)
 
 
 func _reload_fixtures(arg1=null, arg2=null) -> void:
@@ -36,4 +36,4 @@ func _on_item_list_view_add_requested() -> void:
 
 func _on_item_list_view_selection_changed(items: Array) -> void:
 	Values.set_selection_value("selected_fixtures", items)
-	self.get_node(item_list_view).set_selected(items)
+	

@@ -52,6 +52,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
+scroll_offset = Vector2(-34, 0)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("1_y16fu")
@@ -88,9 +89,9 @@ contence = NodePath(".")
 
 [node name="ColorPicker" type="ColorPicker" parent="HBoxContainer/HSplitContainer/Sidebar/MarginContainer/VBoxContainer/Contence"]
 layout_mode = 2
-color = Color(0, 1, 1, 1)
+color = Color(0, 0, 0, 1)
 edit_alpha = false
-picker_shape = 1
+picker_shape = 2
 color_modes_visible = false
 
 [connection signal="pressed" from="HBoxContainer/PanelContainer/VBoxContainer/Button" to="HBoxContainer/HSplitContainer/VBoxContainer/Virtual Fixtures" method="_on_save_pressed"]

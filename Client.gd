@@ -79,7 +79,6 @@ func remove_networked_object(object_name: String) -> void:
 
 ## Called when a message is receved from the server 
 func _on_message_receved(message: Variant) -> void:
-	
 	# Check to make sure the message passed is a Dictionary
 	message = str_to_var(message)
 	if not message is Dictionary:
@@ -104,8 +103,8 @@ func _on_message_receved(message: Variant) -> void:
 						print("Total arguments provided by server: ", len(command.args), " Is more then: ", command.signal, " Is expecting, at: ", len(method.args))
 						return
 					
-					# Check if the type of the arg passed by the sever matches the arg expected by the function, if not stop now to avoid a crash
-					if not typeof(command.args[index]) == method.args.values()[index]:
+					# Check if the type of the arg passed by the sever matches the arg expected by the function, if not stop now to avoid a crash, ignore if the expected type is null, as this could also be Variant
+					if not typeof(command.args[index]) == method.args.values()[index] and not method.args.values()[index] == 0:
 						print("Type of data: ", command.args[index],  " does not match type: ", type_string(method.args.values()[index]), " required by: ", method.callable)
 						return
 			

@@ -187,9 +187,9 @@ func on_load_request(serialized_data: Dictionary) -> void:
 	for fixture_channel: int in serialized_data.get("fixtures", {}).keys():
 		for serialized_fixture: Dictionary in serialized_data.fixtures[fixture_channel]:
 			var new_fixture: Fixture = Fixture.new(serialized_fixture.get("uuid"))
+			new_fixture.load(serialized_fixture)
 			_add_fixtures([new_fixture])
 			
-			new_fixture.load(serialized_fixture)
 	
 	for output_uuid: String in serialized_data.get("outputs", {}).keys():
 		if serialized_data.outputs[output_uuid].get("file_name", "") in Core.output_plugins.keys():

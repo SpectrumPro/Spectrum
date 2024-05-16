@@ -62,17 +62,17 @@ func set_selection_value(value_name: String, value: Array):
 	if not has_user_signal(value_name + "_selection_value_callback"):
 		add_user_signal(value_name + "_selection_value_callback")
 	
-	if not selection_values.get(value_name, null) == value:
-		selection_values[value_name] = value
-		emit_signal(value_name + "_selection_value_callback", selection_values[value_name])
+	#if selection_values.get(value_name, null) != value:
+	selection_values[value_name] = value
+	emit_signal(value_name + "_selection_value_callback", selection_values[value_name])
 
 
 ## Add an array of items to a selection value
-func add_to_selection_value(value_name: String, array_to_add: Array, allow_duplicates: bool = false):
+func add_to_selection_value(value_name: String, array_to_add: Array):
 	var new_array: Array = selection_values.get(value_name, [])
 	
 	for item: Variant in array_to_add:
-		if not item in new_array or allow_duplicates:
+		if item not in new_array:
 			new_array.append(item)
 	
 	set_selection_value(value_name, new_array)
