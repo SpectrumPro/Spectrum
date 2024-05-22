@@ -30,7 +30,7 @@ func _on_item_list_view_delete_requested(items: Array) -> void:
 
 
 func _on_item_list_view_add_requested() -> void:
-	Core.new_universe()
+	Core.add_universe()
 
 
 func _on_selection_changed(items: Array) -> void:

@@ -9,44 +9,37 @@ signal state_changed(is_enabled: bool) ## Emmitted when this scene is enabled or
 var fade_in_speed: int = 2 ## Fade in speed in seconds
 var fade_out_speed: int = 2 ## Fade out speed in seconds
 
-var engine: CoreEngine ## The CoreEngine this scene is a part of
-
 var enabled: bool = false: set = set_enabled ## The current state of this scene
 var save_data: Dictionary = {} ## Saved data for this scene
 
 
+## Enabled or dissables this scene
 func set_enabled(is_enabled: bool) -> void:
-	## Enabled or dissables this scene
-	
-	enabled = is_enabled
-	
-	if is_enabled:
-		for fixture: Fixture in save_data:
-			Core.animate(func(color): fixture.set_color(color, uuid), Color.BLACK, save_data[fixture].color, fade_in_speed)
-	else:
-		for fixture: Fixture in save_data:
-			Core.animate(func(color): fixture.set_color(color, uuid), fixture.current_input_data[uuid].color, Color.BLACK, fade_out_speed)
+	Client.send({
+		"for": self.uuid,
+		"call": "set_enabled",
+		"args": [is_enabled]
+	})
 
 
 func set_save_data(saved_data: Dictionary) -> void:
 	save_data = saved_data
 	
 	for fixture: Fixture in save_data.keys():
-		fixture.delete_request.connect(func(deleted_fixture: Fixture): save_data.erase(deleted_fixture))
+		fixture.delete_requested.connect(func(deleted_fixture: Fixture): save_data.erase(deleted_fixture))
 
 
-func serialize() -> Dictionary:
+func _on_serialize_request() -> Dictionary:
 	## Serializes this scene and returnes it in a dictionary
-	
+	print(serialize_save_data)
 	return {
-		"name": self.name,
 		"fade_in_speed": fade_in_speed,
 		"fade_out_speed": fade_out_speed,
 		"save_data": serialize_save_data()
 	}
 
 
-func load_from(serialized_data: Dictionary) -> void:
+func on_load_request(serialized_data: Dictionary) -> void:
 	
 	self.name = serialized_data.get("name", "")
 	
@@ -82,6 +75,6 @@ func deserialize_save_data(serialized_data: Dictionary) -> Dictionary:
 		for saved_property: String in fixture_save:
 			deserialized_fixture_save[saved_property] = Utils.deserialize_variant(fixture_save[saved_property])
 		
-		deserialized_save_data[engine.fixtures[fixture_uuid]] = deserialized_fixture_save
+		deserialized_save_data[Core.fixtures[fixture_uuid]] = deserialized_fixture_save
 		
 	return deserialized_save_data

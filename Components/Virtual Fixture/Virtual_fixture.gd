@@ -54,5 +54,5 @@ func _on_node_deselected():
 
 
 func _on_dragged(from: Vector2, to: Vector2) -> void:
-	fixture.user_meta.virtual_fixtures[str(self.name)] = to
+	fixture.user_meta.virtual_fixtures[str(self.name)] = [to.x, to.y]
 	fixture.set_user_meta("virtual_fixtures", fixture.user_meta.virtual_fixtures)

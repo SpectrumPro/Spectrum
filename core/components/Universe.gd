@@ -55,6 +55,7 @@ func _add_outputs(p_outputs: Array) -> void:
 		if output is DataOutputPlugin:
 			
 			Client.add_networked_object(output.uuid, output, output.delete_requested)
+			print("Adding Output:", output)
 			output.delete_requested.connect(self.on_outputs_removed.bind([output]), CONNECT_ONE_SHOT)
 			just_added_outputs.append(output)
 			outputs[output.uuid] = output

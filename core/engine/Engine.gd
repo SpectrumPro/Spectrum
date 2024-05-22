@@ -27,6 +27,17 @@ signal fixtures_added(fixtures: Array[Fixture])
 signal fixtures_removed(fixtures: Array[Fixture])
 
 
+## Emited when a scene / scenes are added to this engine
+signal scenes_added(scenes: Array[Scene])
+
+## Emited when a scene / scenes are removed from this engine
+signal scenes_removed(scenes: Array[Scene])
+
+## Emitted when a scene has tis name changed
+signal scene_name_changed(scene: Scene, new_name: String) 
+
+
+
 ## Dictionary containing all universes in this engine
 var universes: Dictionary = {} 
 
@@ -79,6 +90,18 @@ func _universe_on_fixtures_removed(p_fixtures: Array):
 ## This allows the callable to be dissconnected from the universe, and freed from memory
 var _universe_signal_connections: Dictionary = {}
 
+
+## Folowing functions are for connecting Scene signals to Engine signals, they are defined as vairables so they can be dissconnected when scenes are to be deleted
+func _scene_on_name_changed(new_name: String, scene: Scene) -> void:
+	print()
+	print("Scene: ", scene, " Name changed to: ", new_name)
+	scene_name_changed.emit(scene, new_name)
+
+
+## See _universe_signal_connections for details
+var _scene_signal_connections: Dictionary = {}
+
+
 const output_plugin_path: String = "res://core/output_plugins/" ## File path for output plugin definitons
 
 func _ready() -> void:
@@ -122,7 +145,7 @@ func get_io_plugins(folder: String) -> Dictionary:
 
 
 ## Add a universe
-func new_universe() -> void:
+func add_universe() -> void:
 	var request: Dictionary = {
 		"for":"engine",
 		"call":"add_universe",
@@ -174,7 +197,6 @@ func _connect_universe_signals(universe: Universe):
 ## Disconnects all the signals of the universe to the signals of this engine
 func _disconnect_universe_signals(universe: Universe):
 	
-	print("Disconnecting Signals")
 	universe.name_changed.disconnect(_universe_signal_connections[universe]._universe_on_name_changed)
 	universe.delete_requested.disconnect(_universe_signal_connections[universe].on_universes_removed)
 	universe.fixture_name_changed.disconnect(_universe_on_fixture_name_changed)
@@ -213,6 +235,74 @@ func on_universes_removed(universes_to_remove: Array) -> void:
 		universes_removed.emit(just_removed_universes)
 
 
+func add_scene(name: String, scene: Scene) -> void:
+	Client.add_networked_object(scene.uuid, scene, scene.delete_requested)
+	Client.send({
+		"for": "engine",
+		"call": "add_scene",
+		"args": [name, scene]
+	})
+
+
+func on_scenes_added(p_scenes: Array, scene_uuids: Array) -> void:
+	_add_scenes(p_scenes)
+
+
+func _add_scenes(p_scenes: Array) -> void:
+	var just_added_scenes: Array[Scene] = []
+	
+	for scene in p_scenes:
+		if scene is Scene:
+			scenes[scene.uuid] = scene
+			Client.add_networked_object(scene.uuid, scene, scene.delete_requested)
+			_connect_scene_signals(scene)
+			just_added_scenes.append(scene)
+	
+	if just_added_scenes:
+		scenes_added.emit(just_added_scenes)
+
+
+func _connect_scene_signals(scene: Scene) -> void:
+	_scene_signal_connections[scene] = {
+		"_scene_on_name_changed": _scene_on_name_changed.bind(scene),
+		"_remove_scenes": _remove_scenes.bind([scene])
+		}
+	
+	scene.name_changed.connect(_scene_signal_connections[scene]._scene_on_name_changed)
+	scene.delete_requested.connect(_scene_signal_connections[scene]._remove_scenes)
+
+
+
+func _disconnect_scene_signals(scene: Scene) -> void:
+	
+	scene.name_changed.disconnect(_scene_signal_connections[scene]._scene_on_name_changed)
+	scene.delete_requested.disconnect(_scene_signal_connections[scene]._remove_scenes)
+	
+	_scene_signal_connections[scene] = {}
+	_scene_signal_connections.erase(scene)
+
+
+func on_scenes_removed(p_scenes: Array, uuids: Array) -> void:
+	_remove_scenes(p_scenes)
+
+
+func _remove_scenes(p_scenes: Array) -> void:
+	var just_removed_scenes: Array[Scene] = []
+	
+	for scene in p_scenes:
+		# Check if this scene is part of this engine
+		if scene is Scene and scene in scenes.values():
+			scenes.erase(scene.uuid)
+			just_removed_scenes.append(scene)
+			_disconnect_scene_signals(scene)
+		
+		else:
+			print("Scene: ", scene.uuid, " is not part of this engine")
+	
+	if just_removed_scenes:
+		scenes_removed.emit(just_removed_scenes)
+
+
 func load_from(serialized_data: Dictionary) -> void:
 	for universe_uuid: String in serialized_data.get("universes", {}).keys():
 		var new_universe: Universe = Universe.new(universe_uuid)
@@ -220,3 +310,11 @@ func load_from(serialized_data: Dictionary) -> void:
 		_add_universes([new_universe])
 		
 		new_universe.load(serialized_data.universes[universe_uuid])
+		
+	
+	for scene_uuid: String in serialized_data.get("scenes", {}).keys():
+		var new_scene: Scene = Scene.new(scene_uuid)
+		
+		_add_scenes([new_scene])
+		
+		new_scene.load(serialized_data.scenes[scene_uuid])

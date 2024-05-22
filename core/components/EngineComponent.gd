@@ -4,11 +4,11 @@
 class_name EngineComponent extends RefCounted
 ## Base class for an engine components, contains functions for storing metadata, and uuid's
 
-signal user_meta_changed(key: String, value: Variant) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted
+signal user_meta_changed(key: String, value: Variant) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted. If this signal is emited with the key of "user_meta", this meanes that more then one key/value was just updated
 signal name_changed(new_name: String) ## Emitted when the name of this object has changed
 signal delete_requested() ## Emited when this object is about to be deleted
 
-var name: String = "Unnamed EngineComponent": set = set_name ## The name of this object
+var name: String = "Unnamed EngineComponent" ## The name of this object
 var user_meta: Dictionary ## Infomation that can be stored by other scripts / clients, this data will get saved to disk and send to all clients
 var uuid: String = "" ## Uuid of the current component, do not modify at runtime unless you know what you are doing, things will break
 
@@ -59,8 +59,17 @@ func delete_user_meta(key: String, no_signal: bool = false) -> bool:
 
 ## Sets the name of this component
 func set_name(new_name) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "set_name",
+		"args": [new_name]
+	})
+
+
+## INTERNAL: called when this component is renamed on the server
+func on_name_changed(new_name) -> void:
 	name = new_name
-	name_changed.emit(name)
+	name_changed.emit(new_name)
 
 
 ## Returns serialized version of this component
@@ -107,8 +116,12 @@ func _on_delete_request() -> void:
 ## Loades this object from a serialized version
 func load(serialized_data: Dictionary) -> void:
 	name = serialized_data.get("name", "Unnamed EngineComponent")
+	name_changed.emit(name)
+
 	uuid = serialized_data.get("uuid", UUID_Util.v4())
+	
 	user_meta = serialized_data.get("user_meta", {})
+	user_meta_changed.emit("user_meta", user_meta)
 	
 	if not "uuid" in serialized_data:
 		print(name, " No uuid found in serialized_data, making new one: ", uuid)

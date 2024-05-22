@@ -6,8 +6,6 @@ class_name Programmer extends EngineComponent
 
 var save_data: Dictionary = {} ## Current data in the programmer
 
-var engine: CoreEngine ## The CoreEngine this programmer is atached to
-
 func set_color(fixtures: Array, color: Color) -> void:
 	## Sets the color of all the fixtures in fixtures, to color
 	
@@ -25,9 +23,10 @@ func save_to_scene(name: String = "New Scene") -> Scene:
 	
 	var new_scene: Scene = Scene.new()
 	
+	print(save_data)
 	new_scene.set_save_data(save_data.duplicate(true))
 	new_scene.name = name
 	
-	engine.new_scene(new_scene)
+	Core.add_scene("Scene " + str(len(Core.scenes.keys())), new_scene)
 	
 	return new_scene

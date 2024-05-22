@@ -63,12 +63,12 @@ func _add_virtual_fixtures() -> void:
 
 
 ## Add the fixtures defined in p_fixtures, as virtual fixtures
-func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), position_offset: Vector2 = Vector2(), no_meta: bool = false) -> void:
+func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), position_offset: Vector2 = Vector2(), no_meta: bool = false, select: bool = true) -> void:
 	var new_virtual_fixture: Control = Interface.components.virtual_fixture.instantiate()
 	
 	new_virtual_fixture.name = uuid # Give the virtual fixture a uuid so it can be stored later, and found
 	new_virtual_fixture.set_fixture(fixture)
-	new_virtual_fixture.selected = true
+	new_virtual_fixture.selected = select
 	
 	
 	if position_offset:
@@ -79,7 +79,7 @@ func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), positi
 	
 	if not no_meta:
 		var virtual_fixture_list: Dictionary = fixture.get_user_meta("virtual_fixtures", {})
-		virtual_fixture_list[uuid] = new_virtual_fixture.position_offset
+		virtual_fixture_list[uuid] = [new_virtual_fixture.position_offset.x, new_virtual_fixture.position_offset.y]
 		fixture.set_user_meta("virtual_fixtures", virtual_fixture_list)
 	
 	_selected_virtual_fixtures.append(new_virtual_fixture)
@@ -120,7 +120,8 @@ func _on_fixtures_added(p_fixtures: Array) -> void:
 	for fixture: Fixture in p_fixtures:
 		for uuid: String in fixture.get_user_meta("virtual_fixtures", {}).keys():
 			if not uuid in virtual_fixtures.keys():
-				add_virtual_fixture(fixture, uuid, fixture.get_user_meta("virtual_fixtures", {})[uuid], true)
+				var pos_array: Array = fixture.get_user_meta("virtual_fixtures", {})[uuid]
+				add_virtual_fixture(fixture, uuid, Vector2(pos_array[0], pos_array[1]), true, false)
 
 
 ## Function to align the currently selected fixtures horizontally
@@ -169,5 +170,4 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		_last_call_time = current_time
 
 func _on_save_pressed() -> void:
-	pass
-	#Core.programmer.save_to_scene()
+	Core.programmer.save_to_scene()
