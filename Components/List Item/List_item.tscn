@@ -30,4 +30,14 @@ layout_mode = 2
 layout_mode = 2
 text = "Name"
 
+[node name="NameEdit" type="LineEdit" parent="Container"]
+visible = false
+layout_mode = 2
+expand_to_text_length = true
+flat = true
+
+[node name="Chips" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 10
+
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

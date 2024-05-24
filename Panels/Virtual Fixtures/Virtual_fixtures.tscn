@@ -52,7 +52,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
-scroll_offset = Vector2(-34, 0)
 show_minimap_button = false
 show_arrange_button = false
 script = ExtResource("1_y16fu")

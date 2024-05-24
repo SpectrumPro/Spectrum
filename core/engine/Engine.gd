@@ -282,6 +282,13 @@ func _disconnect_scene_signals(scene: Scene) -> void:
 	_scene_signal_connections.erase(scene)
 
 
+func remove_scenes(scenes: Array) -> void:
+	Client.send({
+		"for": "engine",
+		"call": "remove_scenes",
+		"args": [scenes]
+	})
+
 func on_scenes_removed(p_scenes: Array, uuids: Array) -> void:
 	_remove_scenes(p_scenes)
 

@@ -18,9 +18,8 @@ func _reload_universes(arg1=null, arg2=null) -> void:
 	## Reload the list of fixtures
 	
 	self.get_node(item_list_view).remove_all()
-	self.get_node(item_list_view).add_items(Core.universes.values())
+	self.get_node(item_list_view).add_items(Core.universes.values(), [], "set_name")
 	self.get_node(item_list_view).set_selected(Values.get_selection_value("selected_universes", []))
-	
 
 
 func _on_item_list_view_delete_requested(items: Array) -> void:

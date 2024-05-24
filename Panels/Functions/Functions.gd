@@ -10,13 +10,14 @@ extends Control
 func _ready() -> void:
 	Core.scenes_added.connect(self._reload_functions)
 	Core.scenes_removed.connect(self._reload_functions)
+	Core.scene_name_changed.connect(self._reload_functions)
 
 
-func _reload_functions(_scene=null) -> void:
+func _reload_functions(arg1=null, arg2=null) -> void:
 	## Reload the list of fixtures
 	
 	self.get_node(item_list_view).remove_all()
-	self.get_node(item_list_view).add_items(Core.scenes.values())
+	self.get_node(item_list_view).add_items(Core.scenes.values(), [["fade_in_speed", "set_fade_in_speed"], ["fade_out_speed", "set_fade_out_speed"]], "set_name")
 	
 
 

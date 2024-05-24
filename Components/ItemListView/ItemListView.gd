@@ -41,17 +41,22 @@ func _ready() -> void:
 	set_show_delete(show_delete)
 
 
-func add_items(items: Array) -> void:
+func add_items(items: Array, chips: Array = [], name_method: String = "") -> void:
 	## Adds an item to the list
 	
-	for item in items:
+	for item: Object in items:
 		if _is_valid_object(item):
 			var new_item_node: Control = Interface.components.list_item.instantiate()
 			new_item_node.set_item_name(item.name)
 			
-			new_item_node.control_node = self
 			new_item_node.name = item.uuid
 			new_item_node.select_requested.connect(self._on_list_item_select_request)
+			
+			for chip: Array in chips:
+				new_item_node.add_chip(item, chip[0], item.get(chip[1]))
+			
+			if name_method:
+				new_item_node.set_name_method(item.get(name_method))
 			
 			item_container.add_child(new_item_node)
 			object_refs[new_item_node] = item

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=9 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IO Controls/IOControls.tscn" id="3_k6wx5"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="4_l06w5"]
 [ext_resource type="PackedScene" uid="uid://d12eb0smjpwuk" path="res://Panels/Fixtures/Fixtures.tscn" id="4_l12bj"]
 [ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="6_aftgk"]
+[ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://Panels/Functions/Functions.tscn" id="6_tojr7"]
 [ext_resource type="Script" path="res://Scripts/Menu_buttons.gd" id="7_jq3al"]
 
 [node name="Main" type="Control"]
@@ -58,14 +59,19 @@ size_flags_horizontal = 3
 [node name="Add Fixture" parent="TabContainer/Fixtures" instance=ExtResource("4_l06w5")]
 layout_mode = 2
 
+[node name="Functions" parent="TabContainer" instance=ExtResource("6_tojr7")]
+layout_mode = 2
+
 [node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("6_aftgk")]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
+anchor_left = 0.832
 anchor_right = 1.0
-offset_left = 1598.0
+offset_left = 0.559937
 offset_top = 2.0
 offset_right = -2.0
 offset_bottom = 43.0

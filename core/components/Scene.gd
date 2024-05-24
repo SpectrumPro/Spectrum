@@ -6,8 +6,8 @@ class_name Scene extends EngineComponent
 
 signal state_changed(is_enabled: bool) ## Emmitted when this scene is enabled or dissabled
 
-var fade_in_speed: int = 2 ## Fade in speed in seconds
-var fade_out_speed: int = 2 ## Fade out speed in seconds
+var fade_in_speed: float = 2 ## Fade in speed in seconds
+var fade_out_speed: float = 2 ## Fade out speed in seconds
 
 var enabled: bool = false: set = set_enabled ## The current state of this scene
 var save_data: Dictionary = {} ## Saved data for this scene
@@ -22,11 +22,32 @@ func set_enabled(is_enabled: bool) -> void:
 	})
 
 
+func set_fade_in_speed(p_fade_in_speed: float) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "set_fade_in_speed",
+		"args": [p_fade_in_speed]
+	})
+
+
+func set_fade_out_speed(p_fade_out_speed: float) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "set_fade_out_speed",
+		"args": [p_fade_out_speed]
+	})
+
+
 func set_save_data(saved_data: Dictionary) -> void:
 	save_data = saved_data
 	
 	for fixture: Fixture in save_data.keys():
-		fixture.delete_requested.connect(func(deleted_fixture: Fixture): save_data.erase(deleted_fixture))
+		fixture.delete_requested.connect(_remove_fixture.bind(fixture), CONNECT_ONE_SHOT)
+
+
+## Removes a fixture from save_data
+func _remove_fixture(fixture: Fixture) -> void:
+	save_data.erase(fixture)
 
 
 func _on_serialize_request() -> Dictionary:
