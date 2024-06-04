@@ -11,6 +11,8 @@ func _ready() -> void:
 	Core.scenes_added.connect(self._reload_functions)
 	Core.scenes_removed.connect(self._reload_functions)
 	Core.scene_name_changed.connect(self._reload_functions)
+	
+	_reload_functions()
 
 
 func _reload_functions(arg1=null, arg2=null) -> void:

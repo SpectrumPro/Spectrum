@@ -46,7 +46,7 @@ func add_items(items: Array, chips: Array = [], name_method: String = "") -> voi
 	
 	for item: Object in items:
 		if _is_valid_object(item):
-			var new_item_node: Control = Interface.components.list_item.instantiate()
+			var new_item_node: Control = Interface.components.ListItem.instantiate()
 			new_item_node.set_item_name(item.name)
 			
 			new_item_node.name = item.uuid

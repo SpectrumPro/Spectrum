@@ -1,3 +1,6 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
 extends Control
 ## Simple encoder knob
 

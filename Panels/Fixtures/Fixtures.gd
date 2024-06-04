@@ -14,6 +14,8 @@ func _ready() -> void:
 	Core.universes_added.connect(self._reload_fixtures)
 	Core.universes_removed.connect(self._reload_fixtures)
 	Values.connect_to_selection_value("selected_fixtures", self.get_node(item_list_view).set_selected)
+	
+	_reload_fixtures()
 
 
 func _reload_fixtures(arg1=null, arg2=null) -> void:

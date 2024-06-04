@@ -1,13 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=12 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
-[ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IO Controls/IOControls.tscn" id="3_k6wx5"]
+[ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IOControls/IOControls.tscn" id="3_k6wx5"]
 [ext_resource type="PackedScene" uid="uid://03t7su6t2rq2" path="res://Panels/Universes/Universes.tscn" id="4_8kgbc"]
-[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/Add Fixture/Add_fixture.tscn" id="4_l06w5"]
+[ext_resource type="PackedScene" uid="uid://c3lrdtiw05qft" path="res://Panels/AddFixture/AddFixture.tscn" id="4_l06w5"]
 [ext_resource type="PackedScene" uid="uid://d12eb0smjpwuk" path="res://Panels/Fixtures/Fixtures.tscn" id="4_l12bj"]
-[ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/Virtual Fixtures/Virtual_fixtures.tscn" id="6_aftgk"]
+[ext_resource type="PackedScene" uid="uid://dhrijn1m88172" path="res://Panels/VirtualFixtures/VirtualFixtures.tscn" id="6_aftgk"]
 [ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://Panels/Functions/Functions.tscn" id="6_tojr7"]
 [ext_resource type="Script" path="res://Scripts/Menu_buttons.gd" id="7_jq3al"]
+[ext_resource type="PackedScene" uid="uid://c5h003o3qi1wl" path="res://Panels/PlaybackButtons/PlaybackButtons.tscn" id="8_5jbpr"]
+[ext_resource type="PackedScene" uid="uid://bwxr0mrsrt0iu" path="res://Panels/Programmer/Programmer.tscn" id="9_560di"]
+[ext_resource type="PackedScene" uid="uid://bsxgp5g0jmyke" path="res://Panels/Desk/Desk.tscn" id="10_2tgg4"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -34,7 +37,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 2
+current_tab = 3
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
@@ -60,9 +63,29 @@ size_flags_horizontal = 3
 layout_mode = 2
 
 [node name="Functions" parent="TabContainer" instance=ExtResource("6_tojr7")]
+visible = false
 layout_mode = 2
 
-[node name="Virtual Fixtures" parent="TabContainer" instance=ExtResource("6_aftgk")]
+[node name="Virtual Fixtures" type="HSplitContainer" parent="TabContainer"]
+layout_mode = 2
+split_offset = -880
+
+[node name="PlaybackButtons" parent="TabContainer/Virtual Fixtures" instance=ExtResource("8_5jbpr")]
+layout_mode = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="TabContainer/Virtual Fixtures"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = 160
+
+[node name="Virtual Fixtures" parent="TabContainer/Virtual Fixtures/VSplitContainer" instance=ExtResource("6_aftgk")]
+layout_mode = 2
+
+[node name="HBoxContainer2" parent="TabContainer/Virtual Fixtures/VSplitContainer" instance=ExtResource("9_560di")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Desk" parent="TabContainer" instance=ExtResource("10_2tgg4")]
 visible = false
 layout_mode = 2
 

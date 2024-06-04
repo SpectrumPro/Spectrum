@@ -12,7 +12,8 @@ func _ready() -> void:
 	Core.universe_name_changed.connect(self._reload_universes)
 	
 	Values.connect_to_selection_value("selected_universes", self._on_selection_changed)
-
+	
+	_reload_universes()
 
 func _reload_universes(arg1=null, arg2=null) -> void:
 	## Reload the list of fixtures

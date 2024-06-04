@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbsp8xx2h45do"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_rbw53"]
+[ext_resource type="Script" path="res://Components/ObjectPicker/ObjectPicker.gd" id="2_f5smc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a5mol"]
+bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.192157)
+
+[node name="ObjectPicker" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_f5smc")
+
+[node name="ObjectPicker" type="TabContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("1_rbw53")
+theme_override_styles/panel = SubResource("StyleBoxFlat_a5mol")

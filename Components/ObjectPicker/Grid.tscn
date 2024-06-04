@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://deedhc5ec0hva"]
+
+[ext_resource type="Script" path="res://Components/ObjectPicker/Grid.gd" id="1_ubwd1"]
+
+[node name="Grid" type="GridContainer"]
+script = ExtResource("1_ubwd1")
+
+[connection signal="resized" from="." to="." method="_on_resized"]

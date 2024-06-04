@@ -1,0 +1,78 @@
+[gd_scene load_steps=9 format=3 uid="uid://bsxgp5g0jmyke"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_0eyvo"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://Assets/Icons/Add.svg" id="2_20jl7"]
+[ext_resource type="Script" path="res://Panels/Desk/Desk.gd" id="2_jux45"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://Assets/Icons/Delete.svg" id="3_8jyrh"]
+[ext_resource type="Texture2D" uid="uid://dee78hal6ympb" path="res://Assets/Icons/Grid_On.svg" id="4_nh5c7"]
+[ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://Assets/Icons/Arrow_upward.svg" id="6_0ouy4"]
+[ext_resource type="PackedScene" uid="uid://cbsp8xx2h45do" path="res://Components/ObjectPicker/ObjectPicker.tscn" id="6_ttixk"]
+[ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://Assets/Icons/Arrow_downward.svg" id="7_3vntk"]
+
+[node name="Desk" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_0eyvo")
+script = ExtResource("2_jux45")
+container = NodePath("VBoxContainer/PanelContainer2/Container")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Add" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_20jl7")
+
+[node name="Delete" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_8jyrh")
+
+[node name="ToggleGrid" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("4_nh5c7")
+
+[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("6_0ouy4")
+
+[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("7_3vntk")
+
+[node name="EditMode" type="CheckButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Edit Mode"
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Container" type="Control" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ObjectPicker" parent="." instance=ExtResource("6_ttixk")]
+visible = false
+custom_minimum_size = Vector2(516.16, 551.39)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Add" to="." method="_on_add_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/EditMode" to="." method="_on_edit_mode_toggled"]
+[connection signal="gui_input" from="VBoxContainer/PanelContainer2/Container" to="." method="_on_container_gui_input"]
+[connection signal="item_selected" from="ObjectPicker" to="." method="_on_object_picker_item_selected"]
