@@ -19,3 +19,7 @@ func load_objects(objects: Dictionary, tab_name: String) -> void:
 	
 	grid_node.name = tab_name
 	$ObjectPicker.add_child(grid_node)
+
+
+func _on_close_pressed() -> void:
+	hide()
