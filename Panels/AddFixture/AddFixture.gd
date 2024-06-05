@@ -11,7 +11,11 @@ extends Control
 @export var add_fixture_button: NodePath
 @export var error_lable: NodePath
 
-var current_fixture: Dictionary = {} ## Fixture manifest for the currently selected fixture
+## Fixture manifest for the currently selected fixture
+var current_fixture: Dictionary = {} 
+
+## Contains a list of all fixture manifests that are made avaibal to the user
+var loaded_fixtures: Dictionary = {}
 
 var options: Dictionary = {
 	"channel":1,
@@ -48,9 +52,13 @@ func _reload_fixture_tree() -> void:
 		manufacturer_item.set_text(0, manufacturer)
 		manufacturer_item.collapsed = true
 		
+		loaded_fixtures[manufacturer] = {}
+		
 		for fixture: String in Core.fixtures_definitions[manufacturer].keys():
 			var fixture_item: TreeItem = tree.create_item(manufacturer_item)
 			fixture_item.set_text(0, Core.fixtures_definitions[manufacturer][fixture].info.name)
+			
+			loaded_fixtures[manufacturer][Core.fixtures_definitions[manufacturer][fixture].info.name] = Core.fixtures_definitions[manufacturer][fixture]
 
 
 ## Reloads the channel list and mode option button ui elements
@@ -91,7 +99,7 @@ func _on_fixture_tree_item_selected() -> void:
 	var manufacturer: String = selected.get_parent().get_text(0)
 	var fixture: String = selected.get_text(0)
 	
-	current_fixture = Core.fixtures_definitions[manufacturer][fixture]
+	current_fixture = loaded_fixtures[manufacturer][fixture]
 	
 	options.mode = 0
 	_reload_menu()
