@@ -1,3 +1,6 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
 extends Node
 
 @onready var _root_node : Control = get_tree().root.get_node("Main")
