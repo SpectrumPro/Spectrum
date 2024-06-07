@@ -54,10 +54,7 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/initial_position_type=4
 window/subwindows/embed_subwindows=false
-<<<<<<< HEAD
 window/stretch/scale=2.0
-=======
->>>>>>> 03632f05b6b978e5b241c2e0079212d642b2f875
 window/vsync/vsync_mode=0
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false
