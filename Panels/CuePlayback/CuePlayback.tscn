@@ -1,0 +1,68 @@
+[gd_scene load_steps=7 format=3 uid="uid://duww8qljyqvxk"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_kkl7c"]
+[ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://Assets/Icons/Arrow_back.svg" id="2_bvwur"]
+[ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://Assets/Icons/Arrow_foward.svg" id="3_07mes"]
+[ext_resource type="Texture2D" uid="uid://bf4227ei83gh1" path="res://Assets/Icons/play.svg" id="4_1thxx"]
+[ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://Assets/Icons/pause.svg" id="5_r8lsa"]
+[ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://Assets/Icons/Stop.svg" id="6_pxf7y"]
+
+[node name="CuePlayback" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_kkl7c")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "Cue Name
+"
+
+[node name="List" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Controls" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Controls"]
+layout_mode = 2
+
+[node name="Previous" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+icon = ExtResource("2_bvwur")
+icon_alignment = 1
+
+[node name="Next" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+icon = ExtResource("3_07mes")
+icon_alignment = 1
+
+[node name="Play" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+icon = ExtResource("4_1thxx")
+icon_alignment = 1
+
+[node name="Pause" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+icon = ExtResource("5_r8lsa")
+icon_alignment = 1
+
+[node name="Stop" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+icon = ExtResource("6_pxf7y")
+icon_alignment = 1

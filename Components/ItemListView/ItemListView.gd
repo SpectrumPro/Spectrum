@@ -44,6 +44,9 @@ func _ready() -> void:
 func add_items(items: Array, chips: Array = [], name_method: String = "") -> void:
 	## Adds an item to the list
 	
+	$PanelContainer2/ConfirmationBox.hide()
+	
+	
 	for item: Object in items:
 		if _is_valid_object(item):
 			var new_item_node: Control = Interface.components.ListItem.instantiate()
@@ -64,6 +67,9 @@ func add_items(items: Array, chips: Array = [], name_method: String = "") -> voi
 
 func remove_all() -> void:
 	## Removes all items from the list
+	
+	$PanelContainer2/ConfirmationBox.hide()
+	
 	
 	object_refs = {}
 	last_selected_item = null
@@ -189,7 +195,20 @@ func _on_edit_pressed() -> void:
 
 func _on_delete_pressed() -> void:
 	if currently_selected_items:
-		delete_requested.emit(currently_selected_items)
+		
+		$PanelContainer2/ConfirmationBox.show()
+		
+		var delete_signal = func ():
+			delete_requested.emit(currently_selected_items)
+			$PanelContainer2/ConfirmationBox.hide()
+			
+		
+		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.connect(delete_signal)
+		
+		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
+			$PanelContainer2/ConfirmationBox.hide()
+			$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.disconnect(delete_signal)
+		)
 
 #endregion
 

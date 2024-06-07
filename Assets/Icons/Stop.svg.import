@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1cl6qetwg8st"
-path="res://.godot/imported/Arrow_back.svg-a0911a1be2b399f6e203ad85c7bde526.ctex"
+uid="uid://qporw0h5fc8b"
+path="res://.godot/imported/Stop.svg-0ec47ceeabe82b8c8446cf08fec61e76.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/Arrow_back.svg"
-dest_files=["res://.godot/imported/Arrow_back.svg-a0911a1be2b399f6e203ad85c7bde526.ctex"]
+source_file="res://Assets/Icons/Stop.svg"
+dest_files=["res://.godot/imported/Stop.svg-0ec47ceeabe82b8c8446cf08fec61e76.ctex"]
 
 [params]
 

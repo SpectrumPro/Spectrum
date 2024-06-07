@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1cl6qetwg8st"
-path="res://.godot/imported/Arrow_back.svg-a0911a1be2b399f6e203ad85c7bde526.ctex"
+uid="uid://kkblmodueva1"
+path="res://.godot/imported/Arrow_foward.svg-1f525d09f24df2350553b000914c3b8e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/Arrow_back.svg"
-dest_files=["res://.godot/imported/Arrow_back.svg-a0911a1be2b399f6e203ad85c7bde526.ctex"]
+source_file="res://Assets/Icons/Arrow_foward.svg"
+dest_files=["res://.godot/imported/Arrow_foward.svg-1f525d09f24df2350553b000914c3b8e.ctex"]
 
 [params]
 
