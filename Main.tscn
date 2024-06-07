@@ -37,7 +37,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 3
+current_tab = 4
 drag_to_rearrange_enabled = true
 use_hidden_tabs_for_min_size = true
 
@@ -67,6 +67,7 @@ visible = false
 layout_mode = 2
 
 [node name="Virtual Fixtures" type="HSplitContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 split_offset = -880
 
@@ -86,7 +87,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Desk" parent="TabContainer" instance=ExtResource("10_2tgg4")]
-visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]

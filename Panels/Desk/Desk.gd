@@ -38,7 +38,7 @@ func deselect_item(item: Control) -> void:
 
 
 func _on_object_picker_item_selected(key, value):
-	$ObjectPicker.visible = false
+	$ObjectPicker.hide()
 	
 	var new_node: Control = Interface.components.DeskItemContainer.instantiate()
 	
@@ -54,7 +54,7 @@ func _on_object_picker_item_selected(key, value):
 
 
 func _on_add_pressed() -> void:
-	$ObjectPicker.visible = true
+	$ObjectPicker.show()
 
 
 func _on_edit_mode_toggled(toggled_on: bool) -> void:
@@ -86,5 +86,13 @@ func _on_delete_pressed() -> void:
 
 
 func _on_container_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.is_pressed():
-		select_none()
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			select_none()
+		
+		if $ObjectPicker.visible and event.button_index == MOUSE_BUTTON_LEFT:
+			$ObjectPicker.hide()
+		
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
+			$ObjectPicker.show()
+		

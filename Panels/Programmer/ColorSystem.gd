@@ -66,3 +66,7 @@ func _on_green_slider_value_changed(value: float) -> void:
 func _on_blue_slider_value_changed(value: float) -> void:
 	current_color.b8 = value
 	_update_color()
+
+
+func _on_white_slider_value_changed(value: float) -> void:
+	Core.programmer.set_white_intensity(Values.get_selection_value("selected_fixtures", []), value)

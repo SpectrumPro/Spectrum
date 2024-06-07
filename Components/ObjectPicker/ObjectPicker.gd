@@ -13,10 +13,13 @@ func load_objects(objects: Dictionary, tab_name: String) -> void:
 			item_selected.emit(object_key, objects[object_key])
 		)
 		
-		new_node.custom_minimum_size = Vector2(100, 100)
 		new_node.get_node("Label").text = object_key.capitalize()
 		
 		grid_node.add_child(new_node)
 	
 	grid_node.name = tab_name
 	$ObjectPicker.add_child(grid_node)
+
+
+func _on_close_pressed() -> void:
+	hide()
