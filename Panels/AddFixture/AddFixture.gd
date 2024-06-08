@@ -73,9 +73,9 @@ func _reload_menu() -> void:
 	for mode: String in current_fixture.modes:
 		self.get_node(fixture_modes_option).add_item(mode)
 	
-	self.get_node(fixture_modes_option).selected = options.mode
+	self.get_node(fixture_modes_option).selected = options.mode - 1
 	
-	for channel: String in current_fixture.modes.values()[options.mode].channels:
+	for channel: String in current_fixture.modes.values()[options.mode - 1].channels:
 		self.get_node(fixture_channel_list).add_item(channel)
 
 
