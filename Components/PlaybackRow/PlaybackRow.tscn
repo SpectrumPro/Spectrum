@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4wtma14pt5uv"]
+[gd_scene load_steps=5 format=3 uid="uid://c4wtma14pt5uv"]
 
+[ext_resource type="Script" path="res://Components/PlaybackRow/PlaybackRow.gd" id="1_8pl2j"]
 [ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://Assets/Icons/Slider_handle.svg" id="1_g8a7l"]
+[ext_resource type="PackedScene" uid="uid://c2c3t6jriymr6" path="res://Components/TriggerButton/TriggerButton.tscn" id="2_077sc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hv2sk"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
@@ -12,12 +14,13 @@ expand_margin_left = 24.0
 expand_margin_right = 24.0
 
 [node name="Playback Row" type="MarginContainer"]
-offset_right = 79.0
-offset_bottom = 204.0
+offset_right = 37.0
+offset_bottom = 355.0
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
+script = ExtResource("1_8pl2j")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
@@ -32,17 +35,22 @@ theme_override_constants/margin_bottom = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="Button 1" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Button1" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-text = "1"
+toggle_mode = false
 
-[node name="Button 2" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(50, 25)
+[node name="Button2" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-text = "2"
+toggle_mode = false
 
-[node name="VSlider" type="VSlider" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Button3" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
+custom_minimum_size = Vector2(80, 50)
+layout_mode = 2
+toggle_mode = false
+
+[node name="Slider" type="VSlider" parent="PanelContainer/MarginContainer/VBoxContainer"]
 use_parent_material = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
@@ -53,14 +61,15 @@ mouse_default_cursor_shape = 10
 theme_override_icons/grabber = ExtResource("1_g8a7l")
 theme_override_icons/grabber_highlight = ExtResource("1_g8a7l")
 theme_override_styles/slider = SubResource("StyleBoxFlat_hv2sk")
-max_value = 255.0
+max_value = 1.0
+step = 0.01
 
-[node name="Button 3" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(50, 25)
+[node name="Button4" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
+custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
-text = "3"
+toggle_mode = false
 
-[node name="Button 4" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Button5" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-text = "4"
+toggle_mode = false

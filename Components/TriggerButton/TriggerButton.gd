@@ -14,6 +14,10 @@ func set_label_text(label_text: String) -> void:
 	$Label.text = label_text
 
 
+func set_value(percentage: float) -> void:
+	$ProgressBar.value = percentage
+
+
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == 2:

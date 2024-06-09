@@ -110,22 +110,32 @@ func _ready() -> void:
 	output_plugins = get_io_plugins(output_plugin_path)
 	print(output_plugins)
 	MainSocketClient.connected_to_server.connect(func() :
-		Client.send({
-			"for": "engine",
-			"call": "get_loaded_fixtures_definitions",
-		}, func (responce):
-			fixtures_definitions = responce
-			fixtures_definitions_updated.emit()
-		)
+		load_from_server()
+	)
+
+
+func _process(delta: float) -> void:
+	if Input.is_key_pressed(KEY_F5):
+		_remove_universes(universes.values())
+		_remove_scenes(scenes.values())
+		#load_from_server()
+
+
+func load_from_server() -> void:
+	Client.send({
+		"for": "engine",
+		"call": "get_loaded_fixtures_definitions",
+	}, func (responce):
+		fixtures_definitions = responce
+		fixtures_definitions_updated.emit()
+	)
 		
-		Client.send({
-			"for": "engine",
-			"call": "serialize",
-		}, func (responce):
-			print(responce)
-			load_from(responce)
-		)
-	
+	Client.send({
+		"for": "engine",
+		"call": "serialize",
+	}, func (responce):
+		print(responce)
+		load_from(responce)
 	)
 
 
@@ -218,13 +228,18 @@ func remove_universes(universes_to_remove):
 
 ## INTERNAL: called when a universe or universes are removed from the server
 func on_universes_removed(universes_to_remove: Array) -> void:
-	
+	_remove_universes(universes_to_remove)
+
+
+func _remove_universes(p_universes: Array) -> void:
 	var just_removed_universes: Array[Universe]
 	
-	for universe: Universe in universes_to_remove:
+	for universe: Universe in p_universes:
 		# Check if this universe is part of this engine
 		if universe in universes.values():
 			universes.erase(universe.uuid)
+			universe.on_delete_requested()
+			
 			just_removed_universes.append(universe)
 			_disconnect_universe_signals(universe)
 		

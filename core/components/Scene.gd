@@ -5,20 +5,21 @@ class_name Scene extends EngineComponent
 ## Engine class for creating and recalling saved data
 
 signal state_changed(is_enabled: bool) ## Emmitted when this scene is enabled or dissabled
+signal percentage_step_changed(percentage: float) ## Emitted when the step is changed, emits the current progress percentage of this scene
 
 var fade_in_speed: float = 2 ## Fade in speed in seconds
 var fade_out_speed: float = 2 ## Fade out speed in seconds
 
-var enabled: bool = false: set = set_enabled ## The current state of this scene
+var enabled: bool = false ## The current state of this scene
 var save_data: Dictionary = {} ## Saved data for this scene
 
 
 ## Enabled or dissables this scene
-func set_enabled(is_enabled: bool) -> void:
+func set_enabled(is_enabled: bool, time: float = -1) -> void:
 	Client.send({
 		"for": self.uuid,
 		"call": "set_enabled",
-		"args": [is_enabled]
+		"args": [is_enabled, time]
 	})
 
 
@@ -38,64 +39,41 @@ func set_fade_out_speed(p_fade_out_speed: float) -> void:
 	})
 
 
-func set_save_data(saved_data: Dictionary) -> void:
-	save_data = saved_data
-	
-	for fixture: Fixture in save_data.keys():
-		fixture.delete_requested.connect(_remove_fixture.bind(fixture), CONNECT_ONE_SHOT)
+## INTERNAL: Called when the fade speed is changed on the server
+func on_fade_speed_changed(fade_in: float, fade_out: float) -> void:
+	fade_in_speed = fade_in
+	fade_out_speed = fade_out
 
 
-## Removes a fixture from save_data
-func _remove_fixture(fixture: Fixture) -> void:
-	save_data.erase(fixture)
+## INTERNAL: Called when the state is changed on the server
+func on_state_changed(state: bool) -> void:
+	state_changed.emit(state)
+	enabled = state
+	print("State Chaged")
+
+
+func set_step_percentage(percentage: float) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "set_step_percentage",
+		"args": [percentage]
+	})
+
+
+## INTERNAL: Called when the percentage step is changed on the server
+func on_percentage_step_changed(percentage: float) -> void:
+	print(percentage)
+	percentage_step_changed.emit(percentage)
 
 
 func _on_serialize_request() -> Dictionary:
 	## Serializes this scene and returnes it in a dictionary
-	print(serialize_save_data)
 	return {
 		"fade_in_speed": fade_in_speed,
 		"fade_out_speed": fade_out_speed,
-		"save_data": serialize_save_data()
 	}
 
 
 func on_load_request(serialized_data: Dictionary) -> void:
-	
-	self.name = serialized_data.get("name", "")
-	
 	fade_in_speed = serialized_data.get("fade_in_speed", fade_in_speed)
 	fade_out_speed = serialized_data.get("fade_out_speed", fade_out_speed)
-	
-	set_save_data(deserialize_save_data(serialized_data.get("save_data", {})))
-
-
-func serialize_save_data() -> Dictionary:
-	## Serializes save_data and returnes as a dictionary
-	
-	var serialized_save_data: Dictionary = {}
-	
-	for fixture: Fixture in save_data:
-		serialized_save_data[fixture.uuid] = {}
-		for save_key in save_data[fixture]:
-			serialized_save_data[fixture.uuid][save_key] = Utils.serialize_variant(save_data[fixture][save_key])
-	
-	return serialized_save_data
-
-
-func deserialize_save_data(serialized_data: Dictionary) -> Dictionary:
-	## Deserializes save_data and returnes as a dictionary
-	
-	var deserialized_save_data: Dictionary = {}
-	
-	for fixture_uuid: String in serialized_data:
-		var fixture_save: Dictionary = serialized_data[fixture_uuid]
-		
-		var deserialized_fixture_save = {}
-		
-		for saved_property: String in fixture_save:
-			deserialized_fixture_save[saved_property] = Utils.deserialize_variant(fixture_save[saved_property])
-		
-		deserialized_save_data[Core.fixtures[fixture_uuid]] = deserialized_fixture_save
-		
-	return deserialized_save_data

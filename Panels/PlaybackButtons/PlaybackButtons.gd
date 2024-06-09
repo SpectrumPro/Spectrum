@@ -8,7 +8,7 @@ func _ready() -> void:
 	Core.scenes_added.connect(self._reload_buttons)
 	Core.scenes_removed.connect(self._reload_buttons)
 	Core.scene_name_changed.connect(self._reload_buttons)
-
+	_reload_buttons()
 
 func _reload_buttons(arg1=null, arg2=null) -> void:
 	## Reloads the buttons in the ui
@@ -21,14 +21,14 @@ func _reload_buttons(arg1=null, arg2=null) -> void:
 		var button_to_add: Button = Interface.components.TriggerButton.instantiate()
 		
 		button_to_add.set_label_text(scene.name)
-		button_to_add.button_down.connect(
-			func():
-				scene.enabled = true
+		
+		button_to_add.toggled.connect(
+			func(state):
+				scene.set_enabled(state)
 		)
-		button_to_add.button_up.connect(
-			func():
-				scene.enabled = false
-		)
+		
+		scene.state_changed.connect(button_to_add.set_pressed_no_signal)
+		scene.percentage_step_changed.connect(button_to_add.set_value)
 		
 		button_to_add.set_pressed_no_signal(scene.enabled)
 		

@@ -64,6 +64,8 @@ func _reload_fixture_tree() -> void:
 ## Reloads the channel list and mode option button ui elements
 func _reload_menu() -> void:
 	
+	print(self.get_node(fixture_modes_option).selected)
+	
 	self.get_node(fixture_channel_list).clear()
 	self.get_node(fixture_modes_option).clear()
 	
@@ -73,9 +75,9 @@ func _reload_menu() -> void:
 	for mode: String in current_fixture.modes:
 		self.get_node(fixture_modes_option).add_item(mode)
 	
-	self.get_node(fixture_modes_option).selected = options.mode - 1
+	#self.get_node(fixture_modes_option).selected = options.mode - 1
 	
-	for channel: String in current_fixture.modes.values()[options.mode - 1].channels:
+	for channel: String in current_fixture.modes.values()[options.mode].channels:
 		self.get_node(fixture_channel_list).add_item(channel)
 
 
@@ -106,7 +108,7 @@ func _on_fixture_tree_item_selected() -> void:
 
 
 func _on_modes_item_selected(index: int) -> void:
-	options.mode = index + 1
+	options.mode = index
 	_reload_menu()
 
 
