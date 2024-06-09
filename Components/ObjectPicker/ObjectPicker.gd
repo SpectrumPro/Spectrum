@@ -1,8 +1,15 @@
-extends PanelContainer
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
 
+extends PanelContainer
+## A view to select items
+
+
+## Emitted when an item is selected
 signal item_selected(key, value)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
+## Load objects from a dictnary, where the key is the name, and the value being the object to be selected
 func load_objects(objects: Dictionary, tab_name: String) -> void:
 	var grid_node: GridContainer = load("res://Components/ObjectPicker/Grid.tscn").instantiate()
 	
@@ -19,6 +26,7 @@ func load_objects(objects: Dictionary, tab_name: String) -> void:
 	
 	grid_node.name = tab_name
 	$ObjectPicker.add_child(grid_node)
+
 
 
 func _on_close_pressed() -> void:

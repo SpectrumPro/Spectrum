@@ -38,7 +38,6 @@ offset_right = 160.0
 offset_bottom = 160.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ikhvr")
 script = ExtResource("1_u1i3e")
-label = NodePath("Handles/PanelContainer/Label")
 selected_color = Color(0.404511, 0.404511, 0.404511, 0.760784)
 normal_color = Color(0.2, 0.2, 0.2, 0.760784)
 
