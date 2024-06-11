@@ -25,18 +25,16 @@ func reload(arg1=null, arg2=null) -> void:
 		scene.state_changed.connect(new_node.button1.set_pressed_no_signal)
 		
 		new_node.button2.set_label_text("Enable")
-		new_node.button2.pressed.connect(scene.set_enabled.bind(true, 0))
+		new_node.button2.pressed.connect(scene.set_enabled.bind(true))
 		
 		new_node.button3.set_label_text("Flash On")
 		new_node.button3.button_down.connect(scene.set_enabled.bind(true, 0))
-		new_node.button3.button_up.connect(scene.set_enabled.bind(false, 0))
+		new_node.button3.button_up.connect(scene.set_enabled.bind(false))
 		
-		new_node.button4.set_label_text("Flash Off")
-		new_node.button4.button_down.connect(scene.set_enabled.bind(false, 0))
-		new_node.button4.button_up.connect(scene.set_enabled.bind(true, 0))
+		new_node.button4.hide()
 		
 		new_node.button5.set_label_text("Disable")
-		new_node.button5.pressed.connect(scene.set_enabled.bind(false, 0))
+		new_node.button5.pressed.connect(scene.set_enabled.bind(false))
 		
 		
 		new_node.slider.value_changed.connect(scene.set_step_percentage)
