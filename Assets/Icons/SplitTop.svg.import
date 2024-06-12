@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://efukf7xtx5u7"
-path="res://.godot/imported/Panel_center.png-298614f5d5bad080b1c97512ad1621d8.ctex"
+uid="uid://lotajip0c4n6"
+path="res://.godot/imported/SplitTop.svg-ed2409113db3db04203618d220e4bc2a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/Panel_center.png"
-dest_files=["res://.godot/imported/Panel_center.png-298614f5d5bad080b1c97512ad1621d8.ctex"]
+source_file="res://Assets/Icons/SplitTop.svg"
+dest_files=["res://.godot/imported/SplitTop.svg-ed2409113db3db04203618d220e4bc2a.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

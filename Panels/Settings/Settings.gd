@@ -26,10 +26,10 @@ var settings : Dictionary = {
 	}
 }
 
-func _ready() -> void:
-	config_file.load("user://spectrum.cfg")
-	Interface.configFile = config_file
-	load_settings()
+#func _ready() -> void:
+	#config_file.load("user://spectrum.cfg")
+	#Interface.configFile = config_file
+	#load_settings()
 
 func load_settings() -> void:
 	for section in settings.keys():

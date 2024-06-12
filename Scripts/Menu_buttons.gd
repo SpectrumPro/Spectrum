@@ -19,3 +19,7 @@ func _on_load_pressed() -> void:
 		"call": "load_from_file",
 		"args": ["Save_File"]
 	})
+
+
+func _on_edit_mode_toggled(toggled_on: bool) -> void:
+	Interface.set_edit_mode(toggled_on)

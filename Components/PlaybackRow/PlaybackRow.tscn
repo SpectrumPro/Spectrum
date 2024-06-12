@@ -16,6 +16,8 @@ expand_margin_right = 24.0
 [node name="Playback Row" type="MarginContainer"]
 offset_right = 37.0
 offset_bottom = 355.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4

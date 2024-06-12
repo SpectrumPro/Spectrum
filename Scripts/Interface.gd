@@ -2,25 +2,34 @@
 # All rights reserved.
 
 extends Node
+## Main script for spectrum interface
 
-@onready var _root_node : Control = get_tree().root.get_node("Main")
 
+## Emitted when edit_mode is changed
+signal edit_mode_changed(edit_mode: bool)
+
+
+## Stores all the components found in the folder, stored as there folder name
 var components: Dictionary = {}
+
+## Stores all the panel found in the folder, stored as there folder name
 var panels: Dictionary = {}
 
-@onready var icons := {
-	"menue":load("res://Assets/Icons/menu.svg"),
-	"center":load("res://Assets/Icons/Center.svg")
-	
-}
+## Global edit mode
+var edit_mode: bool = false : set = set_edit_mode
 
-@onready var shaders := {
-	"invert":load("res://Assets/Shaders/Invert.tres"),
-}
+## Folder path in which all the components are stored
+const components_folder: String = "res://Components/"
+
+## Folder path in which all the panels are sotred
+const panels_folder: String = "res://Panels/"
 
 
-var components_folder: String = "res://Components/"
-var panels_folder: String = "res://Panels/"
+## The main object picker
+var _object_picker: Control
+
+## The currently connected callable connected to the object picker
+var _object_picker_signal_connection: Callable
 
 
 func _ready() -> void:
@@ -35,9 +44,12 @@ func _ready() -> void:
 	
 	components = get_packed_scenes_from_folder(components_folder)
 	panels = get_packed_scenes_from_folder(panels_folder)
-	print(panels)
+	
+	_object_picker = get_tree().root.get_node("Main").get_node("ObjectPicker")
+	_object_picker.load_objects(panels, "Panels")
+	
 
-
+## Returnes all the packed scenes in the given folder, a pack scene must be in a folder, with the same name as the folder it is in
 func get_packed_scenes_from_folder(folder: String) -> Dictionary:
 	var packed_scenes: Dictionary = {}
 	var scenes_folder: DirAccess = DirAccess.open(folder)
@@ -59,6 +71,8 @@ func get_packed_scenes_from_folder(folder: String) -> Dictionary:
 	
 	return packed_scenes
 
+
+## Finds the packed scene file, and checks if its name matches its parent folder
 func _load_matching_scenes_in_folder(current_folder: String, packed_scenes: Dictionary, folder_name: String = "") -> void:
 	var dir_access: DirAccess = DirAccess.open(current_folder)
 	
@@ -80,15 +94,23 @@ func _load_matching_scenes_in_folder(current_folder: String, packed_scenes: Dict
 		dir_access.list_dir_end()
 
 
+## Sets the state of edit mode
+func set_edit_mode(p_edit_mode: bool) -> void:
+	edit_mode = p_edit_mode
+	edit_mode_changed.emit(edit_mode)
 
 
-
-func open_panel_in_window(panel_name:String) -> void:
-	#if panel_name in panels:
-		#var new_window_node : Window = components.window.instantiate()
-		#new_window_node.add_child(panels[panel_name].instantiate())
-		#_root_node.add_child(new_window_node)
-		#return new_window_node
-	#else: 
-		#return false
-	pass
+func show_object_picker(callback: Callable, filter: Array[String] = []) -> void:
+	_object_picker.set_filter(filter)
+	_object_picker.show()
+	
+	_object_picker_signal_connection = func (key: Variant, value: Variant):
+		callback.call(key, value)
+		_object_picker.hide()
+	
+	_object_picker.item_selected.connect(_object_picker_signal_connection, CONNECT_ONE_SHOT)
+	
+	_object_picker.closed.connect(func ():
+		if _object_picker.item_selected.is_connected(_object_picker_signal_connection):
+			_object_picker.item_selected.disconnect(_object_picker_signal_connection)
+	, CONNECT_ONE_SHOT)
