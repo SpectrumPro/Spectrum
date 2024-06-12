@@ -28,8 +28,8 @@ func reload(arg1=null, arg2=null) -> void:
 		new_node.button2.pressed.connect(scene.set_enabled.bind(true))
 		
 		new_node.button3.set_label_text("Flash On")
-		new_node.button3.button_down.connect(scene.set_enabled.bind(true, 0))
-		new_node.button3.button_up.connect(scene.set_enabled.bind(false))
+		new_node.button3.button_down.connect(scene.flash_hold.bind(0))
+		new_node.button3.button_up.connect(scene.flash_release.bind())
 		
 		new_node.button4.hide()
 		

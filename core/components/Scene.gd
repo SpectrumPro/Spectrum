@@ -66,6 +66,22 @@ func on_percentage_step_changed(percentage: float) -> void:
 	percentage_step_changed.emit(percentage)
 
 
+func flash_hold(fade_time: float = fade_in_speed) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "flash_hold",
+		"args": [fade_time]
+	})
+
+
+func flash_release(fade_time: float = fade_out_speed) -> void:
+	Client.send({
+		"for": self.uuid,
+		"call": "flash_release",
+		"args": [fade_time]
+	})
+
+
 func _on_serialize_request() -> Dictionary:
 	## Serializes this scene and returnes it in a dictionary
 	return {
