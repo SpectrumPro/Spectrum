@@ -15,11 +15,13 @@ func _ready() -> void:
 			_load_from_server()
 		, CONNECT_ONE_SHOT)
 
+
 func refresh() -> void:
 	if MainSocketClient.last_state == WebSocketPeer.STATE_OPEN:
 		$VBoxContainer/ItemListView.remove_all()
 		
 		_load_from_server()
+
 
 func _load_from_server() -> void:
 	Client.send({
@@ -40,9 +42,16 @@ func _on_open_pressed() -> void:
 	if _current_file:
 		Client.send({
 			"for": "engine",
-			"call": "load_from_file",
-			"args": [_current_file]
-		})
+			"call": "reset",
+			"args": []
+		}, func():
+			Client.send({
+				"for": "engine",
+				"call": "load_from_file",
+				"args": [_current_file]
+			})
+			pass
+		)
 
 
 func _on_save_pressed() -> void:
@@ -57,3 +66,33 @@ func _on_save_pressed() -> void:
 		}, func ():
 			refresh()
 		)
+
+
+func _on_import_pressed() -> void:
+	$ImportLocalFileDialog.show()
+
+
+func _on_import_local_file_dialog_file_selected(path: String) -> void:
+	var saved_file = FileAccess.open(path, FileAccess.READ)
+
+	if not saved_file:
+		print("Unable to open file: \"", path, "\", ",  error_string(FileAccess.get_open_error()))
+		return
+	
+	var serialized_data: Dictionary = JSON.parse_string(saved_file.get_as_text())
+	print(serialized_data)
+	
+	Client.send({
+		"for": "engine",
+		"call": "load",
+		"args": [serialized_data]
+	}, func ():
+		
+		Client.send({
+			"for": "engine",
+			"call": "save",
+			"args": [$ImportLocalFileDialog.current_file]
+			}, func ():
+				refresh()
+		)
+	)

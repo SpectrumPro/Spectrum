@@ -73,6 +73,12 @@ func _universe_on_fixtures_added(p_fixtures: Array[Fixture]):
 	for fixture: Fixture in p_fixtures:
 		fixtures[fixture.uuid] = fixture
 	
+	print()
+	print()
+	print("EMitting fixtures added")
+	print()
+	print()
+	
 	fixtures_added.emit(p_fixtures)
 
 
@@ -93,7 +99,6 @@ var _universe_signal_connections: Dictionary = {}
 
 ## Folowing functions are for connecting Scene signals to Engine signals, they are defined as vairables so they can be dissconnected when scenes are to be deleted
 func _scene_on_name_changed(new_name: String, scene: Scene) -> void:
-	print()
 	print("Scene: ", scene, " Name changed to: ", new_name)
 	scene_name_changed.emit(scene, new_name)
 

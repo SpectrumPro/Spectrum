@@ -83,12 +83,21 @@ func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), positi
 		virtual_fixture_list[uuid] = [new_virtual_fixture.position_offset.x, new_virtual_fixture.position_offset.y]
 		fixture.set_user_meta("virtual_fixtures", virtual_fixture_list)
 	
-	_selected_virtual_fixtures.append(new_virtual_fixture)
+	if fixture in Values.get_selection_value("selected_fixtures", []):
+		_selected_virtual_fixtures.append(new_virtual_fixture)
+	
+	fixture.delete_requested.connect(func():
+		_selected_virtual_fixtures.erase(new_virtual_fixture)
+		remove_child(new_virtual_fixture)
+		new_virtual_fixture.queue_free()
+		virtual_fixtures.erase(uuid)
+	, CONNECT_ONE_SHOT)
+	
 	virtual_fixtures[uuid] = new_virtual_fixture
 	self.add_child(new_virtual_fixture)
 
 
-## Deletes virtual fixtures from the current view
+## Deletes the selected virtual fixtures from the current view
 func _request_delete() -> void:
 	var to_remove: Array = _selected_virtual_fixtures.duplicate() ## Duplicate the array, to avoid issues when itterating over it while deleting
 	

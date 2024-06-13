@@ -79,7 +79,18 @@ text = "Merge To Current"
 layout_mode = 2
 icon = ExtResource("4_ejayc")
 
+[node name="ImportLocalFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 5
+size = Vector2i(754, 431)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+
 [connection signal="selection_changed" from="VBoxContainer/ItemListView" to="." method="_on_item_list_view_selection_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/PanelContainer/HBoxContainer/Open" to="." method="_on_open_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/PanelContainer2/HBoxContainer/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/PanelContainer3/HBoxContainer/Import" to="." method="_on_import_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/PanelContainer3/HBoxContainer/Refresh" to="." method="refresh"]
+[connection signal="file_selected" from="ImportLocalFileDialog" to="." method="_on_import_local_file_dialog_file_selected"]

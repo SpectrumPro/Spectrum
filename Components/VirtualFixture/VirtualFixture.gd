@@ -20,7 +20,6 @@ func set_fixture(control_fixture: Fixture) -> void:
 	
 	fixture = control_fixture
 	fixture.color_changed.connect(self.set_color)
-	fixture.delete_requested.connect(self.delete)
 
 func serialize():
 	return {
@@ -37,10 +36,6 @@ func set_highlighted(highlight):
 			$"Color Box".get_theme_stylebox("panel").border_color = Color.DIM_GRAY
 		else:
 			$"Color Box".get_theme_stylebox("panel").border_color = Color.BLACK
-
-func delete(_fixture = null):
-	self.get_parent()._selected_virtual_fixtures.erase(self)
-	self.queue_free()
 
 
 func _on_node_selected():
