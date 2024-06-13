@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://p3sohjs1pt37"]
+[gd_scene load_steps=17 format=3 uid="uid://p3sohjs1pt37"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_lygr6"]
 [ext_resource type="PackedScene" uid="uid://cim02rtl7kfpc" path="res://Panels/IOControls/IOControls.tscn" id="3_k6wx5"]
@@ -13,6 +13,11 @@
 [ext_resource type="PackedScene" uid="uid://bsxgp5g0jmyke" path="res://Panels/Desk/Desk.tscn" id="10_2tgg4"]
 [ext_resource type="PackedScene" uid="uid://ug7d71ixmir" path="res://Components/PanelContainer/PanelContainer.tscn" id="11_2pypu"]
 [ext_resource type="PackedScene" uid="uid://cbsp8xx2h45do" path="res://Components/ObjectPicker/ObjectPicker.tscn" id="13_r56s8"]
+[ext_resource type="PackedScene" uid="uid://dm6rs78fm1lh4" path="res://Panels/SaveLoad/SaveLoad.tscn" id="14_71yom"]
+[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="14_jv1kq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plmay"]
+bg_color = Color(0.32491, 0.32491, 0.32491, 1)
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -111,15 +116,10 @@ script = ExtResource("7_jq3al")
 layout_mode = 2
 text = "Edit Mode"
 
-[node name="Save" type="Button" parent="HBoxContainer"]
+[node name="File" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Save"
-
-[node name="Load" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Load"
+text = "File"
 
 [node name="ObjectPicker" parent="." instance=ExtResource("13_r56s8")]
 visible = false
@@ -134,8 +134,36 @@ offset_top = -330.0
 offset_right = 293.0
 offset_bottom = 330.0
 
+[node name="SaveLoadPopup" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -506.0
+offset_top = -391.0
+offset_right = 506.0
+offset_bottom = 391.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_plmay")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="SaveLoadPopup"]
+layout_mode = 2
+
+[node name="SaveLoadClose" type="Button" parent="SaveLoadPopup/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("14_jv1kq")
+
+[node name="SaveLoad" parent="SaveLoadPopup/VBoxContainer2" instance=ExtResource("14_71yom")]
+layout_mode = 2
+size_flags_vertical = 3
+
 [connection signal="tab_button_pressed" from="TabContainer" to="TabContainer" method="_on_tab_button_pressed"]
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="toggled" from="HBoxContainer/EditMode" to="HBoxContainer" method="_on_edit_mode_toggled"]
-[connection signal="pressed" from="HBoxContainer/Save" to="HBoxContainer" method="_on_save_pressed"]
-[connection signal="pressed" from="HBoxContainer/Load" to="HBoxContainer" method="_on_load_pressed"]
+[connection signal="pressed" from="HBoxContainer/File" to="HBoxContainer" method="_on_file_pressed"]
+[connection signal="pressed" from="SaveLoadPopup/VBoxContainer2/SaveLoadClose" to="HBoxContainer" method="_on_save_load_close_pressed"]

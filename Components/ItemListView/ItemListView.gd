@@ -47,9 +47,10 @@ func add_items(items: Array, chips: Array = [], name_method: String = "") -> voi
 	$PanelContainer2/ConfirmationBox.hide()
 	
 	
-	for item: Object in items:
-		if _is_valid_object(item):
-			var new_item_node: Control = Interface.components.ListItem.instantiate()
+	for item in items:
+		var new_item_node: Control = Interface.components.ListItem.instantiate()
+		
+		if item is Object or item is Dictionary and _is_valid_object(item):
 			new_item_node.set_item_name(item.name)
 			
 			new_item_node.name = item.uuid
@@ -60,9 +61,15 @@ func add_items(items: Array, chips: Array = [], name_method: String = "") -> voi
 			
 			if name_method:
 				new_item_node.set_name_method(item.get(name_method))
+		
+		else:
+			new_item_node.set_item_name(str(item))
 			
-			item_container.add_child(new_item_node)
-			object_refs[new_item_node] = item
+			new_item_node.name = str(item)
+			new_item_node.select_requested.connect(self._on_list_item_select_request)
+		
+		item_container.add_child(new_item_node)
+		object_refs[new_item_node] = item
 
 
 func remove_all() -> void:
@@ -106,9 +113,13 @@ func set_selected(items: Array) -> void:
 	currently_selected_items = []
 	
 	for item in items:
-		if _is_valid_object(item):
+		if item is Object or item is Dictionary:
 			if item_container.has_node(item.uuid):
 				currently_selected_items.append(item)
+		else:
+			if item_container.has_node(str(item)):
+				currently_selected_items.append(item)
+			
 	
 	if currently_selected_items and not last_selected_item:
 		last_selected_item = item_container.get_node(currently_selected_items[-1].uuid)
@@ -144,8 +155,11 @@ func _update_selected(no_signal: bool = false) -> void:
 	for item: Control in item_container.get_children():
 		item.set_highlighted(false)
 	
-	for item: Object in currently_selected_items:
-		item_container.get_node(item.uuid).set_highlighted(true)
+	for item in currently_selected_items:
+		if item is Object or item is Dictionary:
+			item_container.get_node(item.uuid).set_highlighted(true)
+		else:
+			item_container.get_node(str(item)).set_highlighted(true)
 
 
 func _is_valid_object(object: Variant) -> bool:

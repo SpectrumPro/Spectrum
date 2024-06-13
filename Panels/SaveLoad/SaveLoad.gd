@@ -1,0 +1,59 @@
+# Copyright (c) 2024 Liam Sherwin
+# All rights reserved.
+
+extends PanelContainer
+## Ui panel for saving, loading, and merging files
+
+var _current_file: String = ""
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	if MainSocketClient.last_state == WebSocketPeer.STATE_OPEN:
+		_load_from_server()
+	else:
+		MainSocketClient.connected_to_server.connect(func ():
+			_load_from_server()
+		, CONNECT_ONE_SHOT)
+
+func refresh() -> void:
+	if MainSocketClient.last_state == WebSocketPeer.STATE_OPEN:
+		$VBoxContainer/ItemListView.remove_all()
+		
+		_load_from_server()
+
+func _load_from_server() -> void:
+	Client.send({
+		"for": "engine",
+		"call": "get_all_shows_from_library",
+		"args": []
+	}, func(shows: Array):
+		$VBoxContainer/ItemListView.add_items(shows)
+	)
+
+
+func _on_item_list_view_selection_changed(items: Array) -> void:
+	_current_file = items[0]
+	$VBoxContainer/ItemListView.set_selected(items)
+
+
+func _on_open_pressed() -> void:
+	if _current_file:
+		Client.send({
+			"for": "engine",
+			"call": "load_from_file",
+			"args": [_current_file]
+		})
+
+
+func _on_save_pressed() -> void:
+	var file_name: String = $VBoxContainer/HBoxContainer/PanelContainer2/HBoxContainer/FileName.text
+	
+	print(file_name)
+	if file_name:
+		Client.send({
+			"for": "engine",
+			"call": "save",
+			"args": [file_name]
+		}, func ():
+			refresh()
+		)
