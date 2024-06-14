@@ -119,7 +119,7 @@ func _on_message_receved(message: Variant) -> void:
 		if message.get("callback_id", "") in _callbacks:
 			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 			print("Calling Methord: ", _callbacks[command.callback_id])
-			if command.get("response"):
+			if not command.get("response") == null:
 				_callbacks[command.callback_id].call(command.response)
 			else:
 				_callbacks[command.callback_id].call()
