@@ -11,6 +11,7 @@ var fade_in_speed: float = 2 ## Fade in speed in seconds
 var fade_out_speed: float = 2 ## Fade out speed in seconds
 
 var enabled: bool = false ## The current state of this scene
+var percentage_step: float = 0 ## The percentage step of this scene
 var save_data: Dictionary = {} ## Saved data for this scene
 
 
@@ -93,3 +94,11 @@ func _on_serialize_request() -> Dictionary:
 func on_load_request(serialized_data: Dictionary) -> void:
 	fade_in_speed = serialized_data.get("fade_in_speed", fade_in_speed)
 	fade_out_speed = serialized_data.get("fade_out_speed", fade_out_speed)
+	
+	enabled = serialized_data.get("enabled", false)
+	if enabled:
+		state_changed.emit(enabled)
+	
+	percentage_step = serialized_data.get("percentage_step", 0)
+	if percentage_step:
+		percentage_step_changed.emit(percentage_step)

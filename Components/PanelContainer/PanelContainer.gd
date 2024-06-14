@@ -4,7 +4,7 @@
 extends PanelContainer
 ## Container for storing panels, allows them to be split in half, and allows access to there settings
 
-
+## Defines if this PanelContainer is in parent mode, if so controls wont be shown
 var _parent_mode: bool = false :
 	set(value):
 		_parent_mode = value
@@ -17,6 +17,7 @@ func _ready() -> void:
 	)
 
 
+## Sets the panel inside of this container
 func set_panel(panel: Control) -> void:
 	if get_node_or_null("Panel"):
 		var old_panel: Control = $Panel
@@ -45,6 +46,7 @@ func _update_controls() -> void:
 		$Controls/VBoxContainer.hide()
 
 
+## Creates a new PanelContainer node, and sets the size flags
 func _new_container() -> Control:
 	var new_container: Control = load("res://Components/PanelContainer/PanelContainer.tscn").instantiate()
 	new_container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
@@ -123,6 +125,21 @@ func _on_right_pressed() -> void:
 
 
 func _on_edit_pressed() -> void:
+	if get_node_or_null("Panel"):
+		if "settings_node" in $Panel:
+			$PanelSettingsContainer.set_node($Panel.settings_node)
+		
+	else:
+		$PanelSettingsContainer.remove_node()
+	
+	$PanelSettingsContainer.show()
+	
+
+
+func _on_panel_settings_container_type_change_pressed() -> void:
+	$PanelSettingsContainer.hide()
+	get_tree().root.grab_focus()
+	
 	Interface.show_object_picker(func (key: Variant, value: Variant):
 		set_panel(value.instantiate())
 	, ["Panels"])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ug7d71ixmir"]
+[gd_scene load_steps=11 format=3 uid="uid://ug7d71ixmir"]
 
 [ext_resource type="Texture2D" uid="uid://mvh7ofkgmpky" path="res://Assets/Icons/SplitLeft.svg" id="1_505dv"]
 [ext_resource type="Script" path="res://Components/PanelContainer/PanelContainer.gd" id="1_f5csc"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cv51u5nenveg0" path="res://Assets/Icons/SplitBottom.svg" id="3_lwsyi"]
 [ext_resource type="Texture2D" uid="uid://c81i2f8d5q3sx" path="res://Assets/Icons/SplitRight.svg" id="4_w1noa"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://Assets/Icons/Edit.svg" id="5_33068"]
+[ext_resource type="PackedScene" uid="uid://db5gkmntjtqmr" path="res://Components/PanelSettingContainer/PanelSettingsContainer.tscn" id="8_uv36r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o6cbh"]
 
@@ -28,11 +29,11 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_o6cbh")
 script = ExtResource("1_f5csc")
 
 [node name="Controls" type="PanelContainer" parent="."]
-visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fmsqh")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Controls"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -89,6 +90,9 @@ layout_mode = 2
 layout_mode = 2
 icon = ExtResource("5_33068")
 
+[node name="PanelSettingsContainer" parent="." instance=ExtResource("8_uv36r")]
+visible = false
+
 [connection signal="resized" from="." to="." method="_update_controls"]
 [connection signal="pressed" from="Controls/HBoxContainer/Left" to="." method="_on_left_pressed"]
 [connection signal="pressed" from="Controls/HBoxContainer/Top" to="." method="_on_top_pressed"]
@@ -100,3 +104,4 @@ icon = ExtResource("5_33068")
 [connection signal="pressed" from="Controls/VBoxContainer/Right" to="." method="_on_right_pressed"]
 [connection signal="pressed" from="Controls/VBoxContainer/Buttom" to="." method="_on_buttom_pressed"]
 [connection signal="pressed" from="Controls/VBoxContainer/Edit" to="." method="_on_edit_pressed"]
+[connection signal="type_change_pressed" from="PanelSettingsContainer" to="." method="_on_panel_settings_container_type_change_pressed"]
