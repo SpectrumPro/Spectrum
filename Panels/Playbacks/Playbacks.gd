@@ -14,10 +14,16 @@ var scenes: Array = []
 ## Whether or not to show all scenes that get added to this engine
 @export var show_all: bool = false : set = set_show_all
 
+
+## Stores a list of the user selected scenes befour show_all was enabled, so they can be restored after
+var _old_scenes: Array = []
+
+
 func _ready() -> void:
 	Core.scenes_added.connect(func (new_scenes: Array):
 		if show_all:
 			scenes.append_array(new_scenes)
+			reload()
 	)
 	
 	Core.scenes_removed.connect(func (scenes_to_remove: Array):
@@ -45,7 +51,10 @@ func set_show_all(p_show_all: bool) -> void:
 	show_all = p_show_all
 	
 	if show_all:
+		_old_scenes = scenes.duplicate()
 		scenes = Core.scenes.values()
+	else:
+		scenes = _old_scenes.duplicate()
 	reload()
 
 
@@ -54,9 +63,11 @@ func reload(arg1=null, arg2=null) -> void:
 	for old_playback: Control in $Container.get_children():
 		$Container.remove_child(old_playback)
 		old_playback.queue_free()
+	print(scenes)
 	
 	for scene: Scene in scenes:
 		var new_node = Interface.components.PlaybackRow.instantiate()
+		
 		
 		$Container.add_child(new_node)
 		
@@ -93,3 +104,17 @@ func reload(arg1=null, arg2=null) -> void:
 		new_node.slider.set_value_no_signal(scene.percentage_step)
 		scene.percentage_step_changed.connect(new_node.slider.set_value_no_signal)
 	
+
+
+func _on_item_list_view_edit_requested(items: Array) -> void:
+	Interface.show_object_picker(_on_object_picker_item_selected, ["Scenes"], true, _on_object_picker_item_deselected)
+
+
+func _on_object_picker_item_selected(key, value) -> void:
+	scenes.append(value)
+	reload()
+
+
+func _on_object_picker_item_deselected(key, value) -> void:
+	scenes.erase(value)
+	reload()

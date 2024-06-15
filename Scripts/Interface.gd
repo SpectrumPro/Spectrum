@@ -28,8 +28,14 @@ const panels_folder: String = "res://Panels/"
 ## The main object picker
 var _object_picker: Control
 
+## The object pickers window
+var _object_picker_window: Window
+
 ## The currently connected callable connected to the object picker
-var _object_picker_signal_connection: Callable
+var _object_picker_selected_signal_connection: Callable
+
+## The currently connected deselected callable connected to the object picker
+var _object_picker_deselected_signal_connection: Callable
 
 
 func _ready() -> void:
@@ -45,9 +51,29 @@ func _ready() -> void:
 	components = get_packed_scenes_from_folder(components_folder)
 	panels = get_packed_scenes_from_folder(panels_folder)
 	
-	_object_picker = get_tree().root.get_node("Main").get_node("ObjectPicker")
+	_set_up_object_picker()
+
+## Loads all the objects into the object picker
+func _set_up_object_picker() -> void:
+	_object_picker_window = get_tree().root.get_node("Main").get_node("ObjectPickerWindow")
+	_object_picker = get_tree().root.get_node("Main").get_node("ObjectPickerWindow/ObjectPicker")
 	_object_picker.load_objects(panels, "Panels")
 	
+	Core.universes_added.connect(func (arg1=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
+	Core.universes_removed.connect(func (arg1=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
+	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
+	
+	Core.fixtures_added.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
+	Core.fixtures_added.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
+	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
+	
+	Core.scenes_added.connect(func (arg1=null): _object_picker.load_objects(Core.scenes, "Scenes", "name"))
+	Core.scenes_removed.connect(func (arg1=null): _object_picker.load_objects(Core.scenes, "Scenes", "name"))
+	Core.scene_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.scenes, "Scenes", "name"))
+	
+	_object_picker.closed.connect(hide_object_picker)
+
+
 
 ## Returnes all the packed scenes in the given folder, a pack scene must be in a folder, with the same name as the folder it is in
 func get_packed_scenes_from_folder(folder: String) -> Dictionary:
@@ -100,17 +126,31 @@ func set_edit_mode(p_edit_mode: bool) -> void:
 	edit_mode_changed.emit(edit_mode)
 
 
-func show_object_picker(callback: Callable, filter: Array[String] = []) -> void:
+func show_object_picker(callback: Callable, filter: Array[String] = [], allow_multi_select: bool = false, deselect_callback: Callable = Callable()) -> void:
 	_object_picker.set_filter(filter)
-	_object_picker.show()
+	_object_picker.set_multi_select(allow_multi_select)
+	_object_picker_window.show()
 	
-	_object_picker_signal_connection = func (key: Variant, value: Variant):
+	_object_picker_selected_signal_connection = func (key: Variant, value: Variant):
 		callback.call(key, value)
-		_object_picker.hide()
+		
+		if not allow_multi_select:
+			_object_picker_window.hide()
 	
-	_object_picker.item_selected.connect(_object_picker_signal_connection, CONNECT_ONE_SHOT)
+	_object_picker_deselected_signal_connection = func (key: Variant, value: Variant):
+		deselect_callback.call(key, value)
 	
-	_object_picker.closed.connect(func ():
-		if _object_picker.item_selected.is_connected(_object_picker_signal_connection):
-			_object_picker.item_selected.disconnect(_object_picker_signal_connection)
-	, CONNECT_ONE_SHOT)
+	_object_picker.item_selected.connect(_object_picker_selected_signal_connection, CONNECT_PERSIST if allow_multi_select else CONNECT_ONE_SHOT)
+	
+	if deselect_callback.is_valid():
+		_object_picker.item_deselected.connect(_object_picker_deselected_signal_connection, CONNECT_PERSIST if allow_multi_select else CONNECT_ONE_SHOT)
+		
+
+## Hides the object picker
+func hide_object_picker() -> void:
+	_object_picker_window.hide()
+	if _object_picker_selected_signal_connection.is_valid() and _object_picker.item_selected.is_connected(_object_picker_selected_signal_connection):
+		_object_picker.item_selected.disconnect(_object_picker_selected_signal_connection)
+		
+	if _object_picker_deselected_signal_connection.is_valid() and _object_picker.item_deselected.is_connected(_object_picker_deselected_signal_connection):
+		_object_picker.item_deselected.disconnect(_object_picker_deselected_signal_connection)

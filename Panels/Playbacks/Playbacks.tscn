@@ -40,4 +40,5 @@ show_separators = false
 layout_mode = 2
 text = "Show All Scenes"
 
+[connection signal="edit_requested" from="Settings/VBoxContainer/ItemListView" to="." method="_on_item_list_view_edit_requested"]
 [connection signal="toggled" from="Settings/VBoxContainer/CheckButton" to="." method="set_show_all"]

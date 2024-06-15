@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbsp8xx2h45do"]
+[gd_scene load_steps=5 format=3 uid="uid://cbsp8xx2h45do"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://Assets/Main.theme" id="1_rbw53"]
 [ext_resource type="Script" path="res://Components/ObjectPicker/ObjectPicker.gd" id="2_f5smc"]
 [ext_resource type="Texture2D" uid="uid://vm1u4mv102e3" path="res://Assets/Icons/Dot_Grid.svg" id="3_8awpf"]
-[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://Assets/Icons/close.svg" id="3_tsu3y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a5mol"]
 bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.192157)
@@ -37,11 +36,3 @@ size_flags_vertical = 0
 [node name="ViewMode" type="Button" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 icon = ExtResource("3_8awpf")
-
-[node name="Close" type="Button" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-icon = ExtResource("3_tsu3y")
-
-[connection signal="pressed" from="MarginContainer/HBoxContainer/Close" to="." method="_on_close_pressed"]

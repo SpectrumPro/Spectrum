@@ -203,8 +203,7 @@ func _on_take_selection_pressed() -> void:
 
 
 func _on_edit_pressed() -> void:
-	if currently_selected_items:
-		edit_requested.emit(currently_selected_items)
+	edit_requested.emit(currently_selected_items)
 
 
 func _on_delete_pressed() -> void:

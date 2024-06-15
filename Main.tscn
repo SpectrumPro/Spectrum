@@ -123,18 +123,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "File"
 
-[node name="ObjectPicker" parent="." instance=ExtResource("13_r56s8")]
+[node name="ObjectPickerWindow" type="Window" parent="."]
+initial_position = 4
+size = Vector2i(650, 550)
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -293.0
-offset_top = -330.0
-offset_right = 293.0
-offset_bottom = 330.0
+
+[node name="ObjectPicker" parent="ObjectPickerWindow" instance=ExtResource("13_r56s8")]
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="SaveLoadPopup" type="PanelContainer" parent="."]
 visible = false
@@ -168,4 +164,5 @@ size_flags_vertical = 3
 [connection signal="tab_clicked" from="TabContainer" to="TabContainer" method="_on_tab_clicked"]
 [connection signal="toggled" from="HBoxContainer/EditMode" to="HBoxContainer" method="_on_edit_mode_toggled"]
 [connection signal="pressed" from="HBoxContainer/File" to="HBoxContainer" method="_on_file_pressed"]
+[connection signal="close_requested" from="ObjectPickerWindow" to="ObjectPickerWindow/ObjectPicker" method="_on_close_requested"]
 [connection signal="pressed" from="SaveLoadPopup/VBoxContainer2/SaveLoadClose" to="HBoxContainer" method="_on_save_load_close_pressed"]

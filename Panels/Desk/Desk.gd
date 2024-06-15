@@ -29,6 +29,9 @@ var snapping_distance: Vector2 = Vector2(20, 20) : set = set_snapping_distance
 
 ## The selected panels
 var _selected_items: Array[Control] = []
+
+## Used to check if we opened the object picker, not another script
+var _object_picker_opened_here: bool = false
 #endregion
 
 
@@ -113,7 +116,8 @@ func _on_object_picker_item_selected(key, value):
 
 ## Called when the add button is pressed
 func _on_add_pressed() -> void:
-	$ObjectPicker.show()
+	Interface.show_object_picker(_on_object_picker_item_selected, ["Panels"])
+	_object_picker_opened_here = true
 	set_edit_mode(true)
 
 
@@ -156,11 +160,13 @@ func _on_container_gui_input(event: InputEvent) -> void:
 		if event.is_pressed():
 			select_none()
 		
-		if $ObjectPicker.visible and event.button_index == MOUSE_BUTTON_LEFT:
-			$ObjectPicker.hide()
+		if event.button_index == MOUSE_BUTTON_LEFT and _object_picker_opened_here:
+			Interface.hide_object_picker()
+			_object_picker_opened_here = false
 		
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed() and edit_mode:
-			$ObjectPicker.show()
+			Interface.show_object_picker(_on_object_picker_item_selected, ["Panels"])
+			_object_picker_opened_here = false
 		
 
 #endregion
