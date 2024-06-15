@@ -126,9 +126,11 @@ func set_edit_mode(p_edit_mode: bool) -> void:
 	edit_mode_changed.emit(edit_mode)
 
 
-func show_object_picker(callback: Callable, filter: Array[String] = [], allow_multi_select: bool = false, deselect_callback: Callable = Callable()) -> void:
+func show_object_picker(callback: Callable, filter: Array[String] = [], allow_multi_select: bool = false, deselect_callback: Callable = Callable(), selection: Array = []) -> void:
 	_object_picker.set_filter(filter)
 	_object_picker.set_multi_select(allow_multi_select)
+	_object_picker.set_selected(selection)
+	
 	_object_picker_window.show()
 	
 	_object_picker_selected_signal_connection = func (key: Variant, value: Variant):

@@ -2,7 +2,7 @@
 # All rights reserved.
 
 @tool
-extends Control
+class_name ItemListView extends Control
 ## GUI Component for a list view.
 
 signal edit_requested(items: Array)

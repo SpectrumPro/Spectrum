@@ -56,72 +56,90 @@ func _new_container() -> Control:
 	return new_container
 
 
+## Prompts the user to change the new panel container node when this container is split
+func _prompt_change(node: Control) -> void:
+	Interface.show_object_picker(func (key: Variant, value: Variant):
+		node.set_panel(value.instantiate())
+	, ["Panels"])
+
+
 func _on_left_pressed() -> void:
 	var new_container: HSplitContainer = HSplitContainer.new()
 	var new_panel_container: Control = _new_container()
-	var panel: Control = $Panel
 	
 	if get_node_or_null("Panel"):
+		var panel: Control = $Panel
 		remove_child(panel)
 		new_panel_container.set_panel(panel)
 	
 	new_container.add_child(new_panel_container)
-	new_container.add_child(_new_container())
+	
+	var new_empty_container: Control = _new_container()
+	new_container.add_child(new_empty_container)
 	
 	add_child(new_container)
 	
 	_parent_mode = true
+	_prompt_change(new_empty_container)
 
 
 func _on_top_pressed() -> void:
 	var new_container: VSplitContainer = VSplitContainer.new()
 	var new_panel_container: Control = _new_container()
-	var panel: Control = $Panel
 	
 	if get_node_or_null("Panel"):
+		var panel: Control = $Panel
 		remove_child(panel)
 		new_panel_container.set_panel(panel)
 	
 	new_container.add_child(new_panel_container)
-	new_container.add_child(_new_container())
+	
+	var new_empty_container: Control = _new_container()
+	new_container.add_child(new_empty_container)
 	
 	add_child(new_container)
 	
 	_parent_mode = true
+	_prompt_change(new_empty_container)
 
 
 func _on_buttom_pressed() -> void:
 	var new_container: VSplitContainer = VSplitContainer.new()
 	var new_panel_container: Control = _new_container()
-	var panel: Control = $Panel
 	
 	if get_node_or_null("Panel"):
+		var panel: Control = $Panel
 		remove_child(panel)
 		new_panel_container.set_panel(panel)
 	
-	new_container.add_child(_new_container())
+	var new_empty_container: Control = _new_container()
+	new_container.add_child(new_empty_container)
+	
 	new_container.add_child(new_panel_container)
 	
 	add_child(new_container)
 	
 	_parent_mode = true
+	_prompt_change(new_empty_container)
 
 
 func _on_right_pressed() -> void:
 	var new_container: HSplitContainer = HSplitContainer.new()
 	var new_panel_container: Control = _new_container()
-	var panel: Control = $Panel
 	
 	if get_node_or_null("Panel"):
+		var panel: Control = $Panel
 		remove_child(panel)
 		new_panel_container.set_panel(panel)
 	
-	new_container.add_child(_new_container())
+	var new_empty_container: Control = _new_container()
+	new_container.add_child(new_empty_container)
 	new_container.add_child(new_panel_container)
 	
 	add_child(new_container)
 	
 	_parent_mode = true
+	_prompt_change(new_empty_container)
 
 
 func _on_edit_pressed() -> void:

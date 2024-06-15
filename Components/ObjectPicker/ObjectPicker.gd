@@ -20,6 +20,8 @@ signal closed
 ## Wheather to unpress the button after it gets pressed
 var _toggle_mode: bool = false
 
+## Stores object refernces as {object: button_node}
+var _object_refs: Dictionary = {}
 
 #region Public Methods
 
@@ -41,6 +43,8 @@ func load_objects(objects: Dictionary, tab_name: String, name_member: String = "
 			else:
 				item_deselected.emit(object_key, objects[object_key])
 		)
+		
+		_object_refs[objects[object_key]] = new_node
 		
 		if name_member:
 			new_node.get_node("Label").text = objects[object_key].get(name_member)
@@ -77,6 +81,14 @@ func set_multi_select(state: bool) -> void:
 	for tab: Control in $ObjectPicker.get_children():
 		for button: Button in tab.get_node("Grid").get_children():
 			button.button_pressed = false
+
+
+## Sets the selected buttons in the picker, using the objects they are linked to. only works if toggle mode is enabled
+func set_selected(selection: Array) -> void:
+	if _toggle_mode:
+		for object: Variant in selection:
+			if _object_refs.has(object):
+				(_object_refs[object] as Button).set_pressed_no_signal(true)
 
 #endregion
 

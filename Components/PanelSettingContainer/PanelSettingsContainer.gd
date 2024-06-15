@@ -29,6 +29,7 @@ func remove_node() -> void:
 
 
 func _on_close_requested() -> void:
+	remove_node()
 	hide()
 	get_tree().root.grab_focus()
 

@@ -18,8 +18,17 @@ var scenes: Array = []
 ## Stores a list of the user selected scenes befour show_all was enabled, so they can be restored after
 var _old_scenes: Array = []
 
+## The ListItemView node in the setting page
+var _settings_list: ItemListView
+
 
 func _ready() -> void:
+	
+	_settings_list = $Settings/VBoxContainer/ItemListView as ItemListView
+	_settings_list.remove_all()
+	print(_settings_list)
+	reload()
+	
 	Core.scenes_added.connect(func (new_scenes: Array):
 		if show_all:
 			scenes.append_array(new_scenes)
@@ -43,7 +52,8 @@ func _ready() -> void:
 			reload()
 	)
 	
-	reload()
+
+	
 	remove_child($Settings)
 
 
@@ -55,7 +65,9 @@ func set_show_all(p_show_all: bool) -> void:
 		scenes = Core.scenes.values()
 	else:
 		scenes = _old_scenes.duplicate()
-	reload()
+	
+	if is_node_ready():
+		reload()
 
 
 ## Reload the list of scenes
@@ -63,7 +75,9 @@ func reload(arg1=null, arg2=null) -> void:
 	for old_playback: Control in $Container.get_children():
 		$Container.remove_child(old_playback)
 		old_playback.queue_free()
-	print(scenes)
+	#
+	_settings_list.remove_all()
+	_settings_list.add_items(scenes)
 	
 	for scene: Scene in scenes:
 		var new_node = Interface.components.PlaybackRow.instantiate()
@@ -107,7 +121,7 @@ func reload(arg1=null, arg2=null) -> void:
 
 
 func _on_item_list_view_edit_requested(items: Array) -> void:
-	Interface.show_object_picker(_on_object_picker_item_selected, ["Scenes"], true, _on_object_picker_item_deselected)
+	Interface.show_object_picker(_on_object_picker_item_selected, ["Scenes"], true, _on_object_picker_item_deselected, scenes)
 
 
 func _on_object_picker_item_selected(key, value) -> void:
