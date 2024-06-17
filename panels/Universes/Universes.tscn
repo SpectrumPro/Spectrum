@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://03t7su6t2rq2"]
+
+[ext_resource type="Script" path="res://panels/Universes/Universes.gd" id="2_dy1nn"]
+[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="2_nny3h"]
+
+[node name="Universes" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_dy1nn")
+item_list_view = NodePath("ItemListView")
+
+[node name="ItemListView" parent="." instance=ExtResource("2_nny3h")]
+layout_mode = 2
+show_take = false
+show_edit = false
+
+[connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
+[connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]
+[connection signal="selection_changed" from="ItemListView" to="." method="_on_item_list_view_selection_changed"]

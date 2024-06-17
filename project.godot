@@ -17,9 +17,9 @@ run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
 config/features=PackedStringArray("4.2")
 boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
-boot_splash/image="res://Assets/Icon_small.png"
+boot_splash/image="res://assets/Icon_small.png"
 boot_splash/fullsize=false
-config/icon="res://Assets/Icon.png"
+config/icon="res://assets/Icon.png"
 config/windows_native_icon="res://icon.ico"
 boot_splash/minimum_display_time=500
 
@@ -31,10 +31,10 @@ driver/enable_input=true
 [autoload]
 
 Core="*res://core/engine/Engine.gd"
-MainSocketClient="*res://Scripts/Websocket/WebSocketClient.gd"
-Client="*res://Client.gd"
-Values="*res://Values.gd"
-Interface="*res://Scripts/Interface.gd"
+MainSocketClient="*res://scripts/websocket/WebSocketClient.gd"
+Client="*res://scripts/Client.gd"
+Values="*res://scripts/Values.gd"
+Interface="*res://scripts/Interface.gd"
 
 [debug]
 

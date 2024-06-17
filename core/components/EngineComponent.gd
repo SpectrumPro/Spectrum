@@ -4,19 +4,40 @@
 class_name EngineComponent extends RefCounted
 ## Base class for an engine components, contains functions for storing metadata, and uuid's
 
-signal user_meta_changed(key: String, value: Variant) ## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted. If this signal is emited with the key of "user_meta", this meanes that more then one key/value was just updated
-signal name_changed(new_name: String) ## Emitted when the name of this object has changed
-signal delete_requested() ## Emited when this object is about to be deleted
 
-var name: String = "Unnamed EngineComponent" ## The name of this object
-var user_meta: Dictionary ## Infomation that can be stored by other scripts / clients, this data will get saved to disk and send to all clients
-var uuid: String = "" ## Uuid of the current component, do not modify at runtime unless you know what you are doing, things will break
+## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted. If this signal is emited with the key of "user_meta", this meanes that more then one key/value was just updated
+signal user_meta_changed(key: String, value: Variant)
+
+## Emitted when the name of this object has changed
+signal name_changed(new_name: String)
+
+## Emited when this object is about to be deleted
+signal delete_requested()
+
+
+## The name of this object
+var name: String = "Unnamed EngineComponent"
+
+## Infomation that can be stored by other scripts / clients, this data will get saved to disk and send to all clients
+var user_meta: Dictionary
+
+## Uuid of the current component, do not modify at runtime unless you know what you are doing, things will break
+var uuid: String = ""
+
+## The class_name of this component this should always be set by the object that extends EngineComponent
+var self_class_name: String = "EngineComponent"
 
 
 func _init(p_uuid: String = UUID_Util.v4()) -> void:
 	uuid = p_uuid
-	print("I am: ", uuid, " | ", self.get_script().resource_path)
+	_component_ready()
+	
+	print_verbose("I am: ", name, " | ", uuid)
 
+
+## Override this function to provide a _ready function for your script
+func _component_ready() -> void:
+	pass
 
 
 ## Sets user_meta from the given value

@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvceixc4adbo0"]
+
+[ext_resource type="PackedScene" path="res://rig.glb" id="1_lo8s3"]
+[ext_resource type="Material" uid="uid://jwlx0lbgr8ab" path="res://panels/3D/Metal.tres" id="2_cmkty"]
+
+[node name="rig" instance=ExtResource("1_lo8s3")]
+
+[node name="Cube005" parent="." index="0"]
+surface_material_override/0 = ExtResource("2_cmkty")
+
+[node name="Cube006" parent="." index="1"]
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube007" parent="." index="2"]
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube008" parent="." index="3"]
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube009" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -28.2392, 21.7116)
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube010" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 37.8203, -28.2392, 21.7116)
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube011" parent="." index="6"]
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube012" parent="." index="7"]
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube013" parent="." index="8"]
+material_override = ExtResource("2_cmkty")
+
+[node name="Cube014" parent="." index="9"]
+material_override = ExtResource("2_cmkty")

@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3wayg6lhg7u"]
+
+[ext_resource type="Script" path="res://panels/ColorPalette/ColorPalette.gd" id="1_jjrjg"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_sjs5a"]
+
+[node name="ColorPalette" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_sjs5a")
+script = ExtResource("1_jjrjg")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Settings" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Number Of Colors"
+
+[node name="NumberOfColors" type="SpinBox" parent="Settings/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/VBoxContainer"]
+layout_mode = 2
+
+[node name="ShowWhite" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Show White"
+
+[node name="ShowBlack" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Show Black"
+
+[connection signal="resized" from="ScrollContainer/GridContainer" to="." method="_on_grid_container_resized"]
+[connection signal="value_changed" from="Settings/VBoxContainer/HBoxContainer/NumberOfColors" to="." method="_on_number_of_colors_value_changed"]
+[connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowWhite" to="." method="set_show_white"]
+[connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowBlack" to="." method="set_show_black"]

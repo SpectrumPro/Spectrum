@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5h003o3qi1wl"]
+
+[ext_resource type="Script" path="res://panels/PlaybackButtons/PlaybackButtons.gd" id="1_0mir5"]
+
+[node name="PlaybackButtons" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="ScrollContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 18
+script = ExtResource("1_0mir5")
+
+[connection signal="resized" from="ScrollContainer/GridContainer" to="ScrollContainer/GridContainer" method="_on_resized"]

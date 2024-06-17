@@ -1,0 +1,130 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3lrdtiw05qft"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_460tm"]
+[ext_resource type="Script" path="res://panels/AddFixture/AddFixture.gd" id="2_q8wav"]
+
+[node name="Add Fixture" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_460tm")
+script = ExtResource("2_q8wav")
+fixture_tree = NodePath("HSplitContainer/Fixture Tree")
+fixture_channel_list = NodePath("HSplitContainer/PanelContainer/VBoxContainer/Channel List")
+fixture_modes_option = NodePath("HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes")
+fixture_universe_option = NodePath("HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3/Fixture Universe Option")
+add_fixture_button = NodePath("HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+split_offset = 100
+
+[node name="Fixture Tree" type="Tree" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Channel"
+
+[node name="Channel" type="SpinBox" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+min_value = 1.0
+max_value = 512.0
+value = 1.0
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Universe"
+
+[node name="Fixture Universe Option" type="OptionButton" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HSeparator" type="HSeparator" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Mode
+"
+
+[node name="Modes" type="OptionButton" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+item_count = 1
+selected = 0
+fit_to_longest_item = false
+popup/item_0/text = " "
+popup/item_0/id = 0
+
+[node name="Channel List" type="ItemList" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+allow_search = false
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Label" type="Label" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Quantity"
+
+[node name="Quantity" type="SpinBox" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+size_flags_horizontal = 10
+min_value = 1.0
+max_value = 512.0
+value = 1.0
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Label" type="Label" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "Offset"
+
+[node name="Offset" type="SpinBox" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Add Fixture Button" type="Button" parent="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add Fixture"
+
+[connection signal="item_selected" from="HSplitContainer/Fixture Tree" to="." method="_on_fixture_tree_item_selected"]
+[connection signal="value_changed" from="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer/Channel" to="." method="_on_channel_value_changed"]
+[connection signal="item_selected" from="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer4/Modes" to="." method="_on_modes_item_selected"]
+[connection signal="value_changed" from="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer5/Quantity" to="." method="_on_quantity_value_changed"]
+[connection signal="value_changed" from="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer6/Offset" to="." method="_on_offset_value_changed"]
+[connection signal="pressed" from="HSplitContainer/PanelContainer/VBoxContainer/HBoxContainer2/Add Fixture Button" to="." method="_on_add_fixture_button_pressed"]

@@ -41,7 +41,7 @@ func set_fade_out_speed(p_fade_out_speed: float) -> void:
 
 
 ## INTERNAL: Called when the fade speed is changed on the server
-func on_fade_speed_changed(fade_in: float, fade_out: float) -> void:
+func on_fade_time_changed(fade_in: float, fade_out: float) -> void:
 	fade_in_speed = fade_in
 	fade_out_speed = fade_out
 

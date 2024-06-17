@@ -2,7 +2,7 @@
 # All rights reserved.
 
 class_name DataOutputPlugin extends EngineComponent
-## Engine component base class for all input and output plugins
+## Base class for all output plugins
 
 signal connection_state_changed(state: bool, note: String) ## Emited when this output connects or disconnects, added note for reason
 

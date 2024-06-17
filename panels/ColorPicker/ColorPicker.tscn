@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhp8aa07tyxbf"]
+
+[ext_resource type="Script" path="res://panels/ColorPicker/ColorPicker.gd" id="1_pckpl"]
+
+[node name="PanelContainer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pckpl")
+
+[node name="ColorPicker" type="ColorPicker" parent="."]
+layout_mode = 2
+presets_visible = false
+
+[connection signal="color_changed" from="ColorPicker" to="." method="_on_color_picker_color_changed"]
