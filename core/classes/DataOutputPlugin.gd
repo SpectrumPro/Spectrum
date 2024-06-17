@@ -19,12 +19,6 @@ func _init(p_uuid: String = UUID_Util.v4()) -> void:
 
 	super._init(p_uuid)
 	self.name = plugin_name
-	init()
-
-
-## Overide this function to init
-func init() -> void:
-	pass
 
 
 ## Starts this plugin

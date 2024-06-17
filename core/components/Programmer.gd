@@ -7,6 +7,12 @@ class_name Programmer extends EngineComponent
 var save_data: Dictionary = {} ## Current data in the programmer
 
 
+## Called when this EngineComponent is ready
+func _component_ready() -> void:
+	name = "Programmer"
+	self_class_name = "Programmer"
+
+
 ## Sets the color of all the fixtures in fixtures, to color
 func set_color(fixtures: Array, color: Color) -> void:
 	

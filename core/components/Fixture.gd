@@ -32,6 +32,13 @@ var current_input_data: Dictionary = {}
 
 var _compiled_dmx_data: Dictionary
 
+
+## Called when this EngineComponent is ready
+func _component_ready() -> void:
+	name = "Fixture"
+	self_class_name = "Fixture"
+
+
 func set_color(color: Color, id: String) -> void:
 	Client.send({
 		"for": self.uuid,

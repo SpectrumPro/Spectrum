@@ -29,6 +29,12 @@ var _fixture_on_name_changed = func (new_name: String, fixture: Fixture) -> void
 var _fixture_signal_connections: Dictionary = {}
 
 
+## Called when this EngineComponent is ready
+func _component_ready() -> void:
+	name = "Universe"
+	self_class_name = "Universe"
+
+
 ## Adds an output to this universe
 func add_output(name: String, output: DataOutputPlugin):
 
@@ -193,8 +199,8 @@ func on_load_request(serialized_data: Dictionary) -> void:
 			
 	
 	for output_uuid: String in serialized_data.get("outputs", {}).keys():
-		if serialized_data.outputs[output_uuid].get("file_name", "") in Core.output_plugins.keys():
-			var new_output: DataOutputPlugin = Core.output_plugins[serialized_data.outputs[output_uuid].file_name].new(output_uuid)
+		if serialized_data.outputs[output_uuid].get("class_name", "") in ClassList.global_class_table:
+			var new_output: DataOutputPlugin = ClassList.global_class_table[serialized_data.outputs[output_uuid]["class_name"]].new(output_uuid)
 			
 			_add_outputs([new_output])
 			new_output.load(serialized_data.outputs[output_uuid])

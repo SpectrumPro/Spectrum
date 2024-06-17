@@ -27,14 +27,14 @@ signal fixtures_added(fixtures: Array[Fixture])
 signal fixtures_removed(fixtures: Array[Fixture])
 
 
-## Emited when a scene / scenes are added to this engine
-signal scenes_added(scenes: Array[Scene])
+## Emited when a function / functions are added to this engine
+signal functions_added(functions: Array[Function])
 
-## Emited when a scene / scenes are removed from this engine
-signal scenes_removed(scenes: Array[Scene])
+## Emited when a function / functions are removed from this engine
+signal functions_removed(functions: Array[Function])
 
-## Emitted when a scene has tis name changed
-signal scene_name_changed(scene: Scene, new_name: String) 
+## Emitted when a function has its name changed
+signal function_name_changed(function: Function, new_name: String) 
 
 
 
@@ -44,20 +44,17 @@ var universes: Dictionary = {}
 ## Dictionary containing all fixtures in this engine
 var fixtures: Dictionary = {} 
 
-## Dictionary containing all scenes in this engine
-var scenes: Dictionary = {}
+## Dictionary containing all functions in this engine
+var functions: Dictionary = {}
 
 ## Dictionary containing fixture definiton file
 var fixtures_definitions: Dictionary = {} 
 
 
-## Dictionary containing all of the output plugins, sotred in [member CoreEngine.output_plugin_path]
-var output_plugins: Dictionary = {}
-
 ## Output frequency of this engine, defaults to 45hz. defined as 1.0 / desired frequency
 var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
 
-## The programmer used for programming vixtures, and saving them to scenes, this programmer is not a networked object, and i only stored localy
+## The programmer used for programming vixtures, and saving them to scenes, this programmer is not a networked object, and is only stored localy
 var programmer: Programmer = Programmer.new()
 
 ## Folowing functions are for connecting universe signals to engine signals, they are defined as vairables so they can be dissconnected when universe is to be deleted
@@ -72,12 +69,6 @@ func _universe_on_fixture_name_changed(fixture: Fixture, new_name: String):
 func _universe_on_fixtures_added(p_fixtures: Array[Fixture]):
 	for fixture: Fixture in p_fixtures:
 		fixtures[fixture.uuid] = fixture
-	
-	print()
-	print()
-	print("EMitting fixtures added")
-	print()
-	print()
 	
 	fixtures_added.emit(p_fixtures)
 
@@ -97,33 +88,22 @@ func _universe_on_fixtures_removed(p_fixtures: Array):
 var _universe_signal_connections: Dictionary = {}
 
 
-## Folowing functions are for connecting Scene signals to Engine signals, they are defined as vairables so they can be dissconnected when scenes are to be deleted
-func _scene_on_name_changed(new_name: String, scene: Scene) -> void:
-	print("Scene: ", scene, " Name changed to: ", new_name)
-	scene_name_changed.emit(scene, new_name)
+## Folowing functions are for connecting Function signals to Engine signals, they are defined as vairables so they can be dissconnected when Functions are to be deleted
+func _function_on_name_changed(new_name: String, function: Function) -> void:
+	print("Functions: ", function, " Name changed to: ", new_name)
+	function_name_changed.emit(function, new_name)
 
 
 ## See _universe_signal_connections for details
-var _scene_signal_connections: Dictionary = {}
+var _function_signal_connections: Dictionary = {}
 
-
-const output_plugin_path: String = "res://core/output_plugins/" ## File path for output plugin definitons
 
 func _ready() -> void:
 	Client.add_networked_object("engine", self)
 	
-	output_plugins = get_io_plugins(output_plugin_path)
-	print(output_plugins)
 	MainSocketClient.connected_to_server.connect(func() :
 		load_from_server()
 	)
-
-
-func _process(delta: float) -> void:
-	if Input.is_key_pressed(KEY_F5):
-		_remove_universes(universes.values())
-		_remove_scenes(scenes.values())
-		#load_from_server()
 
 
 func load_from_server() -> void:
@@ -255,79 +235,79 @@ func _remove_universes(p_universes: Array) -> void:
 		universes_removed.emit(just_removed_universes)
 
 
-func add_scene(name: String, scene: Scene) -> void:
-	Client.add_networked_object(scene.uuid, scene, scene.delete_requested)
+func add_function(name: String, function: Function) -> void:
+	Client.add_networked_object(function.uuid, function, function.delete_requested)
 	Client.send({
 		"for": "engine",
-		"call": "add_scene",
-		"args": [name, scene]
+		"call": "add_function",
+		"args": [name, function]
 	})
 
 
-func on_scenes_added(p_scenes: Array, scene_uuids: Array) -> void:
-	_add_scenes(p_scenes)
+func on_functions_added(p_functions: Array, function_uuids: Array) -> void:
+	_add_functions(p_functions)
 
 
-func _add_scenes(p_scenes: Array) -> void:
-	var just_added_scenes: Array[Scene] = []
+func _add_functions(p_functions: Array) -> void:
+	var just_added_functions: Array[Scene] = []
 	
-	for scene in p_scenes:
-		if scene is Scene:
-			scenes[scene.uuid] = scene
-			Client.add_networked_object(scene.uuid, scene, scene.delete_requested)
-			_connect_scene_signals(scene)
-			just_added_scenes.append(scene)
+	for function in p_functions:
+		if function is Function:
+			functions[function.uuid] = function
+			Client.add_networked_object(function.uuid, function, function.delete_requested)
+			_connect_function_signals(function)
+			just_added_functions.append(function)
 	
-	if just_added_scenes:
-		scenes_added.emit(just_added_scenes)
+	if just_added_functions:
+		functions_added.emit(just_added_functions)
 
 
-func _connect_scene_signals(scene: Scene) -> void:
-	_scene_signal_connections[scene] = {
-		"_scene_on_name_changed": _scene_on_name_changed.bind(scene),
-		"_remove_scenes": _remove_scenes.bind([scene])
+func _connect_function_signals(function: Function) -> void:
+	_function_signal_connections[function] = {
+		"_function_on_name_changed": _function_on_name_changed.bind(function),
+		"_remove_functions": _remove_functions.bind([function])
 		}
 	
-	scene.name_changed.connect(_scene_signal_connections[scene]._scene_on_name_changed)
-	scene.delete_requested.connect(_scene_signal_connections[scene]._remove_scenes)
+	function.name_changed.connect(_function_signal_connections[function]._function_on_name_changed)
+	function.delete_requested.connect(_function_signal_connections[function]._remove_functions)
 
 
 
-func _disconnect_scene_signals(scene: Scene) -> void:
+func _disconnect_function_signals(function: Function) -> void:
 	
-	scene.name_changed.disconnect(_scene_signal_connections[scene]._scene_on_name_changed)
-	scene.delete_requested.disconnect(_scene_signal_connections[scene]._remove_scenes)
+	function.name_changed.disconnect(_function_signal_connections[function]._function_on_name_changed)
+	function.delete_requested.disconnect(_function_signal_connections[function]._remove_functions)
 	
-	_scene_signal_connections[scene] = {}
-	_scene_signal_connections.erase(scene)
+	_function_signal_connections[function] = {}
+	_function_signal_connections.erase(function)
 
 
-func remove_scenes(scenes: Array) -> void:
+func remove_functions(functions: Array) -> void:
 	Client.send({
 		"for": "engine",
-		"call": "remove_scenes",
-		"args": [scenes]
+		"call": "remove_functions",
+		"args": [functions]
 	})
 
-func on_scenes_removed(p_scenes: Array, uuids: Array) -> void:
-	_remove_scenes(p_scenes)
+func on_functions_removed(p_functions: Array, uuids: Array) -> void:
+	_remove_functions(p_functions)
 
 
-func _remove_scenes(p_scenes: Array) -> void:
-	var just_removed_scenes: Array[Scene] = []
+func _remove_functions(p_functions: Array) -> void:
+	var just_removed_functions: Array[Scene] = []
 	
-	for scene in p_scenes:
-		# Check if this scene is part of this engine
-		if scene is Scene and scene in scenes.values():
-			scenes.erase(scene.uuid)
-			just_removed_scenes.append(scene)
-			_disconnect_scene_signals(scene)
+	for function in p_functions:
+		# Check if this function is part of this engine
+		if function is Function and function in functions.values():
+			functions.erase(function.uuid)
+			just_removed_functions.append(function)
+			_disconnect_function_signals(function)
 		
 		else:
-			print("Scene: ", scene.uuid, " is not part of this engine")
+			print("Function: ", function.uuid, " is not part of this engine")
 	
-	if just_removed_scenes:
-		scenes_removed.emit(just_removed_scenes)
+	if just_removed_functions:
+		functions_removed.emit(just_removed_functions)
 
 
 func load_from(serialized_data: Dictionary) -> void:
@@ -339,9 +319,10 @@ func load_from(serialized_data: Dictionary) -> void:
 		new_universe.load(serialized_data.universes[universe_uuid])
 		
 	
-	for scene_uuid: String in serialized_data.get("scenes", {}).keys():
-		var new_scene: Scene = Scene.new(scene_uuid)
-		
-		_add_scenes([new_scene])
-		
-		new_scene.load(serialized_data.scenes[scene_uuid])
+	# Loops through each function in the save file (if any), and adds them into the engine
+	for function_uuid: String in serialized_data.get("functions", {}):
+		if serialized_data.functions[function_uuid].get("class_name", "") in ClassList.function_class_table:
+			var new_function: Function = ClassList.function_class_table[serialized_data.functions[function_uuid]["class_name"]].new(function_uuid)
+
+			_add_functions([new_function])
+			new_function.load(serialized_data.functions[function_uuid])

@@ -1,18 +1,21 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-class_name Scene extends EngineComponent
+class_name Scene extends Function
 ## Engine class for creating and recalling saved data
 
 signal state_changed(is_enabled: bool) ## Emmitted when this scene is enabled or dissabled
 signal percentage_step_changed(percentage: float) ## Emitted when the step is changed, emits the current progress percentage of this scene
 
-var fade_in_speed: float = 2 ## Fade in speed in seconds
-var fade_out_speed: float = 2 ## Fade out speed in seconds
-
 var enabled: bool = false ## The current state of this scene
 var percentage_step: float = 0 ## The percentage step of this scene
 var save_data: Dictionary = {} ## Saved data for this scene
+
+
+## Called when this EngineComponent is ready
+func _component_ready() -> void:
+	name = "Scene"
+	self_class_name = "Scene"
 
 
 ## Enabled or dissables this scene
@@ -22,28 +25,6 @@ func set_enabled(is_enabled: bool, time: float = -1) -> void:
 		"call": "set_enabled",
 		"args": [is_enabled, time]
 	})
-
-
-func set_fade_in_speed(p_fade_in_speed: float) -> void:
-	Client.send({
-		"for": self.uuid,
-		"call": "set_fade_in_speed",
-		"args": [p_fade_in_speed]
-	})
-
-
-func set_fade_out_speed(p_fade_out_speed: float) -> void:
-	Client.send({
-		"for": self.uuid,
-		"call": "set_fade_out_speed",
-		"args": [p_fade_out_speed]
-	})
-
-
-## INTERNAL: Called when the fade speed is changed on the server
-func on_fade_time_changed(fade_in: float, fade_out: float) -> void:
-	fade_in_speed = fade_in
-	fade_out_speed = fade_out
 
 
 ## INTERNAL: Called when the state is changed on the server

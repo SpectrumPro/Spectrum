@@ -29,17 +29,17 @@ func _ready() -> void:
 	print(_settings_list)
 	reload()
 	
-	Core.scenes_added.connect(func (new_scenes: Array):
+	Core.functions_added.connect(func (new_scenes: Array):
 		if show_all:
 			scenes.append_array(new_scenes)
 			reload()
 	)
 	
-	Core.scenes_removed.connect(func (scenes_to_remove: Array):
+	Core.functions_removed.connect(func (scenes_to_remove: Array):
 		var should_reload: bool = false
 		
 		for scene: Scene in scenes_to_remove:
-			if scene in scenes:
+			if scene is Scene and scene in scenes:
 				scenes.erase(scene)
 				should_reload = true
 		
@@ -47,8 +47,8 @@ func _ready() -> void:
 			reload()
 	)
 	
-	Core.scene_name_changed.connect(func (scene: Scene, new_name: String):
-		if scene in scenes:
+	Core.function_name_changed.connect(func (scene: Scene, new_name: String):
+		if scene is Scene and scene in scenes:
 			reload()
 	)
 	
@@ -62,7 +62,7 @@ func set_show_all(p_show_all: bool) -> void:
 	
 	if show_all:
 		_old_scenes = scenes.duplicate()
-		scenes = Core.scenes.values()
+		scenes = Core.functions.values()
 	else:
 		scenes = _old_scenes.duplicate()
 	
@@ -79,49 +79,53 @@ func reload(arg1=null, arg2=null) -> void:
 	_settings_list.remove_all()
 	_settings_list.add_items(scenes)
 	
-	for scene: Scene in scenes:
-		var new_node = Interface.components.PlaybackRow.instantiate()
-		
-		
-		$Container.add_child(new_node)
-		
-		# Button 1 will toggle the scene
-		new_node.button1.toggle_mode = true
-		new_node.button1.toggled.connect(scene.set_enabled)
-		new_node.button1.set_label_text(scene.name)
-		new_node.button1.set_pressed_no_signal(scene.enabled)
-		new_node.button1.set_value(scene.percentage_step)
-		scene.percentage_step_changed.connect(new_node.button1.set_value)
-		scene.state_changed.connect(new_node.button1.set_pressed_no_signal)
+	for scene: Function in scenes.duplicate():
+		if scene is Scene:
+			var new_node = Interface.components.PlaybackRow.instantiate()
+			
+			$Container.add_child(new_node)
+			
+			# Button 1 will toggle the scene
+			new_node.button1.toggle_mode = true
+			new_node.button1.toggled.connect(scene.set_enabled)
+			new_node.button1.set_label_text(scene.name)
+			new_node.button1.set_pressed_no_signal(scene.enabled)
+			new_node.button1.set_value(scene.percentage_step)
+			scene.percentage_step_changed.connect(new_node.button1.set_value)
+			scene.state_changed.connect(new_node.button1.set_pressed_no_signal)
 
-		
-		# Button 2 will always enable the scene
-		new_node.button2.set_label_text("Enable")
-		new_node.button2.pressed.connect(scene.set_enabled.bind(true))
-		
-		
-		# Button 3 will flash the scene
-		new_node.button3.set_label_text("Flash On")
-		new_node.button3.button_down.connect(scene.flash_hold.bind(0))
-		new_node.button3.button_up.connect(scene.flash_release.bind())
-		
-		# Button 4 doesn't do anything, thus it is hidden
-		new_node.button4.hide()
-		
-		# Button 5 will always disable the scene
-		new_node.button5.set_label_text("Disable")
-		new_node.button5.pressed.connect(scene.set_enabled.bind(false))
-		
-		
-		# The slider sets the state of the scene
-		new_node.slider.value_changed.connect(scene.set_step_percentage)
-		new_node.slider.set_value_no_signal(scene.percentage_step)
-		scene.percentage_step_changed.connect(new_node.slider.set_value_no_signal)
-	
+			
+			# Button 2 will always enable the scene
+			new_node.button2.set_label_text("Enable")
+			new_node.button2.pressed.connect(scene.set_enabled.bind(true))
+			
+			
+			# Button 3 will flash the scene
+			new_node.button3.set_label_text("Flash On")
+			new_node.button3.button_down.connect(scene.flash_hold.bind(0))
+			new_node.button3.button_up.connect(scene.flash_release.bind())
+			
+			# Button 4 doesn't do anything, thus it is hidden
+			new_node.button4.hide()
+			
+			# Button 5 will always disable the scene
+			new_node.button5.set_label_text("Disable")
+			new_node.button5.pressed.connect(scene.set_enabled.bind(false))
+			
+			
+			# The slider sets the state of the scene
+			new_node.slider.value_changed.connect(scene.set_step_percentage)
+			new_node.slider.set_value_no_signal(scene.percentage_step)
+			scene.percentage_step_changed.connect(new_node.slider.set_value_no_signal)
+			
+		else:
+			scenes.erase(scene)
+
+
 
 
 func _on_item_list_view_edit_requested(items: Array) -> void:
-	Interface.show_object_picker(_on_object_picker_item_selected, ["Scenes"], true, _on_object_picker_item_deselected, scenes)
+	Interface.show_object_picker(_on_object_picker_item_selected, ["Functions"], true, _on_object_picker_item_deselected, scenes)
 
 
 func _on_object_picker_item_selected(key, value) -> void:

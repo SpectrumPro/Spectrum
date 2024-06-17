@@ -10,11 +10,13 @@ var universe_number: int = 0 ## Art-Net universe number
 var _udp_peer = PacketPeerUDP.new() ## PacketPeerUDP responsible for sending Art-Net packets
 
 ## Called when this object is first created
-func init():
+func _component_ready():
 	# Sets name, description, and authors list of this plugin
 	self.plugin_name = "Art-Net Output"
 	self.plugin_authors = ["Liam Sherwin"]
 	self.plugin_description = "Outputs dmx data over Art-Net"
+	
+	self_class_name = "ArtNetOutput"
 
 
 ## Called when this output is started

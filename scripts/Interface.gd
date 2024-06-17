@@ -67,9 +67,9 @@ func _set_up_object_picker() -> void:
 	Core.fixtures_added.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
 	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
 	
-	Core.scenes_added.connect(func (arg1=null): _object_picker.load_objects(Core.scenes, "Scenes", "name"))
-	Core.scenes_removed.connect(func (arg1=null): _object_picker.load_objects(Core.scenes, "Scenes", "name"))
-	Core.scene_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.scenes, "Scenes", "name"))
+	Core.functions_added.connect(func (arg1=null): _object_picker.load_objects(Core.functions, "Functions", "name"))
+	Core.functions_removed.connect(func (arg1=null): _object_picker.load_objects(Core.functions, "Functions", "name"))
+	Core.function_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.functions, "Functions", "name"))
 	
 	_object_picker.closed.connect(hide_object_picker)
 

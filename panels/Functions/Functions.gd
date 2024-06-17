@@ -8,25 +8,25 @@ extends Control
 
 
 func _ready() -> void:
-	Core.scenes_added.connect(self._reload_functions)
-	Core.scenes_removed.connect(self._reload_functions)
-	Core.scene_name_changed.connect(self._reload_functions)
+	Core.functions_added.connect(self._reload_functions)
+	Core.functions_removed.connect(self._reload_functions)
+	Core.function_name_changed.connect(self._reload_functions)
 	
 	_reload_functions()
 
 
-## Reload the list of scenes
+## Reload the list of functions
 func _reload_functions(arg1=null, arg2=null) -> void:
 	
 	self.get_node(item_list_view).remove_all()
-	self.get_node(item_list_view).add_items(Core.scenes.values(), [["fade_in_speed", "set_fade_in_speed"], ["fade_out_speed", "set_fade_out_speed"]], "set_name")
+	self.get_node(item_list_view).add_items(Core.functions.values(), [["fade_in_speed", "set_fade_in_speed"], ["fade_out_speed", "set_fade_out_speed"]], "set_name")
 	
 
 
 ## Called when the delete button is pressed on the ItemListView
 func _on_item_list_view_delete_requested(items: Array) -> void:
 	
-	Core.remove_scenes(items)
+	Core.remove_functions(items)
 	
 
 
