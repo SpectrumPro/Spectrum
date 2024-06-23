@@ -9,6 +9,23 @@ extends PanelContainer
 signal select_requested(from: Control) 
 
 
+## If this item is selected
+var selected: bool = false : set = set_selected
+
+## If this item is highlighted
+var highlighted: bool = false : set = set_highlighted
+
+
+## If this item is selected
+var selected_color: Color = Color.WHITE
+
+## If this item is highlighted
+var highlighted_color: Color = Color.DIM_GRAY
+
+## The color of this item
+var color: Color = Color.WHITE : set = set_color
+
+
 func _init():
 	self.add_theme_stylebox_override("panel", self.get_theme_stylebox("panel").duplicate())
 
@@ -25,9 +42,25 @@ func set_color(color):
 
 
 
-## Sets whether this item should be highlighted, adds a white border if so
-func set_highlighted(highlighted):
-	if highlighted:
+## Sets whether this item should be highlighted, adds a gray border if so
+func set_highlighted(is_highlighted):
+	highlighted = is_highlighted
+	_update_border_state()
+
+
+## Sets whether this item should be selected, adds a white border if so
+func set_selected(is_selected):
+	selected = is_selected
+	_update_border_state()
+
+
+func _update_border_state() -> void:
+	
+	var new_color: Color = selected_color if selected else (highlighted_color if highlighted else color)
+	
+	set_color(new_color)
+	
+	if highlighted or selected:
 		self.get_theme_stylebox("panel").border_width_bottom = 5
 		self.get_theme_stylebox("panel").border_width_top = 5
 		self.get_theme_stylebox("panel").border_width_left = 5

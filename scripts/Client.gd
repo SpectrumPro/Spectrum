@@ -113,7 +113,7 @@ func _on_message_receved(message: Variant) -> void:
 						return
 			
 			# If all check above pass, call the function and pass the arguments
-			print("Calling Methord: ", networked_object.object.get(command.signal))
+			print_verbose("Calling Methord: ", networked_object.object.get(command.signal))
 			(networked_object.object.get(command.signal) as Callable).callv(command.get("args", []))
 	
 	# Check if it has "callback_id"

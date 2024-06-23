@@ -249,7 +249,7 @@ func on_functions_added(p_functions: Array, function_uuids: Array) -> void:
 
 
 func _add_functions(p_functions: Array) -> void:
-	var just_added_functions: Array[Scene] = []
+	var just_added_functions: Array[Function] = []
 	
 	for function in p_functions:
 		if function is Function:
@@ -294,7 +294,7 @@ func on_functions_removed(p_functions: Array, uuids: Array) -> void:
 
 
 func _remove_functions(p_functions: Array) -> void:
-	var just_removed_functions: Array[Scene] = []
+	var just_removed_functions: Array[Function] = []
 	
 	for function in p_functions:
 		# Check if this function is part of this engine
@@ -319,10 +319,13 @@ func load_from(serialized_data: Dictionary) -> void:
 		new_universe.load(serialized_data.universes[universe_uuid])
 		
 	
+	var just_added_functions: Array[Function] = []
 	# Loops through each function in the save file (if any), and adds them into the engine
 	for function_uuid: String in serialized_data.get("functions", {}):
 		if serialized_data.functions[function_uuid].get("class_name", "") in ClassList.function_class_table:
 			var new_function: Function = ClassList.function_class_table[serialized_data.functions[function_uuid]["class_name"]].new(function_uuid)
-
-			_add_functions([new_function])
-			new_function.load(serialized_data.functions[function_uuid])
+			
+			just_added_functions.append(new_function)
+			new_function.load.call_deferred(serialized_data.functions[function_uuid])
+	
+	_add_functions(just_added_functions)

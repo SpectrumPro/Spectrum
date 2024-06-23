@@ -31,7 +31,6 @@ func set_enabled(is_enabled: bool, time: float = -1) -> void:
 func on_state_changed(state: bool) -> void:
 	state_changed.emit(state)
 	enabled = state
-	print("State Chaged")
 
 
 func set_step_percentage(percentage: float) -> void:
@@ -44,7 +43,6 @@ func set_step_percentage(percentage: float) -> void:
 
 ## INTERNAL: Called when the percentage step is changed on the server
 func on_percentage_step_changed(percentage: float) -> void:
-	print(percentage)
 	percentage_step_changed.emit(percentage)
 
 

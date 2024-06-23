@@ -72,6 +72,9 @@ layout_mode = 2
 button_pressed = true
 text = "Edit Mode"
 
+[node name="Button" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

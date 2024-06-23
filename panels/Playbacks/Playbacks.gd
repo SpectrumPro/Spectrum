@@ -38,7 +38,7 @@ func _ready() -> void:
 	Core.functions_removed.connect(func (scenes_to_remove: Array):
 		var should_reload: bool = false
 		
-		for scene: Scene in scenes_to_remove:
+		for scene: Function in scenes_to_remove:
 			if scene is Scene and scene in scenes:
 				scenes.erase(scene)
 				should_reload = true
@@ -47,12 +47,10 @@ func _ready() -> void:
 			reload()
 	)
 	
-	Core.function_name_changed.connect(func (scene: Scene, new_name: String):
-		if scene is Scene and scene in scenes:
+	Core.function_name_changed.connect(func (function: Function, new_name: String):
+		if function is Scene and function in scenes:
 			reload()
 	)
-	
-
 	
 	remove_child($Settings)
 

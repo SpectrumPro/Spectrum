@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqatkkghk5b2q"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_804im"]
+[ext_resource type="Script" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
+
+[sub_resource type="SystemFont" id="SystemFont_fhcgp"]
+font_names = PackedStringArray("Open Sans")
+font_weight = 925
+
+[node name="Debug" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_804im")
+script = ExtResource("2_f46o2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Title" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Title"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/Title/HBoxContainer"]
+layout_mode = 2
+text = "Debug Menu"
+
+[node name="Stop" type="Button" parent="VBoxContainer/Title/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Stop Server"
+
+[node name="Crash" type="Button" parent="VBoxContainer/Title/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0.713726, 0, 0, 1)
+theme_override_fonts/font = SubResource("SystemFont_fhcgp")
+text = "CRASH SERVER"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="DumpNetworkedObjects" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
+layout_mode = 2
+text = "Dump Networked Objects"
+
+[connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Crash" to="." method="_on_crash_pressed"]
+[connection signal="resized" from="VBoxContainer/PanelContainer/GridContainer" to="." method="_on_grid_container_resized"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]

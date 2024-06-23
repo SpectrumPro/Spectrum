@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=9 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
+[ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="2_bvwur"]
+[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="3_0ww4t"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="3_07mes"]
 [ext_resource type="Texture2D" uid="uid://bf4227ei83gh1" path="res://assets/icons/play.svg" id="4_1thxx"]
 [ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://assets/icons/pause.svg" id="5_r8lsa"]
@@ -14,6 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_kkl7c")
+script = ExtResource("2_0mtdo")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -29,6 +32,11 @@ text = "Cue Name
 [node name="List" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="ItemListView" parent="VBoxContainer/List" instance=ExtResource("3_0ww4t")]
+layout_mode = 2
+size_flags_vertical = 1
+show_tool_bar = false
 
 [node name="Controls" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -66,3 +74,20 @@ layout_mode = 2
 size_flags_horizontal = 3
 icon = ExtResource("6_pxf7y")
 icon_alignment = 1
+
+[node name="Settings" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="ChangeCueList" type="Button" parent="Settings/VBoxContainer"]
+layout_mode = 2
+text = "Change Cue List"
+
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed" flags=3]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Next" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="pressed" from="Settings/VBoxContainer/ChangeCueList" to="." method="_on_change_cue_list_pressed"]

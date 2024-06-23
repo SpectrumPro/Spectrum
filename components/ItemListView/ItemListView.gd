@@ -39,6 +39,9 @@ signal selection_changed(items: Array)
 ## All the currently selected items
 var currently_selected_items: Array = []
 
+## All the highlighted selected items
+var currently_highlighted_items: Array = []
+
 ## The most recently selected item
 var last_selected_item: Control
 
@@ -142,6 +145,22 @@ func set_selected(items: Array) -> void:
 	_update_selected()
 
 
+## Sets the highlighted list items
+func set_highlighted(items: Array) -> void:
+	
+	currently_highlighted_items = []
+	
+	for item in items:
+		if item is Object or item is Dictionary:
+			if item_container.has_node(item.uuid):
+				currently_highlighted_items.append(item)
+		else:
+			if item_container.has_node(str(item)):
+				currently_highlighted_items.append(item)
+	
+	_update_highlighted()
+
+
 func _on_list_item_select_request(selected_item: Control) -> void:
 	if Input.is_key_pressed(KEY_SHIFT) and last_selected_item and allow_multi_select:
 		var children: Array[Node] = item_container.get_children()
@@ -166,11 +185,22 @@ func _on_list_item_select_request(selected_item: Control) -> void:
 
 
 
-func _update_selected(no_signal: bool = false) -> void:
+func _update_selected() -> void:
+	for item: Control in item_container.get_children():
+		item.set_selected(false)
+	
+	for item in currently_selected_items:
+		if item is Object or item is Dictionary:
+			item_container.get_node(item.uuid).set_selected(true)
+		else:
+			item_container.get_node(str(item)).set_selected(true)
+
+
+func _update_highlighted() -> void:
 	for item: Control in item_container.get_children():
 		item.set_highlighted(false)
 	
-	for item in currently_selected_items:
+	for item in currently_highlighted_items:
 		if item is Object or item is Dictionary:
 			item_container.get_node(item.uuid).set_highlighted(true)
 		else:
@@ -229,14 +259,12 @@ func _on_delete_pressed() -> void:
 		var delete_signal = func ():
 			delete_requested.emit(currently_selected_items)
 			$PanelContainer2/ConfirmationBox.hide()
-			
 		
-		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.connect(delete_signal)
+		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.connect(delete_signal,CONNECT_ONE_SHOT)
 		
 		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
 			$PanelContainer2/ConfirmationBox.hide()
-			$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.disconnect(delete_signal)
-		)
+		, CONNECT_ONE_SHOT)
 
 #endregion
 
