@@ -32,7 +32,6 @@ var _selected_items: Array[Control] = []
 
 ## Used to check if we opened the object picker, not another script
 var _object_picker_opened_here: bool = false
-#endregion
 
 
 ## Called when this desk is ready
@@ -91,6 +90,54 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 	_container_node.grid_size = snapping_distance * 2
 	
 	snapping_distance_changed.emit(snapping_distance)
+
+
+## Adds a new panel to this desk
+func add_panel(panel: Control, position: Vector2 = Vector2.ZERO, size: Vector2 = Vector2(100, 100), container_name: String = "") -> Control:
+	var new_node: Control = Interface.components.DeskItemContainer.instantiate()
+	new_node.set_edit_mode(true)
+	
+	## Connect signals to the item container
+	edit_mode_toggled.connect(new_node.set_edit_mode)
+	snapping_distance_changed.connect(new_node.set_snapping_distance)
+	new_node.clicked.connect(_on_item_clicked.bind(new_node))
+	
+	## Add the new panel that was selected in the object picker
+	new_node.set_panel(panel)
+	
+	if container_name:
+		new_node.name = container_name
+	_container_node.add_child(new_node, true)
+	
+	return new_node
+
+
+## Returns a dictionary containing all the panels, there position, sizes, and setting for this desk
+func save() -> Array:
+	var items: Array = []
+	
+	for desk_item_container: Control in _container_node.get_children():
+		items.append({
+			"type": str(desk_item_container.get_panel().name),
+			"position": [desk_item_container.position.x, desk_item_container.position.y],
+			"size": [desk_item_container.size.x, desk_item_container.size.y],
+			"settings": desk_item_container.save()
+		})
+	
+	return items
+
+## Loads all the items in this desk form thoes returned by save()
+func load(saved_data: Dictionary) -> void:
+	
+	for container_name: String in saved_data:
+		if saved_data[container_name].get("type", "") in Interface.panel:
+			var panel: Control = Interface.panels[ saved_data[container_name].type]
+			var position: Vector2 = saved_data[container_name].get("position", Vector2.ZERO)
+			var size: Vector2 = saved_data[container_name].get("size", Vector2(100, 100))
+			
+			var new_desk_item_container: DeskItemContainer = add_panel(panel, position, size)
+			
+			new_desk_item_container.load(saved_data[container_name].get("settings", {}))
 #endregion
 
 
@@ -101,17 +148,7 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 func _on_object_picker_item_selected(key, value):
 	$ObjectPicker.hide()
 	
-	var new_node: Control = Interface.components.DeskItemContainer.instantiate()
-	new_node.set_edit_mode(true)
-	
-	## Connect signals to the item container
-	edit_mode_toggled.connect(new_node.set_edit_mode)
-	snapping_distance_changed.connect(new_node.set_snapping_distance)
-	new_node.clicked.connect(_on_item_clicked.bind(new_node))
-	
-	## Add the new panel that was selected in the object picker
-	new_node.set_child(value.instantiate())
-	_container_node.add_child(new_node)
+	add_panel(value.instantiate())
 
 
 ## Called when the add button is pressed

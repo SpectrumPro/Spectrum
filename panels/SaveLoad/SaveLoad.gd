@@ -57,7 +57,6 @@ func _on_open_pressed() -> void:
 func _on_save_pressed() -> void:
 	var file_name: String = $VBoxContainer/HBoxContainer/PanelContainer2/HBoxContainer/FileName.text
 	
-	print(file_name)
 	if file_name:
 		Client.send({
 			"for": "engine",
@@ -66,6 +65,8 @@ func _on_save_pressed() -> void:
 		}, func ():
 			refresh()
 		)
+	
+	Interface.save_to_file()
 
 
 func _on_import_pressed() -> void:

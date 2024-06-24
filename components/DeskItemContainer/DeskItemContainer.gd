@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-extends PanelContainer
+class_name DeskItemContainer extends PanelContainer
 ## Container for desk items
 
 
@@ -29,6 +29,9 @@ signal clicked
 
 ## The lable node that displays the position and size of this item
 @onready var _label_node: Label = $Handles/PanelContainer/Label
+
+## The panel node
+var _panel: Control = null
 #endregion
 
 
@@ -56,13 +59,22 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 	snapping_distance = p_snapping_distance
 
 
-## Sets the child node of this item
-func set_child(child: Control) -> void:
-	if has_node("Child"):
-		remove_child(get_node("Child"))
+## Sets the panel node of this item
+func set_panel(panel: Control) -> void:
+	if _panel:
+		remove_child(_panel)
 	
-	add_child(child)
-	move_child(child, 0)
+	if panel:
+		_panel = panel
+		add_child(_panel)
+		move_child(_panel, 0)
+	else:
+		_panel = null
+
+
+## Gets the panel node set with set_panel, otherwise null
+func get_panel() -> Variant:
+	return _panel
 
 
 ## Updates the lable to show the correct position and size
@@ -73,6 +85,22 @@ func update_label() -> void:
 	else:
 		_label_node.text = "W:" + str(size.x) + "\nH:" + str(size.y) + "\nX:" + str(position.x) + "\nY:" + str(position.y)
 		_label_node.label_settings.font_size = 10
+
+
+## Returns a dictionary with the settings for this container, and the settings for the atached panel
+func save() -> Dictionary:
+	var save_data: Dictionary = {}
+	
+	if has_node("Panel") and $Panel.get("save") is Callable:
+		save_data = $Panel.save()
+	
+	return save_data
+
+
+## Loads the settings for this node from the settings returned by save()
+func load(saved_data: Dictionary) -> void:
+	if has_node("Panel") and $Panel.get("load") is Callable:
+		$Panel.load(saved_data)
 
 #endregion
 

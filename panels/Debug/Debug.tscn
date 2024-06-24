@@ -52,14 +52,27 @@ text = "CRASH SERVER"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="DumpNetworkedObjects" type="Button" parent="VBoxContainer/PanelContainer/GridContainer"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DumpNetworkedObjects" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Dump Networked Objects"
 
+[node name="GetUniqueId" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "OS.get_unique_id()"
+
+[node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
 [connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Crash" to="." method="_on_crash_pressed"]
-[connection signal="resized" from="VBoxContainer/PanelContainer/GridContainer" to="." method="_on_grid_container_resized"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]
+[connection signal="resized" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer" to="." method="_on_grid_container_resized"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]

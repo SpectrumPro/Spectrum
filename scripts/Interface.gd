@@ -25,6 +25,10 @@ const components_folder: String = "res://components/"
 const panels_folder: String = "res://panels/"
 
 
+var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
+## The location for storing all the save show files
+var ui_library_location: String = home_path + "/.spectrum/UI Library"
+
 ## The main object picker
 var _object_picker: Control
 
@@ -41,6 +45,9 @@ var _object_picker_deselected_signal_connection: Callable
 func _ready() -> void:
 	OS.set_low_processor_usage_mode(true)
 	
+	if not DirAccess.dir_exists_absolute(ui_library_location):
+		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
+
 	Core.universes_removed.connect(func (universes: Array):
 		Values.remove_from_selection_value("selected_universes", universes)
 	)
@@ -156,3 +163,17 @@ func hide_object_picker() -> void:
 		
 	if _object_picker_deselected_signal_connection.is_valid() and _object_picker.item_deselected.is_connected(_object_picker_deselected_signal_connection):
 		_object_picker.item_deselected.disconnect(_object_picker_deselected_signal_connection)
+
+
+func save() -> Dictionary:
+	var save_data: Dictionary = {}
+	
+	for node: Control in get_tree().root.get_node("Main/TabContainer").get_children():
+		if node.get("save") is Callable:
+			save_data[node.name] = node.save()
+	
+	return save_data
+
+## Saves the current ui layout to a file
+func save_to_file():
+	Utils.save_json_to_file(ui_library_location, "main", save())
