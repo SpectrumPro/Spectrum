@@ -1,13 +1,27 @@
-[gd_scene load_steps=9 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=14 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="2_bvwur"]
-[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="3_0ww4t"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="3_07mes"]
 [ext_resource type="Texture2D" uid="uid://bf4227ei83gh1" path="res://assets/icons/play.svg" id="4_1thxx"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="5_12n8h"]
 [ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://assets/icons/pause.svg" id="5_r8lsa"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="6_pxf7y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n58hq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_eonr0"]
+font = ExtResource("5_12n8h")
+
+[sub_resource type="LabelSettings" id="LabelSettings_u403j"]
+font_color = Color(1, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_w040t"]
+font_color = Color(0, 1, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5ku0g"]
+font_color = Color(1, 0, 0, 1)
 
 [node name="CuePlayback" type="PanelContainer"]
 anchors_preset = 15
@@ -33,10 +47,13 @@ text = "Cue Name
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ItemListView" parent="VBoxContainer/List" instance=ExtResource("3_0ww4t")]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/List"]
 layout_mode = 2
-size_flags_vertical = 1
-show_tool_bar = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/List/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Controls" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -46,32 +63,81 @@ size_flags_vertical = 8
 layout_mode = 2
 
 [node name="Previous" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 icon = ExtResource("2_bvwur")
 icon_alignment = 1
 
-[node name="Next" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+[node name="Go" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
+text = "GO"
+
+[node name="Next" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 0
 icon = ExtResource("3_07mes")
 icon_alignment = 1
 
-[node name="Play" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+[node name="InfoContainer" type="PanelContainer" parent="VBoxContainer/Controls/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer"]
+layout_mode = 2
+
+[node name="CueLable" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+layout_mode = 2
+text = "On Cue:"
+
+[node name="CueNumber" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 24.55)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n58hq")
+text = "0"
+label_settings = SubResource("LabelSettings_eonr0")
+vertical_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Paused" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+layout_mode = 2
+text = "Paused"
+label_settings = SubResource("LabelSettings_u403j")
+
+[node name="Playing" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+layout_mode = 2
+text = "Playing"
+label_settings = SubResource("LabelSettings_w040t")
+
+[node name="Stopped" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+layout_mode = 2
+text = "Stopped
+"
+label_settings = SubResource("LabelSettings_5ku0g")
+
+[node name="Play" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
 icon = ExtResource("4_1thxx")
 icon_alignment = 1
 
 [node name="Pause" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 icon = ExtResource("5_r8lsa")
 icon_alignment = 1
 
 [node name="Stop" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 icon = ExtResource("6_pxf7y")
 icon_alignment = 1
 
@@ -85,7 +151,9 @@ layout_mode = 2
 layout_mode = 2
 text = "Change Cue List"
 
+[connection signal="gui_input" from="VBoxContainer/List/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_gui_input"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed" flags=3]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Go" to="." method="_on_go_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Next" to="." method="_on_next_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Pause" to="." method="_on_pause_pressed"]

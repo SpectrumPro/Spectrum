@@ -10,8 +10,9 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_y16fu")
 
-[node name="Virtual Fixtures" type="GraphEdit" parent="."]
+[node name="VirtualFixtures" type="GraphEdit" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -19,7 +20,6 @@ theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
 show_minimap_button = false
 show_arrange_button = false
-script = ExtResource("1_y16fu")
 
-[connection signal="node_deselected" from="Virtual Fixtures" to="Virtual Fixtures" method="_on_virtual_fixture_deselected"]
-[connection signal="node_selected" from="Virtual Fixtures" to="Virtual Fixtures" method="_on_virtual_fixture_selected"]
+[connection signal="node_deselected" from="VirtualFixtures" to="VirtualFixtures" method="_on_virtual_fixture_deselected"]
+[connection signal="node_selected" from="VirtualFixtures" to="VirtualFixtures" method="_on_virtual_fixture_selected"]

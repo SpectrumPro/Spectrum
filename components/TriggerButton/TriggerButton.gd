@@ -19,7 +19,8 @@ func set_label_text(label_text: String) -> void:
 ## Sets the indicator value of this button
 func set_value(percentage: float) -> void:
 	_percentage = percentage
-	$Value.set_deferred("size", Vector2(remap(percentage, 0, 1, 0, size.x), $Value.size.y))
+	$Value.set_deferred("size", Vector2(remap(percentage, 0, 1, 0, size.x), size.y))
+
 
 
 func _on_gui_input(event: InputEvent) -> void:

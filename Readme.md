@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="https://github.com/SpectrumPro/Spectrum/blob/master/Assets/Icon.png?raw=true" alt="Spectrum Logo" width="150" height="150">
-    <h1 align="center">Spectrum</h1>
+	<img src="https://github.com/SpectrumPro/Spectrum/blob/master/Assets/Icon.png?raw=true" alt="Spectrum Logo" width="150" height="150">
+	<h1 align="center">Spectrum</h1>
 </p>
 
 ![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=spectrum-website) ![Contributors](https://img.shields.io/github/contributors/SpectrumPro/spectrum?color=dark-green) ![GitHub issues](https://img.shields.io/github/issues/SpectrumPro/Spectrum) ![GitHub License](https://img.shields.io/github/license/SpectrumPro/Spectrum)

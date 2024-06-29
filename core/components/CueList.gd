@@ -14,6 +14,9 @@ signal played(index: int)
 ## Emitted when this CueList is paused
 signal paused(index: int)
 
+## Emitted when this CueList is stopped
+signal stopped()
+
 ## Emitted when a cue is moved in this list
 signal cue_moved(scene: Scene, to: int)
 
@@ -32,6 +35,8 @@ var cues: Dictionary = {}
 
 ## The index of the current cue, do not change this at runtime, instead use seek_to()
 var index: int = 0
+
+var _is_playing: bool = false
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
@@ -64,7 +69,12 @@ func stop(fade_out_speed: float = -1) -> void:
 		"args": [fade_out_speed]
 	})
 
-#
+
+## Returns the play state of this CueList
+func is_playing() -> bool:
+	return _is_playing
+
+
 ## Advances to the next cue in the list, can be used with out needing to run play(), will use fade speeds of the cue if none are provided
 func go_next(fade_in_speed: float = -1, fade_out_speed: float = -1) -> void:
 	Client.send({
@@ -83,10 +93,39 @@ func go_previous(fade_in_speed: float = -1, fade_out_speed: float = -1) -> void:
 	})
 
 
+## Skips to the cue provided in index, can be used with out needing to run play(), will use fade speeds of the cue if none are provided
+func seek_to(p_index: int, fade_in_speed: float = -1, fade_out_speed: float = -1) -> void:
+	Client.send({
+		"for": uuid,
+		"call": "seek_to",
+		"args": [p_index, fade_in_speed, fade_out_speed]
+	})
+
+
 ## INTERNAL: Called when the index is changed on the server
 func on_cue_changed(p_index) -> void:
 	index = p_index
 	cue_changed.emit(index)
+
+
+## INTERNAL: Called when this cuelist is played on the server
+func on_played():
+	_is_playing = true
+	played.emit()
+
+
+## INTERNAL: Called when this cuelist is played on the server
+func on_paused():
+	_is_playing = false
+	paused.emit()
+
+
+## INTERNAL: Called when this cuelist is stopped on the server
+func on_stopped():
+	_is_playing = false
+	index = 0
+	
+	stopped.emit()
 
 
 func on_load_request(serialized_data: Dictionary) -> void:

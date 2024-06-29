@@ -14,8 +14,8 @@ expand_margin_left = 24.0
 expand_margin_right = 24.0
 
 [node name="Playback Row" type="MarginContainer"]
-offset_right = 37.0
-offset_bottom = 355.0
+offset_right = 96.0
+offset_bottom = 451.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4
@@ -40,16 +40,19 @@ layout_mode = 2
 [node name="Button1" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_vertical = 1
 toggle_mode = false
 
 [node name="Button2" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_vertical = 1
 toggle_mode = false
 
 [node name="Button3" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
+size_flags_vertical = 1
 toggle_mode = false
 
 [node name="Slider" type="VSlider" parent="PanelContainer/MarginContainer/VBoxContainer"]
@@ -69,9 +72,11 @@ step = 0.01
 [node name="Button4" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
+size_flags_vertical = 1
 toggle_mode = false
 
 [node name="Button5" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_vertical = 1
 toggle_mode = false

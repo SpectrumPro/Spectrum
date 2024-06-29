@@ -6,6 +6,8 @@
 [node name="PanelSettingsContainer" type="Window"]
 initial_position = 4
 size = Vector2i(1280, 610)
+always_on_top = true
+popup_window = true
 script = ExtResource("2_xtixf")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

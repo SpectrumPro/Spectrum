@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-extends GraphEdit
+extends Control
 ## UI panel for displaying virtual fixtures
 
 ## Stores all virtual fixtures, sotred as uuid:virtual_fixture
@@ -53,7 +53,7 @@ func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = 
 	button.tooltip_text = tooltip
 	button.disabled = disabled
 	
-	self.get_menu_hbox().add_child(button)
+	$VirtualFixtures.get_menu_hbox().add_child(button)
 	return button
 
 
@@ -88,13 +88,13 @@ func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), positi
 	
 	fixture.delete_requested.connect(func():
 		_selected_virtual_fixtures.erase(new_virtual_fixture)
-		remove_child(new_virtual_fixture)
+		$VirtualFixtures.remove_child(new_virtual_fixture)
 		new_virtual_fixture.queue_free()
 		virtual_fixtures.erase(uuid)
 	, CONNECT_ONE_SHOT)
 	
 	virtual_fixtures[uuid] = new_virtual_fixture
-	self.add_child(new_virtual_fixture)
+	$VirtualFixtures.add_child(new_virtual_fixture)
 
 
 ## Deletes the selected virtual fixtures from the current view

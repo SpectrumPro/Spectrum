@@ -34,7 +34,7 @@ func _load_from_server() -> void:
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:
-	_current_file = items[0]
+	_current_file = items[0] if items else ""
 	$VBoxContainer/ItemListView.set_selected(items)
 
 

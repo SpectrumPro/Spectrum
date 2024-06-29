@@ -31,7 +31,6 @@ func load_objects(objects: Dictionary, tab_name: String, name_member: String = "
 	var grid_node: ScrollContainer = load("res://components/ObjectPicker/Grid.tscn").instantiate()
 	
 	for object_key: String in objects:
-		print(object_key)
 		var new_node: Button = load("res://components/ObjectPicker/Button.tscn").instantiate()
 		
 		new_node.toggle_mode = true

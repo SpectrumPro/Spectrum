@@ -1,14 +1,16 @@
-[gd_scene load_steps=10 format=3 uid="uid://bsxgp5g0jmyke"]
+[gd_scene load_steps=12 format=3 uid="uid://bsxgp5g0jmyke"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_0eyvo"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="2_20jl7"]
 [ext_resource type="Script" path="res://panels/Desk/Desk.gd" id="2_jux45"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="3_8jyrh"]
 [ext_resource type="Texture2D" uid="uid://dee78hal6ympb" path="res://assets/icons/Grid_On.svg" id="4_nh5c7"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="5_mhd6h"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="6_0ouy4"]
-[ext_resource type="PackedScene" uid="uid://cbsp8xx2h45do" path="res://components/ObjectPicker/ObjectPicker.tscn" id="6_ttixk"]
+[ext_resource type="Texture2D" uid="uid://1ha66l33ttxn" path="res://assets/icons/Copy.svg" id="6_kyuoi"]
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="7_3vntk"]
 [ext_resource type="Script" path="res://panels/Desk/DrawGrid.gd" id="8_lbx4f"]
+[ext_resource type="PackedScene" uid="uid://db5gkmntjtqmr" path="res://components/PanelSettingContainer/PanelSettingsContainer.tscn" id="10_y11gw"]
 
 [node name="Desk" type="PanelContainer"]
 anchors_preset = 15
@@ -36,6 +38,25 @@ icon = ExtResource("2_20jl7")
 layout_mode = 2
 icon = ExtResource("3_8jyrh")
 
+[node name="Edit" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("5_mhd6h")
+
+[node name="Copy" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("6_kyuoi")
+
+[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("6_0ouy4")
+
+[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("7_3vntk")
+
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 
@@ -53,17 +74,6 @@ value = 20.0
 prefix = "Snap:"
 suffix = "px"
 
-[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-icon = ExtResource("6_0ouy4")
-
-[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-icon = ExtResource("7_3vntk")
-
 [node name="VSeparator3" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 
@@ -71,9 +81,6 @@ layout_mode = 2
 layout_mode = 2
 button_pressed = true
 text = "Edit Mode"
-
-[node name="Button" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -89,19 +96,16 @@ grid_size = Vector2(40, 40)
 line_width = 2.28
 grid_mode = 1
 
-[node name="ObjectPicker" parent="." instance=ExtResource("6_ttixk")]
+[node name="PanelSettingsContainer" parent="." instance=ExtResource("10_y11gw")]
 visible = false
-custom_minimum_size = Vector2(516.16, 551.39)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Add" to="." method="_on_add_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/ToggleGrid" to="." method="set_snapping_enabled"]
-[connection signal="value_changed" from="VBoxContainer/PanelContainer/HBoxContainer/SnappingDistance" to="." method="_on_snapping_distance_value_changed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Edit" to="." method="_on_edit_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Copy" to="." method="_on_copy_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/ToggleGrid" to="." method="set_snapping_enabled"]
+[connection signal="value_changed" from="VBoxContainer/PanelContainer/HBoxContainer/SnappingDistance" to="." method="_on_snapping_distance_value_changed"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/EditMode" to="." method="set_edit_mode"]
 [connection signal="gui_input" from="VBoxContainer/PanelContainer2/Container" to="." method="_on_container_gui_input"]
-[connection signal="item_selected" from="ObjectPicker" to="." method="_on_object_picker_item_selected"]

@@ -64,6 +64,23 @@ func set_show_black(p_show_black: bool) -> void:
 	reload()
 
 
+## Saves the settings to a dictionary
+func save() -> Dictionary:
+	return {
+		"show_black": show_black,
+		"show_white": show_white,
+		"number_of_colors": number_of_colors
+	}
+
+
+## Loads settings from what was returned by save()
+func load(saved_data: Dictionary) -> void:
+	show_black = saved_data.get("show_black", show_black)
+	show_white = saved_data.get("show_white", show_white)
+	
+	number_of_colors = saved_data.get("number_of_colors", number_of_colors)
+
+
 ## Adds a color button to the list
 func _add_color_button(color: Color) -> void:
 	var new_color_button: Button = load("res://panels/ColorPalette/ColorButton.tscn").instantiate()

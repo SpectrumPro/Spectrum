@@ -30,11 +30,11 @@ driver/enable_input=true
 
 [autoload]
 
+Interface="*res://scripts/Interface.gd"
 Core="*res://core/engine/Engine.gd"
 MainSocketClient="*res://scripts/websocket/WebSocketClient.gd"
 Client="*res://scripts/Client.gd"
 Values="*res://scripts/Values.gd"
-Interface="*res://scripts/Interface.gd"
 
 [debug]
 

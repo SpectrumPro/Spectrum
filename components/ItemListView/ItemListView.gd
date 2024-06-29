@@ -56,16 +56,22 @@ func _ready() -> void:
 	set_show_take(show_take)
 	set_show_edit(show_edit)
 	set_show_delete(show_delete)
+	
+	$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.connect(self._on_delete_confirmation)
+	
+	$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
+		$PanelContainer2/ConfirmationBox.hide()
+	)
 
 
 ## Adds an item to the list
-func add_items(items: Array, chips: Array = [], name_method: String = "") -> void:
+func add_items(items: Array, chips: Array = [], name_method: String = "", name_changed_signal: String = "") -> void:
 	
 	$PanelContainer2/ConfirmationBox.hide()
 	
 	
 	for item in items:
-		var new_item_node: Control = Interface.components.ListItem.instantiate()
+		var new_item_node: ListItem = Interface.components.ListItem.instantiate()
 		
 		if item is Object or item is Dictionary and _is_valid_object(item):
 			new_item_node.set_item_name(item.name)
@@ -78,6 +84,10 @@ func add_items(items: Array, chips: Array = [], name_method: String = "") -> voi
 			
 			if name_method:
 				new_item_node.set_name_method(item.get(name_method))
+			
+			if name_changed_signal:
+				new_item_node.set_name_changed_signal(item.get(name_changed_signal))
+				
 		
 		else:
 			new_item_node.set_item_name(str(item))
@@ -253,18 +263,16 @@ func _on_edit_pressed() -> void:
 
 func _on_delete_pressed() -> void:
 	if currently_selected_items:
-		
 		$PanelContainer2/ConfirmationBox.show()
-		
-		var delete_signal = func ():
-			delete_requested.emit(currently_selected_items)
-			$PanelContainer2/ConfirmationBox.hide()
-		
-		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.connect(delete_signal,CONNECT_ONE_SHOT)
-		
-		$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
-			$PanelContainer2/ConfirmationBox.hide()
-		, CONNECT_ONE_SHOT)
+
+
+func _on_delete_confirmation() -> void:
+	delete_requested.emit(currently_selected_items)
+
+
+func _on_item_container_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.is_pressed():
+		selection_changed.emit([])
 
 #endregion
 
@@ -320,3 +328,4 @@ func set_show_separators(is_visible) -> void:
 		$ToolBarContainer/HBoxContainer/VSeparator1.visible = is_visible
 		$ToolBarContainer/HBoxContainer/VSeparator2.visible = is_visible
 #endregion
+

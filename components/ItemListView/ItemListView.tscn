@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c6smssfk7gn2w"]
+[gd_scene load_steps=11 format=3 uid="uid://c6smssfk7gn2w"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_fqr1x"]
 [ext_resource type="Script" path="res://components/ItemListView/ItemListView.gd" id="2_xkuya"]
@@ -9,74 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="7_g74a1"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="8_y732o"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="9_dwy31"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_243f8"]
-content_margin_left = 8.0
-content_margin_top = 7.0
-content_margin_right = 8.0
-content_margin_bottom = 7.0
-bg_color = Color(1, 0.27451, 0.27451, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.825749, 0, 0.146054, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_csbl7"]
-content_margin_left = 8.0
-content_margin_top = 7.0
-content_margin_right = 8.0
-content_margin_bottom = 7.0
-bg_color = Color(0.795534, 0, 0.114831, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.825749, 0, 0.146054, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e8tmv"]
-content_margin_left = 8.0
-content_margin_top = 7.0
-content_margin_right = 8.0
-content_margin_bottom = 7.0
-bg_color = Color(1, 0.27451, 0.27451, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.825749, 0, 0.146054, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vpxnf"]
-content_margin_left = 8.0
-content_margin_top = 7.0
-content_margin_right = 8.0
-content_margin_bottom = 7.0
-bg_color = Color(0.962224, 0, 0.148115, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.716793, 0, 0.121165, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
+[ext_resource type="PackedScene" uid="uid://bhrc5gkly1noh" path="res://components/ConfirmationBox/ConfirmationBox.tscn" id="10_uy0qq"]
 
 [node name="ItemListView" type="VBoxContainer"]
 anchors_preset = 15
@@ -154,42 +87,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ConfirmationBox" type="PanelContainer" parent="PanelContainer2"]
-visible = false
-custom_minimum_size = Vector2(496.05, 145.07)
+[node name="ConfirmationBox" parent="PanelContainer2" instance=ExtResource("10_uy0qq")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer2/ConfirmationBox"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelContainer2/ConfirmationBox/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
-text = "Are you sure want to delete this? This can not be undone"
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer2/ConfirmationBox/VBoxContainer"]
-custom_minimum_size = Vector2(301.96, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
-
-[node name="Cancel" type="Button" parent="PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Cancel"
-
-[node name="DELETE" type="Button" parent="PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-theme_override_styles/normal = SubResource("StyleBoxFlat_243f8")
-theme_override_styles/hover = SubResource("StyleBoxFlat_csbl7")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_e8tmv")
-theme_override_styles/focus = SubResource("StyleBoxFlat_vpxnf")
-text = "DELETE"
 
 [connection signal="pressed" from="ToolBarContainer/HBoxContainer/New" to="." method="_on_new_pressed"]
 [connection signal="pressed" from="ToolBarContainer/HBoxContainer/SelectAll" to="." method="_on_select_all_pressed"]
@@ -198,3 +97,4 @@ text = "DELETE"
 [connection signal="pressed" from="ToolBarContainer/HBoxContainer/TakeSelection" to="." method="_on_take_selection_pressed"]
 [connection signal="pressed" from="ToolBarContainer/HBoxContainer/Edit" to="." method="_on_edit_pressed"]
 [connection signal="pressed" from="ToolBarContainer/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
+[connection signal="gui_input" from="PanelContainer2/ScrollContainer/ItemContainer" to="." method="_on_item_container_gui_input"]

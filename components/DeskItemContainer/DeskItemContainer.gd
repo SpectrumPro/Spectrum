@@ -9,6 +9,7 @@ class_name DeskItemContainer extends PanelContainer
 ## Emitted whem this desk item is clicked in edit mode
 signal clicked
 
+
 ## The BG color of this desk item when it is selected
 @export var selected_color: Color
 
@@ -87,16 +88,6 @@ func update_label() -> void:
 		_label_node.label_settings.font_size = 10
 
 
-## Returns a dictionary with the settings for this container, and the settings for the atached panel
-func save() -> Dictionary:
-	var save_data: Dictionary = {}
-	
-	if has_node("Panel") and $Panel.get("save") is Callable:
-		save_data = $Panel.save()
-	
-	return save_data
-
-
 ## Loads the settings for this node from the settings returned by save()
 func load(saved_data: Dictionary) -> void:
 	if has_node("Panel") and $Panel.get("load") is Callable:
@@ -112,10 +103,12 @@ func _on_background_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_new_position += event.relative
 		_new_position = _new_position.clamp(Vector2.ZERO, get_parent().size - size)
+		
 		self.position = _new_position.snapped(snapping_distance)
+		
 		update_label()
 		
-	if event.is_pressed():
+	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
 		clicked.emit()
 
 

@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-extends PanelContainer
+class_name ListItem extends PanelContainer
 ## GUI component for a item in an ItemListView
 
 
@@ -121,6 +121,14 @@ func set_name_method(method: Callable) -> void:
 	$Container/NameEdit.visible = true
 	
 	$Container/NameEdit.text_submitted.connect(method)
+
+
+## Sets the signal that should be listend to to update the name of this item
+func set_name_changed_signal(p_signal: Signal) -> void:
+	p_signal.connect(func (new_name: String): 
+		$Container/NameEdit.text = new_name
+		$Container/Name.text = new_name
+	)
 
 
 func _on_gui_input(event):

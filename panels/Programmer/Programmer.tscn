@@ -1,6 +1,7 @@
-[gd_scene load_steps=45 format=3 uid="uid://bwxr0mrsrt0iu"]
+[gd_scene load_steps=46 format=3 uid="uid://bwxr0mrsrt0iu"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
+[ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
 [ext_resource type="Script" path="res://panels/Programmer/ColorPicker.gd" id="2_dumhd"]
 [ext_resource type="Texture2D" uid="uid://be3tq05v1ne7n" path="res://assets/icons/Horizontal_distribute.svg" id="2_h3xak"]
 [ext_resource type="Script" path="res://panels/Programmer/ColorSystem.gd" id="2_xdlid"]
@@ -124,6 +125,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_xonfe")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(0, 355)

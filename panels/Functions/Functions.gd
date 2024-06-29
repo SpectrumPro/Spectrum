@@ -4,7 +4,8 @@
 extends Control
 ## UI panel for managing functions
 
-@export var item_list_view: NodePath
+## The list view node to show all the scenes
+@onready var item_list_view: ItemListView = $ItemListView
 
 
 func _ready() -> void:
@@ -17,18 +18,15 @@ func _ready() -> void:
 
 ## Reload the list of functions
 func _reload_functions(arg1=null, arg2=null) -> void:
-	
-	self.get_node(item_list_view).remove_all()
-	self.get_node(item_list_view).add_items(Core.functions.values(), [["fade_in_speed", "set_fade_in_speed"], ["fade_out_speed", "set_fade_out_speed"]], "set_name")
+	item_list_view.remove_all()
+	item_list_view.add_items(Core.functions.values(), [["fade_in_speed", "set_fade_in_speed"], ["fade_out_speed", "set_fade_out_speed"]], "set_name", "name_changed")
 	
 
 
 ## Called when the delete button is pressed on the ItemListView
 func _on_item_list_view_delete_requested(items: Array) -> void:
-	
 	Core.remove_functions(items)
-	
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:
-	self.get_node(item_list_view).set_selected(items)
+	item_list_view.set_selected(items)

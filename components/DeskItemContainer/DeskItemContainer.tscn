@@ -5,7 +5,12 @@
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="3_70702"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ikhvr"]
-bg_color = Color(0.211765, 0.211765, 0.211765, 1)
+bg_color = Color(0.154876, 0.154876, 0.154876, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.310617, 0.310617, 0.310617, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5

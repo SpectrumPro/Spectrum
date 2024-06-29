@@ -47,7 +47,7 @@ func _ready() -> void:
 	
 	if not DirAccess.dir_exists_absolute(ui_library_location):
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
-
+	
 	Core.universes_removed.connect(func (universes: Array):
 		Values.remove_from_selection_value("selected_universes", universes)
 	)
@@ -59,6 +59,18 @@ func _ready() -> void:
 	panels = get_packed_scenes_from_folder(panels_folder)
 	
 	_set_up_object_picker()
+	
+	_try_auto_load.call_deferred()
+
+
+func _try_auto_load() -> void:
+	if FileAccess.file_exists(ui_library_location + "/main"):
+		var file: String = FileAccess.open(ui_library_location + "/main", FileAccess.READ).get_as_text()
+		
+		var saved_data = JSON.parse_string(file)
+		if saved_data:
+			self.load(saved_data)
+
 
 ## Loads all the objects into the object picker
 func _set_up_object_picker() -> void:
@@ -166,14 +178,16 @@ func hide_object_picker() -> void:
 
 
 func save() -> Dictionary:
-	var save_data: Dictionary = {}
-	
-	for node: Control in get_tree().root.get_node("Main/TabContainer").get_children():
-		if node.get("save") is Callable:
-			save_data[node.name] = node.save()
-	
-	return save_data
+	return {
+		"main_window": get_tree().root.get_node("Main").save()
+	}
+
 
 ## Saves the current ui layout to a file
 func save_to_file():
 	Utils.save_json_to_file(ui_library_location, "main", save())
+
+
+func load(saved_data: Dictionary) -> void:
+	if saved_data.has("main_window"):
+		get_tree().root.get_node("Main").load(saved_data.main_window)
