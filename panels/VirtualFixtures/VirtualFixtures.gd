@@ -156,7 +156,7 @@ func _align(orientation: int) -> void:
 
 
 ## Called when a virtual_fixture node is selected
-func _on_virtual_fixture_selected(node) -> void:
+func _on_virtual_fixtures_node_selected(node) -> void:
 	if node not in _selected_virtual_fixtures:
 		_selected_virtual_fixtures.append(node)
 	
@@ -164,7 +164,7 @@ func _on_virtual_fixture_selected(node) -> void:
 
 
 ## Called when a virtual_fixture node is deselected
-func _on_virtual_fixture_deselected(node) -> void:
+func _on_virtual_fixtures_node_deselected(node) -> void:
 	_selected_virtual_fixtures.erase(node)
 	
 	Values.remove_from_selection_value("selected_fixtures", [node.fixture])
