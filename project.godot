@@ -32,7 +32,8 @@ driver/enable_input=true
 
 Interface="*res://scripts/Interface.gd"
 Core="*res://core/engine/Engine.gd"
-MainSocketClient="*res://scripts/websocket/WebSocketClient.gd"
+MainSocketClient="*res://scripts/networking/WebSocketClient.gd"
+MainUDPSocketClient="*res://scripts/networking/UDPSocketClient.gd"
 Client="*res://scripts/Client.gd"
 Values="*res://scripts/Values.gd"
 

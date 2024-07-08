@@ -10,7 +10,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_bfwkh")
-item_list_view = NodePath("ItemListView")
 
 [node name="ItemListView" parent="." instance=ExtResource("3_knoqd")]
 layout_mode = 2

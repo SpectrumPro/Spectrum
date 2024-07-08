@@ -104,7 +104,8 @@ func _ready() -> void:
 	MainSocketClient.connected_to_server.connect(func() :
 		load_from_server()
 	)
-
+	
+	Client.connect_to_server("127.0.0.1", 3824, 3823)
 
 func load_from_server() -> void:
 	Client.send({

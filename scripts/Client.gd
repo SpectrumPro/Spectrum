@@ -14,9 +14,31 @@ var _callbacks: Dictionary = {}
 var _networked_objects_delete_callbacks: Dictionary = {}
 
 func _ready() -> void:
-	MainSocketClient.connected_to_server.connect(func(): print("connected"))
 	MainSocketClient.message_received.connect(self._on_message_receved)
-	MainSocketClient.connect_to_url("ws://127.0.0.1:3824")
+	MainUDPSocketClient.packet_recieved.connect(self._on_udp_message_receved)
+
+
+## Starts the server on the given port, 
+func connect_to_server(ip: String, websocket_port: int, udp_port: int):
+	print("Connecting to websocket server")
+
+	var err = MainSocketClient.connect_to_url("ws://" + ip + ":" + str(websocket_port))
+	if err != OK:
+		print("Error connecting to websocket server | errorcode: ", error_string(err))
+		return
+	
+	print("Websocket connected to: ws://", ip, ":", websocket_port)
+
+	print()
+
+	print("Connecting to UDP server")
+
+	err = MainUDPSocketClient.connect_to_host(ip, udp_port)
+	if err != OK:
+		print("Error connecting to UDP server | errorcode: ", error_string(err))
+		return
+	
+	print("UDP client connected to: ", ip, ":", udp_port)
 
 
 ## Send a message to the server, all data passed is automatically converted to strings, and serialised
@@ -99,22 +121,7 @@ func _on_message_receved(message: Variant) -> void:
 			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 			var method: Dictionary = networked_object.functions[command.signal]
 			
-			# Loop through all the args passed from the server, and check the type of them against the function in the networked object
-			if "args" in command:
-				for index in len(command.args):
-					# Check if the server has passed too many args to the client, if so stop now to avoid a crash
-					if index >= len(method.args.values()):
-						print("Total arguments provided by server: ", len(command.args), " Is more then: ", command.signal, " Is expecting, at: ", len(method.args))
-						return
-					
-					# Check if the type of the arg passed by the sever matches the arg expected by the function, if not stop now to avoid a crash, ignore if the expected type is null, as this could also be Variant
-					if not typeof(command.args[index]) == method.args.values()[index] and not method.args.values()[index] == 0:
-						print("Type of data: ", command.args[index],  " does not match type: ", type_string(method.args.values()[index]), " required by: ", method.callable)
-						return
-			
-			# If all check above pass, call the function and pass the arguments
-			print_verbose("Calling Methord: ", networked_object.object.get(command.signal))
-			(networked_object.object.get(command.signal) as Callable).callv(command.get("args", []))
+			_call_method(networked_object, command.signal, method, command.get("args", []))
 	
 	# Check if it has "callback_id"
 	if "callback_id" in message:
@@ -129,3 +136,34 @@ func _on_message_receved(message: Variant) -> void:
 				_callbacks[command.callback_id].call()
 			
 			_callbacks.erase(command.callback_id)
+
+
+func _on_udp_message_receved(message: Variant) -> void:
+	if not message is Dictionary:
+		return
+	
+	for object_array: Variant in message.keys():
+		if object_array is Array and len(object_array) == 2:
+			var networked_object: Dictionary = _networked_objects.get(object_array[0], {})
+			
+			if networked_object and object_array[1] in networked_object.functions:
+				_call_method(networked_object, object_array[1], networked_object.functions[object_array[1]], message[object_array])
+			
+
+
+func _call_method(networked_object: Dictionary, method_name: String, method_dict: Dictionary, args: Array = []):
+	# Loop through all the args passed from the server, and check the type of them against the function in the networked object
+	for index in len(args):
+		# Check if the server has passed too many args to the client, if so stop now to avoid a crash
+		if index >= len(method_dict.args.values()):
+			print("Total arguments provided by server: ", len(args), " Is more then: ", method_name, " Is expecting, at: ", len(method_dict.args))
+			return
+		
+		# Check if the type of the arg passed by the sever matches the arg expected by the function, if not stop now to avoid a crash, ignore if the expected type is null, as this could also be Variant
+		if not typeof(args[index]) == method_dict.args.values()[index] and not method_dict.args.values()[index] == 0:
+			print("Type of data: ", args[index],  " does not match type: ", type_string(method_dict.args.values()[index]), " required by: ", method_dict.callable)
+			return
+	
+	# If all check above pass, call the function and pass the arguments
+	print_verbose("Calling Methord: ", networked_object.object.get(method_name))
+	(networked_object.object.get(method_name) as Callable).callv(args)
