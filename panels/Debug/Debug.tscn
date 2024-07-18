@@ -67,12 +67,84 @@ text = "Dump Networked Objects"
 layout_mode = 2
 text = "OS.get_unique_id()"
 
+[node name="ListFunctions" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "List Functions"
+
 [node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 59.43)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "Send Message To Server:"
+
+[node name="For" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer"]
+layout_mode = 2
+text = "For:"
+
+[node name="For" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "UUID"
+expand_to_text_length = true
+
+[node name="Call" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer"]
+layout_mode = 2
+text = "Call:"
+
+[node name="Method" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "Method"
+expand_to_text_length = true
+
+[node name="Args" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer"]
+layout_mode = 2
+text = "Args:"
+
+[node name="Args" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer"]
+layout_mode = 2
+text = "[]"
+placeholder_text = "Args: Array"
+expand_to_text_length = true
+
+[node name="SendMessageToServer" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "Send"
 
 [connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
 [connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Crash" to="." method="_on_crash_pressed"]
 [connection signal="resized" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer" to="." method="_on_grid_container_resized"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessageToServer" to="." method="_on_send_message_to_server_pressed"]

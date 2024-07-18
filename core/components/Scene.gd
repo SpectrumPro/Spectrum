@@ -70,7 +70,7 @@ func _on_serialize_request() -> Dictionary:
 	}
 
 
-func on_load_request(serialized_data: Dictionary) -> void:
+func _on_load_request(serialized_data: Dictionary) -> void:
 	fade_in_speed = serialized_data.get("fade_in_speed", fade_in_speed)
 	fade_out_speed = serialized_data.get("fade_out_speed", fade_out_speed)
 	

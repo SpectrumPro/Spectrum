@@ -175,6 +175,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ConfirmationBox" parent="." instance=ExtResource("13_yplrd")]
+visible = false
 custom_minimum_size = Vector2(500, 150)
 layout_mode = 2
 

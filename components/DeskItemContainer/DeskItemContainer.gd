@@ -9,6 +9,8 @@ class_name DeskItemContainer extends PanelContainer
 ## Emitted whem this desk item is clicked in edit mode
 signal clicked
 
+## Emitted whem this desk item is right clicked in edit mode
+signal right_clicked
 
 ## The BG color of this desk item when it is selected
 @export var selected_color: Color
@@ -108,8 +110,12 @@ func _on_background_gui_input(event: InputEvent) -> void:
 		
 		update_label()
 		
-	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
-		clicked.emit()
+	if event is InputEventMouseButton and event.is_released():
+		match event.button_index:
+			MOUSE_BUTTON_LEFT:
+				clicked.emit()
+			MOUSE_BUTTON_RIGHT:
+				right_clicked.emit()
 
 
 ## Called when there is a input event on the size handle, checks if it is a mouse drag, if so it will scale and snap this item

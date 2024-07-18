@@ -85,7 +85,6 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [node name="ConfirmationBox" type="PanelContainer"]
-visible = false
 custom_minimum_size = Vector2(496.05, 145.07)
 size_flags_horizontal = 4
 size_flags_vertical = 4

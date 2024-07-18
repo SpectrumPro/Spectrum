@@ -28,7 +28,7 @@ var _object_refs: Dictionary
 var _cue_refs: Dictionary
 
 ## The last index that this cue list was on
-var _old_index: int = 0
+var _old_index: float = 0
 
 ## The ItemListView used to display cues
 @onready var _cue_list_container: VBoxContainer = $VBoxContainer/List/ScrollContainer/VBoxContainer
@@ -36,6 +36,8 @@ var _old_index: int = 0
 ## Stores the lables that display status infomation about the scene
 @onready var lables: Dictionary = {
 	"cue_number": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/CueNumber,
+	"cue_lable": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/CueLable,
+	"separator": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/VSeparator,
 	"paused": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Paused,
 	"playing": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Playing,
 	"stopped": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Stopped,
@@ -56,6 +58,7 @@ func _ready() -> void:
 	)
 	
 	remove_child($Settings)
+	settings_node.show()
 	reload()
 
 
@@ -67,12 +70,12 @@ func reload(arg1=null, arg2=null, arg3=null, arg4=null):
 	
 	
 	if _current_cue_list:
-		for cue_number: int in _current_cue_list.cues.keys():
-			var cue = _current_cue_list.cues[cue_number]
+		for cue_number: float in _current_cue_list.index_list:
+			var cue: Cue = _current_cue_list.cues[cue_number]
 			var new_list_item: ListItem = Interface.components.ListItem.instantiate()
 			
-			new_list_item.set_item_name(cue.scene.name)
-			new_list_item.set_name_changed_signal(cue.scene.name_changed)
+			new_list_item.set_item_name(cue.name)
+			new_list_item.set_name_changed_signal(cue.name_changed)
 			
 			_object_refs[cue_number] = new_list_item
 			_cue_refs[new_list_item] = cue_number
@@ -85,6 +88,9 @@ func reload(arg1=null, arg2=null, arg3=null, arg4=null):
 				
 				_current_selected_item = new_list_item
 				_last_selected_item = new_list_item
+				
+				if Input.is_key_pressed(KEY_CTRL):
+					_current_cue_list.seek_to(_cue_refs[_current_selected_item])
 			)
 			
 			_cue_list_container.add_child(new_list_item)
@@ -101,9 +107,13 @@ func set_cue_list(cue_list: CueList = null) -> void:
 		_current_cue_list.cue_changed.disconnect(_on_cue_changed)
 		_current_cue_list.played.disconnect(_reload_lables)
 		_current_cue_list.paused.disconnect(_reload_lables)
-		_current_cue_list.stopped.disconnect(_reload_lables)
 	
 	_current_cue_list = cue_list
+	_current_selected_item = null
+	_last_selected_item = null
+	_object_refs = {}
+	_cue_refs = {}
+	_old_index = 0
 	
 	if _current_cue_list:
 		_current_cue_list.name_changed.connect(_reload_name)
@@ -112,7 +122,6 @@ func set_cue_list(cue_list: CueList = null) -> void:
 		_current_cue_list.cue_changed.connect(_on_cue_changed)
 		_current_cue_list.played.connect(_reload_lables)
 		_current_cue_list.paused.connect(_reload_lables)
-		_current_cue_list.stopped.connect(_reload_lables)
 	
 	reload()
 
@@ -132,7 +141,7 @@ func save() -> Dictionary:
 	}
 
 
-## Loads settingd from what was returned by save()
+## Loads setting from what was returned by save()
 func load(saved_data: Dictionary) -> void:
 	_saved_cue_list_uuid = saved_data.get("cue_list", "")
 
@@ -140,39 +149,48 @@ func load(saved_data: Dictionary) -> void:
 ## Reloads the status lables
 func _reload_lables() -> void:
 	lables.cue_number.text = "0"
+	lables.cue_number.hide()
+	lables.cue_lable.hide()
+	lables.separator.hide()
 	lables.playing.hide()
 	lables.paused.hide()
 	lables.stopped.hide()
 	
 	if _current_cue_list:
-		lables.cue_number.text = str(_current_cue_list.index)
+		lables.cue_number.text = str(_current_cue_list.current_cue_number)
 		
 		if _current_cue_list.is_playing():
 			lables.playing.show()
 			
-		elif _current_cue_list.index == 0:
+		if _current_cue_list.current_cue_number == -1:
+			lables.cue_number.hide()
+			lables.cue_lable.hide()
 			lables.stopped.show()
 			
 		else:
 			lables.paused.show()
+			lables.cue_number.show()
+			lables.cue_lable.show()
+			lables.separator.show()
+			
 
 
 func _reload_name(arg1=null):
 	if _current_cue_list:
-		$VBoxContainer/PanelContainer/Label.text = _current_cue_list.name
+		$VBoxContainer/PanelContainer/HBoxContainer/Label.text = _current_cue_list.name
 	else:
-		$VBoxContainer/PanelContainer/Label.text = "Empty List"
+		$VBoxContainer/PanelContainer/HBoxContainer/Label.text = "Empty List"
 
 
 ## Called when the current cue is changed
-func _on_cue_changed(index: int) -> void:
+func _on_cue_changed(index: float) -> void:
 	if _current_cue_list:
 		if _old_index:
 			_object_refs[_old_index].set_highlighted(false)
 		
-		if index:
+		if index in _object_refs:
 			_object_refs[index].set_highlighted(true)
-		_old_index = index
+			_old_index = index
 		
 		_reload_lables()
 

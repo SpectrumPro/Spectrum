@@ -147,11 +147,11 @@ func load(serialized_data: Dictionary) -> void:
 	if not "uuid" in serialized_data:
 		print(name, " No uuid found in serialized_data, making new one: ", uuid)
 	
-	on_load_request(serialized_data)
+	_on_load_request(serialized_data)
 
 
 ## Overide this function to handle load requests
-func on_load_request(serialized_data: Dictionary) -> void:
+func _on_load_request(serialized_data: Dictionary) -> void:
 	pass
 
 

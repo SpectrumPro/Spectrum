@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsxgp5g0jmyke"]
+[gd_scene load_steps=16 format=3 uid="uid://bsxgp5g0jmyke"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_0eyvo"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="2_20jl7"]
@@ -11,6 +11,20 @@
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="7_3vntk"]
 [ext_resource type="Script" path="res://panels/Desk/DrawGrid.gd" id="8_lbx4f"]
 [ext_resource type="PackedScene" uid="uid://db5gkmntjtqmr" path="res://components/PanelSettingContainer/PanelSettingsContainer.tscn" id="10_y11gw"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_trkq2"]
+device = -1
+keycode = 4194312
+
+[sub_resource type="Shortcut" id="Shortcut_5ty2n"]
+events = [SubResource("InputEventKey_trkq2")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_lny0k"]
+device = -1
+keycode = 4194311
+
+[sub_resource type="Shortcut" id="Shortcut_h5qqq"]
+events = [SubResource("InputEventKey_lny0k")]
 
 [node name="Desk" type="PanelContainer"]
 anchors_preset = 15
@@ -36,6 +50,7 @@ icon = ExtResource("2_20jl7")
 
 [node name="Delete" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+shortcut = SubResource("Shortcut_5ty2n")
 icon = ExtResource("3_8jyrh")
 
 [node name="Edit" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
@@ -80,6 +95,7 @@ layout_mode = 2
 [node name="EditMode" type="CheckButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 button_pressed = true
+shortcut = SubResource("Shortcut_h5qqq")
 text = "Edit Mode"
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]

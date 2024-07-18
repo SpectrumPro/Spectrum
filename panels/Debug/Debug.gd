@@ -46,3 +46,23 @@ func _on_grid_container_resized() -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/GridContainer.columns = clamp(int(self.size.x / 85), 1, INF)
 
 
+func _on_list_functions_pressed() -> void:
+	var output: Dictionary = {}
+	
+	for function_uuid: String in Core.functions:
+		output[function_uuid] = Core.functions[function_uuid].name + " | " + str(Core.functions[function_uuid])
+		
+	set_output(JSON.stringify(output, "\t"))
+
+
+func _on_send_message_to_server_pressed() -> void:
+	Client.send({
+		"for": $VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer/For.text,
+		"call": $VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer/Method.text,
+		"args": str_to_var($VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer/Args.text)
+	}, func (result=null):
+		if result is Dictionary:
+			set_output(JSON.stringify(result, "\t"))
+		else:
+			set_output(str(result))
+	)

@@ -125,6 +125,15 @@ func get_objects_from_nodes(items: Array) -> Array:
 	return object_list
 
 
+func get_names_from_nodes(nodes: Array) -> Array:
+	var object_list: Array = []
+	
+	for node in nodes:
+		object_list.append((node.name))
+	
+	return object_list
+
+
 ## Enables or dissables the buttons
 func set_buttons_enabled(state: bool):
 	
@@ -171,7 +180,9 @@ func set_highlighted(items: Array) -> void:
 	_update_highlighted()
 
 
-func _on_list_item_select_request(selected_item: Control) -> void:
+func _on_list_item_select_request(selected_item: ListItem) -> void:
+	var new_items: Array[ListItem] = []
+	
 	if Input.is_key_pressed(KEY_SHIFT) and last_selected_item and allow_multi_select:
 		var children: Array[Node] = item_container.get_children()
 		var pos_1: int = children.find(last_selected_item)
@@ -187,12 +198,18 @@ func _on_list_item_select_request(selected_item: Control) -> void:
 		for i in range(pos_1, pos_2+1):
 			items_to_select.append(children[i])
 		
+		new_items = items_to_select
+		
 		selection_changed.emit(get_objects_from_nodes(items_to_select))
 		
 	else:
 		last_selected_item = selected_item
+		new_items = [selected_item]
+		
 		selection_changed.emit(get_objects_from_nodes([selected_item]))
-
+	
+	if Input.is_key_pressed(KEY_ALT):
+		DisplayServer.clipboard_set(str(get_names_from_nodes(new_items)))
 
 
 func _update_selected() -> void:

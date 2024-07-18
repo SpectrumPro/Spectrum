@@ -31,7 +31,7 @@ static func objects_to_uuids(data):
 		TYPE_OBJECT:
 			return {
 					"_object_ref": str(data.get("uuid")),
-					"_serialized_object": data.serialize(),
+					#"_serialized_object": data.serialize(),
 					"_class_name": data.get("class_name")
 				}
 		TYPE_DICTIONARY:

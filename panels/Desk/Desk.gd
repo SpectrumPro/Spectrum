@@ -33,6 +33,11 @@ var _selected_items: Array[Control] = []
 ## Used to check if we opened the object picker, not another script
 var _object_picker_opened_here: bool = false
 
+## The position and size of the most recenelt deleted item, so if you add a new item straight away, it will appre where the one that was deleted was
+var _just_deleted_pos: Vector2 = Vector2.ZERO
+var _just_deleted_size: Vector2 = Vector2(100, 100)
+
+#endregion
 
 func _ready() -> void:
 	edit_mode = false
@@ -99,7 +104,7 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 
 
 ## Adds a new panel to this desk
-func add_panel(panel: Control, new_position: Vector2 = Vector2.ZERO, new_size: Vector2 = Vector2(100, 100), container_name: String = "") -> Control:
+func add_panel(panel: Control, new_position: Vector2 = _just_deleted_pos, new_size: Vector2 = _just_deleted_size, container_name: String = "") -> Control:
 	var new_node: Control = Interface.components.DeskItemContainer.instantiate()
 	new_node.set_edit_mode(true)
 	
@@ -108,6 +113,7 @@ func add_panel(panel: Control, new_position: Vector2 = Vector2.ZERO, new_size: V
 	snapping_distance_changed.connect(new_node.set_snapping_distance)
 	
 	new_node.clicked.connect(_on_item_clicked.bind(new_node))
+	new_node.right_clicked.connect(open_settings.bind(new_node))
 	
 	## Add the new panel that was selected in the object picker
 	new_node.set_panel(panel)
@@ -121,6 +127,19 @@ func add_panel(panel: Control, new_position: Vector2 = Vector2.ZERO, new_size: V
 	_container_node.add_child(new_node, true)
 	
 	return new_node
+
+
+func open_settings(node: DeskItemContainer = null) -> void:
+	if _selected_items or node:
+		var panel: Control = _selected_items[0].get_panel() if not node else node.get_panel()
+		
+		if "settings_node" in panel:
+			$PanelSettingsContainer.set_node(panel.settings_node)
+		
+	else:
+		$PanelSettingsContainer.remove_node()
+	
+	$PanelSettingsContainer.show()
 
 
 ## Returns a dictionary containing all the panels, there position, sizes, and setting for this desk
@@ -200,23 +219,18 @@ func _on_add_pressed() -> void:
 
 ## Removes the selected items from this desk
 func _on_delete_pressed() -> void:
-	for item in _selected_items.duplicate():
+	for item: DeskItemContainer in _selected_items.duplicate():
 		deselect_item(item)
+		
+		_just_deleted_pos = item.position
+		_just_deleted_size = item.size
+		
 		item.queue_free()
 
 
 ## Called when the edit button is pressed
 func _on_edit_pressed() -> void:
-	if _selected_items:
-		var panel: Control = _selected_items[0].get_panel()
-		
-		if "settings_node" in panel:
-			$PanelSettingsContainer.set_node(panel.settings_node)
-		
-	else:
-		$PanelSettingsContainer.remove_node()
-	
-	$PanelSettingsContainer.show()
+	open_settings()
 
 
 ## Called when the copy button is pressed

@@ -14,6 +14,7 @@ static var component_class_table: Dictionary = {
 	"Universe": Universe,
 	"Fixture": Fixture,
 	"Programmer": Programmer,
+	"Cue": Cue
 }
 
 
