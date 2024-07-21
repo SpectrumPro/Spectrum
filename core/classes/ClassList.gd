@@ -30,7 +30,12 @@ static var output_class_table: Dictionary = {
 	"ArtNetOutput": ArtNetOutput
 }
 
+## Contains the class name string of all the objects that need to be load() instantainsualy, instead of using call_deferred
+static var insta_load_objects: Array = [
+	"Cue"
+]
 
+ 
 static func get_global_class_list() -> Dictionary:
 	var merged_list = component_class_table.duplicate()
 	merged_list.merge(function_class_table)

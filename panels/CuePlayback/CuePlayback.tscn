@@ -76,9 +76,10 @@ layout_mode = 2
 text = "Cue Name
 "
 
-[node name="Button" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Store" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+disabled = true
 text = "Store"
 
 [node name="EditMode" type="CheckButton" parent="VBoxContainer/PanelContainer/HBoxContainer"]
@@ -201,7 +202,7 @@ text = "Change Cue List"
 
 [node name="StoreConfirmationBox" type="PanelContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(500, 207.58)
+custom_minimum_size = Vector2(500, 244.825)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -210,15 +211,55 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
 [node name="VBoxContainer2" type="VBoxContainer" parent="StoreConfirmationBox"]
 custom_minimum_size = Vector2(464.225, 0)
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SaveMode" type="TabBar" parent="StoreConfirmationBox/VBoxContainer2/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tab_count = 3
+tab_alignment = 1
+tab_0/title = "Modified Channels"
+tab_1/title = "All Channels"
+tab_2/title = "None Zero"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="StoreConfirmationBox/VBoxContainer2"]
+[node name="StoreLabel" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
-text = "Store selection of: 5 fixtures to cue: 2.4?"
+text = "Store selection of: "
 horizontal_alignment = 1
+
+[node name="NumOfFixtures" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(0, 24.55)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n58hq")
+text = "0"
+label_settings = SubResource("LabelSettings_eonr0")
+vertical_alignment = 2
+
+[node name="FixturesLabel" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "fixtures to cue:"
+horizontal_alignment = 1
+
+[node name="CueNumber" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(0, 24.55)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n58hq")
+text = "0"
+label_settings = SubResource("LabelSettings_eonr0")
+vertical_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
 custom_minimum_size = Vector2(268.54, 0)
@@ -252,16 +293,24 @@ size_flags_horizontal = 3
 text = "Erace"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(201.56, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer3"]
+[node name="New Cue" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer3"]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "New Cue"
+
+[node name="Cancel" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "Cancel"
 
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Store" to="." method="_on_store_pressed"]
 [connection signal="gui_input" from="VBoxContainer/List/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_gui_input"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed" flags=3]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Go" to="." method="_on_go_pressed"]
@@ -270,3 +319,5 @@ text = "Cancel"
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
 [connection signal="pressed" from="Settings/VBoxContainer/ChangeCueList" to="." method="_on_change_cue_list_pressed"]
+[connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/HBoxContainer3/New Cue" to="." method="_on_new_cue_pressed"]
+[connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/HBoxContainer3/Cancel" to="." method="_on_cancel_pressed"]

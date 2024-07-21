@@ -4,8 +4,8 @@
 class_name Programmer extends EngineComponent
 ## Engine class for programming lights, colors, positions, etc.
 
-var save_data: Dictionary = {} ## Current data in the programmer
 
+enum SAVE_MODE {ALL, MODIFIED}
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:

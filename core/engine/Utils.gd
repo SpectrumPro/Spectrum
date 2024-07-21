@@ -65,8 +65,11 @@ static func uuids_to_objects(data: Variant, networked_objects: Dictionary, callb
 						var initialized_object = ClassList.global_class_table[data["_class_name"]].new(data._object_ref)
 						
 						if initialized_object.has_method("load") and "_serialized_object" in data.keys():
-							initialized_object.load.call_deferred(data._serialized_object)
-						
+							if data["_class_name"] in ClassList.insta_load_objects:
+								initialized_object.load(data._serialized_object)
+							else:
+								initialized_object.load.call_deferred(data._serialized_object)
+							
 						return initialized_object
 				else:
 					return null

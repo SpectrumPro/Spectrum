@@ -57,6 +57,11 @@ func _ready() -> void:
 				set_cue_list(null)
 	)
 	
+	Values.connect_to_selection_value("selected_fixtures", func (selected_fixtures: Array):
+		$VBoxContainer/PanelContainer/HBoxContainer/Store.disabled = selected_fixtures == []
+		$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/NumOfFixtures.text = str(len(selected_fixtures))
+	)
+	
 	remove_child($Settings)
 	settings_node.show()
 	reload()
@@ -64,10 +69,16 @@ func _ready() -> void:
 
 ## Reloads the list of cues
 func reload(arg1=null, arg2=null, arg3=null, arg4=null):
+	
 	for old_item: Control in _cue_list_container.get_children():
 		_cue_list_container.remove_child(old_item)
 		old_item.queue_free()
 	
+	_current_selected_item = null
+	_last_selected_item = null
+	_object_refs = {}
+	_cue_refs = {}
+	_old_index = 0
 	
 	if _current_cue_list:
 		for cue_number: float in _current_cue_list.index_list:
@@ -91,6 +102,8 @@ func reload(arg1=null, arg2=null, arg3=null, arg4=null):
 				
 				if Input.is_key_pressed(KEY_CTRL):
 					_current_cue_list.seek_to(_cue_refs[_current_selected_item])
+				
+				$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/CueNumber.text = str(cue_number)
 			)
 			
 			_cue_list_container.add_child(new_list_item)
@@ -109,11 +122,7 @@ func set_cue_list(cue_list: CueList = null) -> void:
 		_current_cue_list.paused.disconnect(_reload_lables)
 	
 	_current_cue_list = cue_list
-	_current_selected_item = null
-	_last_selected_item = null
-	_object_refs = {}
-	_cue_refs = {}
-	_old_index = 0
+
 	
 	if _current_cue_list:
 		_current_cue_list.name_changed.connect(_reload_name)
@@ -193,7 +202,7 @@ func _on_cue_changed(index: float) -> void:
 			_old_index = index
 		
 		_reload_lables()
-
+	
 
 func _on_change_cue_list_pressed() -> void:
 	Interface.show_object_picker(func (key: Variant, value: Variant):
@@ -236,3 +245,23 @@ func _on_v_box_container_gui_input(event: InputEvent) -> void:
 		_last_selected_item = null
 		if _current_selected_item:
 			_current_selected_item.set_selected(false)
+		
+		$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/CueNumber.text = "null"
+
+
+## Edit Controls
+
+
+func _on_store_pressed() -> void: if _current_cue_list: $StoreConfirmationBox.show()
+func _on_cancel_pressed() -> void: $StoreConfirmationBox.hide()
+
+func _get_save_mode() -> int:
+	return $StoreConfirmationBox/VBoxContainer2/PanelContainer/SaveMode.current_tab
+
+func _on_new_cue_pressed() -> void:
+	if _current_cue_list:
+		Client.send({
+			"for": "programmer",
+			"call": "save_to_new_cue",
+			"args": [Values.get_selection_value("selected_fixtures", []), _current_cue_list, _get_save_mode()]
+		})

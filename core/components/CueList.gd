@@ -49,20 +49,15 @@ func _component_ready() -> void:
 
 ## Adds a pre existing cue to this CueList
 ## Returnes false if the cue already exists in this list, or if the index is already in use
-func _add_cue(cue: Cue, index: float = 0) -> bool:
-
-	if index <= 0:
-		index = (index_list[-1] + 1) if index_list else 1
-
-	if cue in cues.values() or index in index_list:
-		return false
-
-	cues[index] = cue
-	index_list.append(index)
+func _add_cue(cue: Cue, number: float = 0, no_signal: bool = false) -> bool:
+	cues[number] = cue
+	index_list.append(number)
 	index_list.sort()
 	
+	if not no_signal:
+		cues_added.emit([cue])
+	
 	return true
-
 
 ## Plays this CueList, starting at index, or from the current index if one is not provided
 func play(start_index: int = -1) -> void:
@@ -148,6 +143,12 @@ func on_stopped():
 	
 	cue_changed.emit(current_cue_number)
 
+## INTERNAL: Called when a cue is added on the server
+func on_cues_added(cues: Array) -> void:
+	for cue in cues:
+		if cue is Cue:
+			_add_cue(cue, cue.number)
+
 
 func _on_load_request(serialized_data: Dictionary) -> void:
 	var just_added_cues: Array = []
@@ -156,7 +157,7 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 		var new_cue: Cue = Cue.new()
 		new_cue.load(serialized_data.cues[cue_index])
 		
-		if _add_cue(new_cue, cue_index):
+		if _add_cue(new_cue, cue_index, true):
 			just_added_cues.append(new_cue)
 	
 	if just_added_cues:
