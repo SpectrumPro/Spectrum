@@ -22,7 +22,7 @@ func _ready() -> void:
 func _reload_fixtures(arg1=null, arg2=null) -> void:
 	
 	self.get_node(item_list_view).remove_all()
-	self.get_node(item_list_view).add_items(Core.fixtures.values())
+	self.get_node(item_list_view).add_items(Core.fixtures.values(), [["channel", "set_channel"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView

@@ -15,6 +15,8 @@
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="11_2p5tm"]
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="12_n6ss3"]
 
+[sub_resource type="ImageTexture" id="ImageTexture_u2yqc"]
+
 [sub_resource type="Gradient" id="Gradient_gmuai"]
 colors = PackedColorArray(0, 0, 0, 1, 0.960784, 0, 0, 1)
 
@@ -31,8 +33,6 @@ texture_margin_right = 18.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vbofy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kg3ch"]
-
-[sub_resource type="ImageTexture" id="ImageTexture_u2yqc"]
 
 [sub_resource type="Gradient" id="Gradient_1se0o"]
 colors = PackedColorArray(0, 0, 0, 1, 0, 1, 0, 1)
@@ -167,16 +167,52 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "ZERO"
 
+[node name="RESET" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/QuickButtons/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "RESET"
+
 [node name="LevelControls" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 
 [node name="ColorSystem" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls"]
 layout_mode = 2
 script = ExtResource("2_xdlid")
-color_picker = NodePath("ColorPicker/Control/ColorPicker")
+color_picker = NodePath("ColorPicker/VBoxContainer/Control/ColorPicker")
 red_slider = NodePath("ColorSliders/HBoxContainer/RedSlider/RedSider")
 green_slider = NodePath("ColorSliders/HBoxContainer/GreenSlider/GreenSlider")
 blue_slider = NodePath("ColorSliders/HBoxContainer/BlueSlider/BlueSlider")
+
+[node name="Dimmer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
+layout_mode = 2
+
+[node name="DimmerSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
+layout_mode = 2
+text = "Dimmer"
+horizontal_alignment = 1
+
+[node name="DimmerSider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+max_value = 255.0
+script = ExtResource("3_avej0")
+spin_box = NodePath("../SpinBox")
+
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
+layout_mode = 2
+theme_override_icons/updown = SubResource("ImageTexture_u2yqc")
+max_value = 255.0
+alignment = 1
+prefix = "R:"
+select_all_on_focus = true
+
+[node name="DimmerReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
+layout_mode = 2
+text = "Reset"
 
 [node name="ColorSliders" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
@@ -186,6 +222,11 @@ layout_mode = 2
 
 [node name="RedSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/RedSlider"]
+layout_mode = 2
+text = "Red"
+horizontal_alignment = 1
 
 [node name="RedSider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/RedSlider"]
 layout_mode = 2
@@ -209,6 +250,11 @@ select_all_on_focus = true
 [node name="GreenSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer"]
 layout_mode = 2
 
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/GreenSlider"]
+layout_mode = 2
+text = "Green"
+horizontal_alignment = 1
+
 [node name="GreenSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/GreenSlider"]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -230,6 +276,11 @@ select_all_on_focus = true
 
 [node name="BlueSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/BlueSlider"]
+layout_mode = 2
+text = "Blue"
+horizontal_alignment = 1
 
 [node name="BlueSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/BlueSlider"]
 layout_mode = 2
@@ -253,17 +304,20 @@ select_all_on_focus = true
 [node name="ColorPicker" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(243.42, 239.52)
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 4
+size_flags_vertical = 6
 
-[node name="ColorPicker" type="ColorPicker" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/Control"]
+[node name="ColorPicker" type="ColorPicker" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control"]
 layout_mode = 1
-offset_right = 302.52
-offset_bottom = 275.75
+offset_right = 298.0
+offset_bottom = 306.0
 scale = Vector2(0.8, 0.8)
 size_flags_horizontal = 10
 size_flags_vertical = 0
@@ -276,6 +330,10 @@ hex_visible = false
 presets_visible = false
 script = ExtResource("2_dumhd")
 
+[node name="ColorReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer"]
+layout_mode = 2
+text = "Reset"
+
 [node name="ExtraIntensityChannels" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
 
@@ -284,6 +342,11 @@ layout_mode = 2
 
 [node name="WhiteSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
+layout_mode = 2
+text = "White"
+horizontal_alignment = 1
 
 [node name="WhiteSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
 layout_mode = 2
@@ -303,8 +366,17 @@ max_value = 255.0
 alignment = 1
 prefix = "W:"
 
+[node name="WhiteReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
+layout_mode = 2
+text = "Reset"
+
 [node name="AmberSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
+layout_mode = 2
+text = "Amber"
+horizontal_alignment = 1
 
 [node name="AmberSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
 layout_mode = 2
@@ -324,8 +396,17 @@ max_value = 255.0
 alignment = 1
 prefix = "A:"
 
+[node name="AmberReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
+layout_mode = 2
+text = "Reset"
+
 [node name="UVSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer"]
 layout_mode = 2
+
+[node name="White" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
+layout_mode = 2
+text = "UV"
+horizontal_alignment = 1
 
 [node name="UVSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
 layout_mode = 2
@@ -345,26 +426,9 @@ max_value = 255.0
 alignment = 1
 prefix = "UV:"
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light"]
+[node name="UVReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
 layout_mode = 2
-
-[node name="Dimmer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/PanelContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/PanelContainer/Dimmer"]
-layout_mode = 2
-text = "Dimmer"
-horizontal_alignment = 1
-
-[node name="VSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/PanelContainer/Dimmer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/TabContainer/Light/PanelContainer/Dimmer"]
-layout_mode = 2
-theme_override_icons/updown = SubResource("ImageTexture_u2yqc")
-alignment = 1
+text = "Reset"
 
 [node name="Virtual Position" type="HBoxContainer" parent="HBoxContainer/TabContainer"]
 visible = false
@@ -632,11 +696,19 @@ layout_mode = 2
 size_flags_horizontal = 10
 text = "Add To Cue"
 
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider/DimmerSider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_dimmer_sider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider/DimmerReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_dimmer_reset_pressed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/RedSlider/RedSider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_red_sider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/GreenSlider/GreenSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_green_slider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/BlueSlider/BlueSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_blue_slider_value_changed"]
-[connection signal="resized" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/Control" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/Control/ColorPicker" method="_on_control_resized"]
-[connection signal="color_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/Control/ColorPicker" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_picker_color_changed"]
+[connection signal="resized" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control/ColorPicker" method="_on_control_resized"]
+[connection signal="color_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control/ColorPicker" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_picker_color_changed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/ColorReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_reset_pressed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider/WhiteSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_white_slider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider/WhiteReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_white_reset_pressed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider/AmberSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_amber_slider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider/AmberReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_amber_reset_pressed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider/UVSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_uv_slider_value_changed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider/UVReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_uv_reset_pressed"]
 [connection signal="pressed" from="HBoxContainer/PanelContainer/HBoxContainer/Button" to="HBoxContainer/PanelContainer/HBoxContainer/SceneControls" method="_on_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Save/HBoxContainer/Save" to="HBoxContainer/PanelContainer/HBoxContainer/SceneControls" method="_on_save_pressed"]

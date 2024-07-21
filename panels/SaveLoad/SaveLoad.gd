@@ -13,7 +13,8 @@ func _ready() -> void:
 	else:
 		MainSocketClient.connected_to_server.connect(func ():
 			_load_from_server()
-		, CONNECT_ONE_SHOT)
+		, CONNECT_ONE_SHOT)## Sets the color of all the fixtures in [pram fixtures], to color
+
 
 
 func refresh() -> void:
@@ -97,3 +98,16 @@ func _on_import_local_file_dialog_file_selected(path: String) -> void:
 				refresh()
 		)
 	)
+
+
+func _on_merge_pressed() -> void:
+	var file_name: String = $VBoxContainer/HBoxContainer/PanelContainer2/HBoxContainer/FileName.text
+	
+	if file_name:
+		Client.send({
+			"for": "engine",
+			"call": "load_from_file",
+			"args": [file_name]
+		}, func ():
+			refresh()
+		)

@@ -236,4 +236,3 @@ func _on_v_box_container_gui_input(event: InputEvent) -> void:
 		_last_selected_item = null
 		if _current_selected_item:
 			_current_selected_item.set_selected(false)
-

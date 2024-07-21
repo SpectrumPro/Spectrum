@@ -82,7 +82,7 @@ func add_chip(object: Object, property: String, set_method: Callable) -> void:
 	match typeof(object.get(property)):
 		TYPE_INT:
 			input = SpinBox.new()
-			input.fla
+			#input.fla
 			input.value = object.get(property)
 			node_signal = input.value_changed
 		
