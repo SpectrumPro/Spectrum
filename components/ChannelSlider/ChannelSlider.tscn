@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbtm8eq5rbugv"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jnmjo"]
+[ext_resource type="Script" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
+[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="3_io6qu"]
+
+[node name="ChannelSlider" type="PanelContainer"]
+anchors_preset = -1
+anchor_right = 0.062
+anchor_bottom = 0.397
+offset_right = -0.0400085
+offset_bottom = 0.23999
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_jnmjo")
+script = ExtResource("2_adqf8")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Channel Number" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "0"
+
+[node name="VSlider" type="VSlider" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+max_value = 255.0
+tick_count = 15
+ticks_on_borders = true
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer"]
+layout_mode = 2
+max_value = 255.0
+
+[node name="Clear" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_io6qu")
+icon_alignment = 1
+
+[connection signal="value_changed" from="VBoxContainer/VSlider" to="." method="_on_v_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="pressed" from="VBoxContainer/Clear" to="." method="_on_clear_pressed"]

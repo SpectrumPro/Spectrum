@@ -181,7 +181,7 @@ func set_highlighted(items: Array) -> void:
 
 
 func _on_list_item_select_request(selected_item: ListItem) -> void:
-	var new_items: Array[ListItem] = []
+	var new_items: Array = []
 	
 	if Input.is_key_pressed(KEY_SHIFT) and last_selected_item and allow_multi_select:
 		var children: Array[Node] = item_container.get_children()
