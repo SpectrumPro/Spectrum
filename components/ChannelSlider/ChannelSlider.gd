@@ -17,6 +17,8 @@ func set_channel(p_channel: int) -> void:
 func clear_no_message() -> void:
 	$VBoxContainer/VSlider.set_value_no_signal(0)
 	$VBoxContainer/SpinBox.set_value_no_signal(0)
+	$WarningBG.hide()
+
 
 
 func _send_set_value_message(value: int) -> void:
@@ -29,17 +31,18 @@ func _send_set_value_message(value: int) -> void:
 
 func _on_v_slider_value_changed(value: float) -> void:
 	$VBoxContainer/SpinBox.set_value_no_signal(value)
+	$WarningBG.show()
 	_send_set_value_message(value)
 
 
 func _on_spin_box_value_changed(value: float) -> void:
 	$VBoxContainer/VSlider.set_value_no_signal(value)
+	$WarningBG.show()
 	_send_set_value_message(value)
 
 
 func _on_clear_pressed() -> void:
-	$VBoxContainer/VSlider.set_value_no_signal(0)
-	$VBoxContainer/SpinBox.set_value_no_signal(0)
+	clear_no_message()
 	
 	Client.send({
 		"for": universe_object_id,

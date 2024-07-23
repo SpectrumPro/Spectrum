@@ -1,8 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://cbtm8eq5rbugv"]
+[gd_scene load_steps=5 format=3 uid="uid://cbtm8eq5rbugv"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jnmjo"]
 [ext_resource type="Script" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="3_io6qu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erjei"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 0.0627451, 0.0627451, 0.403922)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="ChannelSlider" type="PanelContainer"]
 anchors_preset = -1
@@ -16,6 +27,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_jnmjo")
 script = ExtResource("2_adqf8")
+
+[node name="WarningBG" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_erjei")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
