@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bwxr0mrsrt0iu"]
+[gd_scene load_steps=30 format=3 uid="uid://bwxr0mrsrt0iu"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
 [ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
@@ -8,10 +8,11 @@
 [ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_rvdr4"]
 [ext_resource type="Script" path="res://panels/Programmer/Channels.gd" id="6_drfid"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="7_nwwpk"]
-[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="9_3r2y2"]
-[ext_resource type="Script" path="res://panels/Programmer/SceneControls.gd" id="10_0ciks"]
-[ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="11_2p5tm"]
-[ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="12_n6ss3"]
+[ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://assets/icons/Scene.svg" id="7_ofqgp"]
+[ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/Cue_list.svg" id="8_7bmnv"]
+[ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="8_fvid6"]
+[ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="9_knja0"]
+[ext_resource type="Script" path="res://panels/Programmer/SaveControls.gd" id="11_stngn"]
 
 [sub_resource type="Gradient" id="Gradient_gmuai"]
 colors = PackedColorArray(0, 0, 0, 1, 0.960784, 0, 0, 1)
@@ -97,6 +98,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="QuickButtons" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/QuickButtons"]
@@ -121,6 +123,7 @@ text = "RESET"
 
 [node name="LevelControls" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ColorSystem" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls"]
 layout_mode = 2
@@ -319,130 +322,43 @@ text = "Universe:"
 [node name="OptionButton" type="OptionButton" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
 layout_mode = 2
 
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer"]
+layout_mode = 2
+
+[node name="Left" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("8_fvid6")
+
+[node name="Right" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("9_knja0")
+
 [node name="ClearAll" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 text = "Clear All"
 icon = ExtResource("7_nwwpk")
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="SaveControls" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+script = ExtResource("11_stngn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/SaveControls"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer"]
+[node name="SaveToScene" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Save to Scene"
+icon = ExtResource("7_ofqgp")
 
-[node name="Button" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="SaveToCueList" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
 layout_mode = 2
-icon = ExtResource("9_3r2y2")
-icon_alignment = 1
-
-[node name="SceneControls" type="VBoxContainer" parent="HBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-script = ExtResource("10_0ciks")
-
-[node name="FadeIn" type="PanelContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeIn"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeIn/HBoxContainer"]
-layout_mode = 2
-text = "Fade In"
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeIn/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-suffix = "S"
-select_all_on_focus = true
-
-[node name="Button" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeIn/HBoxContainer"]
-layout_mode = 2
-text = "Tap"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls"]
-layout_mode = 2
-
-[node name="UseBelow" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Use Fade Out time for Fade In"
-icon = ExtResource("11_2p5tm")
-icon_alignment = 1
-
-[node name="0Seconds" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "0"
-
-[node name="0_5Seconds" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "0.5"
-
-[node name="1Second" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "1"
-
-[node name="UseAbove" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Use Fade In time for Fade Out"
-icon = ExtResource("12_n6ss3")
-icon_alignment = 1
-
-[node name="FadeOut" type="PanelContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeOut"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeOut/HBoxContainer"]
-layout_mode = 2
-text = "Fade Out"
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeOut/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-suffix = "S"
-select_all_on_focus = true
-
-[node name="Button" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/FadeOut/HBoxContainer"]
-layout_mode = 2
-text = "Tap"
-
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls"]
-layout_mode = 2
-
-[node name="Name" type="PanelContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls"]
-layout_mode = 2
-size_flags_vertical = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Name"]
-layout_mode = 2
-
-[node name="LineEdit" type="LineEdit" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Name/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Scene Name"
-
-[node name="Save" type="PanelContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls"]
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Save"]
-layout_mode = 2
-
-[node name="Save" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Save/HBoxContainer"]
-layout_mode = 2
-text = "Save To Scene"
-
-[node name="Button2" type="Button" parent="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Save/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "Add To Cue"
+tooltip_text = "Save to CueList"
+icon = ExtResource("8_7bmnv")
 
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/RedSlider/RedSider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_red_sider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/GreenSlider/GreenSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_green_slider_value_changed"]
@@ -451,6 +367,8 @@ text = "Add To Cue"
 [connection signal="color_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control/ColorPicker" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/ColorReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_reset_pressed"]
 [connection signal="item_selected" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/OptionButton" to="HBoxContainer/TabContainer/Channels" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer/Left" to="HBoxContainer/TabContainer/Channels" method="_on_left_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer/Right" to="HBoxContainer/TabContainer/Channels" method="_on_right_pressed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/ClearAll" to="HBoxContainer/TabContainer/Channels" method="_on_clear_all_pressed"]
-[connection signal="pressed" from="HBoxContainer/PanelContainer/HBoxContainer/Button" to="HBoxContainer/PanelContainer/HBoxContainer/SceneControls" method="_on_button_pressed"]
-[connection signal="pressed" from="HBoxContainer/PanelContainer/HBoxContainer/SceneControls/Save/HBoxContainer/Save" to="HBoxContainer/PanelContainer/HBoxContainer/SceneControls" method="_on_save_pressed"]
+[connection signal="pressed" from="HBoxContainer/SaveControls/VBoxContainer/SaveToScene" to="HBoxContainer/SaveControls" method="_on_save_to_scene_pressed"]
+[connection signal="pressed" from="HBoxContainer/SaveControls/VBoxContainer/SaveToCueList" to="HBoxContainer/SaveControls" method="_on_save_to_cue_list_pressed"]

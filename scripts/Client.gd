@@ -51,6 +51,15 @@ func send(data: Dictionary, callback: Callable = Callable()) -> void:
 	MainSocketClient.send(var_to_str(Utils.objects_to_uuids(data)))
 
 
+## Sends a command to the server
+func send_command(object_id: String, method: String, args: Array = []) -> void:
+	Client.send({
+		"for": object_id,
+		"call": method,
+		"args": args
+	})
+
+
 ## Add a network object
 func add_networked_object(object_name: String, object: Object, delete_signal: Signal = Signal()) -> void:
 	

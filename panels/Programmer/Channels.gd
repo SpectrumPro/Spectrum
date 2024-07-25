@@ -82,3 +82,14 @@ func _on_clear_all_pressed() -> void:
 		"for": _current_universe.uuid,
 		"call": "remove_all_dmx_overrides",
 	})
+
+
+func _on_left_pressed() -> void:
+	var scroll_container: ScrollContainer = $UniverseContainer/ScrollContainer
+	scroll_container.scroll_horizontal = scroll_container.scroll_horizontal - 500
+
+
+
+func _on_right_pressed() -> void:
+	var scroll_container: ScrollContainer = $UniverseContainer/ScrollContainer
+	scroll_container.scroll_horizontal = scroll_container.scroll_horizontal + 500
