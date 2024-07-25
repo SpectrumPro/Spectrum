@@ -32,7 +32,8 @@ static var output_class_table: Dictionary = {
 
 ## Contains the class name string of all the objects that need to be load() instantainsualy, instead of using call_deferred
 static var insta_load_objects: Array = [
-	"Cue"
+	"Cue",
+	"Fixture"
 ]
 
  

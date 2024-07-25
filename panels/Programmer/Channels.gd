@@ -46,8 +46,12 @@ func _reload_sliders(new_universe: Universe) -> void:
 		for channel: int in range(1, 513):
 			var channel_slider: ChannelSlider = Interface.components.ChannelSlider.instantiate()
 			
-			channel_slider.channel = channel
-			channel_slider.universe_object_id = new_universe.uuid
+			channel_slider.set_label_text(str(channel))
+			channel_slider.args_befour = [channel]
+			channel_slider.object_id = new_universe.uuid
+			
+			channel_slider.method = "set_dmx_override"
+			channel_slider.reset_method = "remove_dmx_override"
 			
 			clear_all_presses.connect(channel_slider.clear_no_message)
 			

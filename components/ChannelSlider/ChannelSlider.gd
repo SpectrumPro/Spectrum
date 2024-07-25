@@ -1,17 +1,24 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
+@tool
 class_name ChannelSlider extends PanelContainer
 ## The slider used for channel overrides
 
+@export var object_id: String = ""
+@export var method: String = ""
+@export var reset_method: String = ""
+@export var args_befour: Array = []
+@export var args_after: Array = []
+@export var label_text: String = "Slider": set = set_label_text
+@export var send_selection_value: String = ""
 
-var channel: int = 1 : set = set_channel
-var universe_object_id: String = "programmer"
 
-
-func set_channel(p_channel: int) -> void:
-	channel = p_channel
-	$"VBoxContainer/Channel Number".text = str(channel)
+func set_label_text(text: String):
+	label_text = text
+	
+	if is_node_ready():
+		$VBoxContainer/Label.text = text
 
 
 func clear_no_message() -> void:
@@ -20,12 +27,23 @@ func clear_no_message() -> void:
 	$WarningBG.hide()
 
 
+func _ready() -> void:
+	set_label_text(label_text)
+
 
 func _send_set_value_message(value: int) -> void:
+	
+	var args: Array = []
+	
+	if send_selection_value:
+		args_befour + Values.get_selection_value(send_selection_value, []) + [value] + args_after 
+	else:
+		args_befour + [value] + args_after 
+	
 	Client.send({
-		"for": universe_object_id,
-		"call": "set_dmx_override",
-		"args": [channel, value]
+		"for": object_id,
+		"call": method,
+		"args": args
 	})
 
 
@@ -45,7 +63,7 @@ func _on_clear_pressed() -> void:
 	clear_no_message()
 	
 	Client.send({
-		"for": universe_object_id,
-		"call": "remove_dmx_override",
-		"args": [channel]
+		"for": object_id,
+		"call": reset_method,
+		"args": args_befour if not send_selection_value else args_befour + Values.get_selection_value(send_selection_value, [])
 	})

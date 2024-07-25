@@ -76,10 +76,12 @@ func _reload_menu() -> void:
 	for mode: String in current_fixture.modes:
 		self.get_node(fixture_modes_option).add_item(mode)
 	
-	#self.get_node(fixture_modes_option).selected = options.mode - 1
+	print(options.mode)
+	print()
+	self.get_node(fixture_modes_option).selected = options.mode
 	
-	for channel: String in current_fixture.modes.values()[options.mode].channels:
-		self.get_node(fixture_channel_list).add_item(channel)
+	for channel_key: String in current_fixture.modes.values()[options.mode].channels:
+		self.get_node(fixture_channel_list).add_item(channel_key.capitalize())
 
 
 ## Reload the list of universes

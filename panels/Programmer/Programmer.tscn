@@ -1,18 +1,17 @@
-[gd_scene load_steps=43 format=3 uid="uid://bwxr0mrsrt0iu"]
+[gd_scene load_steps=29 format=3 uid="uid://bwxr0mrsrt0iu"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
 [ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
 [ext_resource type="Script" path="res://panels/Programmer/ColorPicker.gd" id="2_dumhd"]
 [ext_resource type="Script" path="res://panels/Programmer/ColorSystem.gd" id="2_xdlid"]
 [ext_resource type="Script" path="res://panels/Programmer/Slider.gd" id="3_avej0"]
+[ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_rvdr4"]
 [ext_resource type="Script" path="res://panels/Programmer/Channels.gd" id="6_drfid"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="7_nwwpk"]
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="9_3r2y2"]
 [ext_resource type="Script" path="res://panels/Programmer/SceneControls.gd" id="10_0ciks"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="11_2p5tm"]
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="12_n6ss3"]
-
-[sub_resource type="ImageTexture" id="ImageTexture_u2yqc"]
 
 [sub_resource type="Gradient" id="Gradient_gmuai"]
 colors = PackedColorArray(0, 0, 0, 1, 0.960784, 0, 0, 1)
@@ -30,6 +29,8 @@ texture_margin_right = 18.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vbofy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kg3ch"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_u2yqc"]
 
 [sub_resource type="Gradient" id="Gradient_1se0o"]
 colors = PackedColorArray(0, 0, 0, 1, 0, 1, 0, 1)
@@ -65,57 +66,6 @@ texture_margin_right = 18.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n84bv"]
 
-[sub_resource type="Gradient" id="Gradient_cmk4o"]
-colors = PackedColorArray(0, 0, 0, 1, 0.960784, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_q7188"]
-gradient = SubResource("Gradient_cmk4o")
-fill_from = Vector2(0, 1)
-fill_to = Vector2(0, 0)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_523b0"]
-texture = SubResource("GradientTexture2D_q7188")
-texture_margin_left = 18.0
-texture_margin_right = 18.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5lav3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6n2ss"]
-
-[sub_resource type="Gradient" id="Gradient_d1j45"]
-colors = PackedColorArray(0, 0, 0, 1, 0.960784, 0.564706, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_m7hbc"]
-gradient = SubResource("Gradient_d1j45")
-fill_from = Vector2(0, 1)
-fill_to = Vector2(0, 0)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m2b7q"]
-texture = SubResource("GradientTexture2D_m7hbc")
-texture_margin_left = 18.0
-texture_margin_right = 18.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d8pi4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q2oaw"]
-
-[sub_resource type="Gradient" id="Gradient_j6wn8"]
-colors = PackedColorArray(0, 0, 0, 1, 0.568627, 0, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_w3voi"]
-gradient = SubResource("Gradient_j6wn8")
-fill_from = Vector2(0, 1)
-fill_to = Vector2(0, 0)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7adgc"]
-texture = SubResource("GradientTexture2D_w3voi")
-texture_margin_left = 18.0
-texture_margin_right = 18.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_puenb"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pxt8f"]
-
 [node name="Programmer" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
@@ -132,10 +82,8 @@ theme = ExtResource("1_jp1gn")
 [node name="TabContainer" type="TabContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-current_tab = 1
 
 [node name="Light" type="HBoxContainer" parent="HBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Light"]
@@ -185,33 +133,13 @@ blue_slider = NodePath("ColorSliders/HBoxContainer/BlueSlider/BlueSlider")
 [node name="Dimmer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
 
-[node name="DimmerSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer"]
+[node name="DimmerSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
-layout_mode = 2
-text = "Dimmer"
-horizontal_alignment = 1
-
-[node name="DimmerSider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-max_value = 255.0
-script = ExtResource("3_avej0")
-spin_box = NodePath("../SpinBox")
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
-layout_mode = 2
-theme_override_icons/updown = SubResource("ImageTexture_u2yqc")
-max_value = 255.0
-alignment = 1
-prefix = "R:"
-select_all_on_focus = true
-
-[node name="DimmerReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider"]
-layout_mode = 2
-text = "Reset"
+object_id = "programmer"
+method = "Dimmer"
+reset_method = "reset_Dimmer"
+label_text = "Dimmer"
+send_selection_value = "selected_fixtures"
 
 [node name="ColorSliders" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
@@ -339,97 +267,32 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels"]
 layout_mode = 2
 
-[node name="WhiteSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer"]
+[node name="ChannelSlider3" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
+object_id = "programmer"
+method = "ColorIntensityWhite"
+reset_method = "reset_ColorIntensityWhite"
+label_text = "White"
+send_selection_value = "selected_fixtures"
 
-[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
+[node name="ChannelSlider2" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
-text = "White"
-horizontal_alignment = 1
+object_id = "programmer"
+method = "ColorIntensityAmber"
+reset_method = "reset_ColorIntensityAmber"
+label_text = "Amber"
+send_selection_value = "selected_fixtures"
 
-[node name="WhiteSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
+[node name="ChannelSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-theme_override_styles/slider = SubResource("StyleBoxTexture_523b0")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_5lav3")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_6n2ss")
-max_value = 255.0
-script = ExtResource("3_avej0")
-spin_box = NodePath("../SpinBox")
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
-layout_mode = 2
-theme_override_icons/updown = SubResource("ImageTexture_u2yqc")
-max_value = 255.0
-alignment = 1
-prefix = "W:"
-
-[node name="WhiteReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider"]
-layout_mode = 2
-text = "Reset"
-
-[node name="AmberSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
-layout_mode = 2
-text = "Amber"
-horizontal_alignment = 1
-
-[node name="AmberSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-theme_override_styles/slider = SubResource("StyleBoxTexture_m2b7q")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_d8pi4")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_q2oaw")
-max_value = 255.0
-script = ExtResource("3_avej0")
-spin_box = NodePath("../SpinBox")
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
-layout_mode = 2
-theme_override_icons/updown = SubResource("ImageTexture_u2yqc")
-max_value = 255.0
-alignment = 1
-prefix = "A:"
-
-[node name="AmberReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider"]
-layout_mode = 2
-text = "Reset"
-
-[node name="UVSlider" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer"]
-layout_mode = 2
-
-[node name="White" type="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
-layout_mode = 2
-text = "UV"
-horizontal_alignment = 1
-
-[node name="UVSlider" type="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-theme_override_styles/slider = SubResource("StyleBoxTexture_7adgc")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_puenb")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_pxt8f")
-max_value = 255.0
-script = ExtResource("3_avej0")
-spin_box = NodePath("../SpinBox")
-
-[node name="SpinBox" type="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
-layout_mode = 2
-theme_override_icons/updown = SubResource("ImageTexture_u2yqc")
-max_value = 255.0
-alignment = 1
-prefix = "UV:"
-
-[node name="UVReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider"]
-layout_mode = 2
-text = "Reset"
+object_id = "programmer"
+method = "ColorIntensityUV"
+reset_method = "reset_ColorIntensityUV"
+label_text = "UV"
+send_selection_value = "selected_fixtures"
 
 [node name="Channels" type="VBoxContainer" parent="HBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 script = ExtResource("6_drfid")
 
@@ -581,20 +444,12 @@ layout_mode = 2
 size_flags_horizontal = 10
 text = "Add To Cue"
 
-[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider/DimmerSider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_dimmer_sider_value_changed"]
-[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer/DimmerSlider/DimmerReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_dimmer_reset_pressed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/RedSlider/RedSider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_red_sider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/GreenSlider/GreenSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_green_slider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/BlueSlider/BlueSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_blue_slider_value_changed"]
 [connection signal="resized" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control/ColorPicker" method="_on_control_resized"]
 [connection signal="color_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/Control/ColorPicker" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorPicker/VBoxContainer/ColorReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_reset_pressed"]
-[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider/WhiteSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_white_slider_value_changed"]
-[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/WhiteSlider/WhiteReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_white_reset_pressed"]
-[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider/AmberSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_amber_slider_value_changed"]
-[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/AmberSlider/AmberReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_amber_reset_pressed"]
-[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider/UVSlider" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_uv_slider_value_changed"]
-[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer/UVSlider/UVReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_uv_reset_pressed"]
 [connection signal="item_selected" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/OptionButton" to="HBoxContainer/TabContainer/Channels" method="_on_option_button_item_selected"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/ClearAll" to="HBoxContainer/TabContainer/Channels" method="_on_clear_all_pressed"]
 [connection signal="pressed" from="HBoxContainer/PanelContainer/HBoxContainer/Button" to="HBoxContainer/PanelContainer/HBoxContainer/SceneControls" method="_on_button_pressed"]

@@ -41,9 +41,9 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		current_color = color
 		Core.programmer.set_color(Values.get_selection_value("selected_fixtures", []), current_color)
 		
-		get_node(red_slider).value = current_color.r8
-		get_node(green_slider).value = current_color.g8
-		get_node(blue_slider).value = current_color.b8
+		get_node(red_slider).set_value_no_signal(current_color.r8)
+		get_node(green_slider).set_value_no_signal(current_color.g8)
+		get_node(blue_slider).set_value_no_signal(current_color.b8)
 		
 		update_slider_bg_colors()
 		
@@ -51,10 +51,11 @@ func _on_color_picker_color_changed(color: Color) -> void:
 
 
 ## Updates the color on the programmer
-func _update_color() -> void:
+func _update_color(send_message: bool = true) -> void:
 	get_node(color_picker).color = current_color
 	update_slider_bg_colors()
-	_send_to_programmer("set_color", current_color)
+	
+	if send_message: _send_to_programmer("set_color", current_color)
 	#Core.programmer.set_color(Values.get_selection_value("selected_fixtures", []), current_color)
 
 
@@ -80,18 +81,14 @@ func _on_blue_slider_value_changed(value: float) -> void:
 	current_color.b8 = value
 	_update_color()
 	
-func _on_color_reset_pressed() -> void: _send_to_programmer("reset_color")
-
-func _on_white_slider_value_changed(value: int) -> void: _send_to_programmer("ColorIntensityWhite", value)
-func _on_amber_slider_value_changed(value: int) -> void: _send_to_programmer("ColorIntensityAmber", value)
-func _on_uv_slider_value_changed(value: int) -> void: _send_to_programmer("ColorIntensityUV", value)
-func _on_dimmer_sider_value_changed(value: int) -> void: _send_to_programmer("Dimmer", value)
-
-func _on_white_reset_pressed() -> void: _send_to_programmer("reset_ColorIntensityWhite")
-func _on_amber_reset_pressed() -> void: _send_to_programmer("reset_ColorIntensityAmber")
-func _on_uv_reset_pressed() -> void: _send_to_programmer("reset_ColorIntensityUV")
-func _on_dimmer_reset_pressed() -> void: _send_to_programmer("reset_Dimmer")
-
+func _on_color_reset_pressed() -> void: 
+	get_node(red_slider).set_value_no_signal(0)
+	get_node(green_slider).set_value_no_signal(0)
+	get_node(blue_slider).set_value_no_signal(0)
+	
+	current_color = Color.BLACK
+	_update_color(false)
+	_send_to_programmer("reset_color")
 
 
 

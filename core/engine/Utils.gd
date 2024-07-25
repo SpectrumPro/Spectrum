@@ -32,7 +32,7 @@ static func objects_to_uuids(data):
 			return {
 					"_object_ref": str(data.get("uuid")),
 					#"_serialized_object": data.serialize(),
-					"_class_name": data.get("class_name")
+					"_class_name": data.get("self_class_name")
 				}
 		TYPE_DICTIONARY:
 			var new_dict = {}
