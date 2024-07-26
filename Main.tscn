@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://7f5erpa1ts1n"]
+[gd_scene load_steps=19 format=3 uid="uid://7f5erpa1ts1n"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Main.gd" id="2_2mnc0"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://Tabs.gd" id="11_g0pp1"]
 [ext_resource type="PackedScene" uid="uid://cbsp8xx2h45do" path="res://components/ObjectPicker/ObjectPicker.tscn" id="13_r56s8"]
 [ext_resource type="PackedScene" uid="uid://bhrc5gkly1noh" path="res://components/ConfirmationBox/ConfirmationBox.tscn" id="13_yplrd"]
+[ext_resource type="PackedScene" uid="uid://d2mjxku8bnm0o" path="res://panels/NetworkConnection/NetworkConnection.tscn" id="14_45enf"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="14_jv1kq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwxcw"]
@@ -190,7 +191,7 @@ text = "Close"
 
 [node name="RenameBox" type="PanelContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(354.135, 150)
+custom_minimum_size = Vector2(355, 150)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -222,6 +223,14 @@ text = "Cancel"
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Rename"
+
+[node name="NetworkConnection" parent="." instance=ExtResource("14_45enf")]
+custom_minimum_size = Vector2(355, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
+show_close_button = true
 
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Programmer" to="." method="_on_programmer_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Scenes" to="." method="_on_scenes_pressed"]

@@ -58,8 +58,22 @@ func _ready() -> void:
 	components = get_packed_scenes_from_folder(components_folder)
 	panels = get_packed_scenes_from_folder(panels_folder)
 	
-	_set_up_object_picker()
+	Core.resetting.connect(_on_engine_resetting)
+	_load()
+
+
+func _on_engine_resetting() -> void:
+	get_tree().change_scene_to_file("res://Main.tscn")
 	
+	# For some reason we need to wait 2 frames for SceneTree.change_scene_to_file to finish and load the new nodes
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	_load()
+
+
+func _load() -> void:
+	_set_up_object_picker()
 	_try_auto_load.call_deferred()
 
 
