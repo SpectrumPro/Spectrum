@@ -36,7 +36,7 @@ func _send_set_value_message(value: int) -> void:
 	var args: Array = []
 	
 	if send_selection_value:
-		args = args_befour + Values.get_selection_value(send_selection_value, []) + [value] + args_after 
+		args = args_befour + [Values.get_selection_value(send_selection_value, [])] + [value] + args_after 
 	else:
 		args = args_befour + [value] + args_after 
 	
@@ -65,5 +65,5 @@ func _on_clear_pressed() -> void:
 	Client.send({
 		"for": object_id,
 		"call": reset_method,
-		"args": args_befour if not send_selection_value else args_befour + Values.get_selection_value(send_selection_value, [])
+		"args": args_befour if not send_selection_value else args_befour + [Values.get_selection_value(send_selection_value, [])]
 	})
