@@ -47,11 +47,11 @@ func load(saved_data: Array) -> void:
 
 
 func _on_settings_pressed() -> void:
-	var new_window: Window = Interface.components.PopupWindow.instantiate()
-	
-	new_window.add_child(Interface.panels.Settings.instantiate())
-	add_child(new_window)
-	
+	#var new_window: Window = Interface.components.PopupWindow.instantiate()
+	#
+	#new_window.add_child(Interface.panels.Settings.instantiate())
+	#add_child(new_window)
+	$NetworkConnection.show()
 
 
 func _on_fixtures_pressed() -> void:

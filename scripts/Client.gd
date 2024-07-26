@@ -39,6 +39,25 @@ func connect_to_server(ip: String, websocket_port: int, udp_port: int):
 		return
 	
 	print("UDP client connected to: ", ip, ":", udp_port)
+	
+	print()
+
+
+## Disconnects from the server
+func disconnect_from_server() -> void:
+	
+	print("Removing all networked objects")
+	for object_name: String in _networked_objects.keys():
+		remove_networked_object(object_name)
+	
+	_callbacks = {}
+	
+	print("Disconnecting WebSocket peer")
+	MainSocketClient.close()
+	
+	print("Disconnecting UDP peer")
+	MainUDPSocketClient.close()
+
 
 
 ## Send a message to the server, all data passed is automatically converted to strings, and serialised

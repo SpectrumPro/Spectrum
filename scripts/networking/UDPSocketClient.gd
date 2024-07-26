@@ -22,6 +22,10 @@ func connect_to_host(ip: String, port: int) -> Error:
 	
 	return err_code
 
+## Close the connection
+func close() -> void:
+	_connection.close()
+
 
 func _process(delta):
 	if _connection.get_available_packet_count() > 0:

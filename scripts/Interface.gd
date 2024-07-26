@@ -9,11 +9,45 @@ extends Node
 signal edit_mode_changed(edit_mode: bool)
 
 
-## Stores all the components found in the folder, stored as there folder name
-var components: Dictionary = {}
+## Stores all the components found in the folder, stored as {"folder_name": PackedScene}
+var components: Dictionary = {
+	"ChannelSlider": load("res://components/ChannelSlider/ChannelSlider.tscn"),
+	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
+	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
+	"DeskItemContainer": load("res://components/DeskItemContainer/DeskItemContainer.tscn"),
+	"ItemListView": load("res://components/ItemListView/ItemListView.tscn"),
+	"Knob": load("res://components/Knob/Knob.tscn"),
+	"ListItem": load("res://components/ListItem/ListItem.tscn"),
+	"ObjectPicker": load("res://components/ObjectPicker/ObjectPicker.tscn"),
+	"PanelContainer": load("res://components/PanelContainer/PanelContainer.tscn"),
+	"PanelSettingsContainer": load("res://components/PanelSettingContainer/PanelSettingsContainer.tscn"),
+	"PlaybackRow": load("res://components/PlaybackRow/PlaybackRow.tscn"),
+	"PopupWindow": load("res://components/PopupWindow/PopupWindow.tscn"),
+	"TriggerButton": load("res://components/TriggerButton/TriggerButton.tscn"),
+	"VirtualFixture": load("res://components/VirtualFixture/VirtualFixture.tscn"),
+	"Warning": load("res://components/Warning/Warning.tscn")
+}
 
-## Stores all the panel found in the folder, stored as there folder name
-var panels: Dictionary = {}
+## Stores all the panels found in the folder, stored as {"folder_name": PackedScene}
+var panels: Dictionary = {
+	"3D": load("res://panels/3D/3D.tscn"),
+	"AddFixture": load("res://panels/AddFixture/AddFixture.tscn"),
+	"AnimationEditor": load("res://panels/AnimationEditor/AnimationEditor.tscn"),
+	"ColorPalette": load("res://panels/ColorPalette/ColorPalette.tscn"),
+	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
+	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
+	"Debug": load("res://panels/Debug/Debug.tscn"),
+	"Desk": load("res://panels/Desk/Desk.tscn"),
+	"Fixtures": load("res://panels/Fixtures/Fixtures.tscn"),
+	"Functions": load("res://panels/Functions/Functions.tscn"),
+	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
+	"NetworkConnection": load("res://panels/NetworkConnection/NetworkConnection.tscn"),
+	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
+	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
+	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
+	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn")
+}
+
 
 ## Global edit mode
 var edit_mode: bool = false : set = set_edit_mode
@@ -58,8 +92,22 @@ func _ready() -> void:
 	components = get_packed_scenes_from_folder(components_folder)
 	panels = get_packed_scenes_from_folder(panels_folder)
 	
-	_set_up_object_picker()
+	Core.resetting.connect(_on_engine_resetting)
+	_load()
+
+
+func _on_engine_resetting() -> void:
+	get_tree().change_scene_to_file("res://Main.tscn")
 	
+	# For some reason we need to wait 2 frames for SceneTree.change_scene_to_file to finish and load the new nodes
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	_load()
+
+
+func _load() -> void:
+	_set_up_object_picker()
 	_try_auto_load.call_deferred()
 
 

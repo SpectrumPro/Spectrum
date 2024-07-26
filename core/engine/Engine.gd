@@ -36,6 +36,8 @@ signal functions_removed(functions: Array[Function])
 ## Emitted when a function has its name changed
 signal function_name_changed(function: Function, new_name: String) 
 
+## Emitted when this engine is about to reset
+signal resetting
 
 
 ## Dictionary containing all universes in this engine
@@ -56,6 +58,12 @@ var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
 
 ## The programmer used for programming vixtures, and saving them to scenes, this programmer is not a networked object, and is only stored localy
 var programmer: Programmer = Programmer.new()
+
+
+var server_ip_address: String = "127.0.0.1"
+var server_websocket_port: int = 3824
+var server_udp_port: int = 3823
+
 
 ## Folowing functions are for connecting universe signals to engine signals, they are defined as vairables so they can be dissconnected when universe is to be deleted
 func _universe_on_name_changed(new_name: String, universe: Universe): 
@@ -98,14 +106,54 @@ func _function_on_name_changed(new_name: String, function: Function) -> void:
 var _function_signal_connections: Dictionary = {}
 
 
+## Used to see if the engine should reset when connecting to a server
+var _is_engine_fresh: bool = true
+
+
 func _ready() -> void:
 	Client.add_networked_object("engine", self)
 	
 	MainSocketClient.connected_to_server.connect(func() :
+		_is_engine_fresh = false
 		load_from_server()
 	)
 	
-	Client.connect_to_server("127.0.0.1", 3824, 3823)
+	connect_to_server(server_ip_address)
+
+
+## Connects to the server
+func connect_to_server(ip: String):
+	
+	if not _is_engine_fresh:
+		reset()
+	
+	server_ip_address = ip
+	Client.connect_to_server(server_ip_address, server_websocket_port, server_udp_port)
+
+
+func reset() -> void:
+	resetting.emit()
+	
+
+	universes = {} 
+	fixtures = {} 
+	functions = {}
+	fixtures_definitions = {} 
+	programmer = Programmer.new()
+	
+	
+	print("Performing Engine Reset!")
+
+
+func _disconnect_all_signal_methods(sig: Signal) -> void:
+	for signal_dict: Dictionary in sig.get_connections():
+		sig.disconnect(signal_dict.callable)
+
+
+## Disconnects from the server
+func disconnect_from_server() -> void:
+	Client.disconnect_from_server()
+
 
 func load_from_server() -> void:
 	Client.send({
