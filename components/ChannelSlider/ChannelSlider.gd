@@ -36,9 +36,9 @@ func _send_set_value_message(value: int) -> void:
 	var args: Array = []
 	
 	if send_selection_value:
-		args_befour + Values.get_selection_value(send_selection_value, []) + [value] + args_after 
+		args = args_befour + Values.get_selection_value(send_selection_value, []) + [value] + args_after 
 	else:
-		args_befour + [value] + args_after 
+		args = args_befour + [value] + args_after 
 	
 	Client.send({
 		"for": object_id,
