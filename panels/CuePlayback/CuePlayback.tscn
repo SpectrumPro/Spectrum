@@ -135,7 +135,7 @@ size_flags_horizontal = 6
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer"]
 layout_mode = 2
 
-[node name="CueLable" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
+[node name="CueLabel" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
 layout_mode = 2
 text = "On Cue:"
 
