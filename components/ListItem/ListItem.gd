@@ -132,6 +132,11 @@ func set_name_changed_signal(p_signal: Signal) -> void:
 	)
 
 
+func set_id_tag(tag: String) -> void:
+	$Container/IdTag.text = tag
+	$Container/IdTag.visible = tag != ""
+
+
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed == true and event.button_index == MOUSE_BUTTON_LEFT:  # Check if the mouse button is released

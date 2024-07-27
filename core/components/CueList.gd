@@ -23,9 +23,8 @@ signal cues_added(cues: Array)
 ## Emitted when a cue is removed form this CueList
 signal cues_removed(cues: Array)
 
-## Emitted when a cue's fade in time, out, or hold time is changed
-signal cue_timings_changed(index: float, fade_in_time: float, fade_out_time: float, hold_time: float)
-
+## Emitted when cue numbers are changed, stored as {Cue:new_number, ...}
+signal cue_numbers_changed(new_numbers: Dictionary)
 
 ## The current cue number
 var current_cue_number: float = -1
@@ -53,6 +52,8 @@ func _add_cue(cue: Cue, number: float = 0, no_signal: bool = false) -> bool:
 	cues[number] = cue
 	index_list.append(number)
 	index_list.sort()
+	
+	Client.add_networked_object(cue.uuid, cue, cue.delete_requested)
 	
 	if not no_signal:
 		cues_added.emit([cue])
@@ -117,6 +118,16 @@ func seek_to(cue_index: float) -> void:
 	})
 
 
+## Moves the cue at cue_number up. By swappign the number with the next cue in the list
+func move_cue_up(cue_number: float) -> void:
+	Client.send_command(uuid, "move_cue_up", [cue_number])
+
+
+## Moves the cue at cue_number down. By swappign the number with the previous cue in the list
+func move_cue_down(cue_number: float) -> void:
+	Client.send_command(uuid, "move_cue_down", [cue_number])
+
+
 ## INTERNAL: Called when the index is changed on the server
 func on_cue_changed(cue_number: float) -> void:
 	current_cue_number = cue_number
@@ -143,10 +154,34 @@ func on_stopped():
 	cue_changed.emit(current_cue_number)
 
 ## INTERNAL: Called when a cue is added on the server
-func on_cues_added(cues: Array) -> void:
-	for cue in cues:
+func on_cues_added(p_cues: Array) -> void:
+	for cue in p_cues:
 		if cue is Cue:
 			_add_cue(cue, cue.number)
+
+
+## INTERNAL: Called when a cue is removed from the server
+func on_cues_removed(p_cues: Array) -> void:
+	
+	var just_removed_cues: Array = []
+	
+	for cue in p_cues:
+		if cue is Cue and cue.number in cues: 
+			index_list.erase(cue.number)
+			cues.erase(cue.number)
+			
+			just_removed_cues.append(cue)
+	
+	if just_removed_cues:
+		cues_removed.emit(just_removed_cues)
+
+
+## INTERNAL: Called when cue numbers are changed on the server
+func on_cue_numbers_changed(new_numbers: Dictionary) -> void:
+	for cue_number in new_numbers.keys():
+		cues[cue_number] = new_numbers[cue_number]
+	
+	cue_numbers_changed.emit(new_numbers)
 
 
 func _on_load_request(serialized_data: Dictionary) -> void:

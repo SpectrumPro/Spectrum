@@ -33,6 +33,8 @@ func set_fixture(control_fixture: Fixture) -> void:
 	
 	fixture = control_fixture
 	fixture.color_changed.connect(self.set_color)
+	
+	set_color(fixture.current_values.set_color)
 
 
 func serialize():

@@ -4,6 +4,11 @@
 class_name Cue extends EngineComponent
 ## Data container for CueLists, a Cue doesn't do anything by itself, and needs to be part of a CueList to work
 
+
+## Emitted when the fade time it changed
+signal fade_time_changed(new_fade_time: float)
+
+
 ## The index of this cue, do not modify this when it is a part of a cuelist
 var number: float = 1.0
 
@@ -51,6 +56,14 @@ func _store_data(fixture: Fixture, method_name: String, value: Variant, default:
 
 	return true
 
+
+func set_fade_time(p_fade_time: float) -> void:
+	Client.send_command(uuid, "set_fade_time", [p_fade_time])
+
+
+func on_fade_time_changed(p_fade_time: float) -> void:
+	fade_time = p_fade_time
+	fade_time_changed.emit(fade_time)
 
 
 ## Returnes a serialized copy of this cue

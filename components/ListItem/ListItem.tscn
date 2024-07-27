@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://d0wg6bo67u7cr"]
+[gd_scene load_steps=4 format=3 uid="uid://d0wg6bo67u7cr"]
 
 [ext_resource type="Script" path="res://components/ListItem/ListItem.gd" id="1_plvbh"]
 
@@ -15,6 +15,10 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="LabelSettings" id="LabelSettings_1o7nq"]
+font_size = 13
+font_color = Color(0.552956, 0.552956, 0.552956, 1)
+
 [node name="Item" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 50)
 theme_override_styles/panel = SubResource("StyleBoxFlat_564t2")
@@ -25,6 +29,12 @@ layout_mode = 2
 
 [node name="Icon" type="TextureRect" parent="Container"]
 layout_mode = 2
+
+[node name="IdTag" type="Label" parent="Container"]
+visible = false
+layout_mode = 2
+text = "0.4"
+label_settings = SubResource("LabelSettings_1o7nq")
 
 [node name="Name" type="Label" parent="Container"]
 layout_mode = 2

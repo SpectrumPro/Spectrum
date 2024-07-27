@@ -12,11 +12,13 @@ signal color_changed(color: Color)
 ## Emitted when the channel of the fixture is changed
 signal channel_changed(new_channel: int)
 
-var color: 	Color = Color.BLACK
-var white: 	int = 0
-var amber: 	int = 0
-var uv: 	int = 0
-var dimmer:	int = 0
+var current_values: Dictionary = {
+	"set_color": 			Color.BLACK,
+	"ColorIntensityWhite": 	0,
+	"ColorIntensityAmber": 	0,
+	"ColorIntensityUV": 	0,
+	"Dimmer": 				0
+}
 
 ## Universe channel of this fixture
 var channel: int
@@ -27,21 +29,13 @@ func _component_ready() -> void:
 	name = "Fixture"
 	self_class_name = "Fixture"
 
-#
-#func set_color(color: Color, id: String) -> void:
-	#Client.send({
-		#"for": self.uuid,
-		#"call": "set_color",
-		#"args": [color, id]
-	#})
-
-
 ## INTERNAL: called when the color of this fixture is changed on the server
 func on_color_changed(new_color: Color) -> void:
-	color = new_color
-	color_changed.emit(color)
+	current_values.set_color = new_color
+	color_changed.emit(current_values.set_color)
 
 
+## Sets the channel of this fixture
 func set_channel(p_channel: int) -> void:
 	Client.send({
 		"for": self.uuid,
@@ -50,6 +44,7 @@ func set_channel(p_channel: int) -> void:
 	})
 
 
+## INTERNAL: called when the channel is changed on the server
 func on_channel_changed(p_channel: int) -> void:
 	channel = p_channel
 	channel_changed.emit(channel_changed)
@@ -57,3 +52,6 @@ func on_channel_changed(p_channel: int) -> void:
 
 func _on_load_request(serialized_data: Dictionary) -> void:
 	channel = serialized_data.get("channel", 1)
+	
+	current_values.merge(serialized_data.get("current_values", {}), true)
+	

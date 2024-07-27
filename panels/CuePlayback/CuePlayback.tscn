@@ -1,11 +1,14 @@
-[gd_scene load_steps=19 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=22 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="2_bvwur"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="3_07mes"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="3_ifhov"]
 [ext_resource type="Texture2D" uid="uid://bf4227ei83gh1" path="res://assets/icons/play.svg" id="4_1thxx"]
+[ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="4_uf8ql"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="5_12n8h"]
+[ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="5_d5o4u"]
 [ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://assets/icons/pause.svg" id="5_r8lsa"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="6_pxf7y"]
 
@@ -73,8 +76,31 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 2
 text = "Cue Name
 "
+
+[node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls"]
+layout_mode = 2
+
+[node name="Delete" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("3_ifhov")
+
+[node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("4_uf8ql")
+
+[node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("5_d5o4u")
 
 [node name="Store" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -310,7 +336,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "Cancel"
 
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Store" to="." method="_on_store_pressed"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/EditMode" to="." method="_on_edit_mode_toggled"]
 [connection signal="gui_input" from="VBoxContainer/List/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_gui_input"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed" flags=3]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Go" to="." method="_on_go_pressed"]

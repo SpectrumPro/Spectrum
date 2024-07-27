@@ -16,7 +16,7 @@ var current_cue_list: CueList
 var saved_cue_list_uuid: String = ""
 
 ## The current selected item
-var current_selected_item: ListItem
+var current_selected_item: ListItem : set = _set_current_selected_item
 
 ## The last selected item
 var last_selected_item: ListItem
@@ -32,8 +32,15 @@ var cue_refs: Dictionary
 ## The last index that this cue list was on
 var old_index: float = 0
 
+
+var _edit_mode: bool = false
+
+var _current_selected_cue: Cue = null
+
 ## The ItemListView used to display cues
 @onready var cue_list_container: VBoxContainer = $VBoxContainer/List/ScrollContainer/VBoxContainer
+
+@onready var edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
 
 ## Stores the labels that display status information about the scene
 @onready var labels: Dictionary = {
@@ -56,6 +63,18 @@ func _ready() -> void:
 	reload()
 
 
+func _set_current_selected_item(p_current_selected_item) -> void:
+	current_selected_item = p_current_selected_item
+	_current_selected_cue = current_cue_list.cues[cue_refs[current_selected_item]] if current_selected_item else null
+	
+	var state: bool = current_selected_item == null
+	
+	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete.disabled = state
+	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp.disabled = state
+	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown.disabled = state
+	$VBoxContainer/Controls/HBoxContainer/Go.disabled = state
+
+
 func _on_functions_added(arg1=null) -> void:
 	if saved_cue_list_uuid:
 		_find_cue_list()
@@ -73,11 +92,14 @@ func _on_selected_fixtures_changed(selected_fixtures: Array) -> void:
 
 
 ## Reloads the list of cues
-func reload(arg1=null, arg2=null, arg3=null, arg4=null) -> void:
+func reload() -> void:
 	for old_item: Control in cue_list_container.get_children():
 		cue_list_container.remove_child(old_item)
 		old_item.queue_free()
-
+	
+	
+	var old_selected_cue: Cue = _current_selected_cue
+	
 	_clear_selections()
 	_reset_refs()
 
@@ -88,8 +110,19 @@ func reload(arg1=null, arg2=null, arg3=null, arg4=null) -> void:
 
 			new_list_item.set_item_name(cue.name)
 			new_list_item.set_name_changed_signal(cue.name_changed)
-
+			new_list_item.set_id_tag(str(cue_number))
+			
+			if _edit_mode:
+				new_list_item.set_name_method(cue.set_name)
+				new_list_item.add_chip(cue, "fade_time", cue.set_fade_time)
+			
 			_store_refs(cue_number, new_list_item)
+			
+			if cue == old_selected_cue:
+				new_list_item.set_selected(true)
+				last_selected_item = new_list_item
+				current_selected_item = new_list_item
+			
 
 			new_list_item.select_requested.connect(func(arg1=null):
 				_on_select_requested(new_list_item, cue_number))
@@ -145,8 +178,9 @@ func set_cue_list(cue_list: CueList = null) -> void:
 
 func _disconnect_signals() -> void:
 	current_cue_list.name_changed.disconnect(_reload_name)
-	current_cue_list.cues_added.disconnect(reload)
-	current_cue_list.cues_removed.disconnect(reload)
+	current_cue_list.cues_added.disconnect(_reload_from_signal)
+	current_cue_list.cues_removed.disconnect(_reload_from_signal)
+	current_cue_list.cue_numbers_changed.disconnect(_reload_from_signal)
 	current_cue_list.cue_changed.disconnect(_on_cue_changed)
 	current_cue_list.played.disconnect(_reload_labels)
 	current_cue_list.paused.disconnect(_reload_labels)
@@ -154,11 +188,16 @@ func _disconnect_signals() -> void:
 
 func _connect_signals() -> void:
 	current_cue_list.name_changed.connect(_reload_name)
-	current_cue_list.cues_added.connect(reload)
-	current_cue_list.cues_removed.connect(reload)
+	current_cue_list.cues_added.connect(_reload_from_signal)
+	current_cue_list.cues_removed.connect(_reload_from_signal)
+	current_cue_list.cue_numbers_changed.connect(_reload_from_signal)	
 	current_cue_list.cue_changed.connect(_on_cue_changed)
 	current_cue_list.played.connect(_reload_labels)
 	current_cue_list.paused.connect(_reload_labels)
+
+
+func _reload_from_signal(arg1=null) -> void:
+	reload()
 
 
 func _find_cue_list() -> void:
@@ -267,8 +306,11 @@ func _on_next_pressed() -> void:
 func _on_v_box_container_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		last_selected_item = null
+		
 		if current_selected_item:
 			current_selected_item.set_selected(false)
+		
+		current_selected_item = null
 
 		$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/CueNumber.text = "null"
 
@@ -294,3 +336,22 @@ func _on_new_cue_pressed() -> void:
 			"call": "save_to_new_cue",
 			"args": [Values.get_selection_value("selected_fixtures", []), current_cue_list, _get_save_mode()]
 		})
+
+
+func _on_edit_mode_toggled(toggled_on: bool) -> void:
+	_edit_mode = toggled_on
+	reload()
+	edit_controls.visible = toggled_on
+
+
+func _on_delete_pressed() -> void:
+	if current_selected_item:
+		current_cue_list.cues[cue_refs[current_selected_item]].delete()
+
+
+func _on_move_up_pressed() -> void:
+	current_cue_list.move_cue_up(cue_refs[current_selected_item])
+
+
+func _on_move_down_pressed() -> void:
+	current_cue_list.move_cue_down(cue_refs[current_selected_item])
