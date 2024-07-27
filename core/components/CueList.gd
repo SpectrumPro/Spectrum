@@ -28,7 +28,7 @@ signal cue_timings_changed(index: float, fade_in_time: float, fade_out_time: flo
 
 
 ## The current cue number
-var current_cue_number: int = -1
+var current_cue_number: float = -1
 
 ## The current active, and previous active cue
 var current_cue: Cue = null
@@ -120,7 +120,6 @@ func seek_to(cue_index: float) -> void:
 ## INTERNAL: Called when the index is changed on the server
 func on_cue_changed(cue_number: float) -> void:
 	current_cue_number = cue_number
-	print(current_cue_number)
 	cue_changed.emit(current_cue_number)
 
 

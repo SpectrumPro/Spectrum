@@ -30,7 +30,7 @@ var components: Dictionary = {
 
 ## Stores all the panels found in the folder, stored as {"folder_name": PackedScene}
 var panels: Dictionary = {
-	"3D": load("res://panels/3D/3D.tscn"),
+	#"3D": load("res://panels/3D/3D.tscn"),
 	"AddFixture": load("res://panels/AddFixture/AddFixture.tscn"),
 	"AnimationEditor": load("res://panels/AnimationEditor/AnimationEditor.tscn"),
 	"ColorPalette": load("res://panels/ColorPalette/ColorPalette.tscn"),
@@ -61,7 +61,7 @@ const panels_folder: String = "res://panels/"
 
 var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
 ## The location for storing all the save show files
-var ui_library_location: String = home_path + "/.spectrum/UI Library"
+var ui_library_location: String = "user://UILibrary"
 
 ## The main object picker
 var _object_picker: Control

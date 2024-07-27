@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ccibt4jo4f1jt"]
 
-[ext_resource type="Script" path="res://components/Knob/Encoder.gd" id="1_5y8la"]
+[ext_resource type="Script" path="res://components/Knob/Knob.gd" id="1_5y8la"]
 [ext_resource type="Texture2D" uid="uid://dsb55xctor6x6" path="res://components/Knob/Knob.png" id="2_63gm4"]
 
 [node name="Encoder" type="Control"]
