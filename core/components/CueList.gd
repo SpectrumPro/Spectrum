@@ -60,12 +60,12 @@ func _add_cue(cue: Cue, number: float = 0, no_signal: bool = false) -> bool:
 	
 	return true
 
+
 ## Plays this CueList, starting at index, or from the current index if one is not provided
-func play(start_index: int = -1) -> void:
+func play() -> void:
 	Client.send({
 		"for": uuid,
 		"call": "play",
-		"args": [start_index]
 	})
 
 

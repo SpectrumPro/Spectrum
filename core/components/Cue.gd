@@ -8,6 +8,9 @@ class_name Cue extends EngineComponent
 ## Emitted when the fade time it changed
 signal fade_time_changed(new_fade_time: float)
 
+## Emitted when the pre or post wait time it changed
+signal wait_time_change(pre_wait, post_wait)
+
 
 ## The index of this cue, do not modify this when it is a part of a cuelist
 var number: float = 1.0
@@ -16,10 +19,10 @@ var number: float = 1.0
 var fade_time: float = 2.0
 
 ## Pre-Wait time in seconds, how long to wait before this cue will activate, only works with TRIGGER_MODE.WITH_LAST
-var pre_wait: float = 0.0
+var pre_wait: float = 1.0
 
 ## Post-Wait time in seconds, how long to wait before the next cue will activate, only works with TRIGGER_MODE.WITH_LAST
-var post_wait: float = 0.0
+var post_wait: float = 1.0
 
 
 ## Enumeration for the trigger modes
@@ -57,13 +60,27 @@ func _store_data(fixture: Fixture, method_name: String, value: Variant, default:
 	return true
 
 
+## Sets the fade time
 func set_fade_time(p_fade_time: float) -> void:
 	Client.send_command(uuid, "set_fade_time", [p_fade_time])
 
 
+## Sets the pre_wait time
+func set_pre_wait(p_set_pre_wait: float) -> void:
+	Client.send_command(uuid, "set_pre_wait", [p_set_pre_wait])
+
+
+## INTERNAL: called when the fade time is changed on the server
 func on_fade_time_changed(p_fade_time: float) -> void:
 	fade_time = p_fade_time
 	fade_time_changed.emit(fade_time)
+
+
+## INTERNAL: called when the wait times are changed on the server
+func on_wait_time_change(p_pre_wait, p_post_wait) -> void:
+	pre_wait = p_post_wait
+	post_wait = p_post_wait
+	wait_time_change.emit(pre_wait, post_wait)
 
 
 ## Returnes a serialized copy of this cue

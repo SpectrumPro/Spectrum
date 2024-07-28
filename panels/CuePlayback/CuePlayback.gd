@@ -38,7 +38,7 @@ var _edit_mode: bool = false
 var _current_selected_cue: Cue = null
 
 ## The ItemListView used to display cues
-@onready var cue_list_container: VBoxContainer = $VBoxContainer/List/ScrollContainer/VBoxContainer
+@onready var cue_list_container: VBoxContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer
 
 @onready var edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
 
@@ -115,6 +115,7 @@ func reload() -> void:
 			if _edit_mode:
 				new_list_item.set_name_method(cue.set_name)
 				new_list_item.add_chip(cue, "fade_time", cue.set_fade_time)
+				new_list_item.add_chip(cue, "pre_wait", cue.set_pre_wait)
 			
 			_store_refs(cue_number, new_list_item)
 			
@@ -128,7 +129,10 @@ func reload() -> void:
 				_on_select_requested(new_list_item, cue_number))
 
 			cue_list_container.add_child(new_list_item)
-
+		
+		if _edit_mode:
+			pass
+		
 	_reload_labels()
 	_reload_name()
 
