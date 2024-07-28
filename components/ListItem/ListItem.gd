@@ -114,6 +114,8 @@ func add_chip(object: Object, property: String, set_method: Callable) -> void:
 	panel.add_child(hbox)
 	
 	$Container/Chips.add_child(panel)
+	
+	
 
 
 ## Sets the method that should be called when the name LineEdit is changed in this item

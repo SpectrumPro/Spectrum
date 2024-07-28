@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=23 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
@@ -10,6 +10,7 @@
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="5_12n8h"]
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="5_d5o4u"]
 [ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://assets/icons/pause.svg" id="5_r8lsa"]
+[ext_resource type="PackedScene" uid="uid://d0wg6bo67u7cr" path="res://components/ListItem/ListItem.tscn" id="6_7c6j4"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="6_pxf7y"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_mingj"]
@@ -128,6 +129,10 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="GlobalCue" parent="VBoxContainer/List/VBoxContainer" instance=ExtResource("6_7c6j4")]
+visible = false
+layout_mode = 2
 
 [node name="Controls" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

@@ -33,12 +33,21 @@ var cue_refs: Dictionary
 var old_index: float = 0
 
 
+## Edit mode
 var _edit_mode: bool = false
 
+## Current selected Cue object
 var _current_selected_cue: Cue = null
+
+## Used to create the global cue controls
+var _pre_wait: float = 0
+var _fade_time: float = 0
+
 
 ## The ItemListView used to display cues
 @onready var cue_list_container: VBoxContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer
+
+@onready var glboal_cue: ListItem = $VBoxContainer/List/VBoxContainer/GlobalCue
 
 @onready var edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
 
@@ -57,10 +66,28 @@ func _ready() -> void:
 	Core.functions_added.connect(_on_functions_added)
 	Core.functions_removed.connect(_on_functions_removed)
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
-
+	
+	glboal_cue.set_item_name("Global")
+	glboal_cue.add_chip(self, "_fade_time", _set_global_fade_time)
+	glboal_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
+	
 	remove_child(settings_node)
 	settings_node.show()
 	reload()
+
+
+func _set_global_pre_wait(pre_wait: float) -> void:
+	if current_cue_list:
+		_pre_wait = pre_wait
+		for cue: Cue in current_cue_list.cues.values():
+			cue.set_pre_wait(pre_wait)
+
+
+func _set_global_fade_time(fade_time: float) -> void:
+	if current_cue_list:
+		_fade_time = fade_time
+		for cue: Cue in current_cue_list.cues.values():
+			cue.set_fade_time(fade_time)
 
 
 func _set_current_selected_item(p_current_selected_item) -> void:
@@ -130,8 +157,7 @@ func reload() -> void:
 
 			cue_list_container.add_child(new_list_item)
 		
-		if _edit_mode:
-			pass
+		glboal_cue.visible = _edit_mode
 		
 	_reload_labels()
 	_reload_name()
