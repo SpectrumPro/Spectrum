@@ -73,7 +73,7 @@ func _update_border_state() -> void:
 
 
 ## Adds a chip to this item, allowing to editing properties on objects 
-func add_chip(object: Object, property: String, set_method: Callable) -> void:
+func add_chip(object: Object, property: String, set_method: Callable, changed_signal: Signal = Signal()) -> void:
 	var panel = PanelContainer.new()
 	var hbox = HBoxContainer.new()
 	var input = null
@@ -85,6 +85,7 @@ func add_chip(object: Object, property: String, set_method: Callable) -> void:
 			input.max_value = INF
 			input.value = object.get(property)
 			node_signal = input.value_changed
+			if not changed_signal.is_null(): changed_signal.connect(input.set_value_no_signal)
 		
 		TYPE_FLOAT:
 			input = SpinBox.new()
@@ -92,11 +93,15 @@ func add_chip(object: Object, property: String, set_method: Callable) -> void:
 			input.max_value = INF
 			input.value = object.get(property)
 			node_signal = input.value_changed
+			if not changed_signal.is_null(): changed_signal.connect(input.set_value_no_signal)
+			
 		
 		TYPE_STRING:
 			input = LineEdit.new()
 			input.text = object.get(property)
 			node_signal = input.text_submitted
+			if not changed_signal.is_null(): changed_signal.connect(input.text)
+			
 		
 		_:
 			return

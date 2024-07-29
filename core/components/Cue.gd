@@ -8,8 +8,8 @@ class_name Cue extends EngineComponent
 ## Emitted when the fade time it changed
 signal fade_time_changed(new_fade_time: float)
 
-## Emitted when the pre or post wait time it changed
-signal wait_time_change(pre_wait, post_wait)
+## Emitted when the pre_wait time is changed
+signal pre_wait_time_changed(pre_wait: float)
 
 
 ## The index of this cue, do not modify this when it is a part of a cuelist
@@ -77,10 +77,9 @@ func on_fade_time_changed(p_fade_time: float) -> void:
 
 
 ## INTERNAL: called when the wait times are changed on the server
-func on_wait_time_change(p_pre_wait, p_post_wait) -> void:
-	pre_wait = p_post_wait
-	post_wait = p_post_wait
-	wait_time_change.emit(pre_wait, post_wait)
+func on_pre_wait_time_changed(p_pre_wait) -> void:
+	pre_wait = p_pre_wait
+	pre_wait_time_changed.emit(pre_wait)
 
 
 ## Returnes a serialized copy of this cue

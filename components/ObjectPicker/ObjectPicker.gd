@@ -29,8 +29,10 @@ var _object_refs: Dictionary = {}
 ## By default the key is used as the display name, to use a member from the object, put the name of the member in name_member
 func load_objects(objects: Dictionary, tab_name: String, name_member: String = "") -> void:
 	var grid_node: ScrollContainer = load("res://components/ObjectPicker/Grid.tscn").instantiate()
+	var keys: Array = objects.keys()
+	keys.sort()
 	
-	for object_key: String in objects:
+	for object_key: String in keys:
 		var new_node: Button = load("res://components/ObjectPicker/Button.tscn").instantiate()
 		
 		new_node.toggle_mode = true

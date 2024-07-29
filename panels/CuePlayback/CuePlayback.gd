@@ -141,8 +141,8 @@ func reload() -> void:
 			
 			if _edit_mode:
 				new_list_item.set_name_method(cue.set_name)
-				new_list_item.add_chip(cue, "fade_time", cue.set_fade_time)
-				new_list_item.add_chip(cue, "pre_wait", cue.set_pre_wait)
+				new_list_item.add_chip(cue, "fade_time", cue.set_fade_time, cue.fade_time_changed)
+				new_list_item.add_chip(cue, "pre_wait", cue.set_pre_wait, cue.pre_wait_time_changed)
 			
 			_store_refs(cue_number, new_list_item)
 			

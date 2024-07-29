@@ -28,6 +28,12 @@ func close() -> void:
 
 
 func _process(delta):
-	if _connection.get_available_packet_count() > 0:
-		packet_recieved.emit(_connection.get_var())
+	if _connection.get_available_packet_count():
+		var data: Dictionary = {}
+		for packed_number: int in range(0, _connection.get_available_packet_count()):
+			var packet: Variant = _connection.get_var()
+			if packet is Dictionary:
+				data.merge(packet, true)
+		
+		packet_recieved.emit(data)
 
