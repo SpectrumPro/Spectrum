@@ -82,6 +82,7 @@ text = "Cue Name
 "
 
 [node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 
