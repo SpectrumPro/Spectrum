@@ -11,6 +11,10 @@ extends HBoxContainer
 @onready var green_slider: ChannelSlider = $ColorSliders/HBoxContainer/Green
 @onready var blue_slider: ChannelSlider = $ColorSliders/HBoxContainer/Blue
 
+@onready var hue_slider: ChannelSlider = $ColorSliders/HBoxContainer/Hue
+@onready var saturation_slider: ChannelSlider = $ColorSliders/HBoxContainer/Saturation
+@onready var value_slider: ChannelSlider = $ColorSliders/HBoxContainer/Value
+
 ## The current color of this color system
 var current_color: Color = Color.BLACK
 
@@ -19,14 +23,30 @@ var _last_call_time: int = 0
 
 ## Updates the background of the R G B sliders
 func update_slider_bg_colors():
-	red_slider.set_graident_bottom_color((current_color - Color.RED).clamp(Color.BLACK, Color.WHITE))
-	red_slider.set_graident_top_color((current_color + Color.RED).clamp(Color.BLACK, Color.WHITE))
+	red_slider.set_gradient_top_color((current_color + Color.RED).clamp(Color.BLACK, Color.WHITE))
+	red_slider.set_gradient_bottom_color((current_color - Color.RED).clamp(Color.BLACK, Color.WHITE))
 
-	green_slider.set_graident_bottom_color((current_color - Color.GREEN).clamp(Color.BLACK, Color.WHITE))
-	green_slider.set_graident_top_color((current_color + Color.GREEN).clamp(Color.BLACK, Color.WHITE))
+	green_slider.set_gradient_top_color((current_color + Color.GREEN).clamp(Color.BLACK, Color.WHITE))
+	green_slider.set_gradient_bottom_color((current_color - Color.GREEN).clamp(Color.BLACK, Color.WHITE))
 
-	blue_slider.set_graident_bottom_color((current_color - Color.BLUE).clamp(Color.BLACK, Color.WHITE))
-	blue_slider.set_graident_top_color((current_color + Color.BLUE).clamp(Color.BLACK, Color.WHITE))
+	blue_slider.set_gradient_top_color((current_color + Color.BLUE).clamp(Color.BLACK, Color.WHITE))
+	blue_slider.set_gradient_bottom_color((current_color - Color.BLUE).clamp(Color.BLACK, Color.WHITE))
+	
+# Convert current_color to HSV
+	var hsv_color = Color(current_color)
+	
+	# Update Saturation slider
+	var top_saturation_color = Color.from_hsv(hsv_color.h, 1.0, hsv_color.v)
+	var bottom_saturation_color = Color.from_hsv(hsv_color.h, 0.0, hsv_color.v)
+	saturation_slider.set_gradient_top_color(top_saturation_color)
+	saturation_slider.set_gradient_bottom_color(bottom_saturation_color)
+
+	# Update Value (Brightness) slider
+	var top_value_color = Color.from_hsv(hsv_color.h, hsv_color.s, 1.0)
+	var bottom_value_color = Color.from_hsv(hsv_color.h, hsv_color.s, 0.0)
+	value_slider.set_gradient_top_color(top_value_color)
+	value_slider.set_gradient_bottom_color(bottom_value_color)
+
 
 
 ## Called when the color picker is changed.
@@ -37,9 +57,8 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		current_color = color
 		Core.programmer.set_color(Values.get_selection_value("selected_fixtures", []), current_color)
 		
-		red_slider.set_value(current_color.r8)
-		green_slider.set_value(current_color.g8)
-		blue_slider.set_value(current_color.b8)
+		_update_rgb()
+		_update_hsv()
 		
 		update_slider_bg_colors()
 		
@@ -54,6 +73,18 @@ func _update_color(send_message: bool = true) -> void:
 	if send_message: _send_to_programmer("set_color", current_color)
 
 
+func _update_rgb() -> void:
+	red_slider.set_value(current_color.r8)
+	green_slider.set_value(current_color.g8)
+	blue_slider.set_value(current_color.b8)
+
+
+func _update_hsv() -> void:
+	hue_slider.set_value(remap(current_color.h, 0.0, 1.0, 0, 360))
+	saturation_slider.set_value(remap(current_color.s, 0.0, 1.0, 0, 255))
+	value_slider.set_value(remap(current_color.v, 0.0, 1.0, 0, 255))
+
+
 func _send_to_programmer(method_name: String, value: Variant = null) -> void:
 	Client.send({
 		"for": "programmer",
@@ -65,16 +96,19 @@ func _send_to_programmer(method_name: String, value: Variant = null) -> void:
 func _on_red_sider_value_changed(value: float) -> void:
 	current_color.r8 = value
 	_update_color()
+	_update_hsv()
 
 
 func _on_green_slider_value_changed(value: float) -> void:
 	current_color.g8 = value
 	_update_color()
+	_update_hsv()
 
 
 func _on_blue_slider_value_changed(value: float) -> void:
 	current_color.b8 = value
 	_update_color()
+	_update_hsv()
 
 
 func _on_color_reset_pressed() -> void: 
@@ -85,3 +119,46 @@ func _on_color_reset_pressed() -> void:
 	current_color = Color.BLACK
 	_update_color(false)
 	_send_to_programmer("reset_color")
+
+
+func _on_hue_value_changed(value: int) -> void:
+	current_color.h = remap(value, 0, 360, 0.0, 1.0)
+	_update_color()
+	_update_rgb()
+	
+
+
+func _on_saturation_value_changed(value: int) -> void:
+	current_color.s = remap(value, 0, 255, 0.0, 1.0)
+	_update_color()
+	_update_rgb()
+
+
+func _on_value_value_changed(value: int) -> void:
+	current_color.v = remap(value, 0, 255, 0.0, 1.0)
+	_update_color()
+	_update_rgb()
+
+
+func _on_color_mode_tab_changed(tab: int) -> void:
+	match tab:
+		0: # RGB Mode
+			hue_slider.hide()
+			saturation_slider.hide()
+			value_slider.hide()
+			
+			red_slider.show()
+			green_slider.show()
+			blue_slider.show()
+			
+			get_node(color_picker).picker_shape = ColorPicker.SHAPE_VHS_CIRCLE
+		1:
+			red_slider.hide()
+			green_slider.hide()
+			blue_slider.hide()
+			
+			hue_slider.show()
+			saturation_slider.show()
+			value_slider.show()
+			
+			get_node(color_picker).picker_shape = ColorPicker.SHAPE_HSV_RECTANGLE

@@ -16,8 +16,12 @@ signal value_changed(value: int)
 ## Wether to show the override warning background
 @export var show_warning_bg: bool = true : set = set_show_warning_bg
 
+## The max value of the slider
+@export var max_value: int = 255 : set = set_max_value
+
 ## The slider value
-@export_range(0, 255) var value: int = 0 : set = set_value
+@export var value: int = 0 : set = set_value
+
 
 
 @export_group("Graident")
@@ -26,8 +30,8 @@ signal value_changed(value: int)
 @export var show_gradient_bg: bool = false : set = set_show_graident_bg
 
 ## Top and Bottom colors of the graident
-@export var graident_top_color: Color = Color.WHITE : set = set_graident_top_color
-@export var graident_bottom_color: Color = Color.BLACK : set = set_graident_bottom_color
+@export var graident_top_color: Color = Color.WHITE : set = set_gradient_top_color
+@export var graident_bottom_color: Color = Color.BLACK : set = set_gradient_bottom_color
 
 
 @export_group("Command")
@@ -45,7 +49,6 @@ signal value_changed(value: int)
 @export var reset_method: String = ""
 
 
-
 @export_group("Arguments")
 
 ## Args to send before the value
@@ -56,6 +59,11 @@ signal value_changed(value: int)
 
 ## A selection value to send, "" to disable
 @export var send_selection_value: String = ""
+
+
+@export_group("Icons")
+
+@export var clear_icon: Texture2D = load("res://assets/icons/close.svg") : set = set_clear_icon
 
 
 ## Nodes
@@ -70,10 +78,12 @@ func _ready() -> void:
 	set_show_warning_bg(show_warning_bg)
 	set_show_graident_bg(show_gradient_bg)
 	
-	set_graident_top_color(graident_top_color)
-	set_graident_bottom_color(graident_bottom_color)
+	set_gradient_top_color(graident_top_color)
+	set_gradient_bottom_color(graident_bottom_color)
 	
+	set_max_value(max_value)
 	set_value(value)
+	set_clear_icon(clear_icon)
 	
 	$GraidentContainer.visible = show_gradient_bg
 	
@@ -98,24 +108,39 @@ func set_show_graident_bg(state: bool) -> void:
 
 
 ## Sets the top color of the graident
-func set_graident_top_color(color: Color) -> void:
+func set_gradient_top_color(color: Color) -> void:
 	graident_top_color = color
 	if is_node_ready(): $GraidentContainer/GraidentBG.get_theme_stylebox("panel").texture.gradient.set_color(1, color)
 
 
 ## Sets the bottom color of the graident
-func set_graident_bottom_color(color: Color) -> void:
+func set_gradient_bottom_color(color: Color) -> void:
 	graident_bottom_color = color
 	if is_node_ready(): $GraidentContainer/GraidentBG.get_theme_stylebox("panel").texture.gradient.set_color(0, color)
 
 
+## Sets the max value of the slider
+func set_max_value(p_max_value: int) -> void:
+	max_value = p_max_value
+	
+	if is_node_ready():
+		slider.max_value = max_value
+		spin_box.max_value = max_value
+
+
 ## Sets the current value
 func set_value(p_value: int) -> void:
-	value = clamp(p_value, 0, 255)
+	value = clamp(p_value, 0, max_value)
 	
 	if is_node_ready():
 		slider.set_value_no_signal(p_value)
 		spin_box.set_value_no_signal(p_value)
+
+
+func set_clear_icon(icon: Texture2D) -> void:
+	clear_icon = icon
+	if is_node_ready():
+		$MarginContainer/VBoxContainer/HBoxContainer/Clear.icon = clear_icon
 
 
 ## Clears the value of the slider with out sending a message
@@ -179,4 +204,4 @@ func _on_clear_pressed() -> void:
 
 ## Called when the random button is pressed
 func _on_random_pressed() -> void:
-	slider.value = randi_range(0, 255)
+	slider.value = randi_range(0, max_value)

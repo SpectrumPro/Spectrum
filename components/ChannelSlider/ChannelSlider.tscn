@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cbtm8eq5rbugv"]
+[gd_scene load_steps=9 format=3 uid="uid://cbtm8eq5rbugv"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jnmjo"]
 [ext_resource type="Script" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
-[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="3_io6qu"]
 [ext_resource type="Texture2D" uid="uid://c0lqh3h58ht3c" path="res://assets/icons/Random.svg" id="4_oirfb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erjei"]
@@ -23,15 +22,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="Gradient" id="Gradient_wldv5"]
+[sub_resource type="Gradient" id="Gradient_bt34s"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_jtrtb"]
-gradient = SubResource("Gradient_wldv5")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wfr0m"]
+gradient = SubResource("Gradient_bt34s")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gw1q8"]
-texture = SubResource("GradientTexture2D_jtrtb")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tyscp"]
+texture = SubResource("GradientTexture2D_wfr0m")
 
 [node name="ChannelSlider" type="PanelContainer"]
 anchors_preset = -1
@@ -59,7 +58,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_y34yv")
 
 [node name="GraidentBG" type="PanelContainer" parent="GraidentContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_gw1q8")
+theme_override_styles/panel = SubResource("StyleBoxTexture_tyscp")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -98,7 +97,6 @@ layout_mode = 2
 [node name="Clear" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-icon = ExtResource("3_io6qu")
 icon_alignment = 1
 
 [node name="Random" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]

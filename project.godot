@@ -59,6 +59,10 @@ window/vsync/vsync_mode=0
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false
 
+[dotnet]
+
+project/assembly_name="Spectrum Client"
+
 [editor]
 
 movie_writer/movie_file="/Users/liam/Documents/Repos/SpectrumPro/Spectrum/record.avi"
