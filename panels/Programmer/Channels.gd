@@ -49,11 +49,12 @@ func _reload_sliders(new_universe: Universe) -> void:
 			channel_slider.set_label_text(str(channel))
 			channel_slider.args_befour = [channel]
 			channel_slider.object_id = new_universe.uuid
+			channel_slider.show_randomise_button = false
 			
 			channel_slider.method = "set_dmx_override"
 			channel_slider.reset_method = "remove_dmx_override"
 			
-			clear_all_presses.connect(channel_slider.clear_no_message)
+			clear_all_presses.connect(channel_slider.reset_no_message)
 			
 			container.add_child(channel_slider)
 		

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bwxr0mrsrt0iu"]
+[gd_scene load_steps=18 format=3 uid="uid://bwxr0mrsrt0iu"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
 [ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
@@ -6,32 +6,31 @@
 [ext_resource type="Script" path="res://panels/Programmer/ColorSystem.gd" id="2_xdlid"]
 [ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_rvdr4"]
 [ext_resource type="Script" path="res://panels/Programmer/Channels.gd" id="6_drfid"]
-[ext_resource type="Texture2D" uid="uid://b3hmh5jlggqxa" path="res://assets/icons/cross.svg" id="6_w6i82"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="7_nwwpk"]
 [ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://assets/icons/Scene.svg" id="7_ofqgp"]
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/Cue_list.svg" id="8_7bmnv"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="8_fvid6"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="9_knja0"]
 [ext_resource type="Script" path="res://panels/Programmer/SaveControls.gd" id="11_stngn"]
+[ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="15_u17iu"]
 
-[sub_resource type="Gradient" id="Gradient_7l62u"]
+[sub_resource type="Gradient" id="Gradient_3fc0s"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_0rfe1"]
-gradient = SubResource("Gradient_7l62u")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fgq18"]
+gradient = SubResource("Gradient_3fc0s")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qquak"]
-texture = SubResource("GradientTexture2D_0rfe1")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1rl1j"]
+texture = SubResource("GradientTexture2D_fgq18")
 
 [node name="Programmer" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 679.0
-offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xonfe")
@@ -99,9 +98,12 @@ layout_mode = 2
 label_text = "Dimmer"
 object_id = "programmer"
 method = "Dimmer"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["Dimmer"]
 reset_method = "reset_Dimmer"
 send_selection_value = "selected_fixtures"
-clear_icon = ExtResource("7_nwwpk")
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="ColorSliders" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
@@ -115,8 +117,13 @@ label_text = "Red"
 show_warning_bg = false
 show_gradient_bg = true
 graident_top_color = Color(1, 0, 0, 1)
-send_command = false
-clear_icon = ExtResource("6_w6i82")
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["r"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="Green" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
@@ -124,8 +131,13 @@ label_text = "Green"
 show_warning_bg = false
 show_gradient_bg = true
 graident_top_color = Color(0, 1, 0, 1)
-send_command = false
-clear_icon = ExtResource("6_w6i82")
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["g"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="Blue" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
@@ -133,8 +145,13 @@ label_text = "Blue"
 show_warning_bg = false
 show_gradient_bg = true
 graident_top_color = Color(0, 0, 1, 1)
-send_command = false
-clear_icon = ExtResource("6_w6i82")
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["b"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="Hue" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 visible = false
@@ -144,15 +161,20 @@ max_value = 360
 show_gradient_bg = true
 graident_top_color = Color(1, 1, 0, 1)
 graident_bottom_color = Color(1, 0, 0, 1)
-send_command = false
-clear_icon = ExtResource("6_w6i82")
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["h"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+reset_icon = ExtResource("7_nwwpk")
 metadata/_edit_group_ = true
 
 [node name="GraidentContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue" index="1"]
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_qquak")
+theme_override_styles/panel = SubResource("StyleBoxTexture_1rl1j")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
@@ -163,17 +185,18 @@ max_value = 360.0
 [node name="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer" index="2"]
 max_value = 360.0
 
-[node name="Clear" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/HBoxContainer" index="0"]
-icon = ExtResource("6_w6i82")
-
 [node name="Saturation" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 visible = false
 layout_mode = 2
 label_text = "Sat"
 show_warning_bg = false
 show_gradient_bg = true
-send_command = false
-clear_icon = ExtResource("6_w6i82")
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["s"]
+send_selection_value = "selected_fixtures"
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="Value" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 visible = false
@@ -181,8 +204,12 @@ layout_mode = 2
 label_text = "Value"
 show_warning_bg = false
 show_gradient_bg = true
-send_command = false
-clear_icon = ExtResource("6_w6i82")
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["v"]
+send_selection_value = "selected_fixtures"
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="ColorPicker" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer"]
 layout_mode = 2
@@ -243,32 +270,41 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels"]
 layout_mode = 2
 
-[node name="ChannelSlider3" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
+[node name="White" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "White"
 object_id = "programmer"
 method = "ColorIntensityWhite"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["ColorIntensityWhite"]
 reset_method = "reset_ColorIntensityWhite"
 send_selection_value = "selected_fixtures"
-clear_icon = ExtResource("7_nwwpk")
+reset_icon = ExtResource("7_nwwpk")
 
-[node name="ChannelSlider2" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
+[node name="Amber" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "Amber"
 object_id = "programmer"
 method = "ColorIntensityAmber"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["ColorIntensityAmber"]
 reset_method = "reset_ColorIntensityAmber"
 send_selection_value = "selected_fixtures"
-clear_icon = ExtResource("7_nwwpk")
+reset_icon = ExtResource("7_nwwpk")
 
-[node name="ChannelSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
+[node name="UV" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "UV"
 object_id = "programmer"
 method = "ColorIntensityUV"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["ColorIntensityUV"]
 reset_method = "reset_ColorIntensityUV"
 send_selection_value = "selected_fixtures"
-clear_icon = ExtResource("7_nwwpk")
+reset_icon = ExtResource("7_nwwpk")
 
 [node name="Channels" type="VBoxContainer" parent="HBoxContainer/TabContainer"]
 visible = false
@@ -337,27 +373,31 @@ layout_mode = 2
 tooltip_text = "Save to CueList"
 icon = ExtResource("8_7bmnv")
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/SaveControls/VBoxContainer"]
+layout_mode = 2
+
+[node name="Import" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Import values from selected fixtures"
+icon = ExtResource("14_xpe2t")
+
+[node name="All" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_vertical = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/SaveControls/VBoxContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="All" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
+tooltip_text = "All Mode: Effect all the fixtures the same"
+theme_override_fonts/font = ExtResource("15_u17iu")
 toggle_mode = true
+button_pressed = true
 text = "A"
 
-[node name="Individual" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Individual" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+tooltip_text = "Individual Mode: Some controls effect fixtures individual"
+theme_override_fonts/font = ExtResource("15_u17iu")
 toggle_mode = true
 text = "I"
-
-[node name="Relative" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-toggle_mode = true
-text = "R"
 
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Red" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_red_sider_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Green" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_green_slider_value_changed"]
