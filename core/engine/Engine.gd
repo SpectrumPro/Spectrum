@@ -135,6 +135,8 @@ func reset() -> void:
 	resetting.emit()
 	Client.add_networked_object("engine", self)
 	
+	Values.reset()
+	
 	universes = {} 
 	fixtures = {} 
 	functions = {}
@@ -142,11 +144,6 @@ func reset() -> void:
 	programmer = Programmer.new()
 	
 	print("Performing Engine Reset!")
-
-
-func _disconnect_all_signal_methods(sig: Signal) -> void:
-	for signal_dict: Dictionary in sig.get_connections():
-		sig.disconnect(signal_dict.callable)
 
 
 ## Disconnects from the server

@@ -14,6 +14,17 @@ var static_values: Dictionary = {}
 var selection_values: Dictionary = {}
 
 
+## Resets all the values and disconnects all signals
+func reset() -> void:
+	static_values = {}
+	selection_values = {}
+
+
+func _disconnect_all_signal_methods(sig: Signal) -> void:
+	for signal_dict: Dictionary in sig.get_connections():
+		sig.disconnect(signal_dict.callable)
+
+
 #region Static Values
 ## Connect to a value
 func connect_to_static_value(value_name: String, callback: Callable):
