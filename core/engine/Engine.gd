@@ -133,14 +133,13 @@ func connect_to_server(ip: String):
 
 func reset() -> void:
 	resetting.emit()
+	Client.add_networked_object("engine", self)
 	
-
 	universes = {} 
 	fixtures = {} 
 	functions = {}
 	fixtures_definitions = {} 
 	programmer = Programmer.new()
-	
 	
 	print("Performing Engine Reset!")
 

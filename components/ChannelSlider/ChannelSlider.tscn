@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://cbtm8eq5rbugv"]
+[gd_scene load_steps=10 format=3 uid="uid://cbtm8eq5rbugv"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jnmjo"]
 [ext_resource type="Script" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
+[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="3_tt50p"]
 [ext_resource type="Texture2D" uid="uid://c0lqh3h58ht3c" path="res://assets/icons/Random.svg" id="4_oirfb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erjei"]
@@ -22,15 +23,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="Gradient" id="Gradient_bt34s"]
+[sub_resource type="Gradient" id="Gradient_yki5r"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_wfr0m"]
-gradient = SubResource("Gradient_bt34s")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vajdr"]
+gradient = SubResource("Gradient_yki5r")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tyscp"]
-texture = SubResource("GradientTexture2D_wfr0m")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n8ba3"]
+texture = SubResource("GradientTexture2D_vajdr")
 
 [node name="ChannelSlider" type="PanelContainer"]
 anchors_preset = -1
@@ -44,6 +45,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_jnmjo")
 script = ExtResource("2_adqf8")
+reset_icon = ExtResource("3_tt50p")
 
 [node name="WarningBG" type="PanelContainer" parent="."]
 visible = false
@@ -58,7 +60,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_y34yv")
 
 [node name="GraidentBG" type="PanelContainer" parent="GraidentContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_tyscp")
+theme_override_styles/panel = SubResource("StyleBoxTexture_n8ba3")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -94,9 +96,10 @@ max_value = 255.0
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Clear" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Reset" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+icon = ExtResource("3_tt50p")
 icon_alignment = 1
 
 [node name="Random" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
@@ -107,5 +110,5 @@ icon_alignment = 1
 
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/VSlider" to="." method="_on_v_slider_value_changed"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/SpinBox" to="." method="_on_spin_box_value_changed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Clear" to="." method="_on_clear_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Reset" to="." method="_on_reset_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Random" to="." method="_on_random_pressed"]

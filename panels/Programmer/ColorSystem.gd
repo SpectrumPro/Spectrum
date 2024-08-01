@@ -112,9 +112,12 @@ func _on_blue_slider_value_changed(value: float) -> void:
 
 
 func _on_color_reset_pressed() -> void: 
-	red_slider.set_value(0)
-	green_slider.set_value(0)
-	blue_slider.set_value(0)
+	red_slider.reset_no_message()
+	green_slider.reset_no_message()
+	blue_slider.reset_no_message()
+	hue_slider.reset_no_message()
+	saturation_slider.reset_no_message()
+	value_slider.reset_no_message()
 	
 	current_color = Color.BLACK
 	_update_color(false)

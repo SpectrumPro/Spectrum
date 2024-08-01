@@ -9,6 +9,12 @@ class_name ChannelSlider extends PanelContainer
 ## Emitted when the value is changed
 signal value_changed(value: int)
 
+## Emitted when the randomise button is pressed
+signal randomise_pressed()
+
+## Emitted when the reset button is pressed
+signal reset_pressed()
+
 
 ## The label text
 @export var label_text: String = "Slider" : set = set_label_text
@@ -34,10 +40,10 @@ signal value_changed(value: int)
 @export var graident_bottom_color: Color = Color.BLACK : set = set_gradient_bottom_color
 
 
-@export_group("Command")
+@export_group("Set Command")
 
 ## Wether or not to send a command to the server
-@export var send_command: bool = true
+@export var send__set_command: bool = true
 
 ## The ID of the networked object
 @export var object_id: String = ""
@@ -45,25 +51,44 @@ signal value_changed(value: int)
 ## The method to call
 @export var method: String = ""
 
+
+@export_group("Randomise Command")
+
+@export var send_randomise_command: bool = true
+
+@export var show_randomise_button: bool = true : set = set_show_randomise_button
+
+## The method to call when randomising,  "" to disable sending and instead emit value_changed with a random value
+@export var randomise_method: String = ""
+
+## Args to send after randomise_method
+@export var randomise_args: Array = []
+
+
+@export_group("Reset Command")
+
+@export var send_reset_command: bool = true
+
 ## The method to call when reseting
 @export var reset_method: String = ""
 
 
 @export_group("Arguments")
 
-## Args to send before the value
+## Args to send before the value for set and reset
 @export var args_befour: Array = []
 
-## Args to send after the value
+## Args to send after the value for set and reset
 @export var args_after: Array = []
 
-## A selection value to send, "" to disable
+## A selection value to send, "" to disable. Gets send before every set, reset, and randomise call
 @export var send_selection_value: String = ""
+
 
 
 @export_group("Icons")
 
-@export var clear_icon: Texture2D = load("res://assets/icons/close.svg") : set = set_clear_icon
+@export var reset_icon: Texture2D = load("res://assets/icons/close.svg") : set = set_reset_icon
 
 
 ## Nodes
@@ -83,7 +108,9 @@ func _ready() -> void:
 	
 	set_max_value(max_value)
 	set_value(value)
-	set_clear_icon(clear_icon)
+	set_reset_icon(reset_icon)
+	
+	set_show_randomise_button(show_randomise_button)
 	
 	$GraidentContainer.visible = show_gradient_bg
 	
@@ -137,16 +164,21 @@ func set_value(p_value: int) -> void:
 		spin_box.set_value_no_signal(p_value)
 
 
-func set_clear_icon(icon: Texture2D) -> void:
-	clear_icon = icon
+func set_reset_icon(icon: Texture2D) -> void:
+	reset_icon = icon
 	if is_node_ready():
-		$MarginContainer/VBoxContainer/HBoxContainer/Clear.icon = clear_icon
+		$MarginContainer/VBoxContainer/HBoxContainer/Reset.icon = reset_icon
 
 
-## Clears the value of the slider with out sending a message
-func clear_no_message() -> void:
+func set_show_randomise_button(p_show_randomise_button: bool) -> void:
+	show_randomise_button = p_show_randomise_button
+	if is_node_ready():
+		$MarginContainer/VBoxContainer/HBoxContainer/Random.visible = show_randomise_button
+
+## resets the value of the slider with out sending a message
+func reset_no_message() -> void:
 	value = 0
-	if show_warning_bg: $WarningBG.hide()
+	_set_show_override_warning(false)
 	
 	value_changed.emit(0)
 
@@ -154,7 +186,7 @@ func clear_no_message() -> void:
 ## Sends the value message
 func _send_set_value_message(value: int) -> void:
 	
-	if not send_command: 
+	if not send__set_command: 
 		return
 	
 	var args: Array = []
@@ -171,11 +203,16 @@ func _send_set_value_message(value: int) -> void:
 	})
 
 
+func _set_show_override_warning(show_warning: bool) -> void:
+	if show_warning_bg:
+		$WarningBG.visible = show_warning
+
+
 ## Called when the slider is moved
 func _on_v_slider_value_changed(p_value: float) -> void:
 	value = p_value
 	
-	if show_warning_bg: $WarningBG.show()
+	_set_show_override_warning(true)
 	_send_set_value_message(value)
 	
 	value_changed.emit(value)
@@ -185,23 +222,33 @@ func _on_v_slider_value_changed(p_value: float) -> void:
 func _on_spin_box_value_changed(p_value: float) -> void:
 	value = p_value
 	
-	if show_warning_bg: $WarningBG.show()
+	_set_show_override_warning(true)
 	_send_set_value_message(value)
 	
 	value_changed.emit()
 
 
-## Called when the clear button is pressed
-func _on_clear_pressed() -> void:
-	clear_no_message()
+## Called when the reset button is pressed
+func _on_reset_pressed() -> void:
+	reset_no_message()
 	
-	if send_command: Client.send({
-		"for": object_id,
-		"call": reset_method,
-		"args": args_befour if not send_selection_value else args_befour + [Values.get_selection_value(send_selection_value, [])]
-	})
+	if send_reset_command: 
+		Client.send({
+			"for": object_id,
+			"call": reset_method,
+			"args": args_befour if not send_selection_value else args_befour + [Values.get_selection_value(send_selection_value, [])]
+		})
+	
+	reset_pressed.emit()
 
 
 ## Called when the random button is pressed
 func _on_random_pressed() -> void:
-	slider.value = randi_range(0, max_value)
+	_set_show_override_warning(true)
+	
+	if send_randomise_command:
+		Client.send_command(object_id, randomise_method, randomise_args if not send_selection_value else [Values.get_selection_value(send_selection_value, [])] + randomise_args)
+	else:
+		slider.value = randi_range(0, max_value)
+	
+	randomise_pressed.emit()
