@@ -5,7 +5,13 @@ class_name Programmer extends EngineComponent
 ## Engine class for programming lights, colors, positions, etc.
 
 
-enum SAVE_MODE {ALL, MODIFIED}
+## Save Modes
+enum SAVE_MODE {
+	MODIFIED,		## Only save fixtures that have been changed in the programmer
+	ALL,			## Save all values of the fixtures
+	ALL_NONE_ZERO	## Save all values of the fixtures, as long as they are not the zero value for that channel
+}
+
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
@@ -20,23 +26,4 @@ func set_color(fixtures: Array, color: Color) -> void:
 		"for": "programmer",
 		"call": "set_color",
 		"args": [fixtures, color]
-	})
-
-
-## Sets the white intensity of all the fixtures pass in [pram fixtures] 
-func set_white_intensity(fixtures: Array, value: int) -> void:
-	Client.send({
-		"for": "programmer",
-		"call": "set_white_intensity",
-		"args": [fixtures, value]
-	})
-
-
-## Saves the current state of this programmer to a scene
-func save_to_scene(name: String = "New Scene") -> void:
-	
-	Client.send({
-		"for": "programmer",
-		"call": "save_to_scene",
-		"args": [name]
 	})

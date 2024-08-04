@@ -41,7 +41,7 @@ font_color = Color(0, 1, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_5ku0g"]
 font_color = Color(1, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tjok"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7co6c"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -239,43 +239,30 @@ text = "Change Cue List"
 
 [node name="StoreConfirmationBox" type="PanelContainer" parent="."]
 visible = false
-custom_minimum_size = Vector2(500, 244.825)
+custom_minimum_size = Vector2(570, 225.07)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7co6c")
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="StoreConfirmationBox"]
 custom_minimum_size = Vector2(464.225, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="StoreConfirmationBox/VBoxContainer2"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SaveMode" type="TabBar" parent="StoreConfirmationBox/VBoxContainer2/PanelContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-tab_count = 3
-tab_alignment = 1
-tab_0/title = "Modified Channels"
-tab_1/title = "All Channels"
-tab_2/title = "None Zero"
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+[node name="ActionText" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="StoreLabel" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+[node name="StoreLabel" type="Label" parent="StoreConfirmationBox/VBoxContainer2/ActionText"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
-text = "Store selection of: "
+text = "Store selection of:"
 horizontal_alignment = 1
 
-[node name="NumOfFixtures" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+[node name="NumOfFixtures" type="Label" parent="StoreConfirmationBox/VBoxContainer2/ActionText"]
 custom_minimum_size = Vector2(0, 24.55)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_n58hq")
@@ -283,14 +270,14 @@ text = "0"
 label_settings = SubResource("LabelSettings_eonr0")
 vertical_alignment = 2
 
-[node name="FixturesLabel" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+[node name="FixturesLabel" type="Label" parent="StoreConfirmationBox/VBoxContainer2/ActionText"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 text = "fixtures to cue:"
 horizontal_alignment = 1
 
-[node name="CueNumber" type="Label" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer4"]
+[node name="CueNumber" type="Label" parent="StoreConfirmationBox/VBoxContainer2/ActionText"]
 custom_minimum_size = Vector2(0, 24.55)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_n58hq")
@@ -298,50 +285,77 @@ text = "0"
 label_settings = SubResource("LabelSettings_eonr0")
 vertical_alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
-custom_minimum_size = Vector2(268.54, 0)
+[node name="QuestionMark" type="Label" parent="StoreConfirmationBox/VBoxContainer2/ActionText"]
+layout_mode = 2
+text = "?"
+
+[node name="StoreModes" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+
+[node name="Merge" type="Button" parent="StoreConfirmationBox/VBoxContainer2/StoreModes"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 4
+text = "Merge
+"
 
-[node name="MergeOver" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer"]
+[node name="Erace" type="Button" parent="StoreConfirmationBox/VBoxContainer2/StoreModes"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Merge Over"
-
-[node name="MergeUnder" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Merge Under"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
-custom_minimum_size = Vector2(268.54, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="Replace" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Replace"
-
-[node name="Erace" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 4
 text = "Erace"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
-custom_minimum_size = Vector2(201.56, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-
-[node name="New Cue" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer3"]
+[node name="NewCue" type="Button" parent="StoreConfirmationBox/VBoxContainer2/StoreModes"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "New Cue"
 
-[node name="Cancel" type="Button" parent="StoreConfirmationBox/VBoxContainer2/HBoxContainer3"]
+[node name="HSeparator" type="HSeparator" parent="StoreConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(497.95, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SaveModes" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="ModifiedChannels" type="Button" parent="StoreConfirmationBox/VBoxContainer2/SaveModes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Modified Channels"
+
+[node name="AllChannels" type="Button" parent="StoreConfirmationBox/VBoxContainer2/SaveModes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "All Channels"
+
+[node name="AllNoneZero" type="Button" parent="StoreConfirmationBox/VBoxContainer2/SaveModes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "All None Zero"
+
+[node name="ConfirmationButtons" type="HBoxContainer" parent="StoreConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(201.56, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="StoreConfirmation" type="Button" parent="StoreConfirmationBox/VBoxContainer2/ConfirmationButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Store"
+
+[node name="Cancel" type="Button" parent="StoreConfirmationBox/VBoxContainer2/ConfirmationButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -360,5 +374,5 @@ text = "Cancel"
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
 [connection signal="pressed" from="Settings/VBoxContainer/ChangeCueList" to="." method="_on_change_cue_list_pressed"]
-[connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/HBoxContainer3/New Cue" to="." method="_on_new_cue_pressed"]
-[connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/HBoxContainer3/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/ConfirmationButtons/StoreConfirmation" to="." method="_on_store_confirmation_pressed"]
+[connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/ConfirmationButtons/Cancel" to="." method="_on_cancel_pressed"]

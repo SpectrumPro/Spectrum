@@ -61,6 +61,20 @@ var _fade_time: float = 0
 	"stopped": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Stopped,
 }
 
+var store_function_button_group: ButtonGroup = null
+@onready var store_function_buttons: Dictionary = {
+	"merge": $StoreConfirmationBox/VBoxContainer2/StoreModes/Merge,
+	"erace": $StoreConfirmationBox/VBoxContainer2/StoreModes/Erace,
+	"new_cue": $StoreConfirmationBox/VBoxContainer2/StoreModes/NewCue,
+}
+
+var save_mode_button_group: ButtonGroup = null
+@onready var save_mode_buttons: Dictionary = {
+	"modified_channels": $StoreConfirmationBox/VBoxContainer2/SaveModes/ModifiedChannels,
+	"all_channels": $StoreConfirmationBox/VBoxContainer2/SaveModes/AllChannels,
+	"all_none_zero": $StoreConfirmationBox/VBoxContainer2/SaveModes/AllNoneZero,
+}
+
 
 func _ready() -> void:
 	Core.functions_added.connect(_on_functions_added)
@@ -71,9 +85,30 @@ func _ready() -> void:
 	glboal_cue.add_chip(self, "_fade_time", _set_global_fade_time)
 	glboal_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
 	
+	store_function_button_group = _add_to_button_group(store_function_buttons.values())
+	store_function_button_group.pressed.connect(_on_store_function_changed)
+	
+	save_mode_button_group = _add_to_button_group(save_mode_buttons.values())
+	save_mode_button_group.pressed.connect(_on_save_mode_changed)
+	
+	(store_function_buttons.merge as Button).button_pressed = true
+	(save_mode_buttons.modified_channels as Button).button_pressed = true
+	
 	remove_child(settings_node)
 	settings_node.show()
 	reload()
+
+
+## Adds all the passed buttons to a new ButtonGroup
+func _add_to_button_group(buttons: Array) -> ButtonGroup:
+	var new_group: ButtonGroup = ButtonGroup.new()
+	
+	for button: BaseButton in buttons:
+		button.toggle_mode = true
+		button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+		button.button_group = new_group
+	
+	return new_group
 
 
 func _set_global_pre_wait(pre_wait: float) -> void:
@@ -115,7 +150,7 @@ func _on_functions_removed(functions: Array) -> void:
 
 func _on_selected_fixtures_changed(selected_fixtures: Array) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/Store.disabled = selected_fixtures == []
-	$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/NumOfFixtures.text = str(len(selected_fixtures))
+	$StoreConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = str(len(selected_fixtures))
 
 
 ## Reloads the list of cues
@@ -191,7 +226,7 @@ func _on_select_requested(new_list_item: ListItem, cue_number: float) -> void:
 	if Input.is_key_pressed(KEY_CTRL):
 		current_cue_list.seek_to(cue_refs[current_selected_item])
 
-	$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/CueNumber.text = str(cue_number)
+	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = str(cue_number)
 
 
 func set_cue_list(cue_list: CueList = null) -> void:
@@ -342,32 +377,89 @@ func _on_v_box_container_gui_input(event: InputEvent) -> void:
 		
 		current_selected_item = null
 
-		$StoreConfirmationBox/VBoxContainer2/HBoxContainer4/CueNumber.text = "null"
+		$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = "null"
 
+#region Store Controls
 
-## Edit Controls
+## Called when the store button in the menue bar is clicked
 func _on_store_pressed() -> void:
 	if current_cue_list:
 		$StoreConfirmationBox.show()
 
-
+## Called when the cancel button is pressed in the store menu
 func _on_cancel_pressed() -> void:
 	$StoreConfirmationBox.hide()
 
 
-func _get_save_mode() -> int:
-	return $StoreConfirmationBox/VBoxContainer2/PanelContainer/SaveMode.current_tab
-
-
-func _on_new_cue_pressed() -> void:
+## Called when the store button is pressed in the store menu
+func _on_store_confirmation_pressed() -> void:
 	if current_cue_list:
-		Client.send({
-			"for": "programmer",
-			"call": "save_to_new_cue",
-			"args": [Values.get_selection_value("selected_fixtures", []), current_cue_list, _get_save_mode()]
-		})
+		var args_needs_cue_number: bool = false
+		var save_mode: int = 0
+		var store_function: String = ""
+		var args: Array = []
+		var current_cue_number: float = cue_refs[current_selected_item] if current_selected_item else -1
+		
+		match save_mode_button_group.get_pressed_button():
+			save_mode_buttons.modified_channels:
+				save_mode = Programmer.SAVE_MODE.MODIFIED
+			
+			save_mode_buttons.all_channels:
+				save_mode = Programmer.SAVE_MODE.ALL
+			
+			save_mode_buttons.all_none_zero:
+				save_mode = Programmer.SAVE_MODE.ALL_NONE_ZERO
+		
+		
+		match store_function_button_group.get_pressed_button():
+			store_function_buttons.merge:
+				store_function = "merge_into_cue"
+				args_needs_cue_number = true
+				
+			store_function_buttons.erace:
+				store_function = "erace_from_cue"
+				args_needs_cue_number = true
+				
+			store_function_buttons.new_cue:
+				store_function = "save_to_new_cue"
+		
+		args = [
+			Values.get_selection_value("selected_fixtures", []), 
+			current_cue_list
+		]
+		
+		if args_needs_cue_number:
+			args += [current_cue_number]
+		
+		args += [
+			save_mode
+		]
+		
+		Client.send_command("programmer", store_function, args)
 
 
+## Called when a store function button is pressed
+func _on_store_function_changed(button: Button) -> void:
+	pass
+
+
+## Called when a save mode button is pressed
+func _on_save_mode_changed(button: Button) -> void:
+	pass
+
+#func _on_new_cue_pressed() -> void:
+	#if current_cue_list:
+		#Client.send({
+			#"for": "programmer",
+			#"call": "save_to_new_cue",
+			#"args": [Values.get_selection_value("selected_fixtures", []), current_cue_list, _get_save_mode()]
+		#})
+
+#endregion
+
+#region Cue Edit Controls
+
+## Edit Controls
 func _on_edit_mode_toggled(toggled_on: bool) -> void:
 	_edit_mode = toggled_on
 	reload()
@@ -385,3 +477,6 @@ func _on_move_up_pressed() -> void:
 
 func _on_move_down_pressed() -> void:
 	current_cue_list.move_cue_down(cue_refs[current_selected_item])
+
+#endregion
+

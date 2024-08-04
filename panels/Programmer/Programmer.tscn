@@ -15,17 +15,17 @@
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="15_u17iu"]
 
-[sub_resource type="Gradient" id="Gradient_3fc0s"]
+[sub_resource type="Gradient" id="Gradient_b1i2e"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_fgq18"]
-gradient = SubResource("Gradient_3fc0s")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2d2lo"]
+gradient = SubResource("Gradient_b1i2e")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1rl1j"]
-texture = SubResource("GradientTexture2D_fgq18")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwf2c"]
+texture = SubResource("GradientTexture2D_2d2lo")
 
 [node name="Programmer" type="PanelContainer"]
 anchors_preset = 15
@@ -103,7 +103,6 @@ randomise_method = "set_random"
 randomise_args = ["Dimmer"]
 reset_method = "reset_Dimmer"
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="ColorSliders" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
@@ -123,7 +122,6 @@ randomise_method = "set_color_random"
 randomise_args = ["r"]
 send_reset_command = false
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="Green" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
@@ -137,7 +135,6 @@ randomise_method = "set_color_random"
 randomise_args = ["g"]
 send_reset_command = false
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="Blue" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
@@ -151,7 +148,6 @@ randomise_method = "set_color_random"
 randomise_args = ["b"]
 send_reset_command = false
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="Hue" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 visible = false
@@ -167,14 +163,13 @@ randomise_method = "set_color_random"
 randomise_args = ["h"]
 send_reset_command = false
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 metadata/_edit_group_ = true
 
 [node name="GraidentContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue" index="1"]
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_1rl1j")
+theme_override_styles/panel = SubResource("StyleBoxTexture_lwf2c")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
@@ -196,7 +191,6 @@ send_randomise_command = false
 randomise_method = "set_color_random"
 randomise_args = ["s"]
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="Value" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 visible = false
@@ -209,7 +203,6 @@ send_randomise_command = false
 randomise_method = "set_color_random"
 randomise_args = ["v"]
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="ColorPicker" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer"]
 layout_mode = 2
@@ -280,7 +273,6 @@ randomise_method = "set_random"
 randomise_args = ["ColorIntensityWhite"]
 reset_method = "reset_ColorIntensityWhite"
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="Amber" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
@@ -292,7 +284,6 @@ randomise_method = "set_random"
 randomise_args = ["ColorIntensityAmber"]
 reset_method = "reset_ColorIntensityAmber"
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="UV" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
@@ -304,7 +295,6 @@ randomise_method = "set_random"
 randomise_args = ["ColorIntensityUV"]
 reset_method = "reset_ColorIntensityUV"
 send_selection_value = "selected_fixtures"
-reset_icon = ExtResource("7_nwwpk")
 
 [node name="Channels" type="VBoxContainer" parent="HBoxContainer/TabContainer"]
 visible = false

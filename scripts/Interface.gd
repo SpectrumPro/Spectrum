@@ -11,41 +11,41 @@ signal edit_mode_changed(edit_mode: bool)
 
 ## Stores all the components found in the folder, stored as {"folder_name": PackedScene}
 var components: Dictionary = {
-	"ChannelSlider": load("res://components/ChannelSlider/ChannelSlider.tscn"),
-	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
-	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
-	"DeskItemContainer": load("res://components/DeskItemContainer/DeskItemContainer.tscn"),
-	"ItemListView": load("res://components/ItemListView/ItemListView.tscn"),
-	"Knob": load("res://components/Knob/Knob.tscn"),
-	"ListItem": load("res://components/ListItem/ListItem.tscn"),
-	"ObjectPicker": load("res://components/ObjectPicker/ObjectPicker.tscn"),
-	"PanelContainer": load("res://components/PanelContainer/PanelContainer.tscn"),
-	"PanelSettingsContainer": load("res://components/PanelSettingContainer/PanelSettingsContainer.tscn"),
-	"PlaybackRow": load("res://components/PlaybackRow/PlaybackRow.tscn"),
-	"PopupWindow": load("res://components/PopupWindow/PopupWindow.tscn"),
-	"TriggerButton": load("res://components/TriggerButton/TriggerButton.tscn"),
-	"VirtualFixture": load("res://components/VirtualFixture/VirtualFixture.tscn"),
-	"Warning": load("res://components/Warning/Warning.tscn")
+	"ChannelSlider": preload("res://components/ChannelSlider/ChannelSlider.tscn"),
+	"ColorSlider": preload("res://components/ColorSlider/ColorSlider.tscn"),
+	"ConfirmationBox": preload("res://components/ConfirmationBox/ConfirmationBox.tscn"),
+	"DeskItemContainer": preload("res://components/DeskItemContainer/DeskItemContainer.tscn"),
+	"ItemListView": preload("res://components/ItemListView/ItemListView.tscn"),
+	"Knob": preload("res://components/Knob/Knob.tscn"),
+	"ListItem": preload("res://components/ListItem/ListItem.tscn"),
+	"ObjectPicker": preload("res://components/ObjectPicker/ObjectPicker.tscn"),
+	"PanelContainer": preload("res://components/PanelContainer/PanelContainer.tscn"),
+	"PanelSettingsContainer": preload("res://components/PanelSettingContainer/PanelSettingsContainer.tscn"),
+	"PlaybackRow": preload("res://components/PlaybackRow/PlaybackRow.tscn"),
+	"PopupWindow": preload("res://components/PopupWindow/PopupWindow.tscn"),
+	"TriggerButton": preload("res://components/TriggerButton/TriggerButton.tscn"),
+	"VirtualFixture": preload("res://components/VirtualFixture/VirtualFixture.tscn"),
+	"Warning": preload("res://components/Warning/Warning.tscn")
 }
 
 ## Stores all the panels found in the folder, stored as {"folder_name": PackedScene}
 var panels: Dictionary = {
-	#"3D": load("res://panels/3D/3D.tscn"),
-	"AddFixture": load("res://panels/AddFixture/AddFixture.tscn"),
-	"AnimationEditor": load("res://panels/AnimationEditor/AnimationEditor.tscn"),
-	"ColorPalette": load("res://panels/ColorPalette/ColorPalette.tscn"),
-	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
-	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
-	"Debug": load("res://panels/Debug/Debug.tscn"),
-	"Desk": load("res://panels/Desk/Desk.tscn"),
-	"Fixtures": load("res://panels/Fixtures/Fixtures.tscn"),
-	"Functions": load("res://panels/Functions/Functions.tscn"),
-	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
-	"NetworkConnection": load("res://panels/NetworkConnection/NetworkConnection.tscn"),
-	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
-	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
-	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
-	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn")
+	#"3D": preload("res://panels/3D/3D.tscn"),
+	"AddFixture": preload("res://panels/AddFixture/AddFixture.tscn"),
+	"AnimationEditor": preload("res://panels/AnimationEditor/AnimationEditor.tscn"),
+	"ColorPalette": preload("res://panels/ColorPalette/ColorPalette.tscn"),
+	"ColorPicker": preload("res://panels/ColorPicker/ColorPicker.tscn"),
+	"CuePlayback": preload("res://panels/CuePlayback/CuePlayback.tscn"),
+	"Debug": preload("res://panels/Debug/Debug.tscn"),
+	"Desk": preload("res://panels/Desk/Desk.tscn"),
+	"Fixtures": preload("res://panels/Fixtures/Fixtures.tscn"),
+	"Functions": preload("res://panels/Functions/Functions.tscn"),
+	"IOControls": preload("res://panels/IOControls/IOControls.tscn"),
+	"NetworkConnection": preload("res://panels/NetworkConnection/NetworkConnection.tscn"),
+	"PlaybackButtons": preload("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
+	"Playbacks": preload("res://panels/Playbacks/Playbacks.tscn"),
+	"Programmer": preload("res://panels/Programmer/Programmer.tscn"),
+	"SaveLoad": preload("res://panels/SaveLoad/SaveLoad.tscn")
 }
 
 
@@ -120,7 +120,7 @@ func _try_auto_load() -> void:
 			self.load(saved_data)
 
 
-## Loads all the objects into the object picker
+## loads all the objects into the object picker
 func _set_up_object_picker() -> void:
 	_object_picker_window = get_tree().root.get_node("Main").get_node("ObjectPickerWindow")
 	_object_picker = get_tree().root.get_node("Main").get_node("ObjectPickerWindow/ObjectPicker")

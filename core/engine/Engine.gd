@@ -121,6 +121,11 @@ func _ready() -> void:
 	connect_to_server(server_ip_address)
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("reload"):
+		connect_to_server(server_ip_address)
+
+
 ## Connects to the server
 func connect_to_server(ip: String):
 	
@@ -133,6 +138,7 @@ func connect_to_server(ip: String):
 
 func reset() -> void:
 	resetting.emit()
+	disconnect_from_server()
 	Client.add_networked_object("engine", self)
 	
 	Values.reset()
