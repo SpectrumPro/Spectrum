@@ -47,7 +47,7 @@ var _fade_time: float = 0
 ## The ItemListView used to display cues
 @onready var cue_list_container: VBoxContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer
 
-@onready var glboal_cue: ListItem = $VBoxContainer/List/VBoxContainer/GlobalCue
+@onready var global_cue: ListItem = $VBoxContainer/List/VBoxContainer/GlobalCue
 
 @onready var edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
 
@@ -81,9 +81,10 @@ func _ready() -> void:
 	Core.functions_removed.connect(_on_functions_removed)
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
 	
-	glboal_cue.set_item_name("Global")
-	glboal_cue.add_chip(self, "_fade_time", _set_global_fade_time)
-	glboal_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
+	global_cue.set_item_name("Global")
+	global_cue.add_chip(self, "_fade_time", _set_global_fade_time)
+	global_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
+	global_cue.select_requested.connect(_clear_selections)
 	
 	store_function_button_group = _add_to_button_group(store_function_buttons.values())
 	store_function_button_group.pressed.connect(_on_store_function_changed)
@@ -176,6 +177,7 @@ func reload() -> void:
 			
 			if _edit_mode:
 				new_list_item.set_name_method(cue.set_name)
+				new_list_item.set_id_method(current_cue_list.set_cue_number.bind(cue))
 				new_list_item.add_chip(cue, "fade_time", cue.set_fade_time, cue.fade_time_changed)
 				new_list_item.add_chip(cue, "pre_wait", cue.set_pre_wait, cue.pre_wait_time_changed)
 			
@@ -192,15 +194,21 @@ func reload() -> void:
 
 			cue_list_container.add_child(new_list_item)
 		
-		glboal_cue.visible = _edit_mode
+		global_cue.visible = _edit_mode
 		
 	_reload_labels()
 	_reload_name()
 
 
-func _clear_selections() -> void:
-	current_selected_item = null
+func _clear_selections(arg1=null) -> void:
 	last_selected_item = null
+		
+	if current_selected_item:
+		current_selected_item.set_selected(false)
+	
+	current_selected_item = null
+
+	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = "null"
 
 
 func _reset_refs() -> void:
@@ -370,14 +378,7 @@ func _on_next_pressed() -> void:
 
 func _on_v_box_container_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-		last_selected_item = null
-		
-		if current_selected_item:
-			current_selected_item.set_selected(false)
-		
-		current_selected_item = null
-
-		$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = "null"
+		_clear_selections()
 
 #region Store Controls
 

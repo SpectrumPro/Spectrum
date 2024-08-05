@@ -11,9 +11,15 @@ signal fade_time_changed(new_fade_time: float)
 ## Emitted when the pre_wait time is changed
 signal pre_wait_time_changed(pre_wait: float)
 
+## Emitted when the cue number is changed
+signal number_changed(new_number: float) 
+
 
 ## The index of this cue, do not modify this when it is a part of a cuelist
-var number: float = 1.0
+var number: float = 1.0 : 
+	set(value):
+		number = value
+		number_changed.emit(number)
 
 ## Fade in time in seconds
 var fade_time: float = 2.0

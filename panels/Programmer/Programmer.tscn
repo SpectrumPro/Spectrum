@@ -15,17 +15,17 @@
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="15_u17iu"]
 
-[sub_resource type="Gradient" id="Gradient_b1i2e"]
+[sub_resource type="Gradient" id="Gradient_64slo"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_2d2lo"]
-gradient = SubResource("Gradient_b1i2e")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_d1u0b"]
+gradient = SubResource("Gradient_64slo")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwf2c"]
-texture = SubResource("GradientTexture2D_2d2lo")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bfnea"]
+texture = SubResource("GradientTexture2D_d1u0b")
 
 [node name="Programmer" type="PanelContainer"]
 anchors_preset = 15
@@ -169,7 +169,7 @@ metadata/_edit_group_ = true
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_lwf2c")
+theme_override_styles/panel = SubResource("StyleBoxTexture_bfnea")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"

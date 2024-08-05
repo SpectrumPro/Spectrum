@@ -25,9 +25,16 @@ var highlighted_color: Color = Color.DIM_GRAY
 ## The color of this item
 var color: Color = Color.WHITE : set = set_color
 
-
-func _init():
+func _init() -> void:
 	self.add_theme_stylebox_override("panel", self.get_theme_stylebox("panel").duplicate())
+
+
+func _ready() -> void:
+	$Container/IDEdit.get_line_edit().flat = true
+	$Container/IDEdit.get_line_edit().add_theme_constant_override("minimum_character_width", 2)
+	$Container/IDEdit.get_line_edit().add_theme_color_override("font_color", Color.hex(0x8d8d8dff))
+	$Container/IDEdit.get_line_edit().add_theme_font_size_override("font_size", 13)
+	
 
 
 ## Sets the nme of this item
@@ -140,8 +147,25 @@ func set_name_changed_signal(p_signal: Signal) -> void:
 
 
 func set_id_tag(tag: String) -> void:
-	$Container/IdTag.text = tag
-	$Container/IdTag.visible = tag != ""
+	$Container/IDTag.text = tag
+	$Container/IDEdit.value = float(tag)
+	$Container/IDTag.visible = tag != ""
+
+
+## Sets the method that should be called when the name LineEdit is changed in this item
+func set_id_method(method: Callable) -> void:
+	$Container/IDTag.visible = false
+	$Container/IDEdit.visible = true
+	
+	$Container/IDEdit.value_changed.connect(method)
+
+
+## Sets the signal that should be listend to to update the name of this item
+func set_id_changed_signal(p_signal: Signal) -> void:
+	p_signal.connect(func (new_name): 
+		$Container/IDEdit.value = float(new_name)
+		$Container/IDTag.text = new_name
+	)
 
 
 func _on_gui_input(event):

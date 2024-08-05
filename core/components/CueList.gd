@@ -128,6 +128,10 @@ func move_cue_down(cue_number: float) -> void:
 	Client.send_command(uuid, "move_cue_down", [cue_number])
 
 
+func set_cue_number(new_number: float, cue: Cue) -> void:
+	Client.send_command(uuid, "set_cue_number", [new_number, cue])
+
+
 ## INTERNAL: Called when the index is changed on the server
 func on_cue_changed(cue_number: float) -> void:
 	current_cue_number = cue_number
@@ -178,8 +182,16 @@ func on_cues_removed(p_cues: Array) -> void:
 
 ## INTERNAL: Called when cue numbers are changed on the server
 func on_cue_numbers_changed(new_numbers: Dictionary) -> void:
-	for cue_number in new_numbers.keys():
-		cues[cue_number] = new_numbers[cue_number]
+	for new_number: float in new_numbers.keys():
+		var cue: Cue = new_numbers[new_number]
+		index_list.erase(cue.number)
+		index_list.append(new_number)
+		index_list.sort()
+
+		cues.erase(cue.number)
+		cues[new_number] = cue
+		
+		cue.number = new_number
 	
 	cue_numbers_changed.emit(new_numbers)
 

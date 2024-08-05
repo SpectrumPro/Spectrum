@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=22 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="3_ifhov"]
 [ext_resource type="Texture2D" uid="uid://bf4227ei83gh1" path="res://assets/icons/play.svg" id="4_1thxx"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="4_uf8ql"]
-[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="5_12n8h"]
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="5_d5o4u"]
 [ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://assets/icons/pause.svg" id="5_r8lsa"]
 [ext_resource type="PackedScene" uid="uid://d0wg6bo67u7cr" path="res://components/ListItem/ListItem.tscn" id="6_7c6j4"]
@@ -30,7 +29,6 @@ events = [SubResource("InputEventKey_34esd")]
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n58hq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_eonr0"]
-font = ExtResource("5_12n8h")
 
 [sub_resource type="LabelSettings" id="LabelSettings_u403j"]
 font_color = Color(1, 1, 0, 1)
@@ -91,16 +89,19 @@ layout_mode = 2
 
 [node name="Delete" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Delete Cue"
 disabled = true
 icon = ExtResource("3_ifhov")
 
 [node name="MoveUp" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Move cue up, swaps the cue number with the one above"
 disabled = true
 icon = ExtResource("4_uf8ql")
 
 [node name="MoveDown" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Move cue down, swaps the cue number with the one below"
 disabled = true
 icon = ExtResource("5_d5o4u")
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://d0wg6bo67u7cr"]
+[gd_scene load_steps=5 format=3 uid="uid://d0wg6bo67u7cr"]
 
 [ext_resource type="Script" path="res://components/ListItem/ListItem.gd" id="1_plvbh"]
 
@@ -19,6 +19,8 @@ corner_radius_bottom_left = 5
 font_size = 13
 font_color = Color(0.552956, 0.552956, 0.552956, 1)
 
+[sub_resource type="ImageTexture" id="ImageTexture_ms4r8"]
+
 [node name="Item" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 50)
 theme_override_styles/panel = SubResource("StyleBoxFlat_564t2")
@@ -30,11 +32,18 @@ layout_mode = 2
 [node name="Icon" type="TextureRect" parent="Container"]
 layout_mode = 2
 
-[node name="IdTag" type="Label" parent="Container"]
+[node name="IDTag" type="Label" parent="Container"]
 visible = false
 layout_mode = 2
 text = "0.4"
 label_settings = SubResource("LabelSettings_1o7nq")
+
+[node name="IDEdit" type="SpinBox" parent="Container"]
+visible = false
+layout_mode = 2
+theme_override_icons/updown = SubResource("ImageTexture_ms4r8")
+max_value = 9.22337e+18
+step = 0.1
 
 [node name="Name" type="Label" parent="Container"]
 layout_mode = 2

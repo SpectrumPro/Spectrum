@@ -28,9 +28,9 @@ var components: Dictionary = {
 	"Warning": preload("res://components/Warning/Warning.tscn")
 }
 
+
 ## Stores all the panels found in the folder, stored as {"folder_name": PackedScene}
 var panels: Dictionary = {
-	#"3D": preload("res://panels/3D/3D.tscn"),
 	"AddFixture": preload("res://panels/AddFixture/AddFixture.tscn"),
 	"AnimationEditor": preload("res://panels/AnimationEditor/AnimationEditor.tscn"),
 	"ColorPalette": preload("res://panels/ColorPalette/ColorPalette.tscn"),
@@ -45,8 +45,11 @@ var panels: Dictionary = {
 	"PlaybackButtons": preload("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": preload("res://panels/Playbacks/Playbacks.tscn"),
 	"Programmer": preload("res://panels/Programmer/Programmer.tscn"),
-	"SaveLoad": preload("res://panels/SaveLoad/SaveLoad.tscn")
+	"SaveLoad": preload("res://panels/SaveLoad/SaveLoad.tscn"),
+	"Universes": preload("res://panels/Universes/Universes.tscn"),
+	"VirtualFixtures": preload("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
+
 
 
 ## Global edit mode
@@ -89,8 +92,8 @@ func _ready() -> void:
 		Values.remove_from_selection_value("selected_fixtures", fixtures)
 	)
 	
-	components = get_packed_scenes_from_folder(components_folder)
-	panels = get_packed_scenes_from_folder(panels_folder)
+	#components = get_packed_scenes_from_folder(components_folder)
+	#panels = get_packed_scenes_from_folder(panels_folder)
 	
 	Core.resetting.connect(_on_engine_resetting)
 	_load()

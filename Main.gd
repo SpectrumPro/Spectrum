@@ -90,7 +90,11 @@ func _on_file_pressed() -> void:
 
 
 func _on_new_tab_pressed() -> void:
+	#var new_panel: Desk = desk_panel.instantiate()
 	var new_panel: Desk = Interface.panels.Desk.instantiate()
+	#var new_panel: Desk = preload("res://panels/Desk/Desk.tscn").instantiate()
+	
+	print(Interface.panels)
 	
 	_tab_bar.add_tab("Desk")
 	_tab_bar.current_tab = _tab_bar.tab_count - 1
