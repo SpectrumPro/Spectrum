@@ -5,8 +5,8 @@ class_name ProgrammerUI extends PanelContainer
 ## UI panel for programing scenes
 
 
-@onready var all_mode_button: Button = $HBoxContainer/SaveControls/VBoxContainer/All
-@onready var individual_mode_button: Button = $HBoxContainer/SaveControls/VBoxContainer/Individual
+@onready var all_mode_button: Button = $HBoxContainer/Controls/VBoxContainer/All
+@onready var individual_mode_button: Button = $HBoxContainer/Controls/VBoxContainer/Individual
 
 
 @onready var sliders: Array = [
@@ -40,3 +40,7 @@ func _on_button_group_button_pressed(button: Button) -> void:
 func _set_individual_mode(individual_mode: bool) -> void:
 	for slider: ChannelSlider in sliders:
 		slider.send_randomise_command = individual_mode
+
+
+func _on_locate_pressed() -> void:
+	pass # Replace with function body.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bwxr0mrsrt0iu"]
+[gd_scene load_steps=15 format=3 uid="uid://bwxr0mrsrt0iu"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
 [ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
@@ -6,26 +6,23 @@
 [ext_resource type="Script" path="res://panels/Programmer/ColorSystem.gd" id="2_xdlid"]
 [ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_rvdr4"]
 [ext_resource type="Script" path="res://panels/Programmer/Channels.gd" id="6_drfid"]
-[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="7_nwwpk"]
+[ext_resource type="Script" path="res://panels/Programmer/Controls.gd" id="7_itgph"]
 [ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://assets/icons/Scene.svg" id="7_ofqgp"]
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/Cue_list.svg" id="8_7bmnv"]
-[ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="8_fvid6"]
-[ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="9_knja0"]
-[ext_resource type="Script" path="res://panels/Programmer/SaveControls.gd" id="11_stngn"]
+[ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="11_snl23"]
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
-[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="15_u17iu"]
 
-[sub_resource type="Gradient" id="Gradient_64slo"]
+[sub_resource type="Gradient" id="Gradient_kkuvd"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_d1u0b"]
-gradient = SubResource("Gradient_64slo")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bpcwd"]
+gradient = SubResource("Gradient_kkuvd")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bfnea"]
-texture = SubResource("GradientTexture2D_d1u0b")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sst3q"]
+texture = SubResource("GradientTexture2D_bpcwd")
 
 [node name="Programmer" type="PanelContainer"]
 anchors_preset = 15
@@ -169,7 +166,7 @@ metadata/_edit_group_ = true
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_bfnea")
+theme_override_styles/panel = SubResource("StyleBoxTexture_sst3q")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
@@ -334,58 +331,57 @@ layout_mode = 2
 
 [node name="Left" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer"]
 layout_mode = 2
-icon = ExtResource("8_fvid6")
 
 [node name="Right" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer"]
 layout_mode = 2
-icon = ExtResource("9_knja0")
 
 [node name="ClearAll" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Clear All"
-icon = ExtResource("7_nwwpk")
 
-[node name="SaveControls" type="PanelContainer" parent="HBoxContainer"]
+[node name="Controls" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
-script = ExtResource("11_stngn")
+script = ExtResource("7_itgph")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/SaveControls"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Controls"]
 layout_mode = 2
 
-[node name="SaveToScene" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="SaveToScene" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Save to Scene"
 icon = ExtResource("7_ofqgp")
 
-[node name="SaveToCueList" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="SaveToCueList" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Save to CueList"
 icon = ExtResource("8_7bmnv")
 
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
 
-[node name="Import" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="Import" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Import values from selected fixtures"
 icon = ExtResource("14_xpe2t")
 
-[node name="All" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="Locate" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("11_snl23")
+
+[node name="All" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 size_flags_vertical = 10
 tooltip_text = "All Mode: Effect all the fixtures the same"
-theme_override_fonts/font = ExtResource("15_u17iu")
 toggle_mode = true
 button_pressed = true
 text = "A"
 
-[node name="Individual" type="Button" parent="HBoxContainer/SaveControls/VBoxContainer"]
+[node name="Individual" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 tooltip_text = "Individual Mode: Some controls effect fixtures individual"
-theme_override_fonts/font = ExtResource("15_u17iu")
 toggle_mode = true
 text = "I"
 
@@ -403,7 +399,9 @@ text = "I"
 [connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer/Left" to="HBoxContainer/TabContainer/Channels" method="_on_left_pressed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer/Right" to="HBoxContainer/TabContainer/Channels" method="_on_right_pressed"]
 [connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/ClearAll" to="HBoxContainer/TabContainer/Channels" method="_on_clear_all_pressed"]
-[connection signal="pressed" from="HBoxContainer/SaveControls/VBoxContainer/SaveToScene" to="HBoxContainer/SaveControls" method="_on_save_to_scene_pressed"]
-[connection signal="pressed" from="HBoxContainer/SaveControls/VBoxContainer/SaveToCueList" to="HBoxContainer/SaveControls" method="_on_save_to_cue_list_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/SaveToScene" to="HBoxContainer/Controls" method="_on_save_to_scene_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/SaveToCueList" to="HBoxContainer/Controls" method="_on_save_to_cue_list_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/Locate" to="HBoxContainer/Controls" method="_on_locate_pressed"]
+[connection signal="toggled" from="HBoxContainer/Controls/VBoxContainer/Locate" to="HBoxContainer/Controls" method="_on_locate_toggled"]
 
 [editable path="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue"]
