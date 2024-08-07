@@ -12,17 +12,17 @@
 [ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="11_snl23"]
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
 
-[sub_resource type="Gradient" id="Gradient_kkuvd"]
+[sub_resource type="Gradient" id="Gradient_hkux4"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_bpcwd"]
-gradient = SubResource("Gradient_kkuvd")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_pvkjg"]
+gradient = SubResource("Gradient_hkux4")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sst3q"]
-texture = SubResource("GradientTexture2D_bpcwd")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jnkt8"]
+texture = SubResource("GradientTexture2D_pvkjg")
 
 [node name="Programmer" type="PanelContainer"]
 anchors_preset = 15
@@ -166,7 +166,7 @@ metadata/_edit_group_ = true
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_sst3q")
+theme_override_styles/panel = SubResource("StyleBoxTexture_jnkt8")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
@@ -367,6 +367,7 @@ icon = ExtResource("14_xpe2t")
 
 [node name="Locate" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Locate the selected fixtures"
 icon = ExtResource("11_snl23")
 
 [node name="All" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
@@ -401,6 +402,7 @@ text = "I"
 [connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/ClearAll" to="HBoxContainer/TabContainer/Channels" method="_on_clear_all_pressed"]
 [connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/SaveToScene" to="HBoxContainer/Controls" method="_on_save_to_scene_pressed"]
 [connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/SaveToCueList" to="HBoxContainer/Controls" method="_on_save_to_cue_list_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/Import" to="HBoxContainer/Controls" method="_on_import_pressed"]
 [connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/Locate" to="HBoxContainer/Controls" method="_on_locate_pressed"]
 [connection signal="toggled" from="HBoxContainer/Controls/VBoxContainer/Locate" to="HBoxContainer/Controls" method="_on_locate_toggled"]
 

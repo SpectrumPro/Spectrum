@@ -20,6 +20,16 @@ func change_tab(idx: int) -> void:
 		_last_tab = children[idx]
 
 
+func remove_tab(idx: int) -> void:
+	var children: Array = get_children()
+	
+	if idx in range(len(children)):
+		if _last_tab == children[idx]:
+			_last_tab = null
+		
+		children[idx].queue_free()
+
+
 func add_tab(node: Control, switch_to: bool = true) -> void:
 	node.hide()
 	add_child(node, true)

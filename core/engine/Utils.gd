@@ -125,3 +125,24 @@ static func get_htp_color(color_1: Color, color_2: Color) -> Color:
 
 	return result_color
 
+
+static func get_most_common_value(arr: Array) -> Variant:
+	var count_dict := {}
+	
+	# Count the occurrences of each value
+	for value in arr:
+		if value in count_dict:
+			count_dict[value] += 1
+		else:
+			count_dict[value] = 1
+	
+	# Find the most common value
+	var most_common_value = null
+	var max_count = 0
+	
+	for key in count_dict:
+		if count_dict[key] > max_count:
+			max_count = count_dict[key]
+			most_common_value = key
+	
+	return most_common_value

@@ -114,6 +114,10 @@ grid_mode = 1
 
 [node name="PanelSettingsContainer" parent="." instance=ExtResource("10_y11gw")]
 visible = false
+custom_minimum_size = Vector2(800, 400)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Add" to="." method="_on_add_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Delete" to="." method="_on_delete_pressed"]

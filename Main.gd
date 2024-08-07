@@ -46,47 +46,24 @@ func load(saved_data: Array) -> void:
 	_tab_container.change_tab(_tab_bar.current_tab)
 
 
-func _on_settings_pressed() -> void:
-	#var new_window: Window = Interface.components.PopupWindow.instantiate()
-	#
-	#new_window.add_child(Interface.panels.Settings.instantiate())
-	#add_child(new_window)
-	$NetworkConnection.show()
+func _on_file_toggled(toggled_on: bool) -> void:
+	$SaveLoad.visible = toggled_on
 
 
-func _on_fixtures_pressed() -> void:
-	var new_window: Window = Interface.components.PopupWindow.instantiate()
-	
-	new_window.add_child(Interface.panels.Fixtures.instantiate())
-	add_child(new_window)
+func _on_programmer_toggled(toggled_on: bool) -> void:
+	$Programmer.visible = toggled_on
 
 
-func _on_scenes_pressed() -> void:
-	var new_window: Window = Interface.components.PopupWindow.instantiate()
-	
-	var playback_buttons: PlaybackButtons = Interface.panels.PlaybackButtons.instantiate()
-	playback_buttons.show_all = true
-	
-	new_window.size = Vector2(500, 500)
-	
-	new_window.add_child(playback_buttons)
-	add_child(new_window)
+func _on_scenes_toggled(toggled_on: bool) -> void:
+	$Playbacks.visible = toggled_on
 
 
-func _on_programmer_pressed() -> void:
-	var new_window: Window = Interface.components.PopupWindow.instantiate()
-	
-	new_window.size = Vector2(1500, 500)
-	
-	new_window.add_child(Interface.panels.Programmer.instantiate())
-	add_child(new_window)
+func _on_fixtures_toggled(toggled_on: bool) -> void:
+	$Fixtures.visible = toggled_on
 
 
-func _on_file_pressed() -> void:
-	var new_window: Window = Interface.components.PopupWindow.instantiate()
-	
-	new_window.add_child(Interface.panels.SaveLoad.instantiate())
-	add_child(new_window)
+func _on_settings_toggled(toggled_on: bool) -> void:
+	$NetworkConnection.visible = toggled_on
 
 
 func _on_new_tab_pressed() -> void:
@@ -112,7 +89,7 @@ func _on_close_confirmation_pressed() -> void:
 	var current_tab_idx: int = _tab_bar.current_tab
 	
 	_tab_bar.remove_tab(current_tab_idx)
-	_tab_container.get_children()[current_tab_idx].queue_free()
+	_tab_container.remove_tab(current_tab_idx)
 
 
 func _on_close_confirmation_cancel_pressed() -> void:

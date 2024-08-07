@@ -1,13 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
-
-@tool
-
 class_name NetworkConnectionPanel extends PanelContainer
 ## UI panel for connecting to server
-
-
-@export var show_close_button: bool = false
 
 
 ## Ui items
@@ -21,15 +15,7 @@ func _ready() -> void:
 
 	ip_input.editable = MainSocketClient.last_state == WebSocketPeer.STATE_CLOSED
 	_reload_ui()
-	
-	set_show_close_button(show_close_button)
 
-
-func set_show_close_button(p_show_close_button: bool) -> void:
-	show_close_button = p_show_close_button
-	
-	if is_node_ready():
-		$Control/Close.visible = show_close_button
 
 
 func _on_connected_to_server() -> void:
@@ -67,9 +53,3 @@ func _on_connect_pressed() -> void:
 
 func _on_disconnect_pressed() -> void:
 	Core.disconnect_from_server()
-
-
-func _on_close_pressed() -> void:
-	hide()
-
-

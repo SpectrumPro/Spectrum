@@ -80,7 +80,7 @@ func _update_border_state() -> void:
 
 
 ## Adds a chip to this item, allowing to editing properties on objects 
-func add_chip(object: Object, property: String, set_method: Callable, changed_signal: Signal = Signal()) -> void:
+func add_chip(object: Object, property: String, set_method: Callable, changed_signal: Signal = Signal()) -> Node:
 	var panel = PanelContainer.new()
 	var hbox = HBoxContainer.new()
 	var input = null
@@ -127,6 +127,7 @@ func add_chip(object: Object, property: String, set_method: Callable, changed_si
 	
 	$Container/Chips.add_child(panel)
 	
+	return input
 	
 
 

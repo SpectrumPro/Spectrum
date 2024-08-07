@@ -92,6 +92,7 @@ icon = ExtResource("5_33068")
 
 [node name="PanelSettingsContainer" parent="." instance=ExtResource("8_uv36r")]
 visible = false
+layout_mode = 2
 
 [connection signal="resized" from="." to="." method="_update_controls"]
 [connection signal="pressed" from="Controls/HBoxContainer/Left" to="." method="_on_left_pressed"]
@@ -104,4 +105,3 @@ visible = false
 [connection signal="pressed" from="Controls/VBoxContainer/Right" to="." method="_on_right_pressed"]
 [connection signal="pressed" from="Controls/VBoxContainer/Buttom" to="." method="_on_buttom_pressed"]
 [connection signal="pressed" from="Controls/VBoxContainer/Edit" to="." method="_on_edit_pressed"]
-[connection signal="type_change_pressed" from="PanelSettingsContainer" to="." method="_on_panel_settings_container_type_change_pressed"]

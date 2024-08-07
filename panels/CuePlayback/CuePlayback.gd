@@ -43,6 +43,9 @@ var _current_selected_cue: Cue = null
 var _pre_wait: float = 0
 var _fade_time: float = 0
 
+## The fade in and hold time inputs for the global cue
+var _global_cue_fade_time: SpinBox = null
+var _global_cue_pre_wait_time: SpinBox = null
 
 ## The ItemListView used to display cues
 @onready var cue_list_container: VBoxContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer
@@ -82,8 +85,8 @@ func _ready() -> void:
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
 	
 	global_cue.set_item_name("Global")
-	global_cue.add_chip(self, "_fade_time", _set_global_fade_time)
-	global_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
+	_global_cue_fade_time = global_cue.add_chip(self, "_fade_time", _set_global_fade_time)
+	_global_cue_pre_wait_time = global_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
 	global_cue.select_requested.connect(_clear_selections)
 	
 	store_function_button_group = _add_to_button_group(store_function_buttons.values())
@@ -167,6 +170,9 @@ func reload() -> void:
 	_reset_refs()
 
 	if current_cue_list:
+		var fade_times: Array = [0]
+		var pre_wait_times: Array = [0]
+		
 		for cue_number: float in current_cue_list.index_list:
 			var cue: Cue = current_cue_list.cues[cue_number]
 			var new_list_item: ListItem = Interface.components.ListItem.instantiate()
@@ -174,6 +180,9 @@ func reload() -> void:
 			new_list_item.set_item_name(cue.name)
 			new_list_item.set_name_changed_signal(cue.name_changed)
 			new_list_item.set_id_tag(str(cue_number))
+			
+			fade_times.append(cue.fade_time)
+			pre_wait_times.append(cue.pre_wait)
 			
 			if _edit_mode:
 				new_list_item.set_name_method(cue.set_name)
@@ -193,7 +202,9 @@ func reload() -> void:
 				_on_select_requested(new_list_item, cue_number))
 
 			cue_list_container.add_child(new_list_item)
-		
+		print(Utils.get_most_common_value(fade_times) )
+		_global_cue_fade_time.set_value_no_signal(Utils.get_most_common_value(fade_times))
+		_global_cue_pre_wait_time.set_value_no_signal(Utils.get_most_common_value(pre_wait_times))
 		global_cue.visible = _edit_mode
 		
 	_reload_labels()

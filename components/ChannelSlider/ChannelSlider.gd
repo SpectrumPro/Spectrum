@@ -179,8 +179,6 @@ func set_show_randomise_button(p_show_randomise_button: bool) -> void:
 func reset_no_message() -> void:
 	value = 0
 	_set_show_override_warning(false)
-	
-	value_changed.emit(0)
 
 
 ## Sends the value message

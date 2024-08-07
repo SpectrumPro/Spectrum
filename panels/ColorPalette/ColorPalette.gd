@@ -17,6 +17,13 @@ extends PanelContainer
 @onready var settings_node: Control = $Settings
 
 
+## The ButtonGroup added to all the buttons
+var _button_groop: ButtonGroup = null
+
+## Stores a refernce to all the buttons, by there color
+var _button_refs: Dictionary = {}
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	reload()
@@ -24,6 +31,8 @@ func _ready() -> void:
 	settings_node.get_node("VBoxContainer/HBoxContainer/NumberOfColors").set_value_no_signal(number_of_colors)
 	settings_node.get_node("VBoxContainer/HBoxContainer2/ShowWhite").set_pressed_no_signal(show_white)
 	settings_node.get_node("VBoxContainer/HBoxContainer2/ShowBlack").set_pressed_no_signal(show_black)
+	
+	Values.connect_to_selection_value("selected_fixtures", _change_selected_color_from_fixtures)
 	
 	remove_child($Settings)
 
@@ -33,6 +42,8 @@ func reload() -> void:
 	for old_button: Button in $ScrollContainer/GridContainer.get_children():
 		$ScrollContainer/GridContainer.remove_child(old_button)
 		old_button.queue_free()
+	
+	_button_groop = ButtonGroup.new()
 	
 	if show_white: 
 		_add_color_button(Color.WHITE)
@@ -87,11 +98,36 @@ func _add_color_button(color: Color) -> void:
 	
 	new_color_button.color = color
 	new_color_button.button_down.connect(func ():
-		print("Setting Color: ", color)
 		Core.programmer.set_color(Values.get_selection_value("selected_fixtures", []), color)
 	)
 	
+	new_color_button.button_group = _button_groop
+	
+	## Because the color is converted to r,g,b.8 on the server, we need to refernce it here so it can be found	
+	_button_refs[[color.r8, color.g8, color.b8]] = new_color_button
+	
 	$ScrollContainer/GridContainer.add_child(new_color_button)
+
+
+func _change_selected_color_from_fixtures(fixtures: Array) -> void:
+	print("Selection Changed")
+	if fixtures:
+		var fixture: Fixture = fixtures[0]
+		
+		var override_color: Variant = fixture.get_override_value_from_channel_key("set_color")
+		
+		if override_color != null:
+			## Because the color is converted to r,g,b.8 on the server, we need to refernce it here so it can be found
+			var color8: Array = [override_color.r8, override_color.g8, override_color.b8]
+			
+			if color8 in _button_refs.keys():
+				(_button_refs[color8] as Button).button_pressed = true
+	else:
+		var pressed_button: BaseButton = _button_groop.get_pressed_button()
+		
+		if pressed_button:
+			pressed_button.button_pressed = false
+		
 
 
 func _on_grid_container_resized() -> void:

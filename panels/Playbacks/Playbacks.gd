@@ -101,7 +101,7 @@ func _find_saved_scenes() -> Array:
 
 ## Adds a playback row
 func _add_playback_row(scene: Scene) -> void:
-	_settings_list.add_items([scene])
+	_settings_list.add_items([scene], [], "", "name_changed")
 	
 	var new_node = Interface.components.PlaybackRow.instantiate()
 	
