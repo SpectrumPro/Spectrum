@@ -5,20 +5,40 @@ extends HBoxContainer
 ## Color system used in the programmer, this scripts is what outputs the color to the programmer on the server, and updates the slider backgrounds
 
 
+## NodePath to the color picker
 @export_node_path("ColorPicker") var color_picker: NodePath
 
+## RGB Sliders
 @onready var red_slider: ChannelSlider = $ColorSliders/HBoxContainer/Red
 @onready var green_slider: ChannelSlider = $ColorSliders/HBoxContainer/Green
 @onready var blue_slider: ChannelSlider = $ColorSliders/HBoxContainer/Blue
 
+## HSV Sliders
 @onready var hue_slider: ChannelSlider = $ColorSliders/HBoxContainer/Hue
 @onready var saturation_slider: ChannelSlider = $ColorSliders/HBoxContainer/Saturation
 @onready var value_slider: ChannelSlider = $ColorSliders/HBoxContainer/Value
 
+
 ## The current color of this color system
 var current_color: Color = Color.BLACK
 
+## Wether or not to send randomise commands from each slider, or globaly
+var send_randomise_command: bool = false : set = set_send_randomise_command
+
+## Used to time the output of the color picker, so we don't dos the server
 var _last_call_time: int = 0
+
+
+func set_send_randomise_command(p_send_randomise_command: bool) -> void:
+	send_randomise_command = p_send_randomise_command
+	
+	red_slider.send_randomise_command = send_randomise_command
+	green_slider.send_randomise_command = send_randomise_command
+	blue_slider.send_randomise_command = send_randomise_command
+	
+	hue_slider.send_randomise_command = send_randomise_command
+	saturation_slider.send_randomise_command = send_randomise_command
+	value_slider.send_randomise_command = send_randomise_command
 
 
 ## Updates the background of the R G B sliders
@@ -32,7 +52,7 @@ func update_slider_bg_colors():
 	blue_slider.set_gradient_top_color((current_color + Color.BLUE).clamp(Color.BLACK, Color.WHITE))
 	blue_slider.set_gradient_bottom_color((current_color - Color.BLUE).clamp(Color.BLACK, Color.WHITE))
 	
-# Convert current_color to HSV
+	# Convert current_color to HSV
 	var hsv_color = Color(current_color)
 	
 	# Update Saturation slider
@@ -47,6 +67,30 @@ func update_slider_bg_colors():
 	value_slider.set_gradient_top_color(top_value_color)
 	value_slider.set_gradient_bottom_color(bottom_value_color)
 
+
+func set_value(color: Color) -> void:
+	current_color = color
+	_update_color(false)
+	
+	_update_rgb()
+	_update_hsv()
+
+
+func show_override_warning(state: bool) -> void:
+	$ColorSliders/HBoxContainer/ColorPicker/PanelContainer/WarningBG.visible = state
+
+
+func reset_no_message() -> void:
+	red_slider.reset_no_message()
+	green_slider.reset_no_message()
+	blue_slider.reset_no_message()
+	hue_slider.reset_no_message()
+	saturation_slider.reset_no_message()
+	value_slider.reset_no_message()
+	
+	current_color = Color.BLACK
+	_update_color(false)
+	show_override_warning(false)
 
 
 ## Called when the color picker is changed.
@@ -112,15 +156,8 @@ func _on_blue_slider_value_changed(value: float) -> void:
 
 
 func _on_color_reset_pressed() -> void: 
-	red_slider.reset_no_message()
-	green_slider.reset_no_message()
-	blue_slider.reset_no_message()
-	hue_slider.reset_no_message()
-	saturation_slider.reset_no_message()
-	value_slider.reset_no_message()
+	reset_no_message()
 	
-	current_color = Color.BLACK
-	_update_color(false)
 	_send_to_programmer("reset_color")
 
 

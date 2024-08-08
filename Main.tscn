@@ -92,6 +92,10 @@ grow_vertical = 2
 theme = ExtResource("1_lygr6")
 script = ExtResource("2_2mnc0")
 
+[node name="WarningBG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(1, 0, 0, 0)
+
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -219,30 +223,34 @@ size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="RenameBox"]
-layout_mode = 2
-
-[node name="LineEdit" type="LineEdit" parent="RenameBox/VBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 6
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="RenameBox/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Rename Tab"
+
+[node name="LineEdit" type="LineEdit" parent="RenameBox/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
 theme_override_colors/font_placeholder_color = Color(1, 0, 0, 1)
 placeholder_text = "Tab Name"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RenameBox/VBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
+size_flags_vertical = 4
 
 [node name="Cancel" type="Button" parent="RenameBox/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 text = "Cancel"
 
 [node name="Rename" type="Button" parent="RenameBox/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 3
 text = "Rename"
 
 [node name="SaveLoad" parent="." instance=ExtResource("14_3qwxp")]

@@ -4,39 +4,35 @@
 extends Control
 ## GUI element for managing universes
 
-@export var item_list_view: NodePath
+
+## The ItemListView used to store the universes
+@onready var item_list_view: ItemListView = $ItemListView
+
 
 func _ready() -> void:
+	## Connect to universe signals
 	Core.universes_added.connect(self._reload_universes)
 	Core.universes_removed.connect(self._reload_universes)
-	Core.universe_name_changed.connect(self._reload_universes)
-	
-	Values.connect_to_selection_value("selected_universes", self._on_selection_changed)
 	
 	_reload_universes()
 
 
 ## Reload the list of universes
 func _reload_universes(arg1=null, arg2=null) -> void:
-	self.get_node(item_list_view).remove_all()
-	self.get_node(item_list_view).add_items(Core.universes.values(), [], "set_name")
-	self.get_node(item_list_view).set_selected(Values.get_selection_value("selected_universes", []))
+	item_list_view.remove_all()
+	item_list_view.add_items(Core.universes.values(), [], "set_name")
 
 
 ## Called when the delete button is pressed on the ItemListView
 func _on_item_list_view_delete_requested(items: Array) -> void:
-	Core.remove_universes(Values.get_selection_value("selected_universes"))
-	Values.set_selection_value("selected_universes", [])
+	Core.remove_universes(items)
 
 
+## Called when the add button is pressed
 func _on_item_list_view_add_requested() -> void:
 	Core.add_universe()
 
 
-func _on_selection_changed(items: Array) -> void:
-	self.get_node(item_list_view).set_selected(items)
-
-
+## Called when the selection is changed
 func _on_item_list_view_selection_changed(items: Array) -> void:
-	Values.set_selection_value("selected_universes", items)
-	self.get_node(item_list_view).set_selected(items)
+	item_list_view.set_selected(items)

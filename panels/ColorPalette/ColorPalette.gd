@@ -110,7 +110,6 @@ func _add_color_button(color: Color) -> void:
 
 
 func _change_selected_color_from_fixtures(fixtures: Array) -> void:
-	print("Selection Changed")
 	if fixtures:
 		var fixture: Fixture = fixtures[0]
 		

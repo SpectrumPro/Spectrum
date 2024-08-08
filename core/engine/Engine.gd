@@ -109,12 +109,16 @@ var _function_signal_connections: Dictionary = {}
 ## Used to see if the engine should reset when connecting to a server
 var _is_engine_fresh: bool = true
 
+## Defines if the client is expecting to disconnect from the server
+var is_expecting_disconnect: bool = false
+
 
 func _ready() -> void:
 	Client.add_networked_object("engine", self)
 	
 	MainSocketClient.connected_to_server.connect(func() :
 		_is_engine_fresh = false
+		is_expecting_disconnect = false
 		load_from_server()
 	)
 	
@@ -154,6 +158,7 @@ func reset() -> void:
 
 ## Disconnects from the server
 func disconnect_from_server() -> void:
+	is_expecting_disconnect = true
 	Client.disconnect_from_server()
 
 

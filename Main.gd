@@ -15,6 +15,33 @@ extends PanelContainer
 @onready var _rename_input_box: LineEdit = $RenameBox/VBoxContainer/LineEdit
 
 
+## The number of warning bg flashes
+var _warning_flashes: int = 3
+
+## How long each flash it
+var _flash_duration: float = 0.5
+
+## The colors of the warning flashes
+var _warning_from_color: Color = Color(1, 0, 0, 0)
+var _warning_to_color: Color = Color(1, 0, 0, 0.5)
+
+
+func _ready() -> void:
+	MainSocketClient.connection_closed.connect(_on_connection_closed)
+
+
+func _on_connection_closed() -> void:
+	if not Core.is_expecting_disconnect:
+		var animation: Tween = create_tween()
+		for i in range(0, _warning_flashes):
+			animation.tween_method($WarningBG.set_color, _warning_from_color, _warning_to_color, _flash_duration)
+			animation.tween_method($WarningBG.set_color, _warning_to_color, _warning_from_color, _flash_duration)
+		
+		$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.add_theme_color_override("icon_normal_color", Color.RED)
+		$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.add_theme_color_override("icon_hover_color", Color.RED)
+		$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.add_theme_color_override("icon_focus_color", Color.RED)
+
+
 ## Saves all the panels shown in the ui
 func save() -> Array:
 	var save_data: Array = []
@@ -48,22 +75,32 @@ func load(saved_data: Array) -> void:
 
 func _on_file_toggled(toggled_on: bool) -> void:
 	$SaveLoad.visible = toggled_on
+	$SaveLoad.move_to_front()
 
 
 func _on_programmer_toggled(toggled_on: bool) -> void:
 	$Programmer.visible = toggled_on
+	$Programmer.move_to_front()
 
 
 func _on_scenes_toggled(toggled_on: bool) -> void:
 	$Playbacks.visible = toggled_on
+	$Playbacks.move_to_front()
 
 
 func _on_fixtures_toggled(toggled_on: bool) -> void:
 	$Fixtures.visible = toggled_on
+	$Fixtures.move_to_front()
 
 
 func _on_settings_toggled(toggled_on: bool) -> void:
+	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_normal_color")
+	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_hover_color")
+	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_focus_color")
+	
+	
 	$NetworkConnection.visible = toggled_on
+	$NetworkConnection.move_to_front()
 
 
 func _on_new_tab_pressed() -> void:
@@ -82,6 +119,7 @@ func _on_new_tab_pressed() -> void:
 
 func _on_close_tab_pressed() -> void:
 	$ConfirmationBox.show()
+	$ConfirmationBox.move_to_front()
 
 
 func _on_close_confirmation_pressed() -> void:
@@ -100,6 +138,7 @@ func _on_close_confirmation_cancel_pressed() -> void:
 func _on_edit_tab_pressed() -> void:
 	_rename_input_box.text = _tab_bar.get_tab_title(_tab_bar.current_tab)
 	$RenameBox.show()
+	$RenameBox.move_to_front()
 
 
 

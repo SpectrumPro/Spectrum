@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-extends GraphElement
+class_name VirtualFixture extends GraphElement
 ## The virtual fixture used by the virtual fixtures panel
 
 

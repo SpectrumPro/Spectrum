@@ -178,7 +178,7 @@ func set_show_randomise_button(p_show_randomise_button: bool) -> void:
 ## resets the value of the slider with out sending a message
 func reset_no_message() -> void:
 	value = 0
-	_set_show_override_warning(false)
+	show_override_warning(false)
 
 
 ## Sends the value message
@@ -201,7 +201,7 @@ func _send_set_value_message(value: int) -> void:
 	})
 
 
-func _set_show_override_warning(show_warning: bool) -> void:
+func show_override_warning(show_warning: bool) -> void:
 	if show_warning_bg:
 		$WarningBG.visible = show_warning
 
@@ -210,7 +210,7 @@ func _set_show_override_warning(show_warning: bool) -> void:
 func _on_v_slider_value_changed(p_value: float) -> void:
 	value = p_value
 	
-	_set_show_override_warning(true)
+	show_override_warning(true)
 	_send_set_value_message(value)
 	
 	value_changed.emit(value)
@@ -220,7 +220,7 @@ func _on_v_slider_value_changed(p_value: float) -> void:
 func _on_spin_box_value_changed(p_value: float) -> void:
 	value = p_value
 	
-	_set_show_override_warning(true)
+	show_override_warning(true)
 	_send_set_value_message(value)
 	
 	value_changed.emit()
@@ -242,7 +242,7 @@ func _on_reset_pressed() -> void:
 
 ## Called when the random button is pressed
 func _on_random_pressed() -> void:
-	_set_show_override_warning(true)
+	show_override_warning(true)
 	
 	if send_randomise_command:
 		Client.send_command(object_id, randomise_method, randomise_args if not send_selection_value else [Values.get_selection_value(send_selection_value, [])] + randomise_args)

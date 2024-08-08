@@ -25,8 +25,10 @@ var _add_fixture_button: Button
 ## The currently selected virtual fixtures, this is differnt from Values.selected_fixtures as there may be more than one virtual fixture linked to a single fixture, this array contains the list of selected virtual fixture nodes
 var _selected_virtual_fixtures: Array
 
-## Used to ensure that new colors are not send too quickley, as it is not needed and will only flood network trafic
-var _last_call_time: float = 0.0
+## Defines if a fixture was just selected here, if so it wont update them again
+var _dont_reselect: bool = false
+var _ignore_next_select_signal: bool = false
+
 
 ## Add extra buttons to GraphEdit menu, and subscribe to global variables
 func _ready() -> void:
@@ -35,7 +37,7 @@ func _ready() -> void:
 	_add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Horizontal_distribute.svg"), self._align.bind(ORIENTATION_HORIZONTAL), "Align the selected fixtures horizontally" )
 	_add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality" )
 	
-	#Values.connect_to_selection_value("selected_fixtures", self._active_fixtures_changed)
+	Values.connect_to_selection_value("selected_fixtures", _selected_fixtures_changed)
 	Core.fixtures_added.connect(self.load_fixtures)
 	
 	load_fixtures(Core.fixtures.values())
@@ -65,7 +67,7 @@ func _add_virtual_fixtures() -> void:
 
 ## Add the fixtures defined in p_fixtures, as virtual fixtures
 func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), position_offset: Vector2 = Vector2(), no_meta: bool = false, select: bool = true) -> void:
-	var new_virtual_fixture: Control = Interface.components.VirtualFixture.instantiate()
+	var new_virtual_fixture: VirtualFixture = Interface.components.VirtualFixture.instantiate()
 	
 	new_virtual_fixture.name = uuid # Give the virtual fixture a uuid so it can be stored later, and found
 	new_virtual_fixture.set_fixture(fixture)
@@ -111,18 +113,26 @@ func _request_delete() -> void:
 		virtual_fixtures.erase(str(virtual_fixture.name))
 
 
-### Function to update highlighting on virtual fixtures, when their corresponding fixture is selected
-#func _active_fixtures_changed(p_fixtures: Array) -> void:
-	#_add_fixture_button.disabled = true if p_fixtures == [] else false
-	#
-	#for virtual_fixture: Control in get_children():
-		#virtual_fixture.set_highlighted(false)
-		##virtual_fixture.selected = false
-	#
-	#for fixture: Fixture in p_fixtures:
-		#for uuid in fixture.get_user_meta("virtual_fixtures", {}).keys():
-			#virtual_fixtures[uuid].set_highlighted(true)
-			##virtual_fixtures[uuid].selected = true
+## Function to update highlighting on virtual fixtures, when their corresponding fixture is selected
+func _selected_fixtures_changed(p_fixtures: Array) -> void:
+	_add_fixture_button.disabled = true if p_fixtures == [] else false
+	
+	if not _dont_reselect:
+		
+		for virtual_fixture: Control in $VirtualFixtures.get_children():
+			_ignore_next_select_signal = true
+			virtual_fixture.set_selected(false)
+			_ignore_next_select_signal = false
+			
+		
+		for fixture: Fixture in p_fixtures:
+			for uuid in fixture.get_user_meta("virtual_fixtures", {}).keys():
+				_ignore_next_select_signal = true
+				virtual_fixtures[uuid].set_selected(true)
+				_ignore_next_select_signal = false
+	
+	#if _ignore_next_select_signal:
+	_dont_reselect = false
 
 
 ## Called when a fixture is added to this engine, will check if it has any virtual fixtures, if so they will be added
@@ -159,15 +169,19 @@ func _align(orientation: int) -> void:
 func _on_virtual_fixtures_node_selected(node) -> void:
 	if node not in _selected_virtual_fixtures:
 		_selected_virtual_fixtures.append(node)
-	
-	Values.add_to_selection_value("selected_fixtures", [node.fixture])
+
+	if not _ignore_next_select_signal:
+		_dont_reselect = true
+		Values.add_to_selection_value("selected_fixtures", [node.fixture])
 
 
 ## Called when a virtual_fixture node is deselected
 func _on_virtual_fixtures_node_deselected(node) -> void:
 	_selected_virtual_fixtures.erase(node)
 	
-	Values.remove_from_selection_value("selected_fixtures", [node.fixture])
+	if not _ignore_next_select_signal:
+		_dont_reselect = true
+		Values.remove_from_selection_value("selected_fixtures", [node.fixture])
 
 
 func _on_save_pressed() -> void:
