@@ -64,6 +64,16 @@ var _global_cue_pre_wait_time: SpinBox = null
 	"stopped": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Stopped,
 }
 
+## All the shortcut buttons in the settings panel
+@onready var shortcut_buttons: Dictionary = {
+	"PreviousShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PreviousShortcutButton,
+	"GoShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/GoShortcutButton,
+	"NextShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/NextShortcutButton,
+	"PlayShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PlayShortcutButton,
+	"PauseShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PauseShortcutButton,
+	"StopShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/StopShortcutButton,
+}
+
 var store_function_button_group: ButtonGroup = null
 @onready var store_function_buttons: Dictionary = {
 	"merge": $StoreConfirmationBox/VBoxContainer2/StoreModes/Merge,
@@ -97,6 +107,14 @@ func _ready() -> void:
 	
 	(store_function_buttons.merge as Button).button_pressed = true
 	(save_mode_buttons.modified_channels as Button).button_pressed = true
+	
+	shortcut_buttons.PreviousShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Previous)
+	shortcut_buttons.GoShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Go)
+	shortcut_buttons.NextShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Next)
+	shortcut_buttons.PlayShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Play)
+	shortcut_buttons.PauseShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Pause)
+	shortcut_buttons.StopShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Stop)
+
 	
 	remove_child(settings_node)
 	settings_node.show()
@@ -293,14 +311,28 @@ func _find_cue_list() -> void:
 
 ## Saves the settings to a dictionary
 func save() -> Dictionary:
+	
+	var seralized_shortcuts: Dictionary = {}
+	
+	for shortcut_button_name: String in shortcut_buttons.keys():
+		seralized_shortcuts[shortcut_button_name] = shortcut_buttons[shortcut_button_name].save()
+	
 	return {
-		"cue_list": current_cue_list.uuid if current_cue_list else ""
+		"cue_list": current_cue_list.uuid if current_cue_list else "",
+		"seralized_shortcuts": seralized_shortcuts
 	}
 
 
 ## Loads settings from what was returned by save()
 func load(saved_data: Dictionary) -> void:
 	saved_cue_list_uuid = saved_data.get("cue_list", "")
+	
+	var seralized_shortcuts: Variant = saved_data.get("seralized_shortcuts", null)
+	
+	if seralized_shortcuts is Dictionary:
+		for shortcut_button_name: String in seralized_shortcuts.keys():
+			if shortcut_button_name in shortcut_buttons and seralized_shortcuts[shortcut_button_name] is Dictionary:
+				shortcut_buttons[shortcut_button_name].load(seralized_shortcuts[shortcut_button_name])
 
 
 ## Reloads the status labels
@@ -459,15 +491,6 @@ func _on_store_function_changed(button: Button) -> void:
 func _on_save_mode_changed(button: Button) -> void:
 	pass
 
-#func _on_new_cue_pressed() -> void:
-	#if current_cue_list:
-		#Client.send({
-			#"for": "programmer",
-			#"call": "save_to_new_cue",
-			#"args": [Values.get_selection_value("selected_fixtures", []), current_cue_list, _get_save_mode()]
-		#})
-
-#endregion
 
 #region Cue Edit Controls
 

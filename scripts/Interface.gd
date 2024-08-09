@@ -125,6 +125,8 @@ func _try_auto_load() -> void:
 
 ## loads all the objects into the object picker
 func _set_up_object_picker() -> void:
+	if not get_tree().root.has_node("Main"):
+		return
 	_object_picker_window = get_tree().root.get_node("Main").get_node("ObjectPickerWindow")
 	_object_picker = get_tree().root.get_node("Main").get_node("ObjectPickerWindow/ObjectPicker")
 	_object_picker.load_objects(panels, "Panels")
@@ -240,5 +242,5 @@ func save_to_file():
 
 
 func load(saved_data: Dictionary) -> void:
-	if saved_data.has("main_window"):
+	if saved_data.has("main_window") and get_tree().root.has_node("Main"):
 		get_tree().root.get_node("Main").load(saved_data.main_window)

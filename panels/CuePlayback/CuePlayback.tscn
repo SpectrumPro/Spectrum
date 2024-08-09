@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=19 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
@@ -11,20 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bo1c5m22h21gd" path="res://assets/icons/pause.svg" id="5_r8lsa"]
 [ext_resource type="PackedScene" uid="uid://d0wg6bo67u7cr" path="res://components/ListItem/ListItem.tscn" id="6_7c6j4"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="6_pxf7y"]
-
-[sub_resource type="InputEventKey" id="InputEventKey_mingj"]
-device = -1
-keycode = 4194319
-
-[sub_resource type="Shortcut" id="Shortcut_hipo0"]
-events = [SubResource("InputEventKey_mingj")]
-
-[sub_resource type="InputEventKey" id="InputEventKey_34esd"]
-device = -1
-keycode = 4194321
-
-[sub_resource type="Shortcut" id="Shortcut_g5yef"]
-events = [SubResource("InputEventKey_34esd")]
+[ext_resource type="PackedScene" uid="uid://daxklqm8l01pf" path="res://components/AddShortcutButton/AddShortcutButton.tscn" id="12_6gcgo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n58hq"]
 
@@ -147,7 +134,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-shortcut = SubResource("Shortcut_hipo0")
 icon = ExtResource("2_bvwur")
 icon_alignment = 1
 
@@ -161,7 +147,6 @@ text = "GO"
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-shortcut = SubResource("Shortcut_g5yef")
 icon = ExtResource("3_07mes")
 icon_alignment = 1
 
@@ -226,17 +211,6 @@ icon_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-
-[node name="Settings" type="PanelContainer" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
-layout_mode = 2
-
-[node name="ChangeCueList" type="Button" parent="Settings/VBoxContainer"]
-layout_mode = 2
-text = "Change Cue List"
 
 [node name="StoreConfirmationBox" type="PanelContainer" parent="."]
 visible = false
@@ -362,6 +336,68 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "Cancel"
 
+[node name="Settings" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="ChangeCueList" type="Button" parent="Settings/VBoxContainer"]
+layout_mode = 2
+text = "Change Cue List"
+
+[node name="PanelContainer" type="PanelContainer" parent="Settings/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Shortcuts"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="PreviousShortcutButton" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("12_6gcgo")]
+layout_mode = 2
+size_flags_horizontal = 3
+label_text = ""
+button_icon = ExtResource("2_bvwur")
+
+[node name="GoShortcutButton" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("12_6gcgo")]
+layout_mode = 2
+size_flags_horizontal = 3
+label_text = "GO"
+
+[node name="NextShortcutButton" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("12_6gcgo")]
+layout_mode = 2
+size_flags_horizontal = 3
+label_text = ""
+button_icon = ExtResource("3_07mes")
+
+[node name="PlayShortcutButton" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("12_6gcgo")]
+layout_mode = 2
+size_flags_horizontal = 3
+label_text = ""
+button_icon = ExtResource("4_1thxx")
+
+[node name="PauseShortcutButton" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("12_6gcgo")]
+layout_mode = 2
+size_flags_horizontal = 3
+label_text = ""
+button_icon = ExtResource("5_r8lsa")
+
+[node name="StopShortcutButton" parent="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("12_6gcgo")]
+layout_mode = 2
+size_flags_horizontal = 3
+label_text = ""
+button_icon = ExtResource("6_pxf7y")
+
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]
@@ -374,6 +410,6 @@ text = "Cancel"
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
-[connection signal="pressed" from="Settings/VBoxContainer/ChangeCueList" to="." method="_on_change_cue_list_pressed"]
 [connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/ConfirmationButtons/StoreConfirmation" to="." method="_on_store_confirmation_pressed"]
 [connection signal="pressed" from="StoreConfirmationBox/VBoxContainer2/ConfirmationButtons/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Settings/VBoxContainer/ChangeCueList" to="." method="_on_change_cue_list_pressed"]
