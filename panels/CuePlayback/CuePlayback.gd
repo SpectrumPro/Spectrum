@@ -47,8 +47,13 @@ var _fade_time: float = 0
 var _global_cue_fade_time: SpinBox = null
 var _global_cue_pre_wait_time: SpinBox = null
 
+## Number of cues to leave visible when autoscrolling
+var _scroll_extra: int = 3
+
 ## The ItemListView used to display cues
 @onready var cue_list_container: VBoxContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer
+
+@onready var scroll_container: ScrollContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer
 
 @onready var global_cue: ListItem = $VBoxContainer/List/VBoxContainer/GlobalCue
 
@@ -215,12 +220,15 @@ func reload() -> void:
 				last_selected_item = new_list_item
 				current_selected_item = new_list_item
 			
-
+			if cue_number == current_cue_list.current_cue_number:
+				_on_cue_changed(cue_number)
+				
+			
 			new_list_item.select_requested.connect(func(arg1=null):
 				_on_select_requested(new_list_item, cue_number))
 
 			cue_list_container.add_child(new_list_item)
-		print(Utils.get_most_common_value(fade_times) )
+		
 		_global_cue_fade_time.set_value_no_signal(Utils.get_most_common_value(fade_times))
 		_global_cue_pre_wait_time.set_value_no_signal(Utils.get_most_common_value(pre_wait_times))
 		global_cue.visible = _edit_mode
@@ -370,16 +378,27 @@ func _reload_name(arg1=null) -> void:
 
 
 ## Called when the current cue is changed
-func _on_cue_changed(index: float) -> void:
+func _on_cue_changed(number: float) -> void:
 	if current_cue_list:
 		if old_index:
 			object_refs[old_index].set_highlighted(false)
 
-		if index in object_refs:
-			object_refs[index].set_highlighted(true)
-			old_index = index
-
+		if number in object_refs:
+			object_refs[number].set_highlighted(true)
+			old_index = number
+		
+		_ensure_cue_visible(number)
 		_reload_labels()
+
+
+func _ensure_cue_visible(number: float) -> void:
+	var index: int = object_refs.values().find(object_refs[number])
+	var scroll_extra_index: int = clampi(index + _scroll_extra, 0, len(object_refs) - 1)
+	
+	if index < _scroll_extra:
+		scroll_extra_index = index
+	
+	scroll_container.ensure_control_visible(object_refs.values()[scroll_extra_index])
 
 
 func _on_change_cue_list_pressed() -> void:
