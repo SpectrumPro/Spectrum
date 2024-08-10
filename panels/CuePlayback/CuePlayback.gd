@@ -392,7 +392,7 @@ func _on_cue_changed(number: float) -> void:
 
 
 func _ensure_cue_visible(number: float) -> void:
-	var index: int = object_refs.values().find(object_refs[number])
+	var index: int = object_refs.values().find(object_refs[number]) if number != -1 else 0
 	var scroll_extra_index: int = clampi(index + _scroll_extra, 0, len(object_refs) - 1)
 	
 	if index < _scroll_extra:

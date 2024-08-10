@@ -288,7 +288,7 @@ func _on_delete_confirmation() -> void:
 
 
 func _on_item_container_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.is_pressed():
+	if event is InputEventMouseButton and event.is_pressed() and event.button_mask == MOUSE_BUTTON_LEFT:
 		selection_changed.emit([])
 
 #endregion

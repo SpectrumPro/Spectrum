@@ -66,7 +66,7 @@ func send(data: Dictionary, callback: Callable = Callable()) -> void:
 		var callback_id = UUID_Util.v4()
 		_callbacks[callback_id] = callback
 		data.callback_id = callback_id
-		
+	
 	MainSocketClient.send(var_to_str(Utils.objects_to_uuids(data)))
 
 

@@ -223,7 +223,7 @@ func _on_spin_box_value_changed(p_value: float) -> void:
 	show_override_warning(true)
 	_send_set_value_message(value)
 	
-	value_changed.emit()
+	value_changed.emit(value)
 
 
 ## Called when the reset button is pressed

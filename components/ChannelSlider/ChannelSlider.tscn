@@ -85,6 +85,7 @@ text_overrun_behavior = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
+mouse_force_pass_scroll_events = false
 max_value = 255.0
 tick_count = 15
 ticks_on_borders = true

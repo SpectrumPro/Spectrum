@@ -136,7 +136,7 @@ func _set_up_object_picker() -> void:
 	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
 	
 	Core.fixtures_added.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
-	Core.fixtures_added.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
+	Core.fixtures_removed.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
 	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
 	
 	Core.functions_added.connect(func (arg1=null): _object_picker.load_objects(Core.functions, "Functions", "name"))

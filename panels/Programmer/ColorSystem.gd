@@ -103,6 +103,8 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		
 		_update_rgb()
 		_update_hsv()
+		show_override_warning(true)
+		
 		
 		update_slider_bg_colors()
 		
@@ -114,7 +116,9 @@ func _update_color(send_message: bool = true) -> void:
 	get_node(color_picker).color = current_color
 	update_slider_bg_colors()
 	
-	if send_message: _send_to_programmer("set_color", current_color)
+	
+	if send_message: 
+		_send_to_programmer("set_color", current_color)
 
 
 func _update_rgb() -> void:
@@ -141,18 +145,23 @@ func _on_red_sider_value_changed(value: float) -> void:
 	current_color.r8 = value
 	_update_color()
 	_update_hsv()
+	show_override_warning(true)
+	
 
 
 func _on_green_slider_value_changed(value: float) -> void:
 	current_color.g8 = value
 	_update_color()
 	_update_hsv()
+	show_override_warning(true)
+
 
 
 func _on_blue_slider_value_changed(value: float) -> void:
 	current_color.b8 = value
 	_update_color()
 	_update_hsv()
+	show_override_warning(true)
 
 
 func _on_color_reset_pressed() -> void: 
@@ -165,19 +174,22 @@ func _on_hue_value_changed(value: int) -> void:
 	current_color.h = remap(value, 0, 360, 0.0, 1.0)
 	_update_color()
 	_update_rgb()
-	
+	show_override_warning(true)
+
 
 
 func _on_saturation_value_changed(value: int) -> void:
 	current_color.s = remap(value, 0, 255, 0.0, 1.0)
 	_update_color()
 	_update_rgb()
+	show_override_warning(true)
 
 
 func _on_value_value_changed(value: int) -> void:
 	current_color.v = remap(value, 0, 255, 0.0, 1.0)
 	_update_color()
 	_update_rgb()
+	show_override_warning(true)
 
 
 func _on_color_mode_tab_changed(tab: int) -> void:

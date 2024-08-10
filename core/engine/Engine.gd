@@ -98,7 +98,6 @@ var _universe_signal_connections: Dictionary = {}
 
 ## Folowing functions are for connecting Function signals to Engine signals, they are defined as vairables so they can be dissconnected when Functions are to be deleted
 func _function_on_name_changed(new_name: String, function: Function) -> void:
-	print("Functions: ", function, " Name changed to: ", new_name)
 	function_name_changed.emit(function, new_name)
 
 
@@ -175,7 +174,6 @@ func load_from_server() -> void:
 		"for": "engine",
 		"call": "serialize",
 	}, func (responce):
-		print(responce)
 		load_from(responce)
 	)
 

@@ -185,12 +185,14 @@ func on_cue_numbers_changed(new_numbers: Dictionary) -> void:
 	for new_number: float in new_numbers.keys():
 		var cue: Cue = new_numbers[new_number]
 		index_list.erase(cue.number)
+		cues.erase(cue.number)
+		
+	for new_number: float in new_numbers.keys():
+		var cue: Cue = new_numbers[new_number]
 		index_list.append(new_number)
 		index_list.sort()
 
-		cues.erase(cue.number)
 		cues[new_number] = cue
-		
 		cue.number = new_number
 	
 	cue_numbers_changed.emit(new_numbers)

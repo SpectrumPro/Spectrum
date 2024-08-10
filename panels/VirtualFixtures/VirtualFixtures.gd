@@ -38,6 +38,7 @@ func _ready() -> void:
 	_add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality" )
 	
 	Values.connect_to_selection_value("selected_fixtures", _selected_fixtures_changed)
+
 	Core.fixtures_added.connect(self.load_fixtures)
 	
 	load_fixtures(Core.fixtures.values())
@@ -85,8 +86,8 @@ func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), positi
 		virtual_fixture_list[uuid] = [new_virtual_fixture.position_offset.x, new_virtual_fixture.position_offset.y]
 		fixture.set_user_meta("virtual_fixtures", virtual_fixture_list)
 	
-	if fixture in Values.get_selection_value("selected_fixtures", []):
-		_selected_virtual_fixtures.append(new_virtual_fixture)
+	#if fixture in Values.get_selection_value("selected_fixtures", []):
+		#_selected_virtual_fixtures.append(new_virtual_fixture)
 	
 	fixture.delete_requested.connect(func():
 		_selected_virtual_fixtures.erase(new_virtual_fixture)
