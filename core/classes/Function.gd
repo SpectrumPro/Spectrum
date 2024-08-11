@@ -5,39 +5,57 @@ class_name Function extends EngineComponent
 ## Base class for all functions, scenes, cuelists ect
 
 
-## Emitted when the fade speed has changed
-signal fade_time_changed(fade_in_speed: float, fade_out_speed: float)
+## Emitted when data is stored in this function
+signal data_stored(fixture: Fixture, channel_key: String, value: Variant)
+
+## Emitted when data is eraced from this function
+signal data_eraced(fixture: Fixture, channel_key: String)
 
 
-## Fade in time in seconds, defaults to 2 seconds
-var fade_in_speed: float = 2
+
+func store_data(fixture: Fixture, channel_key: String, value: Variant) -> bool:
+	return false
 
 
-## Fade out time in seconds, defaults to 2 seconds
-var fade_out_speed: float = 2
+func erace_data(fixture: Fixture, channel_key: String) -> bool:
+	print("running from function class")
+	return false
 
 
-## Sets the fade in speed in seconds
-func set_fade_in_speed(speed: float) -> void:
-	Client.send({
-		"for": uuid,
-		"call": "set_fade_in_speed",
-		"args": [speed]
-	})
-
-
-## Sets the fade out speed in seconds
-func set_fade_out_speed(speed: float) -> void:
-	Client.send({
-		"for": uuid,
-		"call": "set_fade_out_speed",
-		"args": [speed]
-	})
-
-
-## INTERNAL: Called when the fade speed is changed on the server
-func on_fade_time_changed(p_fade_in_speed: float, p_fade_out_speed: float):
-	fade_in_speed = p_fade_in_speed
-	fade_out_speed = p_fade_out_speed
+## Static function to store saved fixture data into
+func _store_data_static(fixture: Fixture, channel_key: String, value: Variant, stored_data: Dictionary) -> void:
+	if not fixture in stored_data.keys():
+		stored_data[fixture] = {}
 	
-	fade_time_changed.emit(fade_in_speed, fade_out_speed)
+	stored_data[fixture][channel_key] = {
+			"value": value,
+		}
+	
+	data_stored.emit(fixture, channel_key, value)
+
+
+func _erace_data_static(fixture: Fixture, channel_key: String, stored_data: Dictionary) -> bool:
+	if fixture in stored_data.keys():
+		var return_state: bool = stored_data[fixture].erase(channel_key)
+		
+		if not stored_data[fixture]:
+			stored_data.erase(fixture)
+		
+		if return_state:
+			data_eraced.emit(fixture, channel_key)
+
+		return return_state
+	else:
+		return false
+
+
+## Loads the stored data, by calling the given method
+func _load_stored_data(serialized_stored_data: Dictionary, stored_data: Dictionary, store_method: Callable = _store_data_static) -> void:
+	for fixture_uuid: String in serialized_stored_data.keys():
+		if fixture_uuid in Core.fixtures:
+			var fixture: Fixture = Core.fixtures[fixture_uuid]
+
+			for channel_key: String in serialized_stored_data[fixture_uuid]:
+				var stored_item: Dictionary = serialized_stored_data[fixture_uuid][channel_key]
+
+				store_method.call(fixture, channel_key, str_to_var(stored_item.get("value", "0")), stored_data)

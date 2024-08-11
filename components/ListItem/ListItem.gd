@@ -25,8 +25,9 @@ var highlighted_color: Color = Color.DIM_GRAY
 ## The color of this item
 var color: Color = Color.WHITE : set = set_color
 
+
 func _init() -> void:
-	self.add_theme_stylebox_override("panel", self.get_theme_stylebox("panel").duplicate())
+	add_theme_stylebox_override("panel", get_theme_stylebox("panel").duplicate())
 
 
 func _ready() -> void:
@@ -34,7 +35,6 @@ func _ready() -> void:
 	$Container/IDEdit.get_line_edit().add_theme_constant_override("minimum_character_width", 2)
 	$Container/IDEdit.get_line_edit().add_theme_color_override("font_color", Color.hex(0x8d8d8dff))
 	$Container/IDEdit.get_line_edit().add_theme_font_size_override("font_size", 13)
-	
 
 
 ## Sets the nme of this item
@@ -44,9 +44,9 @@ func set_item_name(name):
 
 
 ## Sets the color on the left hand side of this item
-func set_color(color):
-	self.get_theme_stylebox("panel").border_color = color
-
+func set_color(p_color):
+	color = p_color
+	get_theme_stylebox("panel").border_color = color
 
 
 ## Sets whether this item should be highlighted, adds a gray border if so
@@ -61,22 +61,17 @@ func set_selected(is_selected):
 	_update_border_state()
 
 
+## Updates the size and color of the border
 func _update_border_state() -> void:
-	
 	var new_color: Color = selected_color if selected else (highlighted_color if highlighted else color)
+	get_theme_stylebox("panel").border_color = new_color
 	
-	set_color(new_color)
+	get_theme_stylebox("panel").border_width_left = 5
 	
-	if highlighted or selected:
-		self.get_theme_stylebox("panel").border_width_bottom = 5
-		self.get_theme_stylebox("panel").border_width_top = 5
-		self.get_theme_stylebox("panel").border_width_left = 5
-		self.get_theme_stylebox("panel").border_width_right = 5
-	else:
-		self.get_theme_stylebox("panel").border_width_bottom = 0
-		self.get_theme_stylebox("panel").border_width_top = 0
-		self.get_theme_stylebox("panel").border_width_left = 5
-		self.get_theme_stylebox("panel").border_width_right = 0
+	var border_size: int = 5 if highlighted or selected else 0
+	get_theme_stylebox("panel").border_width_bottom = border_size
+	get_theme_stylebox("panel").border_width_top = border_size
+	get_theme_stylebox("panel").border_width_right = border_size
 
 
 ## Adds a chip to this item, allowing to editing properties on objects 
@@ -128,7 +123,6 @@ func add_chip(object: Object, property: String, set_method: Callable, changed_si
 	$Container/Chips.add_child(panel)
 	
 	return input
-	
 
 
 ## Sets the method that should be called when the name LineEdit is changed in this item
@@ -171,6 +165,5 @@ func set_id_changed_signal(p_signal: Signal) -> void:
 
 func _on_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.pressed == true and event.button_index == MOUSE_BUTTON_LEFT:  # Check if the mouse button is released
+		if event.pressed == true and event.button_index == MOUSE_BUTTON_LEFT:
 			select_requested.emit(self)
-

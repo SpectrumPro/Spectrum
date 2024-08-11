@@ -80,7 +80,8 @@ func add_items(items: Array, chips: Array = [], name_method: String = "", name_c
 			new_item_node.select_requested.connect(self._on_list_item_select_request)
 			
 			for chip: Array in chips:
-				new_item_node.add_chip(item, chip[0], item.get(chip[1]))
+				if item.get(chip[1]):
+					new_item_node.add_chip(item, chip[0], item.get(chip[1]))
 			
 			if name_method:
 				new_item_node.set_name_method(item.get(name_method))

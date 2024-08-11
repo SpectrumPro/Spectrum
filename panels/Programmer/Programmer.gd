@@ -41,14 +41,10 @@ func _on_fixture_selection_changed(fixtures: Array) -> void:
 		
 		for channel_key in fixture.current_values.keys():
 			if channel_key in channel_controllers:
-				var value: Variant = fixture.get_override_value_from_channel_key(channel_key)
+				channel_controllers[channel_key].set_value(fixture.current_values[channel_key])
 				
-				if value != null:
-					channel_controllers[channel_key].set_value(value)
+				if fixture.get_override_value_from_channel_key(channel_key):
 					channel_controllers[channel_key].show_override_warning(true)
-				
-				else:
-					channel_controllers[channel_key].reset_no_message()
 	else:
 		for channel_controller in channel_controllers.values():
 			channel_controller.reset_no_message()

@@ -50,6 +50,12 @@ var _global_cue_pre_wait_time: SpinBox = null
 ## Number of cues to leave visible when autoscrolling
 var _scroll_extra: int = 3
 
+
+## Colors for cues that have been highlighted
+var _cue_highlight_color: Color = Color.ROYAL_BLUE
+var _cue_default_color: Color = Color.WHITE
+
+
 ## The ItemListView used to display cues
 @onready var cue_list_container: VBoxContainer = $VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer
 
@@ -92,6 +98,11 @@ var save_mode_button_group: ButtonGroup = null
 	"all_channels": $StoreConfirmationBox/VBoxContainer2/SaveModes/AllChannels,
 	"all_none_zero": $StoreConfirmationBox/VBoxContainer2/SaveModes/AllNoneZero,
 }
+
+
+## Called when a cue has its data changed, will then go and call the _highlight_cues_with_stored_fixtures method with the selected fixtures
+var _reload_highlights_signal_callback: Callable = func (arg1=null, arg2=null, arg3=null) -> void:
+	_highlight_cues_with_stored_fixtures(Values.get_selection_value("selected_fixtures", []))
 
 
 func _ready() -> void:
@@ -178,6 +189,9 @@ func _on_functions_removed(functions: Array) -> void:
 func _on_selected_fixtures_changed(selected_fixtures: Array) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/Store.disabled = selected_fixtures == []
 	$StoreConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = str(len(selected_fixtures))
+	
+	if _edit_mode:
+		_highlight_cues_with_stored_fixtures(selected_fixtures)
 
 
 ## Reloads the list of cues
@@ -221,8 +235,10 @@ func reload() -> void:
 				current_selected_item = new_list_item
 			
 			if cue_number == current_cue_list.current_cue_number:
-				_on_cue_changed(cue_number)
-				
+				_handle_cue_change(cue_number)
+			
+			if not cue.data_stored.is_connected(_reload_highlights_signal_callback): cue.data_stored.connect(_reload_highlights_signal_callback)
+			if not cue.data_eraced.is_connected(_reload_highlights_signal_callback): cue.data_eraced.connect(_reload_highlights_signal_callback)
 			
 			new_list_item.select_requested.connect(func(arg1=null):
 				_on_select_requested(new_list_item, cue_number))
@@ -235,6 +251,9 @@ func reload() -> void:
 		
 	_reload_labels()
 	_reload_name()
+	
+	if _edit_mode:
+		_highlight_cues_with_stored_fixtures(Values.get_selection_value("selected_fixtures", []))
 
 
 func _clear_selections(arg1=null) -> void:
@@ -257,6 +276,22 @@ func _reset_refs() -> void:
 func _store_refs(cue_number: float, new_list_item: ListItem) -> void:
 	object_refs[cue_number] = new_list_item
 	cue_refs[new_list_item] = cue_number
+
+
+func _highlight_cues_with_stored_fixtures(fixtures: Array) -> void:
+	for cue_number: float in object_refs.keys():
+		var list_item: ListItem = object_refs[cue_number]
+		var cue: Cue = current_cue_list.cues[cue_number]
+		
+		var new_color: Color = _cue_default_color
+		
+		for fixture: Fixture in fixtures:
+			if fixture in cue.stored_data.keys():
+				new_color = _cue_highlight_color
+				break
+		
+		list_item.selected_color = new_color
+		list_item.color = new_color
 
 
 func _on_select_requested(new_list_item: ListItem, cue_number: float) -> void:
@@ -291,7 +326,7 @@ func _disconnect_signals() -> void:
 	current_cue_list.cues_added.disconnect(_reload_from_signal)
 	current_cue_list.cues_removed.disconnect(_reload_from_signal)
 	current_cue_list.cue_numbers_changed.disconnect(_reload_from_signal)
-	current_cue_list.cue_changed.disconnect(_on_cue_changed)
+	current_cue_list.cue_changed.disconnect(_handle_cue_change)
 	current_cue_list.played.disconnect(_reload_labels)
 	current_cue_list.paused.disconnect(_reload_labels)
 
@@ -301,7 +336,7 @@ func _connect_signals() -> void:
 	current_cue_list.cues_added.connect(_reload_from_signal)
 	current_cue_list.cues_removed.connect(_reload_from_signal)
 	current_cue_list.cue_numbers_changed.connect(_reload_from_signal)	
-	current_cue_list.cue_changed.connect(_on_cue_changed)
+	current_cue_list.cue_changed.connect(_handle_cue_change)
 	current_cue_list.played.connect(_reload_labels)
 	current_cue_list.paused.connect(_reload_labels)
 
@@ -378,7 +413,7 @@ func _reload_name(arg1=null) -> void:
 
 
 ## Called when the current cue is changed
-func _on_cue_changed(number: float) -> void:
+func _handle_cue_change(number: float) -> void:
 	if current_cue_list:
 		if old_index:
 			object_refs[old_index].set_highlighted(false)

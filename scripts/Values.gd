@@ -99,7 +99,7 @@ func remove_from_selection_value(value_name: String, array_to_remove: Array):
 	set_selection_value(value_name, new_array)
 
 ## Get a selection value, returnes the value, otherwise default
-func get_selection_value(value_name: String, default: Variant = null) -> Variant:
+func get_selection_value(value_name: String, default: Variant = []) -> Variant:
 	return selection_values.get(value_name, default)
 
 #endregion
