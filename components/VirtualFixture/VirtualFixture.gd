@@ -13,6 +13,10 @@ var fixture: Fixture : set = set_fixture
 var color_blend_buffer: float = 0.7
 
 
+var _deselected_color: Color = Color.BLACK
+var _selected_color: Color = Color.WHITE
+
+
 func _ready():
 	$"Color Box".add_theme_stylebox_override("panel", $"Color Box".get_theme_stylebox("panel").duplicate())
 
@@ -59,6 +63,9 @@ func set_fixture(control_fixture: Fixture) -> void:
 		fixture.uv_intensity_changed.disconnect(render_color)
 		fixture.dimmer_changed.disconnect(render_color)
 		fixture.delete_request.disconnect(self.delete)
+		fixture.override_value_changed.disconnect(_on_fixture_override_value_changed)
+		fixture.override_value_removed.disconnect(_on_fixture_override_value_removed)
+
 	
 	fixture = control_fixture
 	fixture.color_changed.connect(render_color)
@@ -66,9 +73,23 @@ func set_fixture(control_fixture: Fixture) -> void:
 	fixture.amber_intensity_changed.connect(render_color)
 	fixture.uv_intensity_changed.connect(render_color)
 	fixture.dimmer_changed.connect(render_color)
+	fixture.override_value_changed.connect(_on_fixture_override_value_changed)
+	fixture.override_value_removed.connect(_on_fixture_override_value_removed)
 	
 	
 	render_color()
+
+
+func _on_fixture_override_value_changed(value: Variant, channel_key: String) -> void:
+	_selected_color = Color.ORANGE
+	_deselected_color = Color.ORANGE_RED
+	_update_border()
+
+
+func _on_fixture_override_value_removed(channel_key: String) -> void:
+	_selected_color = Color.WHITE
+	_deselected_color = Color.BLACK
+	_update_border()
 
 
 func serialize():
@@ -79,12 +100,14 @@ func serialize():
 		}
 }
 
-func _on_node_selected():
-	$"Color Box".get_theme_stylebox("panel").border_color = Color.WHITE
+func _update_border() -> void:
+	$"Color Box".get_theme_stylebox("panel").border_color = _selected_color if selected else _deselected_color
 
+func _on_node_selected():
+	_update_border()
 
 func _on_node_deselected():
-	$"Color Box".get_theme_stylebox("panel").border_color = Color.BLACK
+	_update_border()
 
 
 func _on_dragged(from: Vector2, to: Vector2) -> void:

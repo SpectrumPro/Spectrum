@@ -48,11 +48,16 @@ func set_button(p_buton: BaseButton) -> void:
 ## Sets the InputEvent
 func set_event(p_event: InputEvent) -> void:
 	event = p_event
-	_toggle_button.text = OS.get_keycode_string(event.get_keycode_with_modifiers())
+	var new_shortcut: Shortcut = Shortcut.new()
+	
+	if event:
+		_toggle_button.text = OS.get_keycode_string(event.get_keycode_with_modifiers())
+		new_shortcut.events.append(event)
+	else:
+		_toggle_button.text = "Unassigned"
+		new_shortcut = null
 	
 	if button:
-		var new_shortcut: Shortcut = Shortcut.new()
-		new_shortcut.events.append(event)
 		button.shortcut = new_shortcut
 	
 	set_listning(false)
@@ -102,9 +107,17 @@ func load(serialized_data: Dictionary) -> void:
 ## Called when a gui input has happened
 func _on_gui_input(p_event: InputEvent) -> void:
 	if p_event is InputEventKey and (p_event.is_released() or not unpress_required):
-		set_event(p_event)
-		
-		on_shortcut_changed.emit(event)
+		match p_event.keycode:
+			KEY_BACKSPACE:
+				set_listning(false)
+				set_event(null)
+			
+			KEY_ESCAPE:
+				set_listning(false)
+			
+			_:
+				set_event(p_event)
+				on_shortcut_changed.emit(event)
 
 
 ## Called when the button is pressed
