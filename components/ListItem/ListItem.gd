@@ -8,6 +8,9 @@ class_name ListItem extends PanelContainer
 ## Emmited when this control is clicked on
 signal select_requested(from: Control) 
 
+## Emitted when this ListItem is double clicked
+signal double_clicked()
+
 
 ## If this item is selected
 var selected: bool = false : set = set_selected
@@ -167,3 +170,6 @@ func _on_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed == true and event.button_index == MOUSE_BUTTON_LEFT:
 			select_requested.emit(self)
+			
+			if event.double_click:
+				double_clicked.emit()

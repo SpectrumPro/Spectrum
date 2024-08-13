@@ -242,6 +242,10 @@ func reload() -> void:
 			
 			new_list_item.select_requested.connect(func(arg1=null):
 				_on_select_requested(new_list_item, cue_number))
+			
+			new_list_item.double_clicked.connect(func(): 
+				current_cue_list.seek_to(cue_number)
+			)
 
 			cue_list_container.add_child(new_list_item)
 		
