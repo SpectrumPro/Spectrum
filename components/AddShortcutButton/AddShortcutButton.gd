@@ -35,6 +35,19 @@ var listning: bool = false : set = set_listning
 @onready var _toggle_button: Button = $HBoxContainer/Button
 
 
+## InputEvent's that are not allowed as shortcuts
+var _not_allowed_events: Array = [
+	"InputEventMouse", 
+	"InputEventGesture", 
+	"InputEventMouseMotion", 
+	"InputEventMouseButton", 
+	"InputEventPanGesture", 
+	"InputEventMagnifyGesture", 
+	"InputEventScreenTouch", 
+	"InputEventScreenDrag"
+]
+
+
 func _ready() -> void:
 	set_label_text(label_text)
 	set_button_icon(button_icon)
@@ -51,7 +64,7 @@ func set_event(p_event: InputEvent) -> void:
 	var new_shortcut: Shortcut = Shortcut.new()
 	
 	if event:
-		_toggle_button.text = OS.get_keycode_string(event.get_keycode_with_modifiers())
+		_toggle_button.text = event.as_text()
 		new_shortcut.events.append(event)
 	else:
 		_toggle_button.text = "Unassigned"
@@ -106,18 +119,24 @@ func load(serialized_data: Dictionary) -> void:
 
 ## Called when a gui input has happened
 func _on_gui_input(p_event: InputEvent) -> void:
-	if p_event is InputEventKey and (p_event.is_released() or not unpress_required):
-		match p_event.keycode:
-			KEY_BACKSPACE:
-				set_listning(false)
-				set_event(null)
-			
-			KEY_ESCAPE:
-				set_listning(false)
-			
-			_:
-				set_event(p_event)
-				on_shortcut_changed.emit(event)
+	print(not p_event.get_class() in _not_allowed_events and (p_event.is_released() or not unpress_required))
+	if not p_event.get_class() in _not_allowed_events and (p_event.is_released() or not unpress_required):
+		if p_event is InputEventKey:
+			match p_event.keycode:
+				KEY_BACKSPACE:
+					set_listning(false)
+					set_event(null)
+				
+				KEY_ESCAPE:
+					set_listning(false)
+				_:
+					set_event(p_event)
+					on_shortcut_changed.emit(event)
+				
+		else:
+			print("Setting Event")
+			set_event(p_event)
+			on_shortcut_changed.emit(event)
 
 
 ## Called when the button is pressed
