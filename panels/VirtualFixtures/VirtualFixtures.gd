@@ -38,8 +38,10 @@ func _ready() -> void:
 	_add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality" )
 	
 	Values.connect_to_selection_value("selected_fixtures", _selected_fixtures_changed)
-
+	
 	Core.fixtures_added.connect(self.load_fixtures)
+	
+	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
 	
 	load_fixtures(Core.fixtures.values())
 
@@ -58,6 +60,11 @@ func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = 
 	
 	$VirtualFixtures.get_menu_hbox().add_child(button)
 	return button
+
+
+func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
+	$VirtualFixtures.show_menu = not kiosk_mode
+	$VirtualFixtures.show_grid = not kiosk_mode 
 
 
 ## Callback for the Add Selected Fixtures button

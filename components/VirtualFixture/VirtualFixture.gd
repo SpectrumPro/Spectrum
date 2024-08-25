@@ -19,6 +19,9 @@ var _selected_color: Color = Color.WHITE
 
 func _ready():
 	$"Color Box".add_theme_stylebox_override("panel", $"Color Box".get_theme_stylebox("panel").duplicate())
+	Interface.kiosk_mode_changed.connect(func (kiosk_mode: bool):
+		draggable = not kiosk_mode
+	)
 
 
 ## Sets the BG color of this virtual fixture

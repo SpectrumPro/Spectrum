@@ -2,11 +2,11 @@
 # All rights reserved.
 
 extends Node
-## Main script for spectrum interface
+## Main script for the spectrum interface
 
 
-## Emitted when edit_mode is changed
-signal edit_mode_changed(edit_mode: bool)
+## Emitted when kiosk_mode is changed
+signal kiosk_mode_changed(in_kiosk_mode: bool)
 
 
 ## Stores all the components found in the folder, stored as {"folder_name": PackedScene}
@@ -34,6 +34,7 @@ var panels: Dictionary = {
 	"AddFixture": preload("res://panels/AddFixture/AddFixture.tscn"),
 	"AnimationEditor": preload("res://panels/AnimationEditor/AnimationEditor.tscn"),
 	"ColorPalette": preload("res://panels/ColorPalette/ColorPalette.tscn"),
+	"ColorBlock": preload("res://panels/ColorBlock/ColorBlock.tscn"),
 	"ColorPicker": preload("res://panels/ColorPicker/ColorPicker.tscn"),
 	"CuePlayback": preload("res://panels/CuePlayback/CuePlayback.tscn"),
 	"Debug": preload("res://panels/Debug/Debug.tscn"),
@@ -41,7 +42,7 @@ var panels: Dictionary = {
 	"Fixtures": preload("res://panels/Fixtures/Fixtures.tscn"),
 	"Functions": preload("res://panels/Functions/Functions.tscn"),
 	"IOControls": preload("res://panels/IOControls/IOControls.tscn"),
-	"NetworkConnection": preload("res://panels/NetworkConnection/NetworkConnection.tscn"),
+	"Settings": preload("res://panels/Settings/Settings.tscn"),
 	"PlaybackButtons": preload("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": preload("res://panels/Playbacks/Playbacks.tscn"),
 	"Programmer": preload("res://panels/Programmer/Programmer.tscn"),
@@ -51,9 +52,6 @@ var panels: Dictionary = {
 }
 
 
-
-## Global edit mode
-var edit_mode: bool = false : set = set_edit_mode
 
 ## Folder path in which all the components are stored
 const components_folder: String = "res://components/"
@@ -65,6 +63,14 @@ const panels_folder: String = "res://panels/"
 var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
 ## The location for storing all the save show files
 var ui_library_location: String = "user://UILibrary"
+
+
+## Kiosk mode state, will disable all edit actions in the ui, only allowing showing none-destructive controls to the user
+var kiosk_mode: bool = false: set = set_kiosk_mode
+
+## A 4 digit pin used to disable kiosk mode
+var kiosk_password: Array[int] = [0, 0, 0, 0]
+
 
 ## The main object picker
 var _object_picker: Control
@@ -85,18 +91,16 @@ func _ready() -> void:
 	if not DirAccess.dir_exists_absolute(ui_library_location):
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
 	
-	Core.universes_removed.connect(func (universes: Array):
-		Values.remove_from_selection_value("selected_universes", universes)
-	)
 	Core.fixtures_removed.connect(func (fixtures: Array): 
 		Values.remove_from_selection_value("selected_fixtures", fixtures)
 	)
 	
-	#components = get_packed_scenes_from_folder(components_folder)
-	#panels = get_packed_scenes_from_folder(panels_folder)
-	
 	Core.resetting.connect(_on_engine_resetting)
 	_load()
+	
+	kiosk_mode = "--kiosk" in OS.get_cmdline_args()
+	if kiosk_mode:
+		kiosk_mode_changed.emit(kiosk_mode)
 
 
 func _on_engine_resetting() -> void:
@@ -147,6 +151,15 @@ func _set_up_object_picker() -> void:
 
 
 
+func set_kiosk_mode(p_kiosk_mode: bool) -> void:
+	if p_kiosk_mode == kiosk_mode:
+		return
+	
+	kiosk_mode = p_kiosk_mode
+	kiosk_mode_changed.emit(kiosk_mode)
+	print(kiosk_mode)
+
+
 ## Returnes all the packed scenes in the given folder, a pack scene must be in a folder, with the same name as the folder it is in
 func get_packed_scenes_from_folder(folder: String) -> Dictionary:
 	var packed_scenes: Dictionary = {}
@@ -191,11 +204,6 @@ func _load_matching_scenes_in_folder(current_folder: String, packed_scenes: Dict
 		
 		dir_access.list_dir_end()
 
-
-## Sets the state of edit mode
-func set_edit_mode(p_edit_mode: bool) -> void:
-	edit_mode = p_edit_mode
-	edit_mode_changed.emit(edit_mode)
 
 
 func show_object_picker(callback: Callable, filter: Array[String] = [], allow_multi_select: bool = false, deselect_callback: Callable = Callable(), selection: Array = []) -> void:

@@ -110,6 +110,8 @@ func _ready() -> void:
 	Core.functions_removed.connect(_on_functions_removed)
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
 	
+	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
+	
 	global_cue.set_item_name("Global")
 	_global_cue_fade_time = global_cue.add_chip(self, "_fade_time", _set_global_fade_time)
 	_global_cue_pre_wait_time = global_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
@@ -135,6 +137,19 @@ func _ready() -> void:
 	remove_child(settings_node)
 	settings_node.show()
 	reload()
+
+
+func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
+	set_edit_mode(false)
+	$VBoxContainer/PanelContainer/HBoxContainer/EditMode.visible = not kiosk_mode
+	$VBoxContainer/PanelContainer/HBoxContainer/Store.visible = not kiosk_mode
+
+
+
+func set_edit_mode(edit_mode: bool) -> void:
+	_edit_mode = edit_mode
+	reload()
+	edit_controls.visible = edit_mode
 
 
 ## Adds all the passed buttons to a new ButtonGroup
@@ -554,9 +569,7 @@ func _on_save_mode_changed(button: Button) -> void:
 
 ## Edit Controls
 func _on_edit_mode_toggled(toggled_on: bool) -> void:
-	_edit_mode = toggled_on
-	reload()
-	edit_controls.visible = toggled_on
+	set_edit_mode(toggled_on)
 
 
 func _on_delete_pressed() -> void:

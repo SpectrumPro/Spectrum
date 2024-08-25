@@ -104,7 +104,8 @@ func load(saved_data: Dictionary) -> void:
 func _on_background_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_new_position += event.relative
-		_new_position = _new_position.clamp(Vector2.ZERO, get_parent().size - size)
+		_new_position = _new_position.abs()
+		#_new_position = _new_position.clamp(Vector2.ZERO, get_parent().size - size)
 		
 		self.position = _new_position.snapped(snapping_distance)
 		
@@ -122,7 +123,8 @@ func _on_background_gui_input(event: InputEvent) -> void:
 func _on_br_handle_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_new_size += event.relative
-		_new_size = _new_size.clamp(custom_minimum_size, Vector2.INF)
+		_new_size = _new_size.abs()
+		#_new_size = _new_size.clamp(custom_minimum_size, Vector2.INF)
 		self.size = _new_size.snapped(snapping_distance)
 		update_label()
 	

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bs70cko3yhswx"]
+[gd_scene load_steps=4 format=3 uid="uid://d2mjxku8bnm0o"]
 
-[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_ik510"]
-[ext_resource type="Script" path="res://panels/Settings/Settings.gd" id="1_o3pds"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_b83wp"]
+[ext_resource type="Script" path="res://panels/Settings/Settings.gd" id="2_lbevi"]
+[ext_resource type="PackedScene" uid="uid://cbgxp3ghx1agd" path="res://components/KeyPad/KeyPad.tscn" id="3_ghmpc"]
 
 [node name="Settings" type="PanelContainer"]
 anchors_preset = 15
@@ -9,10 +10,52 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_ik510")
-script = ExtResource("1_o3pds")
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_b83wp")
+script = ExtResource("2_lbevi")
 
-[node name="Label" type="Label" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-text = "Settings"
+size_flags_vertical = 4
+
+[node name="Status" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Connected"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+
+[node name="IpAddr" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Server IP"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Connect" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Connect"
+
+[node name="Disconnect" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Disconnect"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="KioskMode" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Enter Kiosk Mode"
+
+[node name="KeyPad" parent="." instance=ExtResource("3_ghmpc")]
+visible = false
+layout_mode = 2
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Connect" to="." method="_on_connect_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Disconnect" to="." method="_on_disconnect_pressed"]
+[connection signal="pressed" from="VBoxContainer/KioskMode" to="." method="_on_kiosk_mode_pressed"]
+[connection signal="closed_requested" from="KeyPad" to="." method="_on_key_pad_closed_requested"]

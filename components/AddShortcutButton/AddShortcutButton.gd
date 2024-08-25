@@ -70,7 +70,7 @@ func set_event(p_event: InputEvent) -> void:
 		_toggle_button.text = "Unassigned"
 		new_shortcut = null
 	
-	if button:
+	if is_instance_valid(button):
 		button.shortcut = new_shortcut
 	
 	set_listning(false)

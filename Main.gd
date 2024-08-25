@@ -28,6 +28,8 @@ var _warning_to_color: Color = Color(1, 0, 0, 0.5)
 
 func _ready() -> void:
 	MainSocketClient.connection_closed.connect(_on_connection_closed)
+	
+	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
 
 
 func _on_connection_closed() -> void:
@@ -40,6 +42,11 @@ func _on_connection_closed() -> void:
 		$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.add_theme_color_override("icon_normal_color", Color.RED)
 		$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.add_theme_color_override("icon_hover_color", Color.RED)
 		$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.add_theme_color_override("icon_focus_color", Color.RED)
+
+
+func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
+	$VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons.visible = not kiosk_mode
+	$VBoxContainer/PanelContainer/HBoxContainer/FileButtons.visible = not kiosk_mode
 
 
 ## Saves all the panels shown in the ui
@@ -99,8 +106,8 @@ func _on_settings_toggled(toggled_on: bool) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_focus_color")
 	
 	
-	$NetworkConnection.visible = toggled_on
-	$NetworkConnection.move_to_front()
+	$Settings.visible = toggled_on
+	$Settings.move_to_front()
 
 
 func _on_new_tab_pressed() -> void:

@@ -62,6 +62,12 @@ func _ready() -> void:
 	$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
 		$PanelContainer2/ConfirmationBox.hide()
 	)
+	
+	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
+
+
+func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
+	$ToolBarContainer.visible = false if kiosk_mode else (true if show_tool_bar else false)
 
 
 ## Adds an item to the list

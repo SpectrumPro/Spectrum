@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cbsp8xx2h45do" path="res://components/ObjectPicker/ObjectPicker.tscn" id="13_r56s8"]
 [ext_resource type="PackedScene" uid="uid://bhrc5gkly1noh" path="res://components/ConfirmationBox/ConfirmationBox.tscn" id="13_yplrd"]
 [ext_resource type="PackedScene" uid="uid://dm6rs78fm1lh4" path="res://panels/SaveLoad/SaveLoad.tscn" id="14_3qwxp"]
-[ext_resource type="PackedScene" uid="uid://d2mjxku8bnm0o" path="res://panels/NetworkConnection/NetworkConnection.tscn" id="14_45enf"]
+[ext_resource type="PackedScene" uid="uid://d2mjxku8bnm0o" path="res://panels/Settings/Settings.tscn" id="14_45enf"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="14_jv1kq"]
 [ext_resource type="PackedScene" uid="uid://bwxr0mrsrt0iu" path="res://panels/Programmer/Programmer.tscn" id="15_dmmgm"]
 [ext_resource type="PackedScene" uid="uid://baortk0rwrhup" path="res://panels/Playbacks/Playbacks.tscn" id="17_ghhoa"]
@@ -148,7 +148,6 @@ theme_override_styles/tab_selected = SubResource("StyleBoxFlat_kwxcw")
 theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_b4c16")
 theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_5tdu7")
 tab_alignment = 1
-drag_to_rearrange_enabled = true
 
 [node name="TabAndWindowButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -286,9 +285,9 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
 
-[node name="NetworkConnection" parent="." instance=ExtResource("14_45enf")]
+[node name="Settings" parent="." instance=ExtResource("14_45enf")]
 visible = false
-custom_minimum_size = Vector2(355, 150)
+custom_minimum_size = Vector2(355, 202.405)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

@@ -105,6 +105,7 @@ func on_channel_changed(p_channel: int) -> void:
 
 ## INTERNAL: called when an override value is changed on the server
 func on_override_value_changed(value: Variant, channel_key: String) -> void:
+	print(value)
 	_override_values[channel_key] = value
 	override_value_changed.emit(value, channel_key)
 
