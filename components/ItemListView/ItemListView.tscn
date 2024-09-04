@@ -88,6 +88,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ConfirmationBox" parent="PanelContainer2" instance=ExtResource("10_uy0qq")]
+visible = false
 layout_mode = 2
 
 [connection signal="pressed" from="ToolBarContainer/HBoxContainer/New" to="." method="_on_new_pressed"]

@@ -6,7 +6,7 @@ extends HBoxContainer
 
 
 ## NodePath to the color picker
-@export_node_path("ColorPicker") var color_picker: NodePath
+@onready var color_picker: ColorPicker  = $ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/Control/ColorPicker
 
 ## RGB Sliders
 @onready var red_slider: ChannelSlider = $ColorSliders/HBoxContainer/Red
@@ -18,6 +18,8 @@ extends HBoxContainer
 @onready var saturation_slider: ChannelSlider = $ColorSliders/HBoxContainer/Saturation
 @onready var value_slider: ChannelSlider = $ColorSliders/HBoxContainer/Value
 
+## Disables this input
+var disabled: bool = false : set = set_disabled
 
 ## The current color of this color system
 var current_color: Color = Color.BLACK
@@ -93,6 +95,18 @@ func reset_no_message() -> void:
 	show_override_warning(false)
 
 
+func set_disabled(p_disabled: bool) -> void:
+	disabled = p_disabled
+	
+	red_slider.set_disabled(disabled)
+	green_slider.set_disabled(disabled)
+	blue_slider.set_disabled(disabled)
+	hue_slider.set_disabled(disabled)
+	saturation_slider.set_disabled(disabled)
+	value_slider.set_disabled(disabled)
+
+
+
 ## Called when the color picker is changed.
 func _on_color_picker_color_changed(color: Color) -> void:
 	var current_time = Time.get_ticks_msec() / 1000.0  # Convert milliseconds to seconds
@@ -113,7 +127,7 @@ func _on_color_picker_color_changed(color: Color) -> void:
 
 ## Updates the color on the programmer
 func _update_color(send_message: bool = true) -> void:
-	get_node(color_picker).color = current_color
+	color_picker.color = current_color
 	update_slider_bg_colors()
 	
 	
@@ -203,7 +217,7 @@ func _on_color_mode_tab_changed(tab: int) -> void:
 			green_slider.show()
 			blue_slider.show()
 			
-			get_node(color_picker).picker_shape = ColorPicker.SHAPE_VHS_CIRCLE
+			color_picker.picker_shape = ColorPicker.SHAPE_VHS_CIRCLE
 		1:
 			red_slider.hide()
 			green_slider.hide()
@@ -213,4 +227,4 @@ func _on_color_mode_tab_changed(tab: int) -> void:
 			saturation_slider.show()
 			value_slider.show()
 			
-			get_node(color_picker).picker_shape = ColorPicker.SHAPE_HSV_RECTANGLE
+			color_picker.picker_shape = ColorPicker.SHAPE_HSV_RECTANGLE

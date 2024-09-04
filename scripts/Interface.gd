@@ -14,6 +14,7 @@ var components: Dictionary = {
 	"ChannelSlider": preload("res://components/ChannelSlider/ChannelSlider.tscn"),
 	"ColorSlider": preload("res://components/ColorSlider/ColorSlider.tscn"),
 	"ConfirmationBox": preload("res://components/ConfirmationBox/ConfirmationBox.tscn"),
+	"CueTriggerModeOption": preload("res://components/CueTriggerModeOption/CueTriggerModeOption.tscn"),
 	"DeskItemContainer": preload("res://components/DeskItemContainer/DeskItemContainer.tscn"),
 	"ItemListView": preload("res://components/ItemListView/ItemListView.tscn"),
 	"Knob": preload("res://components/Knob/Knob.tscn"),
@@ -23,6 +24,7 @@ var components: Dictionary = {
 	"PanelSettingsContainer": preload("res://components/PanelSettingContainer/PanelSettingsContainer.tscn"),
 	"PlaybackRow": preload("res://components/PlaybackRow/PlaybackRow.tscn"),
 	"PopupWindow": preload("res://components/PopupWindow/PopupWindow.tscn"),
+	"TimerPicker": preload("res://components/TimePicker/TimePicker.tscn"),
 	"TriggerButton": preload("res://components/TriggerButton/TriggerButton.tscn"),
 	"VirtualFixture": preload("res://components/VirtualFixture/VirtualFixture.tscn"),
 	"Warning": preload("res://components/Warning/Warning.tscn")
@@ -87,7 +89,7 @@ var _object_picker_deselected_signal_connection: Callable
 
 func _ready() -> void:
 	OS.set_low_processor_usage_mode(true)
-	
+	1
 	if not DirAccess.dir_exists_absolute(ui_library_location):
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
 	
@@ -98,9 +100,16 @@ func _ready() -> void:
 	Core.resetting.connect(_on_engine_resetting)
 	_load()
 	
-	kiosk_mode = "--kiosk" in OS.get_cmdline_args()
+	var cli_args: PackedStringArray = OS.get_cmdline_args()
+	
+	kiosk_mode = "--kiosk" in cli_args
 	if kiosk_mode:
 		kiosk_mode_changed.emit(kiosk_mode)
+		
+		var passcode_index: int = cli_args.find("--relay-server") + 1
+		
+		if passcode_index < cli_args.size() and cli_args[passcode_index].is_valid_ip_address():
+			print((cli_args[passcode_index] as String).split() as Array[int])
 
 
 func _on_engine_resetting() -> void:
@@ -157,7 +166,6 @@ func set_kiosk_mode(p_kiosk_mode: bool) -> void:
 	
 	kiosk_mode = p_kiosk_mode
 	kiosk_mode_changed.emit(kiosk_mode)
-	print(kiosk_mode)
 
 
 ## Returnes all the packed scenes in the given folder, a pack scene must be in a folder, with the same name as the folder it is in

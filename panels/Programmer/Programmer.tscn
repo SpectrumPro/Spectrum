@@ -14,17 +14,17 @@
 [ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="11_snl23"]
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
 
-[sub_resource type="Gradient" id="Gradient_vxi8y"]
+[sub_resource type="Gradient" id="Gradient_pobs8"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_f1oy4"]
-gradient = SubResource("Gradient_vxi8y")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wi4mt"]
+gradient = SubResource("Gradient_pobs8")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fh4b8"]
-texture = SubResource("GradientTexture2D_f1oy4")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a0d4m"]
+texture = SubResource("GradientTexture2D_wi4mt")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfwup"]
 content_margin_left = 5.0
@@ -53,10 +53,12 @@ theme = ExtResource("1_jp1gn")
 [node name="TabContainer" type="TabContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+current_tab = 0
 use_hidden_tabs_for_min_size = true
 
 [node name="Light" type="HBoxContainer" parent="HBoxContainer/TabContainer"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Light"]
 layout_mode = 2
@@ -99,7 +101,6 @@ size_flags_horizontal = 3
 [node name="ColorSystem" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls"]
 layout_mode = 2
 script = ExtResource("2_xdlid")
-color_picker = NodePath("ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/Control/ColorPicker")
 
 [node name="Dimmer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
 layout_mode = 2
@@ -107,6 +108,7 @@ layout_mode = 2
 [node name="DimmerSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "Dimmer"
+disabled = true
 object_id = "programmer"
 method = "Dimmer"
 send_randomise_command = false
@@ -125,6 +127,7 @@ layout_mode = 2
 layout_mode = 2
 label_text = "Red"
 show_warning_bg = false
+disabled = true
 show_gradient_bg = true
 graident_top_color = Color(1, 0, 0, 1)
 object_id = "programmer"
@@ -138,6 +141,7 @@ send_selection_value = "selected_fixtures"
 layout_mode = 2
 label_text = "Green"
 show_warning_bg = false
+disabled = true
 show_gradient_bg = true
 graident_top_color = Color(0, 1, 0, 1)
 object_id = "programmer"
@@ -151,6 +155,7 @@ send_selection_value = "selected_fixtures"
 layout_mode = 2
 label_text = "Blue"
 show_warning_bg = false
+disabled = true
 show_gradient_bg = true
 graident_top_color = Color(0, 0, 1, 1)
 object_id = "programmer"
@@ -165,6 +170,7 @@ visible = false
 layout_mode = 2
 label_text = "Hue"
 max_value = 360
+disabled = true
 show_gradient_bg = true
 graident_top_color = Color(1, 1, 0, 1)
 graident_bottom_color = Color(1, 0, 0, 1)
@@ -183,22 +189,31 @@ visible = true
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_fh4b8")
+theme_override_styles/panel = SubResource("StyleBoxTexture_a0d4m")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
 
 [node name="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer" index="1"]
 max_value = 360.0
+editable = false
 
 [node name="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer" index="2"]
 max_value = 360.0
+editable = false
+
+[node name="Reset" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/HBoxContainer" index="0"]
+disabled = true
+
+[node name="Random" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/HBoxContainer" index="1"]
+disabled = true
 
 [node name="Saturation" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
 visible = false
 layout_mode = 2
 label_text = "Sat"
 show_warning_bg = false
+disabled = true
 show_gradient_bg = true
 object_id = "programmer"
 send_randomise_command = false
@@ -211,6 +226,7 @@ visible = false
 layout_mode = 2
 label_text = "Value"
 show_warning_bg = false
+disabled = true
 show_gradient_bg = true
 object_id = "programmer"
 send_randomise_command = false
@@ -240,8 +256,8 @@ size_flags_vertical = 0
 [node name="ColorMode" type="TabBar" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/PanelContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-tab_count = 2
 tab_alignment = 1
+tab_count = 2
 tab_0/title = "RGB"
 tab_1/title = "HSV"
 
@@ -285,6 +301,7 @@ layout_mode = 2
 [node name="White" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "White"
+disabled = true
 object_id = "programmer"
 method = "ColorIntensityWhite"
 send_randomise_command = false
@@ -296,6 +313,7 @@ send_selection_value = "selected_fixtures"
 [node name="Amber" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "Amber"
+disabled = true
 object_id = "programmer"
 method = "ColorIntensityAmber"
 send_randomise_command = false
@@ -307,6 +325,7 @@ send_selection_value = "selected_fixtures"
 [node name="UV" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
 layout_mode = 2
 label_text = "UV"
+disabled = true
 object_id = "programmer"
 method = "ColorIntensityUV"
 send_randomise_command = false
@@ -319,6 +338,7 @@ send_selection_value = "selected_fixtures"
 visible = false
 layout_mode = 2
 script = ExtResource("6_drfid")
+metadata/_tab_index = 1
 
 [node name="UniverseContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Channels"]
 layout_mode = 2

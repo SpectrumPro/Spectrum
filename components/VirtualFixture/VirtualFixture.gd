@@ -66,8 +66,8 @@ func set_fixture(control_fixture: Fixture) -> void:
 		fixture.uv_intensity_changed.disconnect(render_color)
 		fixture.dimmer_changed.disconnect(render_color)
 		fixture.delete_request.disconnect(self.delete)
-		fixture.override_value_changed.disconnect(_on_fixture_override_value_changed)
-		fixture.override_value_removed.disconnect(_on_fixture_override_value_removed)
+		fixture.override_value_changed.disconnect(_set_warning)
+		fixture.override_value_removed.disconnect(_remove_warning)
 
 	
 	fixture = control_fixture
@@ -76,23 +76,26 @@ func set_fixture(control_fixture: Fixture) -> void:
 	fixture.amber_intensity_changed.connect(render_color)
 	fixture.uv_intensity_changed.connect(render_color)
 	fixture.dimmer_changed.connect(render_color)
-	fixture.override_value_changed.connect(_on_fixture_override_value_changed)
-	fixture.override_value_removed.connect(_on_fixture_override_value_removed)
+	fixture.override_value_changed.connect(_set_warning)
+	fixture.override_value_removed.connect(_remove_warning)
 	
 	
 	render_color()
+	if fixture.get_all_ovrride_values():
+		_set_warning()
 
 
-func _on_fixture_override_value_changed(value: Variant, channel_key: String) -> void:
+func _set_warning(arg1=null, arg2=null) -> void:
 	_selected_color = Color.ORANGE
 	_deselected_color = Color.ORANGE_RED
 	_update_border()
 
 
-func _on_fixture_override_value_removed(channel_key: String) -> void:
-	_selected_color = Color.WHITE
-	_deselected_color = Color.BLACK
-	_update_border()
+func _remove_warning(arg1=null) -> void:
+	if not fixture.get_all_ovrride_values():
+		_selected_color = Color.WHITE
+		_deselected_color = Color.BLACK
+		_update_border()
 
 
 func serialize():

@@ -123,7 +123,7 @@ func add_networked_object(object_name: String, object: Object, delete_signal: Si
 
 ## Remove a network object
 func remove_networked_object(object_name: String) -> void:
-	print("Removing Networked Object: ", object_name)
+	print_verbose("Removing Networked Object: ", object_name)
 	if _networked_objects_delete_callbacks.has(object_name):
 		(_networked_objects_delete_callbacks[object_name].signal as Signal).disconnect(_networked_objects_delete_callbacks[object_name].callable)
 		_networked_objects_delete_callbacks.erase(object_name)
@@ -157,7 +157,7 @@ func _on_message_receved(message: Variant) -> void:
 		# Check if the callback_id in regestered in _callbacks
 		if message.get("callback_id", "") in _callbacks:
 			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
-			print("Calling Methord: ", _callbacks[command.callback_id])
+			print_verbose("Calling Methord: ", _callbacks[command.callback_id])
 			if not command.get("response") == null:
 				_callbacks[command.callback_id].call(command.response)
 			else:
@@ -193,5 +193,5 @@ func _call_method(networked_object: Dictionary, method_name: String, method_dict
 			return
 	
 	# If all check above pass, call the function and pass the arguments
-	print_verbose("Calling Methord: ", networked_object.object.get(method_name))
+	print_verbose("Calling Method: ", networked_object.object.get(method_name))
 	(networked_object.object.get(method_name) as Callable).callv(args)

@@ -352,4 +352,3 @@ func set_show_separators(is_visible) -> void:
 		$ToolBarContainer/HBoxContainer/VSeparator1.visible = is_visible
 		$ToolBarContainer/HBoxContainer/VSeparator2.visible = is_visible
 #endregion
-

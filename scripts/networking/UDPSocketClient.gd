@@ -36,4 +36,3 @@ func _process(delta):
 				data.merge(packet, true)
 		
 		packet_recieved.emit(data)
-

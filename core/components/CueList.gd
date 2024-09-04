@@ -132,7 +132,7 @@ func set_cue_number(new_number: float, cue: Cue) -> void:
 	Client.send_command(uuid, "set_cue_number", [new_number, cue])
 
 
-## INTERNAL: Called when the index is changed on the server
+## INTERNAL: Called when the number is changed on the server
 func on_cue_changed(cue_number: float) -> void:
 	current_cue_number = cue_number
 	cue_changed.emit(current_cue_number)
@@ -210,5 +210,8 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 	
 	if just_added_cues:
 		cues_added.emit(just_added_cues)
-			
+	
+	var index: Variant = serialized_data.get("index")
+	if index is int and index != -1:
+		on_cue_changed(index_list[serialized_data.get("index")])
 	

@@ -17,8 +17,6 @@ signal universes_removed(universes: Array[Universe])
 ## Emitted when fixtures_definitions are updates
 signal fixtures_definitions_updated() 
 
-## Emitted when any of the fixtures in any of the universes in this engine have there name changed
-signal fixture_name_changed(fixture: Fixture, new_name: String) 
 
 ## Emited when a fixture / fixtures are added to any of the universes in this engine
 signal fixtures_added(fixtures: Array[Fixture])
@@ -68,10 +66,6 @@ var server_udp_port: int = 3823
 ## Folowing functions are for connecting universe signals to engine signals, they are defined as vairables so they can be dissconnected when universe is to be deleted
 func _universe_on_name_changed(new_name: String, universe: Universe): 
 	universe_name_changed.emit(universe, new_name)
-
-
-func _universe_on_fixture_name_changed(fixture: Fixture, new_name: String):
-	fixture_name_changed.emit(fixture, new_name)
 
 
 func _universe_on_fixtures_added(p_fixtures: Array[Fixture]):
@@ -228,8 +222,6 @@ func _add_universes(p_universes: Array) -> void:
 
 ## Connects all the signals of the new universe to the signals of this engine
 func _connect_universe_signals(universe: Universe):
-	
-	print("Connecting Signals")
 	_universe_signal_connections[universe] = {
 		"_universe_on_name_changed": _universe_on_name_changed.bind(universe),
 		"on_universes_removed": on_universes_removed.bind([universe])
@@ -237,7 +229,6 @@ func _connect_universe_signals(universe: Universe):
 	
 	universe.name_changed.connect(_universe_signal_connections[universe]._universe_on_name_changed)
 	universe.delete_requested.connect(_universe_signal_connections[universe].on_universes_removed)
-	universe.fixture_name_changed.connect(_universe_on_fixture_name_changed)
 	universe.fixtures_added.connect(_universe_on_fixtures_added)
 	universe.fixtures_removed.connect(_universe_on_fixtures_removed)
 
@@ -248,7 +239,6 @@ func _disconnect_universe_signals(universe: Universe):
 	
 	universe.name_changed.disconnect(_universe_signal_connections[universe]._universe_on_name_changed)
 	universe.delete_requested.disconnect(_universe_signal_connections[universe].on_universes_removed)
-	universe.fixture_name_changed.disconnect(_universe_on_fixture_name_changed)
 	universe.fixtures_added.disconnect(_universe_on_fixtures_added)
 	universe.fixtures_removed.disconnect(_universe_on_fixtures_removed)
 	

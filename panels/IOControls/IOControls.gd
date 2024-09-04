@@ -60,7 +60,7 @@ func _on_item_list_view_delete_requested(items: Array) -> void:
 
 
 func _on_item_list_view_add_requested() -> void:
-	current_universe.add_output("", ArtNetOutput.new())
+	current_universe.add_output(ArtNetOutput.new())
 
 
 func _on_item_list_view_selection_changed(items: Array) -> void:

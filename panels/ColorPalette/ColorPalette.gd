@@ -7,11 +7,15 @@ extends PanelContainer
 ## The number of colors to show
 @export var number_of_colors: int = 20 : set = set_number_of_colors
 
+## Whether or not to show the override reset button
+@export var show_reset: bool = true : set  = set_show_reset
+
 ## Whether or not to show the white color button
 @export var show_white: bool = true : set = set_show_white
 
 ## Whether or not to show the black color button
 @export var show_black: bool = true : set = set_show_black
+
 
 ## The settings node used to choose how many colors to show
 @onready var settings_node: Control = $Settings
@@ -29,6 +33,7 @@ func _ready() -> void:
 	reload()
 	
 	settings_node.get_node("VBoxContainer/HBoxContainer/NumberOfColors").set_value_no_signal(number_of_colors)
+	settings_node.get_node("VBoxContainer/HBoxContainer2/ShowReset").set_pressed_no_signal(show_reset)
 	settings_node.get_node("VBoxContainer/HBoxContainer2/ShowWhite").set_pressed_no_signal(show_white)
 	settings_node.get_node("VBoxContainer/HBoxContainer2/ShowBlack").set_pressed_no_signal(show_black)
 	
@@ -45,6 +50,16 @@ func reload() -> void:
 	
 	_button_groop = ButtonGroup.new()
 	
+	if show_reset:
+		var reset_button: ColorButton = load("res://panels/ColorPalette/ColorButton.tscn").instantiate()
+	
+		reset_button.set_texture(load("res://assets/icons/close.svg"))
+		reset_button.button_group = _button_groop
+		reset_button.button_down.connect(func ():
+			Client.send_command("programmer", "reset_color", [Values.get_selection_value("selected_fixtures")])
+		)
+		$ScrollContainer/GridContainer.add_child(reset_button)
+	
 	if show_white: 
 		_add_color_button(Color.WHITE)
 	
@@ -55,11 +70,19 @@ func reload() -> void:
 		var hue = float(i) / number_of_colors
 		var color = Color.from_hsv(hue, 1.0, 1.0)
 		_add_color_button(color)
+	
+	_change_selected_color_from_fixtures(Values.get_selection_value("selected_fixtures"))
 
 
 ## Sets the number of colors to display
 func set_number_of_colors(number: int) -> void:
 	number_of_colors = number
+	reload()
+
+
+## Whether or not to show the override reset button
+func set_show_reset(p_show_reset: bool) -> void:
+	show_reset = p_show_reset
 	reload()
 
 
@@ -78,6 +101,7 @@ func set_show_black(p_show_black: bool) -> void:
 ## Saves the settings to a dictionary
 func save() -> Dictionary:
 	return {
+		"show_reset": show_reset,
 		"show_black": show_black,
 		"show_white": show_white,
 		"number_of_colors": number_of_colors
@@ -86,6 +110,7 @@ func save() -> Dictionary:
 
 ## Loads settings from what was returned by save()
 func load(saved_data: Dictionary) -> void:
+	show_reset = saved_data.get("show_reset", show_reset)
 	show_black = saved_data.get("show_black", show_black)
 	show_white = saved_data.get("show_white", show_white)
 	
@@ -94,7 +119,7 @@ func load(saved_data: Dictionary) -> void:
 
 ## Adds a color button to the list
 func _add_color_button(color: Color) -> void:
-	var new_color_button: Button = load("res://panels/ColorPalette/ColorButton.tscn").instantiate()
+	var new_color_button: ColorButton = load("res://panels/ColorPalette/ColorButton.tscn").instantiate()
 	
 	new_color_button.color = color
 	new_color_button.button_down.connect(func ():
@@ -110,6 +135,9 @@ func _add_color_button(color: Color) -> void:
 
 
 func _change_selected_color_from_fixtures(fixtures: Array) -> void:
+	for button: ColorButton in _button_groop.get_buttons():
+		button.disabled = fixtures == []
+	
 	if fixtures:
 		var fixture: Fixture = fixtures[0]
 		

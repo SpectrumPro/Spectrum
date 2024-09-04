@@ -66,8 +66,7 @@ mouse_default_cursor_shape = 10
 theme_override_icons/grabber = ExtResource("1_g8a7l")
 theme_override_icons/grabber_highlight = ExtResource("1_g8a7l")
 theme_override_styles/slider = SubResource("StyleBoxFlat_hv2sk")
-max_value = 1.0
-step = 0.01
+max_value = 255.0
 
 [node name="Button4" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(80, 50)

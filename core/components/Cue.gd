@@ -14,6 +14,9 @@ signal pre_wait_time_changed(pre_wait: float)
 ## Emitted when the cue number is changed
 signal number_changed(new_number: float) 
 
+## Emitted when the trigger mode it changed
+signal trigger_mode_changed(trigger_mode: TRIGGER_MODE)
+
 
 ## The index of this cue, do not modify this when it is a part of a cuelist
 var number: float = 1.0 : 
@@ -24,7 +27,7 @@ var number: float = 1.0 :
 ## Fade in time in seconds
 var fade_time: float = 2.0
 
-## Pre-Wait time in seconds, how long to wait before this cue will activate, only works with TRIGGER_MODE.WITH_LAST
+## Pre-Wait time in seconds, how long to wait before this cue will activate, only works with TRIGGER_MODE.WITH_LAST / AFTER_LAST
 var pre_wait: float = 1.0
 
 ## Post-Wait time in seconds, how long to wait before the next cue will activate, only works with TRIGGER_MODE.WITH_LAST
@@ -32,7 +35,7 @@ var post_wait: float = 1.0
 
 
 ## Enumeration for the trigger modes
-enum TRIGGER_MODE { MANUAL, WITH_LAST }
+enum TRIGGER_MODE { MANUAL, AFTER_LAST, WITH_LAST }
 var trigger_mode: TRIGGER_MODE = TRIGGER_MODE.MANUAL
 
 ## Tracking flag, indicates if this cue tracks changes
@@ -72,6 +75,12 @@ func set_pre_wait(p_set_pre_wait: float) -> void:
 	Client.send_command(uuid, "set_pre_wait", [p_set_pre_wait])
 
 
+## Sets the trigger mode time
+func set_trigger_mode(p_trigger_mode: TRIGGER_MODE) -> void:
+	Client.send_command(uuid, "set_trigger_mode", [p_trigger_mode])
+
+
+
 ## INTERNAL: called when the fade time is changed on the server
 func on_fade_time_changed(p_fade_time: float) -> void:
 	fade_time = p_fade_time
@@ -82,6 +91,12 @@ func on_fade_time_changed(p_fade_time: float) -> void:
 func on_pre_wait_time_changed(p_pre_wait) -> void:
 	pre_wait = p_pre_wait
 	pre_wait_time_changed.emit(pre_wait)
+
+
+## INTERNAL: called when the trigger mode is changed on the server
+func on_trigger_mode_changed(p_trigger_mode: TRIGGER_MODE) -> void:
+	trigger_mode = p_trigger_mode
+	trigger_mode_changed.emit(trigger_mode)
 
 
 func on_data_stored(fixture: Fixture, channel_key: String, value: Variant) -> void:

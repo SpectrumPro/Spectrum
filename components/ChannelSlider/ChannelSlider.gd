@@ -28,6 +28,8 @@ signal reset_pressed()
 ## The slider value
 @export var value: int = 0 : set = set_value
 
+## Disables this slider
+@export var disabled: bool = false : set = set_disabled
 
 
 @export_group("Graident")
@@ -102,6 +104,7 @@ func _ready() -> void:
 	set_label_text(label_text)
 	set_show_warning_bg(show_warning_bg)
 	set_show_graident_bg(show_gradient_bg)
+	set_disabled(disabled)
 	
 	set_gradient_top_color(graident_top_color)
 	set_gradient_bottom_color(graident_bottom_color)
@@ -162,6 +165,17 @@ func set_value(p_value: int) -> void:
 	if is_node_ready():
 		slider.set_value_no_signal(p_value)
 		spin_box.set_value_no_signal(p_value)
+
+
+## Disabled or enables this slider
+func set_disabled(p_disabled: bool) -> void:
+	disabled = p_disabled
+	
+	if is_node_ready():
+		slider.editable = not disabled
+		spin_box.editable = not disabled
+		$MarginContainer/VBoxContainer/HBoxContainer/Reset.disabled = disabled
+		$MarginContainer/VBoxContainer/HBoxContainer/Random.disabled = disabled
 
 
 func set_reset_icon(icon: Texture2D) -> void:

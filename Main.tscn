@@ -25,10 +25,10 @@ font = ExtResource("3_7gl8s")
 font_size = 71
 font_color = Color(0.281187, 0.281187, 0.281187, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwxcw"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5tdu7"]
 content_margin_left = 15.0
 content_margin_right = 15.0
-bg_color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+bg_color = Color(0.215902, 0.215902, 0.215902, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -53,10 +53,10 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5tdu7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwxcw"]
 content_margin_left = 15.0
 content_margin_right = 15.0
-bg_color = Color(0.215902, 0.215902, 0.215902, 1)
+bg_color = Color(0.0962047, 0.0962048, 0.0962047, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -144,9 +144,9 @@ icon = ExtResource("6_0hk34")
 [node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/tab_selected = SubResource("StyleBoxFlat_kwxcw")
-theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_b4c16")
 theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_5tdu7")
+theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_b4c16")
+theme_override_styles/tab_selected = SubResource("StyleBoxFlat_kwxcw")
 tab_alignment = 1
 
 [node name="TabAndWindowButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]

@@ -28,10 +28,8 @@ signal override_value_removed(channel_key: String)
 ## Stores all the current values of the fixture
 var current_values: Dictionary = {}
 
-
 ## Stores all the supported channels for this fixture
 var channels: Array = []
-
 
 ## Stores all the fixtures override values, stored as {channel_key: value}
 var _override_values: Dictionary = {
@@ -54,19 +52,20 @@ func _component_ready() -> void:
 
 ## Sets the channel of this fixture
 func set_channel(p_channel: int) -> void:
-	Client.send({
-		"for": self.uuid,
-		"call": "set_channel",
-		"args": [p_channel]
-	})
+	Client.send_command(uuid, "set_channel", [p_channel])
 
 
 ## Returns the current override value from the given channel_key, or null if not found
 func get_override_value_from_channel_key(channel_key: String) -> Variant:
 	return _override_values.get(channel_key)
 
-#region Server Callbacks
 
+## Returns the current override value from the given channel_key, or null if not found
+func get_all_ovrride_values() -> Variant:
+	return _override_values.duplicate()
+
+
+#region Server Callbacks
 ## INTERNAL: called when the color of this fixture is changed on the server
 func on_color_changed(new_color: Color) -> void:
 	current_values.set_color = new_color
@@ -105,7 +104,6 @@ func on_channel_changed(p_channel: int) -> void:
 
 ## INTERNAL: called when an override value is changed on the server
 func on_override_value_changed(value: Variant, channel_key: String) -> void:
-	print(value)
 	_override_values[channel_key] = value
 	override_value_changed.emit(value, channel_key)
 
@@ -114,14 +112,14 @@ func on_override_value_changed(value: Variant, channel_key: String) -> void:
 func on_override_value_removed(channel_key: String) -> void:
 	_override_values.erase(channel_key)
 	override_value_removed.emit(channel_key)
-
 #endregion
 
 
-
+## Called when this fixture is to be loaded from the server
 func _on_load_request(serialized_data: Dictionary) -> void:
 	channel = serialized_data.get("channel", 1)
 	
 	current_values.merge(serialized_data.get("current_values", {}), true)
-	channels = serialized_data.get("channels", [])
+	_override_values.merge(serialized_data.get("current_override_values", {}), true)
 	
+	channels = serialized_data.get("channels", [])

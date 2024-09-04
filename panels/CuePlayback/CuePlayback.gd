@@ -44,8 +44,8 @@ var _pre_wait: float = 0
 var _fade_time: float = 0
 
 ## The fade in and hold time inputs for the global cue
-var _global_cue_fade_time: SpinBox = null
-var _global_cue_pre_wait_time: SpinBox = null
+var _global_cue_fade_time: TimerPicker = null
+var _global_cue_pre_wait_time: TimerPicker = null
 
 ## Number of cues to leave visible when autoscrolling
 var _scroll_extra: int = 3
@@ -112,10 +112,23 @@ func _ready() -> void:
 	
 	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
 	
+	
 	global_cue.set_item_name("Global")
-	_global_cue_fade_time = global_cue.add_chip(self, "_fade_time", _set_global_fade_time)
-	_global_cue_pre_wait_time = global_cue.add_chip(self, "_pre_wait", _set_global_pre_wait)
+	
+	_global_cue_fade_time = Interface.components.TimerPicker.instantiate()
+	_global_cue_fade_time.value = _fade_time
+	_global_cue_fade_time.value_changed.connect(_set_global_fade_time)
+	
+	_global_cue_pre_wait_time = Interface.components.TimerPicker.instantiate()
+	_global_cue_pre_wait_time.value = _pre_wait
+	_global_cue_pre_wait_time.set_icon(load("res://assets/icons/PreWait.svg"))
+	_global_cue_pre_wait_time.value_changed.connect(_set_global_pre_wait)
+	
+	global_cue.add_chip_node(_global_cue_fade_time)
+	global_cue.add_chip_node(_global_cue_pre_wait_time)
+	
 	global_cue.select_requested.connect(_clear_selections)
+	
 	
 	store_function_button_group = _add_to_button_group(store_function_buttons.values())
 	store_function_button_group.pressed.connect(_on_store_function_changed)
@@ -239,8 +252,26 @@ func reload() -> void:
 			if _edit_mode:
 				new_list_item.set_name_method(cue.set_name)
 				new_list_item.set_id_method(current_cue_list.set_cue_number.bind(cue))
-				new_list_item.add_chip(cue, "fade_time", cue.set_fade_time, cue.fade_time_changed)
-				new_list_item.add_chip(cue, "pre_wait", cue.set_pre_wait, cue.pre_wait_time_changed)
+				
+				var trigger_mode_option: CueTriggerModeOption = Interface.components.CueTriggerModeOption.instantiate()
+				trigger_mode_option.set_cue(cue)
+				
+				var fade_time_picker: TimerPicker = Interface.components.TimerPicker.instantiate()
+				fade_time_picker.value = cue.fade_time
+				
+				fade_time_picker.value_changed.connect(cue.set_fade_time)
+				cue.fade_time_changed.connect(fade_time_picker.set_value_no_signal)
+				
+				var pre_wait_time_picker: TimerPicker = Interface.components.TimerPicker.instantiate()
+				pre_wait_time_picker.value = cue.pre_wait
+				
+				pre_wait_time_picker.set_icon(load("res://assets/icons/PreWait.svg"))
+				pre_wait_time_picker.value_changed.connect(cue.set_pre_wait)
+				cue.pre_wait_time_changed.connect(pre_wait_time_picker.set_value_no_signal)
+				
+				new_list_item.add_chip_node(trigger_mode_option)
+				new_list_item.add_chip_node(fade_time_picker)
+				new_list_item.add_chip_node(pre_wait_time_picker)
 			
 			_store_refs(cue_number, new_list_item)
 			
@@ -585,4 +616,3 @@ func _on_move_down_pressed() -> void:
 	current_cue_list.move_cue_down(cue_refs[current_selected_item])
 
 #endregion
-

@@ -12,13 +12,9 @@ static func save_json_to_file(file_path: String, file_name: String, json: Dictio
 
 	var file_access: FileAccess = FileAccess.open(file_path+"/"+file_name, FileAccess.WRITE)
 	
-	print(file_path+"/"+file_name)
-
 	if FileAccess.get_open_error():
 		return FileAccess.get_open_error()
-		
 	
-	print(JSON.stringify(json, "\t"))
 	file_access.store_string(JSON.stringify(json, "\t"))
 	file_access.close()
 	
@@ -146,3 +142,12 @@ static func get_most_common_value(arr: Array) -> Variant:
 			most_common_value = key
 	
 	return most_common_value
+
+
+static func sum_array(array: Array) -> Variant:
+	var sum: Variant = 0
+	
+	for element: Variant in array:
+		sum += element
+	
+	return sum

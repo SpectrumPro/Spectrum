@@ -21,6 +21,9 @@ const ORIENTATION_VERTICAL: int = 0
 
 ## The "Add Selected Fixtures" button, stored here so it can be dissabled when nothing is selected
 var _add_fixture_button: Button
+var _delete_fixture_button: Button
+var _horizontal_distribute: Button
+var _vertical_distribute: Button
 
 ## The currently selected virtual fixtures, this is differnt from Values.selected_fixtures as there may be more than one virtual fixture linked to a single fixture, this array contains the list of selected virtual fixture nodes
 var _selected_virtual_fixtures: Array
@@ -32,18 +35,16 @@ var _ignore_next_select_signal: bool = false
 
 ## Add extra buttons to GraphEdit menu, and subscribe to global variables
 func _ready() -> void:
-	_add_fixture_button = _add_menu_hbox_button("Add Selected Fixtures", self._add_virtual_fixtures, "Add the selected fixtures to the view", false)
-	_add_menu_hbox_button("Delete", self._request_delete, "Delete the selected virtual fixtures, this does NOT delete the underlying fixture")
-	_add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Horizontal_distribute.svg"), self._align.bind(ORIENTATION_HORIZONTAL), "Align the selected fixtures horizontally" )
-	_add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality" )
+	_add_fixture_button = _add_menu_hbox_button("Add Selected Fixtures", self._add_virtual_fixtures, "Add the selected fixtures to the view", true)
+	_delete_fixture_button = _add_menu_hbox_button("Delete", self._request_delete, "Delete the selected virtual fixtures, this does NOT delete the underlying fixture", true)
+	_horizontal_distribute = _add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Horizontal_distribute.svg"), self._align.bind(ORIENTATION_HORIZONTAL), "Align the selected fixtures horizontally", true)
+	_vertical_distribute = _add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality", true)
 	
 	Values.connect_to_selection_value("selected_fixtures", _selected_fixtures_changed)
-	
-	Core.fixtures_added.connect(self.load_fixtures)
-	
+	Core.fixtures_added.connect(try_load_fixtures)
 	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
 	
-	load_fixtures(Core.fixtures.values())
+	try_load_fixtures(Core.fixtures.values())
 
 ## Function to add a button to the Graph Edits menu HBox, with callbacks, tool tips, and shortcuts
 func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = "", disabled: bool = false) -> Button:
@@ -81,7 +82,6 @@ func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), positi
 	new_virtual_fixture.set_fixture(fixture)
 	new_virtual_fixture.selected = select
 	
-	
 	if position_offset:
 		new_virtual_fixture.position_offset = position_offset
 	else:
@@ -97,10 +97,13 @@ func add_virtual_fixture(fixture: Fixture, uuid: String = UUID_Util.v4(), positi
 		#_selected_virtual_fixtures.append(new_virtual_fixture)
 	
 	fixture.delete_requested.connect(func():
-		_selected_virtual_fixtures.erase(new_virtual_fixture)
-		$VirtualFixtures.remove_child(new_virtual_fixture)
-		new_virtual_fixture.queue_free()
-		virtual_fixtures.erase(uuid)
+		if is_instance_valid(new_virtual_fixture):
+			_selected_virtual_fixtures.erase(new_virtual_fixture)
+			
+			$VirtualFixtures.remove_child(new_virtual_fixture)
+			new_virtual_fixture.queue_free()
+			
+			virtual_fixtures.erase(uuid)
 	, CONNECT_ONE_SHOT)
 	
 	virtual_fixtures[uuid] = new_virtual_fixture
@@ -126,11 +129,15 @@ func _selected_fixtures_changed(p_fixtures: Array) -> void:
 	_add_fixture_button.disabled = true if p_fixtures == [] else false
 	
 	if not _dont_reselect:
-		
 		for virtual_fixture: Control in $VirtualFixtures.get_children():
-			_ignore_next_select_signal = true
-			virtual_fixture.set_selected(false)
-			_ignore_next_select_signal = false
+			
+			# Workaround for an issue with GraphEdits
+			# https://github.com/godotengine/godot/issues/85005
+			# https://github.com/godotengine/godot/pull/93732
+			if virtual_fixture.name != "_connection_layer":
+				_ignore_next_select_signal = true
+				virtual_fixture.set_selected(false)
+				_ignore_next_select_signal = false
 			
 		
 		for fixture: Fixture in p_fixtures:
@@ -144,7 +151,7 @@ func _selected_fixtures_changed(p_fixtures: Array) -> void:
 
 
 ## Called when a fixture is added to this engine, will check if it has any virtual fixtures, if so they will be added
-func load_fixtures(p_fixtures: Array) -> void:
+func try_load_fixtures(p_fixtures: Array) -> void:
 	for fixture: Fixture in p_fixtures:
 		for uuid: String in fixture.get_user_meta("virtual_fixtures", {}).keys():
 			if not uuid in virtual_fixtures.keys():
@@ -177,6 +184,9 @@ func _align(orientation: int) -> void:
 func _on_virtual_fixtures_node_selected(node) -> void:
 	if node not in _selected_virtual_fixtures:
 		_selected_virtual_fixtures.append(node)
+		_delete_fixture_button.disabled = false
+		_horizontal_distribute.disabled = false
+		_vertical_distribute.disabled = false
 
 	if not _ignore_next_select_signal:
 		_dont_reselect = true
@@ -190,7 +200,11 @@ func _on_virtual_fixtures_node_deselected(node) -> void:
 	if not _ignore_next_select_signal:
 		_dont_reselect = true
 		Values.remove_from_selection_value("selected_fixtures", [node.fixture])
-
+	
+	if not _selected_virtual_fixtures:
+		_delete_fixture_button.disabled = true
+		_horizontal_distribute.disabled = true
+		_vertical_distribute.disabled = true
 
 func _on_save_pressed() -> void:
 	Core.programmer.save_to_scene()

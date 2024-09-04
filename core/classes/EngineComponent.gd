@@ -5,8 +5,11 @@ class_name EngineComponent extends RefCounted
 ## Base class for an engine components, contains functions for storing metadata, and uuid's
 
 
-## Emitted when an item is added, edited, or deleted from user_meta, if no value is present it meanes that the key has been deleted. If this signal is emited with the key of "user_meta", this meanes that more then one key/value was just updated
+## Emitted when an item is added or edited from user_meta
 signal user_meta_changed(key: String, value: Variant)
+
+## Emitted when an item is deleted from user_meta
+signal user_meta_deleted(key: String)
 
 ## Emitted when the name of this object has changed
 signal name_changed(new_name: String)
@@ -40,14 +43,33 @@ func _component_ready() -> void:
 	pass
 
 
+## Calls a method on the remote object.
+func rpc(method_name: String, args: Array = []) -> void:
+	Client.send_command(uuid, method_name, args)
+
+
 ## Sets user_meta from the given value
-func set_user_meta(key: String, value: Variant):
-	Client.send({
-		"for": uuid,
-		"call": "set_user_meta",
-		"args": [key, value]
-	})
-	
+func set_user_meta(key: String, value: Variant): rpc("set_user_meta", [key, value])
+
+## Delets an item from user meta, returning true if item was found and deleted, and false if not
+func delete_user_meta(key: String) -> void: rpc("delete_user_meta", [key])
+
+## Sets the name of this component
+func set_name(new_name) -> void: rpc("set_name", [new_name])
+
+## Always call this function when you want to delete this component. 
+## As godot uses reference counting, this object will not truly be deleted untill no other script holds a refernce to it.
+func delete() -> void: rpc("delete")
+
+
+## Returns the value from user meta at the given key, if the key is not found, default is returned
+func get_user_meta(key: String, default = null) -> Variant: 
+	return user_meta.get(key, default)
+
+
+## Returns all user meta
+func get_all_user_meta() -> Dictionary:
+	return user_meta
 
 
 ## INTERNAL: Called when user meta is changed on the server
@@ -56,35 +78,9 @@ func on_user_meta_changed(key: String, value) -> void:
 	user_meta_changed.emit(key, value, user_meta)
 
 
-## Returns the value from user meta at the given key, if the key is not found, default is returned
-func get_user_meta(key: String, default = null) -> Variant: 
-	
-	return user_meta.get(key, default)
-
-
-## Returns all user meta
-func get_all_user_meta() -> Dictionary:
-	
-	return user_meta
-
-
-## Delets an item from user meta, returning true if item was found and deleted, and false if not
-func delete_user_meta(key: String, no_signal: bool = false) -> bool:
-	
-	if not no_signal:
-		user_meta_changed.emit(key, null, user_meta)
-
-	
-	return user_meta.erase(key)
-
-
-## Sets the name of this component
-func set_name(new_name) -> void:
-	Client.send({
-		"for": self.uuid,
-		"call": "set_name",
-		"args": [new_name]
-	})
+func on_user_meta_deleted(key: String) -> void:
+	if user_meta.erase(key):
+		user_meta_deleted.emit(key)
 
 
 ## INTERNAL: called when this component is renamed on the server
@@ -109,15 +105,6 @@ func serialize() -> Dictionary:
 ## Overide this function to serialize your object
 func _on_serialize_request() -> Dictionary:
 	return {}
-
-
-## Always call this function when you want to delete this component. 
-## As godot uses reference counting, this object will not truly be deleted untill no other script holds a refernce to it.
-func delete() -> void:
-	Client.send({
-		"for": self.uuid,
-		"call": "delete"
-	})
 
 
 ## INTERNAL: called when this object has been requested to be deleted from the server

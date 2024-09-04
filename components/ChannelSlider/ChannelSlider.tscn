@@ -23,15 +23,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="Gradient" id="Gradient_rkexm"]
+[sub_resource type="Gradient" id="Gradient_5e1yc"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_xbtjx"]
-gradient = SubResource("Gradient_rkexm")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1hini"]
+gradient = SubResource("Gradient_5e1yc")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_injuo"]
-texture = SubResource("GradientTexture2D_xbtjx")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bj5oc"]
+texture = SubResource("GradientTexture2D_1hini")
 
 [node name="ChannelSlider" type="PanelContainer"]
 anchors_preset = -1
@@ -60,7 +60,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_y34yv")
 
 [node name="GraidentBG" type="PanelContainer" parent="GraidentContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_injuo")
+theme_override_styles/panel = SubResource("StyleBoxTexture_bj5oc")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

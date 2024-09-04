@@ -128,6 +128,12 @@ func add_chip(object: Object, property: String, set_method: Callable, changed_si
 	return input
 
 
+## Add a custem node to the chips panel
+func add_chip_node(node: Control) -> void:
+	node.visible = true
+	$Container/Chips.add_child(node)
+
+
 ## Sets the method that should be called when the name LineEdit is changed in this item
 func set_name_method(method: Callable) -> void:
 	$Container/Name.visible = false

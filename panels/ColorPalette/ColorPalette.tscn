@@ -39,6 +39,11 @@ layout_mode = 2
 [node name="HBoxContainer2" type="HBoxContainer" parent="Settings/VBoxContainer"]
 layout_mode = 2
 
+[node name="ShowReset" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Show Reset"
+
 [node name="ShowWhite" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
@@ -51,5 +56,6 @@ text = "Show Black"
 
 [connection signal="resized" from="ScrollContainer/GridContainer" to="." method="_on_grid_container_resized"]
 [connection signal="value_changed" from="Settings/VBoxContainer/HBoxContainer/NumberOfColors" to="." method="_on_number_of_colors_value_changed"]
+[connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowReset" to="." method="set_show_reset"]
 [connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowWhite" to="." method="set_show_white"]
 [connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowBlack" to="." method="set_show_black"]

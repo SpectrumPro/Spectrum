@@ -42,12 +42,14 @@ func _on_fixture_selection_changed(fixtures: Array) -> void:
 		for channel_key in fixture.current_values.keys():
 			if channel_key in channel_controllers:
 				channel_controllers[channel_key].set_value(fixture.current_values[channel_key])
+				channel_controllers[channel_key].disabled = false
 				
 				if fixture.get_override_value_from_channel_key(channel_key) != null:
 					channel_controllers[channel_key].show_override_warning(true)
 	else:
 		for channel_controller in channel_controllers.values():
 			channel_controller.reset_no_message()
+			channel_controller.disabled = true
 
 
 func _on_button_group_button_pressed(button: Button) -> void:

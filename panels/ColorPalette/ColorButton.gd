@@ -1,8 +1,8 @@
 # Copyright (c) 2024 Liam Sherwin
 # All rights reserved.
 
-extends Button
-## Button for displaying a color, used in the color palette 
+class_name ColorButton extends Button
+## Button for displaying a color, or a texture. Used in the color palette 
 
 
 ## The color of this button
@@ -17,3 +17,18 @@ func _ready() -> void:
 func set_color(p_color: Color) -> void:
 	color = p_color
 	$Panel.get_theme_stylebox("panel").bg_color = color
+
+
+## Sets a custem texture for this button
+func set_texture(texture: Texture2D) -> void:
+	if texture:
+		$Panel.hide()
+		$TextureRect.show()
+		
+		$TextureRect.texture = texture
+	
+	else:
+		$Panel.show()
+		$TextureRect.hide()
+		
+		$TextureRect.texture = null

@@ -31,10 +31,17 @@ func _ready() -> void:
 	
 	reload()
 	
-	Core.functions_added.connect(func (new_scenes: Array):
+	Core.functions_added.connect(func (new_functions: Array):
+		var should_reload: bool = false
+		
 		if show_all:
-			scenes.append_array(new_scenes)
-			reload()
+			for function: Function in new_functions:
+				if function is Scene:
+					scenes.append(function)
+					should_reload = true
+			
+			if should_reload:
+				reload()
 		
 		if _find_saved_scenes():
 			reload()
@@ -103,7 +110,7 @@ func _find_saved_scenes() -> Array:
 func _add_playback_row(scene: Scene) -> void:
 	_settings_list.add_items([scene], [], "", "name_changed")
 	
-	var new_node = Interface.components.PlaybackRow.instantiate()
+	var new_node: PlaybackRowComponent = Interface.components.PlaybackRow.instantiate()
 	
 	$Container.add_child(new_node)
 	
@@ -112,9 +119,7 @@ func _add_playback_row(scene: Scene) -> void:
 	new_node.button1.toggled.connect(scene.set_enabled)
 	
 	new_node.button1.set_label_text(scene.name)
-	scene.name_changed.connect(func (new_name: String):
-		new_node.button1.set_label_text(new_name)
-	)
+	scene.name_changed.connect(new_node.button1.set_label_text)
 	
 	new_node.button1.set_pressed_no_signal(scene.enabled)
 	new_node.button1.set_value(scene.percentage_step)
@@ -141,9 +146,11 @@ func _add_playback_row(scene: Scene) -> void:
 	
 	
 	# The slider sets the state of the scene
-	new_node.slider.value_changed.connect(scene.set_step_percentage)
-	new_node.slider.set_value_no_signal(scene.percentage_step)
-	scene.percentage_step_changed.connect(new_node.slider.set_value_no_signal)
+	new_node.slider.value_changed.connect(func (value: int) -> void:
+		scene.set_step_percentage(remap(value, 0, 255, 0.0, 1.0))
+	)
+	new_node.set_slider_value(scene.percentage_step)
+	scene.percentage_step_changed.connect(new_node.set_slider_value)
 
 
 ## Returnes the settings of this panel
