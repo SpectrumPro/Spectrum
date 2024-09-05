@@ -12,7 +12,8 @@ var cue: Cue = null : set = set_cue
 ## Contains all the buttons
 @onready var _buttons: Array[Button] = [
 	$HBoxContainer/Manual,
-	$HBoxContainer/AfterLast
+	$HBoxContainer/AfterLast,
+	$HBoxContainer/WithLast
 ]
 
 ## The ButtonGroup, which all the buttons are apart of

@@ -54,6 +54,7 @@ var _scroll_extra: int = 3
 ## Colors for cues that have been highlighted
 var _cue_highlight_color: Color = Color.ROYAL_BLUE
 var _cue_default_color: Color = Color.WHITE
+var _cue_active_color: Color = Color.DIM_GRAY
 
 
 ## The ItemListView used to display cues
@@ -82,6 +83,7 @@ var _cue_default_color: Color = Color.WHITE
 	"NextShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/NextShortcutButton,
 	"PlayShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PlayShortcutButton,
 	"PauseShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PauseShortcutButton,
+	"ToggleShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/ToggleShortcutButton,
 	"StopShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/StopShortcutButton,
 }
 
@@ -145,7 +147,13 @@ func _ready() -> void:
 	shortcut_buttons.PlayShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Play)
 	shortcut_buttons.PauseShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Pause)
 	shortcut_buttons.StopShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Stop)
-
+	shortcut_buttons.ToggleShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Toggle)
+	
+	
+	var mode_button_groop: ButtonGroup = ButtonGroup.new()
+	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/NormalMode.button_group = mode_button_groop
+	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/LoopMode.button_group = mode_button_groop
+	
 	
 	remove_child(settings_node)
 	settings_node.show()
@@ -200,6 +208,7 @@ func _set_current_selected_item(p_current_selected_item) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete.disabled = state
 	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp.disabled = state
 	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown.disabled = state
+	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Duplicate.disabled = state
 	$VBoxContainer/Controls/HBoxContainer/Go.disabled = state
 
 
@@ -333,7 +342,7 @@ func _highlight_cues_with_stored_fixtures(fixtures: Array) -> void:
 		var list_item: ListItem = object_refs[cue_number]
 		var cue: Cue = current_cue_list.cues[cue_number]
 		
-		var new_color: Color = _cue_default_color
+		var new_color: Color = _cue_active_color if cue.number == current_cue_list.current_cue_number else _cue_default_color
 		
 		for fixture: Fixture in fixtures:
 			if fixture in cue.stored_data.keys():
@@ -362,37 +371,54 @@ func _on_select_requested(new_list_item: ListItem, cue_number: float) -> void:
 func set_cue_list(cue_list: CueList = null) -> void:
 	if current_cue_list:
 		_disconnect_signals()
-
+	
 	current_cue_list = cue_list
-
+	
 	if current_cue_list:
 		_connect_signals()
-
+		_on_mode_changed(current_cue_list.mode)
+	
 	reload()
 
 
 func _disconnect_signals() -> void:
 	current_cue_list.name_changed.disconnect(_reload_name)
-	current_cue_list.cues_added.disconnect(_reload_from_signal)
+	current_cue_list.cues_added.disconnect(_on_cues_added)
 	current_cue_list.cues_removed.disconnect(_reload_from_signal)
 	current_cue_list.cue_numbers_changed.disconnect(_reload_from_signal)
 	current_cue_list.cue_changed.disconnect(_handle_cue_change)
 	current_cue_list.played.disconnect(_reload_labels)
 	current_cue_list.paused.disconnect(_reload_labels)
+	current_cue_list.mode_changed.disconnect(_on_mode_changed)
 
 
 func _connect_signals() -> void:
 	current_cue_list.name_changed.connect(_reload_name)
-	current_cue_list.cues_added.connect(_reload_from_signal)
+	current_cue_list.cues_added.connect(_on_cues_added)
 	current_cue_list.cues_removed.connect(_reload_from_signal)
-	current_cue_list.cue_numbers_changed.connect(_reload_from_signal)	
+	current_cue_list.cue_numbers_changed.connect(_reload_from_signal)
 	current_cue_list.cue_changed.connect(_handle_cue_change)
 	current_cue_list.played.connect(_reload_labels)
 	current_cue_list.paused.connect(_reload_labels)
+	current_cue_list.mode_changed.connect(_on_mode_changed)
+
+
+func _on_cues_added(cues: Array) -> void:
+	reload()
+	await get_tree().process_frame
+	_ensure_cue_visible(cues[0].number)
 
 
 func _reload_from_signal(arg1=null) -> void:
 	reload()
+
+
+func _on_mode_changed(mode: CueList.MODE) -> void:
+	match mode:
+		0:
+			$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/NormalMode.button_pressed = true
+		1:
+			$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/LoopMode.button_pressed = true
 
 
 func _find_cue_list() -> void:
@@ -439,17 +465,25 @@ func _reload_labels() -> void:
 	labels.stopped.hide()
 
 	if current_cue_list:
-		labels.cue_number.text = str(current_cue_list.current_cue_number)
-
-		if current_cue_list.is_playing():
-			labels.playing.show()
-
+		var new_text: String = str(current_cue_list.current_cue_number)
+		if current_cue_list.current_cue_number <= 9:
+			new_text = "0" + new_text
+		
+		if current_cue_list.current_cue_number != int(current_cue_list.current_cue_number):
+			new_text = new_text.trim_prefix("0")
+		
+		labels.cue_number.text = new_text
+		
+		labels.playing.visible = current_cue_list.is_playing()
+		
 		if current_cue_list.current_cue_number == -1:
 			labels.cue_number.hide()
 			labels.cue_label.hide()
 			labels.stopped.show()
 		else:
-			labels.paused.show()
+			if not current_cue_list.is_playing():
+				labels.paused.show() 
+			
 			labels.cue_number.show()
 			labels.cue_label.show()
 			labels.separator.show()
@@ -477,6 +511,9 @@ func _handle_cue_change(number: float) -> void:
 
 
 func _ensure_cue_visible(number: float) -> void:
+	if not number in object_refs:
+		return
+	
 	var index: int = object_refs.values().find(object_refs[number]) if number != -1 else 0
 	var scroll_extra_index: int = clampi(index + _scroll_extra, 0, len(object_refs) - 1)
 	
@@ -501,6 +538,14 @@ func _on_play_pressed() -> void:
 func _on_pause_pressed() -> void:
 	if current_cue_list:
 		current_cue_list.pause()
+
+func _on_toggle_pressed() -> void:
+	if current_cue_list:
+		match current_cue_list.is_playing():
+			true:
+				current_cue_list.stop()
+			false:
+				current_cue_list.play()
 
 
 func _on_stop_pressed() -> void:
@@ -614,5 +659,17 @@ func _on_move_up_pressed() -> void:
 
 func _on_move_down_pressed() -> void:
 	current_cue_list.move_cue_down(cue_refs[current_selected_item])
+
+
+func _on_duplicate_pressed() -> void:
+	current_cue_list.duplicate_cue(cue_refs[current_selected_item])
+
+
+func _on_normal_mode_pressed() -> void:
+	current_cue_list.set_mode(CueList.MODE.NORMAL)
+
+
+func _on_loop_mode_pressed() -> void:
+	current_cue_list.set_mode(CueList.MODE.LOOP)
 
 #endregion

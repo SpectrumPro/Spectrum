@@ -66,7 +66,12 @@ func set_selected(is_selected):
 
 ## Updates the size and color of the border
 func _update_border_state() -> void:
-	var new_color: Color = selected_color if selected else (highlighted_color if highlighted else color)
+	var new_color: Color = color
+	if selected:
+		new_color = selected_color
+	elif highlighted:
+		new_color = highlighted_color
+	
 	get_theme_stylebox("panel").border_color = new_color
 	
 	get_theme_stylebox("panel").border_width_left = 5

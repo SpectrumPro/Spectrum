@@ -10,7 +10,7 @@ class_name ChannelSlider extends PanelContainer
 signal value_changed(value: int)
 
 ## Emitted when the randomise button is pressed
-signal randomise_pressed()
+signal randomise_pressed(min: int, max: int)
 
 ## Emitted when the reset button is pressed
 signal reset_pressed()
@@ -99,6 +99,10 @@ signal reset_pressed()
 @onready var label: Label = $MarginContainer/VBoxContainer/LabelContainer/Label
 
 
+## Min and Max random values
+var _max_random_value: int = 255
+var _min_random_value: int = 0
+
 
 func _ready() -> void:
 	set_label_text(label_text)
@@ -156,6 +160,10 @@ func set_max_value(p_max_value: int) -> void:
 	if is_node_ready():
 		slider.max_value = max_value
 		spin_box.max_value = max_value
+		
+		$MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer/Max.max_value = max_value
+		$MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer/Max.value = max_value
+		$MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer/Min.max_value = max_value
 
 
 ## Sets the current value
@@ -259,8 +267,22 @@ func _on_random_pressed() -> void:
 	show_override_warning(true)
 	
 	if send_randomise_command:
-		Client.send_command(object_id, randomise_method, randomise_args if not send_selection_value else [Values.get_selection_value(send_selection_value, [])] + randomise_args)
+		Client.send_command(object_id, randomise_method, [_min_random_value, _max_random_value] + randomise_args if not send_selection_value else [Values.get_selection_value(send_selection_value, [])] + [_min_random_value, _max_random_value] + randomise_args)
 	else:
-		slider.value = randi_range(0, max_value)
+		print(_min_random_value, _max_random_value)
+		slider.value = randi_range(_min_random_value, _max_random_value)
 	
-	randomise_pressed.emit()
+	randomise_pressed.emit(_min_random_value, _max_random_value)
+
+
+func _on_label_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_mask == MOUSE_BUTTON_RIGHT:
+		$MarginContainer/VBoxContainer/VSlider/PanelContainer.visible = not $MarginContainer/VBoxContainer/VSlider/PanelContainer.visible
+
+
+func _on_max_value_changed(p_value: float) -> void:
+	_max_random_value = int(p_value)
+
+
+func _on_min_value_changed(p_value: float) -> void:
+	_min_random_value = int(p_value)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cbtm8eq5rbugv"]
+[gd_scene load_steps=12 format=3 uid="uid://cbtm8eq5rbugv"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jnmjo"]
 [ext_resource type="Script" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
@@ -23,15 +23,19 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="Gradient" id="Gradient_5e1yc"]
+[sub_resource type="Gradient" id="Gradient_0fn6i"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_1hini"]
-gradient = SubResource("Gradient_5e1yc")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s224d"]
+gradient = SubResource("Gradient_0fn6i")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bj5oc"]
-texture = SubResource("GradientTexture2D_1hini")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7b55m"]
+texture = SubResource("GradientTexture2D_s224d")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_q5lbv"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1gnhg"]
 
 [node name="ChannelSlider" type="PanelContainer"]
 anchors_preset = -1
@@ -60,7 +64,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_y34yv")
 
 [node name="GraidentBG" type="PanelContainer" parent="GraidentContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_bj5oc")
+theme_override_styles/panel = SubResource("StyleBoxTexture_7b55m")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -77,6 +81,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/LabelContainer"]
 layout_mode = 2
+mouse_filter = 0
 text = "Slider"
 horizontal_alignment = 1
 text_overrun_behavior = 3
@@ -89,6 +94,43 @@ mouse_force_pass_scroll_events = false
 max_value = 255.0
 tick_count = 15
 ticks_on_borders = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/VSlider"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -51.5
+offset_top = -45.5
+offset_right = 51.5
+offset_bottom = 46.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VSlider/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Random:
+"
+horizontal_alignment = 1
+
+[node name="Max" type="SpinBox" parent="MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_icons/updown = SubResource("CompressedTexture2D_q5lbv")
+max_value = 255.0
+value = 255.0
+prefix = "Max:"
+
+[node name="Min" type="SpinBox" parent="MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_icons/updown = SubResource("CompressedTexture2D_1gnhg")
+max_value = 255.0
+prefix = "Min:"
 
 [node name="SpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -109,7 +151,10 @@ size_flags_horizontal = 3
 icon = ExtResource("4_oirfb")
 icon_alignment = 1
 
+[connection signal="gui_input" from="MarginContainer/VBoxContainer/LabelContainer/Label" to="." method="_on_label_gui_input"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/VSlider" to="." method="_on_v_slider_value_changed"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer/Max" to="." method="_on_max_value_changed"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer/Min" to="." method="_on_min_value_changed"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/SpinBox" to="." method="_on_spin_box_value_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Reset" to="." method="_on_reset_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Random" to="." method="_on_random_pressed"]

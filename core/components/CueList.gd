@@ -26,12 +26,20 @@ signal cues_removed(cues: Array)
 ## Emitted when cue numbers are changed, stored as {Cue:new_number, ...}
 signal cue_numbers_changed(new_numbers: Dictionary)
 
+## Emitted when the mode is changed
+signal mode_changed(mode: MODE)
+
+
 ## The current cue number
 var current_cue_number: float = -1
 
 ## The current active, and previous active cue
 var current_cue: Cue = null
 var last_cue: Cue = null
+
+## The current mode of this cuelist. When in loop mode the cuelist will not reset fixtures to 0-value when looping back to the start
+enum MODE {NORMAL, LOOP}
+var mode: int = MODE.NORMAL
 
 ## Stores all the cues, theese are stored unordored
 var cues: Dictionary = {}
@@ -93,29 +101,17 @@ func is_playing() -> bool:
 
 ## Advances to the next cue in the list
 func go_next() -> void:
-	Client.send({
-		"for": uuid,
-		"call": "go_next",
-		"args": []
-	})
+	Client.send_command(uuid, "go_next")
 
 
 ## Retuens to the previous cue in the list
 func go_previous() -> void:
-	Client.send({
-		"for": uuid,
-		"call": "go_previous",
-		"args": []
-	})
+	Client.send_command(uuid, "go_previous")
 
 
 ## Skips to the cue provided in index
 func seek_to(cue_index: float) -> void:
-	Client.send({
-		"for": uuid,
-		"call": "seek_to",
-		"args": [cue_index]
-	})
+	Client.send_command(uuid, "seek_to", [cue_index])
 
 
 ## Moves the cue at cue_number up. By swappign the number with the next cue in the list
@@ -130,6 +126,15 @@ func move_cue_down(cue_number: float) -> void:
 
 func set_cue_number(new_number: float, cue: Cue) -> void:
 	Client.send_command(uuid, "set_cue_number", [new_number, cue])
+
+
+func duplicate_cue(cue_number: float) -> void:
+	Client.send_command(uuid, "duplicate_cue", [cue_number])
+
+
+## Changes the current mode
+func set_mode(p_mode: MODE) -> void:
+	Client.send_command(uuid, "set_mode", [p_mode])
 
 
 ## INTERNAL: Called when the number is changed on the server
@@ -198,7 +203,15 @@ func on_cue_numbers_changed(new_numbers: Dictionary) -> void:
 	cue_numbers_changed.emit(new_numbers)
 
 
+## INTERNAL: Called when the mode is changed on the server
+func on_mode_changed(p_mode: MODE) -> void:
+	mode = p_mode
+	mode_changed.emit(mode)
+
+
 func _on_load_request(serialized_data: Dictionary) -> void:
+	mode = int(serialized_data.get("mode", MODE.NORMAL))
+	
 	var just_added_cues: Array = []
 	
 	for cue_index: float in serialized_data.get("cues").keys():
