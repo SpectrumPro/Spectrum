@@ -39,6 +39,7 @@ var panels: Dictionary = {
 	"ColorBlock": preload("res://panels/ColorBlock/ColorBlock.tscn"),
 	"ColorPicker": preload("res://panels/ColorPicker/ColorPicker.tscn"),
 	"CuePlayback": preload("res://panels/CuePlayback/CuePlayback.tscn"),
+	"Clock": preload('res://panels/Clock/Clock.tscn'),
 	"Debug": preload("res://panels/Debug/Debug.tscn"),
 	"Desk": preload("res://panels/Desk/Desk.tscn"),
 	"Fixtures": preload("res://panels/Fixtures/Fixtures.tscn"),

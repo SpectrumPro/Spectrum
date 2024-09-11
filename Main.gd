@@ -100,6 +100,12 @@ func _on_fixtures_toggled(toggled_on: bool) -> void:
 	$Fixtures.move_to_front()
 
 
+func _on_functions_toggled(toggled_on: bool) -> void:
+	$Functions.visible = toggled_on
+	$Functions.move_to_front()
+
+
+
 func _on_settings_toggled(toggled_on: bool) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_normal_color")
 	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_hover_color")

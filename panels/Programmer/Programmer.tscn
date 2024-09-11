@@ -14,17 +14,17 @@
 [ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="11_snl23"]
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
 
-[sub_resource type="Gradient" id="Gradient_8noap"]
+[sub_resource type="Gradient" id="Gradient_ojtqt"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_flxds"]
-gradient = SubResource("Gradient_8noap")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_k2op7"]
+gradient = SubResource("Gradient_ojtqt")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6ih1"]
-texture = SubResource("GradientTexture2D_flxds")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dc5q0"]
+texture = SubResource("GradientTexture2D_k2op7")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfwup"]
 content_margin_left = 5.0
@@ -189,7 +189,7 @@ visible = true
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_w6ih1")
+theme_override_styles/panel = SubResource("StyleBoxTexture_dc5q0")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
@@ -198,7 +198,11 @@ text = "Hue"
 max_value = 360.0
 editable = false
 
-[node name="Max" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer" index="0"]
+[node name="Max" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer" index="1"]
+max_value = 360.0
+value = 360.0
+
+[node name="Min" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer" index="2"]
 max_value = 360.0
 
 [node name="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer" index="2"]

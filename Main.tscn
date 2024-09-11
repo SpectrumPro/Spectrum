@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://7f5erpa1ts1n"]
+[gd_scene load_steps=27 format=3 uid="uid://7f5erpa1ts1n"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Main.gd" id="2_2mnc0"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dis005hfepinf" path="res://assets/icons/Fixture.svg" id="5_1f8l4"]
 [ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="6_0hk34"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="7_4ai6i"]
+[ext_resource type="Texture2D" uid="uid://db0vd5iwegdsu" path="res://assets/icons/Functions.svg" id="8_cx8fr"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="9_l0dk1"]
 [ext_resource type="Texture2D" uid="uid://c6rls43ddilxg" path="res://assets/icons/Save.svg" id="10_nretb"]
 [ext_resource type="Script" path="res://Tabs.gd" id="11_g0pp1"]
@@ -19,6 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://bwxr0mrsrt0iu" path="res://panels/Programmer/Programmer.tscn" id="15_dmmgm"]
 [ext_resource type="PackedScene" uid="uid://baortk0rwrhup" path="res://panels/Playbacks/Playbacks.tscn" id="17_ghhoa"]
 [ext_resource type="PackedScene" uid="uid://d12eb0smjpwuk" path="res://panels/Fixtures/Fixtures.tscn" id="18_6dgbh"]
+[ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://panels/Functions/Functions.tscn" id="21_8ew8x"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8efsq"]
 font = ExtResource("3_7gl8s")
@@ -140,6 +142,12 @@ layout_mode = 2
 tooltip_text = "Open Settings Window"
 toggle_mode = true
 icon = ExtResource("6_0hk34")
+
+[node name="Functions" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Open Settings Window"
+toggle_mode = true
+icon = ExtResource("8_cx8fr")
 
 [node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -293,10 +301,19 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
 
+[node name="Functions" parent="." instance=ExtResource("21_8ew8x")]
+visible = false
+custom_minimum_size = Vector2(800, 500)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
+
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Programmer" to="." method="_on_programmer_toggled"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Scenes" to="." method="_on_scenes_toggled"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Fixtures" to="." method="_on_fixtures_toggled"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings" to="." method="_on_settings_toggled"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Functions" to="." method="_on_functions_toggled"]
 [connection signal="tab_changed" from="VBoxContainer/PanelContainer/HBoxContainer/TabBar" to="VBoxContainer/Tabs" method="change_tab"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/NewTab" to="." method="_on_new_tab_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/CloseTab" to="." method="_on_close_tab_pressed"]
