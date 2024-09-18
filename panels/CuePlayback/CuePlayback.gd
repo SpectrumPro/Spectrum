@@ -2,8 +2,12 @@
 # All rights reserved.
 
 extends PanelContainer
-
 ## UI Panel for controlling a CueList
+
+
+## Emitted when a cue is selected
+signal cue_selected(cue: Cue)
+
 
 ## The settings node used to choose what scenes are to be shown 
 @onready var settings_node: Control = $Settings
@@ -317,13 +321,14 @@ func reload() -> void:
 
 func _clear_selections(arg1=null) -> void:
 	last_selected_item = null
-		
+	
 	if current_selected_item:
 		current_selected_item.set_selected(false)
 	
 	current_selected_item = null
-
+	
 	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = "null"
+	cue_selected.emit(null)
 
 
 func _reset_refs() -> void:
@@ -356,16 +361,18 @@ func _highlight_cues_with_stored_fixtures(fixtures: Array) -> void:
 func _on_select_requested(new_list_item: ListItem, cue_number: float) -> void:
 	if last_selected_item:
 		last_selected_item.set_selected(false)
-
+	
 	new_list_item.set_selected(true)
-
+	
 	current_selected_item = new_list_item
 	last_selected_item = new_list_item
-
+	
 	if Input.is_key_pressed(KEY_CTRL):
 		current_cue_list.seek_to(cue_refs[current_selected_item])
-
+	
 	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = str(cue_number)
+	
+	cue_selected.emit(_current_selected_cue)
 
 
 func set_cue_list(cue_list: CueList = null) -> void:
@@ -671,5 +678,10 @@ func _on_normal_mode_pressed() -> void:
 
 func _on_loop_mode_pressed() -> void:
 	current_cue_list.set_mode(CueList.MODE.LOOP)
+
+
+func _on_time_code_toggled(toggled_on: bool) -> void:
+	$VBoxContainer/Triggers.visible = toggled_on
+
 
 #endregion

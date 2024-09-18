@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=27 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
@@ -14,7 +14,10 @@
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="6_pxf7y"]
 [ext_resource type="Texture2D" uid="uid://hql23xroudmq" path="res://assets/icons/CloseLoop.svg" id="7_fh1gi"]
 [ext_resource type="Texture2D" uid="uid://huxujb0ev1gk" path="res://assets/icons/Loop.svg" id="8_8vro3"]
+[ext_resource type="Texture2D" uid="uid://bw77ixp24syp2" path="res://assets/icons/Timecode.svg" id="9_jkvxf"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="9_qen5l"]
+[ext_resource type="Texture2D" uid="uid://c7irg7odho4pk" path="res://assets/icons/Target.svg" id="10_to1ac"]
+[ext_resource type="Script" path="res://panels/CuePlayback/Triggers.gd" id="11_8p1rl"]
 [ext_resource type="PackedScene" uid="uid://daxklqm8l01pf" path="res://components/AddShortcutButton/AddShortcutButton.tscn" id="12_6gcgo"]
 [ext_resource type="Texture2D" uid="uid://dghhvu27mcp3u" path="res://assets/icons/PlayPause.svg" id="15_3dwbb"]
 
@@ -117,6 +120,14 @@ layout_mode = 2
 toggle_mode = true
 icon = ExtResource("8_8vro3")
 
+[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+
+[node name="TimeCode" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("9_jkvxf")
+
 [node name="Store" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
@@ -147,6 +158,57 @@ size_flags_vertical = 3
 [node name="GlobalCue" parent="VBoxContainer/List/VBoxContainer" instance=ExtResource("6_7c6j4")]
 visible = false
 layout_mode = 2
+
+[node name="Triggers" type="PanelContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+script = ExtResource("11_8p1rl")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Triggers"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/Triggers/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Input Triggers"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TcNow" type="Button" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("10_to1ac")
+
+[node name="FrameCounter" type="SpinBox" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 9.22337e+18
+prefix = "TC Frame: "
+
+[node name="TcToggle" type="CheckButton" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Timecode"
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/Triggers/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Triggers/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Output Triggers
+"
 
 [node name="Controls" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -437,15 +499,21 @@ size_flags_horizontal = 3
 label_text = ""
 button_icon = ExtResource("6_pxf7y")
 
+[connection signal="cue_selected" from="." to="VBoxContainer/Triggers" method="_on_cue_playback_cue_selected"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Duplicate" to="." method="_on_duplicate_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/NormalMode" to="." method="_on_normal_mode_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/LoopMode" to="." method="_on_loop_mode_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/TimeCode" to="." method="_on_time_code_pressed"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/TimeCode" to="." method="_on_time_code_toggled"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Store" to="." method="_on_store_pressed"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/EditMode" to="." method="_on_edit_mode_toggled"]
 [connection signal="gui_input" from="VBoxContainer/List/VBoxContainer/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_gui_input"]
+[connection signal="pressed" from="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/TcNow" to="VBoxContainer/Triggers" method="_on_tc_now_pressed"]
+[connection signal="value_changed" from="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter" to="VBoxContainer/Triggers" method="_on_frame_counter_value_changed"]
+[connection signal="toggled" from="VBoxContainer/Triggers/HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/TcToggle" to="VBoxContainer/Triggers" method="_on_tc_toggle_toggled"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed" flags=3]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Go" to="." method="_on_go_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Next" to="." method="_on_next_pressed"]

@@ -17,6 +17,12 @@ signal number_changed(new_number: float)
 ## Emitted when the trigger mode it changed
 signal trigger_mode_changed(trigger_mode: TRIGGER_MODE)
 
+## Emitted when the timecode enabled state changes
+signal timecode_enabled_state_changed(timecode_enabled: bool)
+
+## Emitted when the timecode triggers change
+signal timecode_trigger_changed(timecode_trigger: int)
+
 
 ## The index of this cue, do not modify this when it is a part of a cuelist
 var number: float = 1.0 : 
@@ -41,6 +47,11 @@ var trigger_mode: TRIGGER_MODE = TRIGGER_MODE.MANUAL
 ## Tracking flag, indicates if this cue tracks changes
 var tracking: bool = true
 
+## Stores all the timecode frame counters that will trigger this cue
+var timecode_trigger: int = 0
+
+## Enables timecode triggers on this cue
+var timecode_enabled: bool = false
 
 ## Stores the saved fixture data to be animated, stored as {Fixture: [[method_name, value]]}
 var stored_data: Dictionary = {} 
@@ -80,6 +91,15 @@ func set_trigger_mode(p_trigger_mode: TRIGGER_MODE) -> void:
 	Client.send_command(uuid, "set_trigger_mode", [p_trigger_mode])
 
 
+## Enables or disables timecode triggers
+func set_timecode_enabled(p_timecode_enabled: bool) -> void:
+	Client.send_command(uuid, "set_timecode_enabled", [p_timecode_enabled])
+
+
+## Adds a timecode trigger
+func set_timecode_trigger(frame: int) -> void:
+	Client.send_command(uuid, "set_timecode_trigger", [frame])
+
 
 ## INTERNAL: called when the fade time is changed on the server
 func on_fade_time_changed(p_fade_time: float) -> void:
@@ -99,6 +119,19 @@ func on_trigger_mode_changed(p_trigger_mode: TRIGGER_MODE) -> void:
 	trigger_mode_changed.emit(trigger_mode)
 
 
+## INTERNAL: Called when the timecode enabled state is changed on the server
+func on_timecode_enabled_state_changed(p_timecode_enabled: bool) -> void:
+	timecode_enabled = p_timecode_enabled
+	timecode_enabled_state_changed.emit(timecode_enabled)
+
+
+## INTERNAL: Called when the timecode triggers change on the server
+func on_timecode_trigger_changed(p_timecode_trigger: int) -> void:
+	timecode_trigger = p_timecode_trigger
+	
+	timecode_trigger_changed.emit(timecode_trigger)
+
+
 func on_data_stored(fixture: Fixture, channel_key: String, value: Variant) -> void:
 	_store_data_static(fixture, channel_key, value, stored_data)
 
@@ -114,5 +147,8 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 	post_wait = serialized_data.get("post_wait", post_wait)
 	trigger_mode = serialized_data.get("trigger_mode", trigger_mode)
 	tracking = serialized_data.get("tracking", tracking)
+	
+	timecode_enabled = serialized_data.get("timecode_enabled", timecode_enabled)
+	timecode_trigger = serialized_data.get("timecode_trigger", timecode_trigger)
 	
 	_load_stored_data(serialized_data.get("stored_data", {}), stored_data)
