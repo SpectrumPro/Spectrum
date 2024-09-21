@@ -160,7 +160,6 @@ visible = false
 layout_mode = 2
 
 [node name="Triggers" type="PanelContainer" parent="VBoxContainer"]
-visible = false
 layout_mode = 2
 script = ExtResource("11_8p1rl")
 

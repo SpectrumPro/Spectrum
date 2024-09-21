@@ -1,5 +1,5 @@
-# Copyright (c) 2024 Liam Sherwin
-# All rights reserved.
+# Copyright (c) 2024 Liam Sherwin, All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 extends PanelContainer
 ## The color sliders used in the programmer, support setting the bg gradient color to indicate to the user what color you will get when you move the slider

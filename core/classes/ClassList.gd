@@ -1,5 +1,5 @@
-# Copyright (c) 2024 Liam Sherwin
-# All rights reserved.
+# Copyright (c) 2024 Liam Sherwin, All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 class_name ClassList extends RefCounted
 ## Contains a list of all the classes that can be networked, stored here so they can be found when deserializing a network request

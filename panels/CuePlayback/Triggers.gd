@@ -1,5 +1,5 @@
-# Copyright (c) 2024 Liam Sherwin
-# All rights reserved.
+# Copyright (c) 2024 Liam Sherwin, All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 extends PanelContainer
 ## Script file to control cue triggers
@@ -46,7 +46,7 @@ func _on_frame_counter_value_changed(value: float) -> void:
 		
 
 
-### Called when the "Set Timecode" button is pressed to set the timecode to the current frame
-#func _on_tc_now_pressed() -> void:
-	#if _cue:
-		#_cue.timecode_trigger[0] = $HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.value
+## Called when the "Set Timecode" button is pressed to set the timecode to the current frame
+func _on_tc_now_pressed() -> void:
+	if _cue:
+		_cue.set_timecode_now()

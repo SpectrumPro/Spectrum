@@ -1,5 +1,5 @@
-# Copyright (c) 2024 Liam Sherwin
-# All rights reserved.
+# Copyright (c) 2024 Liam Sherwin, All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 class_name Cue extends Function
 ## Data container for CueLists, a Cue doesn't do anything by itself, and needs to be part of a CueList to work
@@ -99,6 +99,11 @@ func set_timecode_enabled(p_timecode_enabled: bool) -> void:
 ## Adds a timecode trigger
 func set_timecode_trigger(frame: int) -> void:
 	Client.send_command(uuid, "set_timecode_trigger", [frame])
+
+
+## Sets the timecode trigger to the current frame as of calling this method
+func set_timecode_now() -> void:
+	Client.send_command(uuid, "set_timecode_now")
 
 
 ## INTERNAL: called when the fade time is changed on the server
