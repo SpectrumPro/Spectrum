@@ -12,7 +12,7 @@ var _cue: Cue = null
 ## Reloads the UI elements
 func _reload(reload_button: bool = true) -> void:
 	if _cue:
-		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.value = _cue.timecode_trigger
+		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.set_value_no_signal(_cue.timecode_trigger)
 		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.editable = true
 				
 		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/TcToggle.disabled = false
@@ -20,7 +20,7 @@ func _reload(reload_button: bool = true) -> void:
 			$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/TcToggle.set_pressed_no_signal(_cue.timecode_enabled)
 	
 	else:
-		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.value = 0
+		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.set_value_no_signal(0)
 		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.editable = false
 		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/TcToggle.set_pressed_no_signal(false)
 		$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/TcToggle.disabled = true

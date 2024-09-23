@@ -4,8 +4,8 @@
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_g33n6"]
 
 [node name="AddShortcutButton" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 172.0
+offset_bottom = 47.0
 theme = ExtResource("1_g33n6")
 script = ExtResource("1_5cpok")
 

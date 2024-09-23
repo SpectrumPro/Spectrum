@@ -12,6 +12,16 @@ signal cue_selected(cue: Cue)
 ## The settings node used to choose what scenes are to be shown 
 @onready var settings_node: Control = $Settings
 
+## Toggles showing the title bar
+@export var show_title_bar: bool = true : set = set_show_title_bar
+
+## Toggles showing the list
+@export var show_list: bool = true : set = set_show_list
+
+## Toggles showing the controls
+@export var show_controls: bool = true : set = set_show_controls
+
+
 ## The current cue list
 var current_cue_list: CueList
 
@@ -70,6 +80,10 @@ var _cue_active_color: Color = Color.DIM_GRAY
 
 @onready var edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
 
+@onready var new_update_button: Button = $VBoxContainer/PanelContainer/HBoxContainer/NewUpdateButton
+
+@onready var settings_name_label: Label = $Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer/HBoxContainer/CurrentCueList
+
 ## Stores the labels that display status information about the scene
 @onready var labels: Dictionary = {
 	"cue_number": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/CueNumber,
@@ -82,13 +96,37 @@ var _cue_active_color: Color = Color.DIM_GRAY
 
 ## All the shortcut buttons in the settings panel
 @onready var shortcut_buttons: Dictionary = {
-	"PreviousShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PreviousShortcutButton,
-	"GoShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/GoShortcutButton,
-	"NextShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/NextShortcutButton,
-	"PlayShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PlayShortcutButton,
-	"PauseShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PauseShortcutButton,
-	"ToggleShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/ToggleShortcutButton,
-	"StopShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/StopShortcutButton,
+	"PreviousShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/PreviousShortcutButton,
+	"GoShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer3/VBoxContainer/HBoxContainer/GoShortcutButton,
+	"NextShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer4/VBoxContainer/HBoxContainer2/NextShortcutButton,
+	"PlayShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer5/VBoxContainer/HBoxContainer/PlayShortcutButton,
+	"PauseShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer6/VBoxContainer/HBoxContainer2/PauseShortcutButton,
+	"ToggleShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer7/VBoxContainer/HBoxContainer2/ToggleShortcutButton,
+	"StopShortcutButton": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer8/VBoxContainer/HBoxContainer2/StopShortcutButton,
+}
+
+@onready var visibility_buttons: Dictionary = {
+	"Previous": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/Visible,
+	"Go": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer3/VBoxContainer/HBoxContainer/Visible,
+	"Next": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer4/VBoxContainer/HBoxContainer2/Visible,
+	"Play": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer5/VBoxContainer/HBoxContainer/Visible,
+	"Pause": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer6/VBoxContainer/HBoxContainer2/Visible,
+	"Toggle": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer7/VBoxContainer/HBoxContainer2/Visible,
+	"Stop": $Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer8/VBoxContainer/HBoxContainer2/Visible,
+	"show_title_bar": $Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer2/HBoxContainer/ShowTitleBar,
+	"show_list": $Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer2/HBoxContainer/ShowList,
+	"show_controls": $Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer2/HBoxContainer/ShowControls,
+
+}
+
+@onready var control_buttons: Dictionary = {
+	"Previous": $VBoxContainer/Controls/HBoxContainer/Previous,
+	"Go": $VBoxContainer/Controls/HBoxContainer/Go,
+	"Next": $VBoxContainer/Controls/HBoxContainer/Next,
+	"Play": $VBoxContainer/Controls/HBoxContainer/Play,
+	"Pause": $VBoxContainer/Controls/HBoxContainer/Pause,
+	"Toggle": $VBoxContainer/Controls/HBoxContainer/Toggle,
+	"Stop": $VBoxContainer/Controls/HBoxContainer/Stop,
 }
 
 var store_function_button_group: ButtonGroup = null
@@ -145,13 +183,13 @@ func _ready() -> void:
 	(store_function_buttons.merge as Button).button_pressed = true
 	(save_mode_buttons.modified_channels as Button).button_pressed = true
 	
-	shortcut_buttons.PreviousShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Previous)
-	shortcut_buttons.GoShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Go)
-	shortcut_buttons.NextShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Next)
-	shortcut_buttons.PlayShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Play)
-	shortcut_buttons.PauseShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Pause)
-	shortcut_buttons.StopShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Stop)
-	shortcut_buttons.ToggleShortcutButton.set_button($VBoxContainer/Controls/HBoxContainer/Toggle)
+	shortcut_buttons.PreviousShortcutButton.set_button(control_buttons.Previous)
+	shortcut_buttons.GoShortcutButton.set_button(control_buttons.Go)
+	shortcut_buttons.NextShortcutButton.set_button(control_buttons.Next)
+	shortcut_buttons.PlayShortcutButton.set_button(control_buttons.Play)
+	shortcut_buttons.PauseShortcutButton.set_button(control_buttons.Pause)
+	shortcut_buttons.StopShortcutButton.set_button(control_buttons.Stop)
+	shortcut_buttons.ToggleShortcutButton.set_button(control_buttons.Toggle)
 	
 	
 	var mode_button_groop: ButtonGroup = ButtonGroup.new()
@@ -175,6 +213,21 @@ func set_edit_mode(edit_mode: bool) -> void:
 	_edit_mode = edit_mode
 	reload()
 	edit_controls.visible = edit_mode
+
+
+func set_show_title_bar(p_show_title_bar: bool) -> void:
+	show_title_bar = p_show_title_bar
+	$VBoxContainer/PanelContainer.visible = show_title_bar
+
+
+func set_show_list(p_show_list: bool) -> void:
+	show_list = p_show_list
+	$VBoxContainer/List.visible = show_list
+
+
+func set_show_controls(p_show_controls: bool) -> void:
+	show_controls = p_show_controls
+	$VBoxContainer/Controls.visible = show_controls
 
 
 ## Adds all the passed buttons to a new ButtonGroup
@@ -229,7 +282,14 @@ func _on_functions_removed(functions: Array) -> void:
 
 func _on_selected_fixtures_changed(selected_fixtures: Array) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/Store.disabled = selected_fixtures == []
-	$StoreConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = str(len(selected_fixtures))
+	
+	var num_of_fixtures: int = len(selected_fixtures)
+	$StoreConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = str(num_of_fixtures)
+	
+	if num_of_fixtures:
+		$NewUpdateConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = str(num_of_fixtures)
+	else:
+		$NewUpdateConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = "All"
 	
 	if _edit_mode:
 		_highlight_cues_with_stored_fixtures(selected_fixtures)
@@ -314,6 +374,8 @@ func reload() -> void:
 		
 	_reload_labels()
 	_reload_name()
+	new_update_button.visible = not _edit_mode
+	$VBoxContainer/PanelContainer/HBoxContainer/Store.visible = _edit_mode
 	
 	if _edit_mode:
 		_highlight_cues_with_stored_fixtures(Values.get_selection_value("selected_fixtures", []))
@@ -328,6 +390,8 @@ func _clear_selections(arg1=null) -> void:
 	current_selected_item = null
 	
 	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = "null"
+	new_update_button.text = "New Cue"
+	
 	cue_selected.emit(null)
 
 
@@ -371,6 +435,7 @@ func _on_select_requested(new_list_item: ListItem, cue_number: float) -> void:
 		current_cue_list.seek_to(cue_refs[current_selected_item])
 	
 	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = str(cue_number)
+	new_update_button.text = "Update"
 	
 	cue_selected.emit(_current_selected_cue)
 
@@ -443,9 +508,18 @@ func save() -> Dictionary:
 	for shortcut_button_name: String in shortcut_buttons.keys():
 		seralized_shortcuts[shortcut_button_name] = shortcut_buttons[shortcut_button_name].save()
 	
+	var control_visibility: Dictionary = {}
+	
+	for button_name: String in control_buttons.keys():
+		control_visibility[button_name] = control_buttons[button_name].visible
+	
 	return {
 		"cue_list": current_cue_list.uuid if current_cue_list else "",
-		"seralized_shortcuts": seralized_shortcuts
+		"seralized_shortcuts": seralized_shortcuts,
+		"control_visibility": control_visibility,
+		"show_title_bar": show_title_bar,
+		"show_list": show_list,
+		"show_controls": show_controls
 	}
 
 
@@ -459,6 +533,20 @@ func load(saved_data: Dictionary) -> void:
 		for shortcut_button_name: String in seralized_shortcuts.keys():
 			if shortcut_button_name in shortcut_buttons and seralized_shortcuts[shortcut_button_name] is Dictionary:
 				shortcut_buttons[shortcut_button_name].load(seralized_shortcuts[shortcut_button_name])
+	
+	for button_name: String in saved_data.get("control_visibility", {}).keys():
+		if button_name in control_buttons:
+			control_buttons[button_name].visible = saved_data.control_visibility[button_name]
+			visibility_buttons[button_name].set_pressed_no_signal(not saved_data.control_visibility[button_name])
+			
+	
+	show_title_bar = saved_data.get("show_title_bar", show_title_bar)
+	show_list = saved_data.get("show_list", show_list)
+	show_controls = saved_data.get("show_controls", show_controls)
+	
+	visibility_buttons.show_title_bar.button_pressed = show_title_bar
+	visibility_buttons.show_list.button_pressed = show_list
+	visibility_buttons.show_controls.button_pressed = show_controls
 
 
 ## Reloads the status labels
@@ -497,10 +585,9 @@ func _reload_labels() -> void:
 
 
 func _reload_name(arg1=null) -> void:
-	if current_cue_list:
-		$VBoxContainer/PanelContainer/HBoxContainer/Label.text = current_cue_list.name
-	else:
-		$VBoxContainer/PanelContainer/HBoxContainer/Label.text = "Empty List"
+	var new_name: String = current_cue_list.name if current_cue_list else "Empty List"
+	$VBoxContainer/PanelContainer/HBoxContainer/Label.text = new_name
+	settings_name_label.text = new_name
 
 
 ## Called when the current cue is changed
@@ -648,6 +735,28 @@ func _on_save_mode_changed(button: Button) -> void:
 	pass
 
 
+## Called when the New / Update button is pressed
+func _on_new_update_button_pressed() -> void:
+	$NewUpdateConfirmationBox.show()
+
+
+## Called when the cancel button is pressed in the New / Update menu
+func _on_new_update_cancel_pressed() -> void:
+	$NewUpdateConfirmationBox.hide()
+
+## Called when the store button is pressed in the New / Update menu
+func _on_new_update_confirmation_pressed() -> void:
+	var fixtures: Array = Values.get_selection_value("selected_fixtures")
+	
+	if not fixtures:
+		fixtures = Core.fixtures.values()
+		
+	if _current_selected_cue:
+		Client.send_command("programmer", "merge_into_cue", [fixtures, current_cue_list, _current_selected_cue.number, Programmer.SAVE_MODE.ALL])
+	else:
+		Client.send_command("programmer", "save_to_new_cue", [fixtures, current_cue_list, Programmer.SAVE_MODE.ALL])
+
+
 #region Cue Edit Controls
 
 ## Edit Controls
@@ -685,3 +794,11 @@ func _on_time_code_toggled(toggled_on: bool) -> void:
 
 
 #endregion
+
+
+func _on_visible_toggled(toggled_on: bool, button_index: int) -> void:
+	control_buttons.values()[button_index].visible = not toggled_on
+
+
+func _on_status_visible_toggled(toggled_on: bool) -> void:
+	$VBoxContainer/Controls/HBoxContainer/InfoContainer.visible = not toggled_on
