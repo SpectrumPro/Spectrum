@@ -123,7 +123,7 @@ func _add_playback_row(scene: Scene) -> void:
 	
 	new_node.button1.set_pressed_no_signal(scene.enabled)
 	new_node.button1.set_value(scene.percentage_step)
-	scene.percentage_step_changed.connect(new_node.button1.set_value)
+	scene.intensity_changed.connect(new_node.button1.set_value)
 	scene.state_changed.connect(new_node.button1.set_pressed_no_signal)
 
 	
@@ -147,10 +147,10 @@ func _add_playback_row(scene: Scene) -> void:
 	
 	# The slider sets the state of the scene
 	new_node.slider.value_changed.connect(func (value: int) -> void:
-		scene.set_step_percentage(remap(value, 0, 255, 0.0, 1.0))
+		scene.set_intensity(remap(value, 0, 255, 0.0, 1.0))
 	)
-	new_node.set_slider_value(scene.percentage_step)
-	scene.percentage_step_changed.connect(new_node.set_slider_value)
+	new_node.set_slider_value(scene.get_intensity())
+	scene.intensity_changed.connect(new_node.set_slider_value)
 
 
 ## Returnes the settings of this panel

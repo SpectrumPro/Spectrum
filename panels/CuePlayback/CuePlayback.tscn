@@ -144,7 +144,7 @@ text = "New Cue"
 [node name="Store" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 10
 disabled = true
 text = "Store"
 
@@ -884,6 +884,7 @@ size_flags_horizontal = 3
 label_text = ""
 
 [connection signal="cue_selected" from="." to="VBoxContainer/Triggers" method="_on_cue_playback_cue_selected"]
+[connection signal="gui_input" from="VBoxContainer/PanelContainer" to="." method="_on_v_box_container_gui_input"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]

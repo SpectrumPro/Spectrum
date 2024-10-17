@@ -11,6 +11,11 @@ signal data_stored(fixture: Fixture, channel_key: String, value: Variant)
 ## Emitted when data is eraced from this function
 signal data_eraced(fixture: Fixture, channel_key: String)
 
+## Emitted when the current intensity of this function changes, eg the fade position of a scene
+signal intensity_changed(percentage: float)
+
+
+var _intensity: float = 0
 
 
 func store_data(fixture: Fixture, channel_key: String, value: Variant) -> bool:
@@ -18,8 +23,22 @@ func store_data(fixture: Fixture, channel_key: String, value: Variant) -> bool:
 
 
 func erace_data(fixture: Fixture, channel_key: String) -> bool:
-	print("running from function class")
 	return false
+
+
+## Sets the intensity of this function, from 0.0 to 1.0
+func set_intensity(p_intensity: float) -> void:
+	Client.send_command(self.uuid, "set_intensity", [p_intensity])
+
+
+## Returnes the intensity
+func get_intensity() -> float:
+	return _intensity
+
+
+func on_intensity_changed(p_intensity: float) -> void:
+	_intensity = p_intensity
+	intensity_changed.emit(p_intensity)
 
 
 ## Static function to store saved fixture data into

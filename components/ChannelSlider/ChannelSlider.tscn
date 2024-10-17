@@ -23,15 +23,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="Gradient" id="Gradient_sff67"]
+[sub_resource type="Gradient" id="Gradient_x6m32"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_7l4kt"]
-gradient = SubResource("Gradient_sff67")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rwka0"]
+gradient = SubResource("Gradient_x6m32")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qt3df"]
-texture = SubResource("GradientTexture2D_7l4kt")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n2y88"]
+texture = SubResource("GradientTexture2D_rwka0")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_q5lbv"]
 
@@ -64,7 +64,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_y34yv")
 
 [node name="GraidentBG" type="PanelContainer" parent="GraidentContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_qt3df")
+theme_override_styles/panel = SubResource("StyleBoxTexture_n2y88")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

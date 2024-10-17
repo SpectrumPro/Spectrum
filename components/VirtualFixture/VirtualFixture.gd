@@ -86,8 +86,8 @@ func set_fixture(control_fixture: Fixture) -> void:
 
 
 func _set_warning(arg1=null, arg2=null) -> void:
-	_selected_color = Color.ORANGE
-	_deselected_color = Color.ORANGE_RED
+	_selected_color =  Color.GRAY
+	_deselected_color = Color.DIM_GRAY
 	_update_border()
 
 
