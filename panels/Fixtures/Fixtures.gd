@@ -27,7 +27,7 @@ func _ready() -> void:
 ## Reload the list of fixtures
 func _reload_fixtures(arg1=null, arg2=null) -> void:
 	item_list_view.remove_all()
-	item_list_view.add_items(Core.fixtures.values(), [["channel", "set_channel"]], "set_name", "name_changed")
+	item_list_view.add_items(Core.fixtures.values(), [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView

@@ -15,7 +15,27 @@ signal data_eraced(fixture: Fixture, channel_key: String)
 signal intensity_changed(percentage: float)
 
 
+## List of functions that are allowed to be called by external control scripts.
+var accessible_methods: Dictionary = {
+	"intensity":{
+		"set": set_intensity,
+		"get": get_intensity,
+		"signal": intensity_changed
+	}
+}
+
+
 var _intensity: float = 0
+
+
+func add_accessible_method(name: String, set_method: Callable, get_method: Callable = Callable(), changed_signal: Signal = Signal()) -> void:
+	accessible_methods.merge({
+		name: {
+			"set": set_method,
+			"get": get_method,
+			"signal": changed_signal
+		}
+	})
 
 
 func store_data(fixture: Fixture, channel_key: String, value: Variant) -> bool:
@@ -77,4 +97,4 @@ func _load_stored_data(serialized_stored_data: Dictionary, stored_data: Dictiona
 			for channel_key: String in serialized_stored_data[fixture_uuid]:
 				var stored_item: Dictionary = serialized_stored_data[fixture_uuid][channel_key]
 
-				store_method.call(fixture, channel_key, str_to_var(stored_item.get("value", "0")), stored_data)
+				store_method.call(fixture, channel_key, stored_item.get("value", 0), stored_data)

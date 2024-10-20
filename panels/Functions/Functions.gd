@@ -20,7 +20,7 @@ func _ready() -> void:
 ## Reload the list of functions
 func _reload_functions(arg1=null, arg2=null) -> void:
 	item_list_view.remove_all()
-	item_list_view.add_items(Core.functions.values(), [["fade_in_speed", "set_fade_in_speed"], ["fade_out_speed", "set_fade_out_speed"]], "set_name", "name_changed")
+	item_list_view.add_items(Core.functions.values(), [["fade_in_speed", "set_fade_in_speed", "fade_in_speed_changed"], ["fade_out_speed", "set_fade_out_speed", "fade_out_speed_changed"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView

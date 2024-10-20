@@ -170,6 +170,7 @@ func load_from_server() -> void:
 	}, func (responce):
 		load_from(responce)
 	)
+	pass
 
 
 ## Returns all output plugins into a dictionary containing the uninitialized object, from the folder defined in [param folder]

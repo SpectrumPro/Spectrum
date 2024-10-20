@@ -87,7 +87,7 @@ func add_items(items: Array, chips: Array = [], name_method: String = "", name_c
 			
 			for chip: Array in chips:
 				if item.get(chip[1]):
-					new_item_node.add_chip(item, chip[0], item.get(chip[1]))
+					new_item_node.add_chip(item, chip[0], item.get(chip[1]), item.get(chip[2]))
 			
 			if name_method:
 				new_item_node.set_name_method(item.get(name_method))

@@ -214,11 +214,11 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 	
 	var just_added_cues: Array = []
 	
-	for cue_index: float in serialized_data.get("cues").keys():
+	for cue_index: String in serialized_data.get("cues").keys():
 		var new_cue: Cue = Cue.new()
 		new_cue.load(serialized_data.cues[cue_index])
 		
-		if _add_cue(new_cue, cue_index, true):
+		if _add_cue(new_cue, float(cue_index), true):
 			just_added_cues.append(new_cue)
 	
 	if just_added_cues:

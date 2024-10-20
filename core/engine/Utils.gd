@@ -30,16 +30,21 @@ static func objects_to_uuids(data):
 					#"_serialized_object": data.serialize(),
 					"_class_name": data.get("self_class_name")
 				}
+		
 		TYPE_DICTIONARY:
 			var new_dict = {}
 			for key in data.keys():
 				new_dict[key] = objects_to_uuids(data[key])
 			return new_dict
+		
 		TYPE_ARRAY:
 			var new_array = []
 			for item in data:
 				new_array.append(objects_to_uuids(item))
 			return new_array
+		
+		TYPE_COLOR:
+			return var_to_str(data)
 	
 	return data
 
@@ -75,11 +80,16 @@ static func uuids_to_objects(data: Variant, networked_objects: Dictionary, callb
 				for key in data.keys():
 					new_dict[key] = uuids_to_objects(data[key], networked_objects, callback)
 				return new_dict
+		
 		TYPE_ARRAY:
 			var new_array = []
 			for item in data:
 				new_array.append(uuids_to_objects(item, networked_objects, callback))
 			return new_array
+		
+		TYPE_STRING:
+			if data.contains("Color("):
+				return str_to_var(data)
 	
 	return data
 

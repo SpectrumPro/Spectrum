@@ -189,7 +189,7 @@ func _call_method(networked_object: Dictionary, method_name: String, method_dict
 		
 		# Check if the type of the arg passed by the sever matches the arg expected by the function, if not stop now to avoid a crash, ignore if the expected type is null, as this could also be Variant
 		if not typeof(args[index]) == method_dict.args.values()[index] and not method_dict.args.values()[index] == 0:
-			print("Type of data: ", args[index],  " does not match type: ", type_string(method_dict.args.values()[index]), " required by: ", method_dict.callable)
+			print("Type of data: ", args[index],  " does not match type: ", type_string(method_dict.args.values()[index]), " required by: ", method_dict.callable, " Got: ", typeof(type_string(args[index])))
 			return
 	
 	# If all check above pass, call the function and pass the arguments

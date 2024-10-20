@@ -31,36 +31,37 @@ func _ready() -> void:
 
 
 func _reload_sliders(new_universe: Universe) -> void:
-	if _current_universe:
-		universe_container.get_node(_current_universe.uuid).hide()
-		
-	
-	if universe_container.has_node(new_universe.uuid):
-		universe_container.get_node(new_universe.uuid).show()
-		
-	else:
-		var container: HBoxContainer = HBoxContainer.new()
-		container.set_v_size_flags(SIZE_EXPAND_FILL)
-		container.name = new_universe.uuid
-	
-		for channel: int in range(1, 513):
-			var channel_slider: ChannelSlider = Interface.components.ChannelSlider.instantiate()
-			
-			channel_slider.set_label_text(str(channel))
-			channel_slider.args_befour = [channel]
-			channel_slider.object_id = new_universe.uuid
-			channel_slider.show_randomise_button = false
-			
-			channel_slider.method = "set_dmx_override"
-			channel_slider.reset_method = "remove_dmx_override"
-			
-			clear_all_presses.connect(channel_slider.reset_no_message)
-			
-			container.add_child(channel_slider)
-		
-		universe_container.add_child(container)
-		
-	_current_universe = new_universe
+	#if _current_universe:
+		#universe_container.get_node(_current_universe.uuid).hide()
+		#
+	#
+	#if universe_container.has_node(new_universe.uuid):
+		#universe_container.get_node(new_universe.uuid).show()
+		#
+	#else:
+		#var container: HBoxContainer = HBoxContainer.new()
+		#container.set_v_size_flags(SIZE_EXPAND_FILL)
+		#container.name = new_universe.uuid
+	#
+		#for channel: int in range(1, 513):
+			#var channel_slider: ChannelSlider = Interface.components.ChannelSlider.instantiate()
+			#
+			#channel_slider.set_label_text(str(channel))
+			#channel_slider.args_befour = [channel]
+			#channel_slider.object_id = new_universe.uuid
+			#channel_slider.show_randomise_button = false
+			#
+			#channel_slider.method = "set_dmx_override"
+			#channel_slider.reset_method = "remove_dmx_override"
+			#
+			#clear_all_presses.connect(channel_slider.reset_no_message)
+			#
+			#container.add_child(channel_slider)
+		#
+		#universe_container.add_child(container)
+		#
+	#_current_universe = new_universe
+	pass
 
 
 
