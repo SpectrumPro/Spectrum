@@ -29,6 +29,12 @@ func _reload(reload_button: bool = true) -> void:
 
 ## Called when a cue is selected in the list
 func _on_cue_playback_cue_selected(cue: Cue) -> void:
+	if is_instance_valid(_cue):
+		_cue.timecode_trigger_changed.disconnect(_on_cue_timecode_trigger_changed)
+	
+	if is_instance_valid(cue):
+		cue.timecode_trigger_changed.connect(_on_cue_timecode_trigger_changed)
+	
 	_cue = cue
 	_reload()
 
@@ -43,10 +49,13 @@ func _on_tc_toggle_toggled(toggled_on: bool) -> void:
 func _on_frame_counter_value_changed(value: float) -> void:
 	if _cue:
 		_cue.set_timecode_trigger(int(value))
-		
 
 
 ## Called when the "Set Timecode" button is pressed to set the timecode to the current frame
 func _on_tc_now_pressed() -> void:
 	if _cue:
 		_cue.set_timecode_now()
+
+
+func _on_cue_timecode_trigger_changed(timecode_trigger: int) -> void:
+	$HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/FrameCounter.set_value_no_signal(timecode_trigger)
