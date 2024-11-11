@@ -30,9 +30,6 @@ var snapping_distance: Vector2 = Vector2(20, 20) : set = set_snapping_distance
 ## The selected panels
 var _selected_items: Array[Control] = []
 
-## Used to check if we opened the object picker, not another script
-var _object_picker_opened_here: bool = false
-
 ## The position and size of the most recenelt deleted item, so if you add a new item straight away, it will appre where the one that was deleted was
 var _just_deleted_pos: Vector2 = Vector2.ZERO
 var _just_deleted_size: Vector2 = Vector2(100, 100)
@@ -214,14 +211,19 @@ func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
 
 
 ## Called when an object is selected in the object picker, used to add new objects
-func _on_object_picker_item_selected(key, value):
-	add_panel(value.instantiate())
+func _on_panel_picker_panel_chosen(panel: PackedScene):
+	$PanelPicker.hide()
+	add_panel(panel.instantiate())
+
+
+## Called when the cancel button is pressed on the PanelPicker
+func _on_panel_picker_cancel_pressed() -> void:
+	$PanelPicker.hide()
 
 
 ## Called when the add button is pressed
 func _on_add_pressed() -> void:
-	Interface.show_object_picker(_on_object_picker_item_selected, ["Panels"])
-	_object_picker_opened_here = true
+	$PanelPicker.show()
 	set_edit_mode(true)
 
 
@@ -281,12 +283,10 @@ func _on_container_gui_input(event: InputEvent) -> void:
 		if event.is_pressed() and edit_mode:
 			select_none()
 		
-		if event.button_index == MOUSE_BUTTON_LEFT and _object_picker_opened_here:
-			Interface.hide_object_picker()
-			_object_picker_opened_here = false
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			$PanelPicker.hide()
 		
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed() and edit_mode:
-			Interface.show_object_picker(_on_object_picker_item_selected, ["Panels"])
-			_object_picker_opened_here = false
-
+			$PanelPicker.show()
+		
 #endregion

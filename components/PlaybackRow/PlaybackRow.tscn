@@ -1,17 +1,11 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4wtma14pt5uv"]
 
 [ext_resource type="Script" path="res://components/PlaybackRow/PlaybackRow.gd" id="1_8pl2j"]
-[ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://assets/icons/Slider_handle.svg" id="1_g8a7l"]
 [ext_resource type="PackedScene" uid="uid://c2c3t6jriymr6" path="res://components/TriggerButton/TriggerButton.tscn" id="2_077sc"]
+[ext_resource type="PackedScene" uid="uid://d3reasl3xdl4l" path="res://components/TriggerSlider/TriggerSlider.tscn" id="3_rjcn8"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hv2sk"]
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 24.0
-expand_margin_right = 24.0
+[sub_resource type="LabelSettings" id="LabelSettings_snrau"]
+font_size = 13
 
 [node name="Playback Row" type="MarginContainer"]
 offset_right = 96.0
@@ -37,6 +31,12 @@ theme_override_constants/margin_bottom = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Name"
+label_settings = SubResource("LabelSettings_snrau")
+horizontal_alignment = 1
+
 [node name="Button1" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
@@ -55,18 +55,8 @@ layout_mode = 2
 size_flags_vertical = 1
 toggle_mode = false
 
-[node name="Slider" type="VSlider" parent="PanelContainer/MarginContainer/VBoxContainer"]
-use_parent_material = true
-custom_minimum_size = Vector2(0, 100)
+[node name="Slider" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("3_rjcn8")]
 layout_mode = 2
-size_flags_horizontal = 1
-size_flags_vertical = 3
-mouse_force_pass_scroll_events = false
-mouse_default_cursor_shape = 10
-theme_override_icons/grabber = ExtResource("1_g8a7l")
-theme_override_icons/grabber_highlight = ExtResource("1_g8a7l")
-theme_override_styles/slider = SubResource("StyleBoxFlat_hv2sk")
-max_value = 255.0
 
 [node name="Button4" parent="PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_077sc")]
 custom_minimum_size = Vector2(80, 50)

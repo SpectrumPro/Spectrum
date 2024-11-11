@@ -37,6 +37,9 @@ signal function_name_changed(function: Function, new_name: String)
 ## Emitted when this engine is about to reset
 signal resetting
 
+## Emitted when this engine has finished loading
+signal load_finished
+
 
 ## Dictionary containing all universes in this engine
 var universes: Dictionary = {} 
@@ -213,6 +216,7 @@ func _add_universes(p_universes: Array) -> void:
 		if universe is Universe:
 			
 			Client.add_networked_object(universe.uuid, universe, universe.delete_requested)
+			ComponentDB.register_component(universe)
 			_connect_universe_signals(universe)
 			
 			just_added_universes.append(universe)
@@ -280,13 +284,9 @@ func _remove_universes(p_universes: Array) -> void:
 		universes_removed.emit(just_removed_universes)
 
 
-func add_function(name: String, function: Function) -> void:
-	Client.add_networked_object(function.uuid, function, function.delete_requested)
-	Client.send({
-		"for": "engine",
-		"call": "add_function",
-		"args": [name, function]
-	})
+## Creates a new funcion
+func create_function(function_class_name: String, callback: Callable = Callable()) -> void:
+	Client.send_command("engine", "create_function", [function_class_name], callback)
 
 
 func on_functions_added(p_functions: Array, function_uuids: Array) -> void:
@@ -300,6 +300,7 @@ func _add_functions(p_functions: Array) -> void:
 		if function is Function:
 			functions[function.uuid] = function
 			Client.add_networked_object(function.uuid, function, function.delete_requested)
+			ComponentDB.register_component(function)
 			_connect_function_signals(function)
 			just_added_functions.append(function)
 	
@@ -356,21 +357,26 @@ func _remove_functions(p_functions: Array) -> void:
 
 
 func load_from(serialized_data: Dictionary) -> void:
+	var just_added_universes: Array[Universe] = []
+	
 	for universe_uuid: String in serialized_data.get("universes", {}).keys():
-		var new_universe: Universe = Universe.new(universe_uuid)
+		var new_universe: Universe = Universe.new(universe_uuid, serialized_data.universes[universe_uuid].name)
 		
-		_add_universes([new_universe])
-		
-		new_universe.load(serialized_data.universes[universe_uuid])
-		
+		just_added_universes.append(new_universe)
+		new_universe.load.call_deferred(serialized_data.universes[universe_uuid])
+	
+	_add_universes(just_added_universes)
+	
 	
 	var just_added_functions: Array[Function] = []
 	# Loops through each function in the save file (if any), and adds them into the engine
 	for function_uuid: String in serialized_data.get("functions", {}):
 		if serialized_data.functions[function_uuid].get("class_name", "") in ClassList.function_class_table:
-			var new_function: Function = ClassList.function_class_table[serialized_data.functions[function_uuid]["class_name"]].new(function_uuid)
+			var new_function: Function = ClassList.function_class_table[serialized_data.functions[function_uuid]["class_name"]].new(function_uuid, serialized_data.functions[function_uuid].name)
 			
 			just_added_functions.append(new_function)
 			new_function.load.call_deferred(serialized_data.functions[function_uuid])
 	
 	_add_functions(just_added_functions)
+	
+	load_finished.emit()

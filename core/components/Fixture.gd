@@ -46,8 +46,8 @@ const MAX_DMX_VALUE: int = 255
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	name = "Fixture"
 	self_class_name = "Fixture"
+	icon = load("res://assets/icons/Fixture.svg")
 
 
 ## Sets the channel of this fixture

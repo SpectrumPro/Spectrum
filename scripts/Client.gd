@@ -71,12 +71,12 @@ func send(data: Dictionary, callback: Callable = Callable()) -> void:
 
 
 ## Sends a command to the server
-func send_command(object_id: String, method: String, args: Array = []) -> void:
+func send_command(object_id: String, method: String, args: Array = [], callback: Callable = Callable()) -> void:
 	Client.send({
 		"for": object_id,
 		"call": method,
 		"args": args
-	})
+	}, callback)
 
 
 ## Add a network object

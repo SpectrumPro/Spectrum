@@ -1,8 +1,8 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-extends PanelContainer
-## Ui Container to store settings from panels
+class_name SettingsContainer extends PanelContainer
+## Ui Container to store settings
 
 
 ## Sets the node in the settings panel

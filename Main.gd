@@ -105,6 +105,33 @@ func _on_functions_toggled(toggled_on: bool) -> void:
 	$Functions.move_to_front()
 
 
+func _on_panel_picker_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		$PanelPicker.move_to_front()
+		$PanelPicker.show()
+	else:
+		var old_panel: Control = get_node_or_null("PanelPopupContainer/PopupPanel")
+		
+		if old_panel:
+			$PanelPopupContainer.remove_child(old_panel)
+			old_panel.queue_free()
+		
+		$PanelPopupContainer.hide()
+
+
+func _on_panel_picker_cancel_pressed() -> void:
+	$PanelPicker.hide()
+
+
+func _on_panel_picker_panel_chosen(panel: PackedScene) -> void:
+	$PanelPicker.hide()
+	
+	var new_node: Control = panel.instantiate()
+	new_node.name = "PopupPanel"
+	$PanelPopupContainer.add_child(new_node)
+	$PanelPopupContainer.move_to_front()
+	$PanelPopupContainer.show()
+
 
 func _on_settings_toggled(toggled_on: bool) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings.remove_theme_color_override("icon_normal_color")

@@ -34,8 +34,8 @@ var _fixture_signal_connections: Dictionary = {}
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	name = "New Universe"
 	self_class_name = "Universe"
+	icon = load("res://assets/icons/Universe.svg")
 
 
 ## Adds mutiple new fixtures to this universe, from a fixture manifest [br]
@@ -94,6 +94,7 @@ func _add_outputs(p_outputs: Array) -> void:
 		if output is DataOutputPlugin:
 			
 			Client.add_networked_object(output.uuid, output, output.delete_requested)
+			ComponentDB.register_component(output)
 			output.delete_requested.connect(self.on_outputs_removed.bind([output]), CONNECT_ONE_SHOT)
 			just_added_outputs.append(output)
 			outputs[output.uuid] = output
@@ -110,6 +111,8 @@ func _add_fixtures(p_fixtures: Array) -> void:
 		if fixture is Fixture:
 			
 			Client.add_networked_object(fixture.uuid, fixture, fixture.delete_requested)
+			ComponentDB.register_component(fixture)
+
 			fixture.delete_requested.connect(self._remove_fixtures.bind([fixture]), CONNECT_ONE_SHOT)
 			
 			just_added_fixtures.append(fixture)

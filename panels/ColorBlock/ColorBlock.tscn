@@ -20,11 +20,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="Settings"]
-custom_minimum_size = Vector2(50, 30)
+[node name="ColorPicker" type="ColorPicker" parent="Settings"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-color = Color(1, 1, 1, 1)
 
-[connection signal="color_changed" from="Settings/ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
+[connection signal="color_changed" from="Settings/ColorPicker" to="." method="_on_color_picker_color_changed"]

@@ -33,17 +33,18 @@ var fade_out_speed: float = 2
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	name = "Scene"
 	self_class_name = "Scene"
+	icon = load("res://assets/icons/Scene.svg")
 	
-	add_accessible_method("enabled", set_enabled, is_enabled, state_changed)
+	add_accessible_method("enabled", [TYPE_BOOL], set_enabled, is_enabled, state_changed, ["Set Enable State"])
+	add_accessible_method("enabled_with_fade", [TYPE_BOOL, TYPE_FLOAT], set_enabled, is_enabled, state_changed, ["Set Enable State", "Fade Speed"])
 	
-	add_accessible_method("fade_in", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed)
-	add_accessible_method("fade_out", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed)
+	add_accessible_method("fade_in", [TYPE_FLOAT], set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, ["In Seconds"])
+	add_accessible_method("fade_out", [TYPE_FLOAT], set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, ["In Seconds"])
 	
-	add_accessible_method("flash_hold", flash_hold)
-	add_accessible_method("flash_release", flash_release)
-	add_accessible_method("flash", flash)
+	add_accessible_method("flash_hold", [TYPE_FLOAT], flash_hold, Callable(), Signal(), ["Fade In Speed"])
+	add_accessible_method("flash_release", [TYPE_FLOAT], flash_release, Callable(), Signal(), ["Fade Out Speed"])
+	add_accessible_method("flash", [TYPE_FLOAT, TYPE_FLOAT, TYPE_FLOAT], flash, Callable(), Signal(), ["Fade In Speed", "Fade Out Speed", "Hold Time"])
 
 
 #region Local Method
@@ -83,7 +84,7 @@ func on_fade_out_speed_changed(p_fade_out_speed: float) -> void:
 	fade_out_speed_changed.emit(fade_out_speed)
 
 
-## INTERNAL: Called when the state is changed on the server
+## Called when the state is changed on the server
 func on_state_changed(state: bool) -> void:
 	state_changed.emit(state)
 	enabled = state
@@ -91,8 +92,8 @@ func on_state_changed(state: bool) -> void:
 
 
 #region Internal Methods
+## Serializes this scene and returnes it in a dictionary
 func _on_serialize_request() -> Dictionary:
-	## Serializes this scene and returnes it in a dictionary
 	return {
 		"fade_in_speed": fade_in_speed,
 		"fade_out_speed": fade_out_speed,

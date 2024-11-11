@@ -88,11 +88,9 @@ var _cue_active_color: Color = Color.DIM_GRAY
 @onready var labels: Dictionary = {
 	"cue_number": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/CueNumber,
 	"cue_label": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/CueLabel,
-	"separator": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/VSeparator,
-	"paused": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Paused,
-	"playing": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Playing,
-	"stopped": $VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer/Stopped,
-}
+ }
+
+var _label_background_stylebox: StyleBoxFlat = null
 
 ## All the shortcut buttons in the settings panel
 @onready var shortcut_buttons: Dictionary = {
@@ -196,6 +194,9 @@ func _ready() -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/NormalMode.button_group = mode_button_groop
 	$VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/LoopMode.button_group = mode_button_groop
 	
+	
+	_label_background_stylebox = $VBoxContainer/Controls/HBoxContainer/InfoContainer.get_theme_stylebox("panel").duplicate()
+	$VBoxContainer/Controls/HBoxContainer/InfoContainer.add_theme_stylebox_override("panel", _label_background_stylebox)
 	
 	remove_child(settings_node)
 	settings_node.show()
@@ -390,7 +391,7 @@ func _clear_selections(arg1=null) -> void:
 	current_selected_item = null
 	
 	$StoreConfirmationBox/VBoxContainer2/ActionText/CueNumber.text = "null"
-	new_update_button.text = "New Cue"
+	new_update_button.text = "New Cue" if current_cue_list else "New Cue List"
 	
 	cue_selected.emit(null)
 
@@ -441,6 +442,9 @@ func _on_select_requested(new_list_item: ListItem, cue_number: float) -> void:
 
 
 func set_cue_list(cue_list: CueList = null) -> void:
+	if not is_node_ready():
+		return
+	
 	if current_cue_list:
 		_disconnect_signals()
 	
@@ -449,6 +453,7 @@ func set_cue_list(cue_list: CueList = null) -> void:
 	if current_cue_list:
 		_connect_signals()
 		_on_mode_changed(current_cue_list.mode)
+		new_update_button.text = "New Cue"
 	
 	reload()
 
@@ -554,10 +559,8 @@ func _reload_labels() -> void:
 	labels.cue_number.text = "0"
 	labels.cue_number.hide()
 	labels.cue_label.hide()
-	labels.separator.hide()
-	labels.playing.hide()
-	labels.paused.hide()
-	labels.stopped.hide()
+	
+	_label_background_stylebox.bg_color = Color.DARK_RED
 
 	if current_cue_list:
 		var new_text: String = str(current_cue_list.current_cue_number)
@@ -569,24 +572,24 @@ func _reload_labels() -> void:
 		
 		labels.cue_number.text = new_text
 		
-		labels.playing.visible = current_cue_list.is_playing()
-		
 		if current_cue_list.current_cue_number == -1:
 			labels.cue_number.hide()
 			labels.cue_label.hide()
-			labels.stopped.show()
+			_label_background_stylebox.bg_color = Color.DARK_RED
+
 		else:
-			if not current_cue_list.is_playing():
-				labels.paused.show() 
+			if current_cue_list.is_playing():
+				_label_background_stylebox.bg_color = Color.DARK_GREEN
+			else:
+				_label_background_stylebox.bg_color = Color.DARK_ORANGE
 			
 			labels.cue_number.show()
 			labels.cue_label.show()
-			labels.separator.show()
 
 
 func _reload_name(arg1=null) -> void:
 	var new_name: String = current_cue_list.name if current_cue_list else "Empty List"
-	$VBoxContainer/PanelContainer/HBoxContainer/Label.text = new_name
+	$VBoxContainer/PanelContainer/HBoxContainer/CueListName.text = new_name
 	settings_name_label.text = new_name
 
 
@@ -618,10 +621,12 @@ func _ensure_cue_visible(number: float) -> void:
 
 
 func _on_change_cue_list_pressed() -> void:
-	Interface.show_object_picker(func(key: Variant, value: Variant):
-		if value is CueList:
-			set_cue_list(value)
-	, ["Functions"])
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, _object_picker_callback, ["CueList"])
+
+
+func _object_picker_callback(object_array: Array[EngineComponent]) -> void:
+	if object_array[0] is CueList:
+		set_cue_list(object_array[0])
 
 
 func _on_play_pressed() -> void:
@@ -737,12 +742,20 @@ func _on_save_mode_changed(button: Button) -> void:
 
 ## Called when the New / Update button is pressed
 func _on_new_update_button_pressed() -> void:
-	$NewUpdateConfirmationBox.show()
+	if not current_cue_list:
+		Core.create_function("CueList", func (new_cue_list: Function):
+			if new_cue_list is CueList:
+				set_cue_list(new_cue_list)
+		)
+	
+	else:
+		$NewUpdateConfirmationBox.show()
 
 
 ## Called when the cancel button is pressed in the New / Update menu
 func _on_new_update_cancel_pressed() -> void:
 	$NewUpdateConfirmationBox.hide()
+
 
 ## Called when the store button is pressed in the New / Update menu
 func _on_new_update_confirmation_pressed() -> void:

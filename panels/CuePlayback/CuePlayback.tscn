@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://duww8qljyqvxk"]
+[gd_scene load_steps=28 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
 [ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
@@ -28,15 +28,6 @@
 [sub_resource type="LabelSettings" id="LabelSettings_eonr0"]
 font = ExtResource("9_qen5l")
 
-[sub_resource type="LabelSettings" id="LabelSettings_u403j"]
-font_color = Color(1, 1, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_w040t"]
-font_color = Color(0, 1, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_5ku0g"]
-font_color = Color(1, 0, 0, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7co6c"]
 content_margin_left = 5.0
 content_margin_top = 5.0
@@ -53,11 +44,11 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="FontVariation" id="FontVariation_vk08i"]
+[sub_resource type="FontVariation" id="FontVariation_8ydje"]
 variation_embolden = 0.82
 
 [sub_resource type="LabelSettings" id="LabelSettings_cktj4"]
-font = SubResource("FontVariation_vk08i")
+font = SubResource("FontVariation_8ydje")
 
 [node name="CuePlayback" type="PanelContainer"]
 anchors_preset = 15
@@ -77,11 +68,12 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="CueListName" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Cue Name
 "
+flat = true
 
 [node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 visible = false
@@ -139,7 +131,7 @@ icon = ExtResource("9_jkvxf")
 [node name="NewUpdateButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
-text = "New Cue"
+text = "New Cue List"
 
 [node name="Store" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 visible = false
@@ -252,11 +244,13 @@ icon = ExtResource("3_07mes")
 icon_alignment = 1
 
 [node name="InfoContainer" type="PanelContainer" parent="VBoxContainer/Controls/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="CueLabel" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
 layout_mode = 2
@@ -269,25 +263,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_n58hq")
 text = "0"
 label_settings = SubResource("LabelSettings_eonr0")
 vertical_alignment = 2
-
-[node name="VSeparator" type="VSeparator" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="Paused" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
-layout_mode = 2
-text = "Paused"
-label_settings = SubResource("LabelSettings_u403j")
-
-[node name="Playing" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
-layout_mode = 2
-text = "Playing"
-label_settings = SubResource("LabelSettings_w040t")
-
-[node name="Stopped" type="Label" parent="VBoxContainer/Controls/HBoxContainer/InfoContainer/HBoxContainer"]
-layout_mode = 2
-text = "Stopped
-"
-label_settings = SubResource("LabelSettings_5ku0g")
 
 [node name="Play" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
@@ -885,6 +860,7 @@ label_text = ""
 
 [connection signal="cue_selected" from="." to="VBoxContainer/Triggers" method="_on_cue_playback_cue_selected"]
 [connection signal="gui_input" from="VBoxContainer/PanelContainer" to="." method="_on_v_box_container_gui_input"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/CueListName" to="." method="_on_change_cue_list_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveUp" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer/MoveDown" to="." method="_on_move_down_pressed"]

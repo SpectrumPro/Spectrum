@@ -14,7 +14,6 @@ static var component_class_table: Dictionary = {
 	"Universe": Universe,
 	"Fixture": Fixture,
 	"Programmer": Programmer,
-	"Cue": Cue
 }
 
 
@@ -22,6 +21,7 @@ static var component_class_table: Dictionary = {
 static var function_class_table: Dictionary = {
 	"Scene": Scene,
 	"CueList": CueList,
+	"Cue": Cue
 }
 
 
@@ -36,6 +36,18 @@ static var insta_load_objects: Array = [
 	"Fixture"
 ]
 
+
+## Stores the default icons for all the classes
+static var icon_class_list: Dictionary = {
+	"EngineComponent": load("res://assets/icons/Component.svg"),
+	"Universe": load("res://assets/icons/Universe.svg"),
+	"Fixture": load("res://assets/icons/Fixture.svg"),
+	"Programmer": load("res://assets/icons/Programmer.svg"),
+	"Cue": load("res://assets/icons/Cue.svg"),
+	"Scene": load("res://assets/icons/Scene.svg"),
+	"CueList": load("res://assets/icons/CueList.svg"),
+}
+
  
 static func get_global_class_list() -> Dictionary:
 	var merged_list = component_class_table.duplicate()
@@ -43,3 +55,7 @@ static func get_global_class_list() -> Dictionary:
 	merged_list.merge(output_class_table)
 		
 	return merged_list
+
+
+static func get_class_icon(class_name_string: String) -> Texture2D:
+	return icon_class_list.get(class_name_string, load("res://assets/icons/Component.svg"))

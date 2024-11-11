@@ -59,10 +59,10 @@ func _new_container() -> Control:
 
 ## Prompts the user to change the new panel container node when this container is split
 func _prompt_change(node: Control) -> void:
-	Interface.show_object_picker(func (key: Variant, value: Variant):
-		node.set_panel(value.instantiate())
-	, ["Panels"])
-
+	#Interface.show_object_picker(func (key: Variant, value: Variant):
+		#node.set_panel(value.instantiate())
+	#, ["Panels"])
+	pass
 
 func _on_left_pressed() -> void:
 	var new_container: HSplitContainer = HSplitContainer.new()
@@ -159,6 +159,7 @@ func _on_panel_settings_container_type_change_pressed() -> void:
 	$PanelSettingsContainer.hide()
 	get_tree().root.grab_focus()
 	
-	Interface.show_object_picker(func (key: Variant, value: Variant):
-		set_panel(value.instantiate())
-	, ["Panels"])
+	#Interface.show_object_picker(func (key: Variant, value: Variant):
+		#set_panel(value.instantiate())
+	#, ["Panels"])
+	

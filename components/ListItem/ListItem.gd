@@ -6,7 +6,7 @@ class_name ListItem extends PanelContainer
 
 
 ## Emmited when this control is clicked on
-signal select_requested(from: Control) 
+signal select_requested(from: Control)
 
 ## Emitted when this ListItem is double clicked
 signal double_clicked()
@@ -116,7 +116,7 @@ func add_chip(object: Object, property: String, set_method: Callable, changed_si
 		_:
 			return
 	node_signal.connect(func (value: Variant):
-			set_method.call(value)
+		set_method.call(value)
 	)
 	
 	var label: Label = Label.new()
@@ -149,7 +149,7 @@ func set_name_method(method: Callable) -> void:
 
 ## Sets the signal that should be listend to to update the name of this item
 func set_name_changed_signal(p_signal: Signal) -> void:
-	p_signal.connect(func (new_name: String): 
+	p_signal.connect(func (new_name: String):
 		$Container/NameEdit.text = new_name
 		$Container/Name.text = new_name
 	)
@@ -171,10 +171,15 @@ func set_id_method(method: Callable) -> void:
 
 ## Sets the signal that should be listend to to update the name of this item
 func set_id_changed_signal(p_signal: Signal) -> void:
-	p_signal.connect(func (new_name): 
+	p_signal.connect(func (new_name):
 		$Container/IDEdit.value = float(new_name)
 		$Container/IDTag.text = new_name
 	)
+
+
+## Sets the icon on this listItem
+func set_icon(icon: Texture2D) -> void:
+	$Container/Icon.texture = icon
 
 
 func _on_gui_input(event):

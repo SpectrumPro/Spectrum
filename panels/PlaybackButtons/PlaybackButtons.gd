@@ -101,7 +101,7 @@ func reload(arg1=null, arg2=null) -> void:
 			)
 			
 			scene.state_changed.connect(button_to_add.set_pressed_no_signal)
-			scene.percentage_step_changed.connect(button_to_add.set_value)
+			scene.intensity_changed.connect(button_to_add.set_value)
 			
 			button_to_add.set_pressed_no_signal(scene.enabled)
 			
@@ -147,7 +147,8 @@ func load(saved_data: Dictionary) -> void:
 
 
 func _on_item_list_view_edit_requested(items: Array) -> void:
-	Interface.show_object_picker(_on_object_picker_item_selected, ["Functions"], true, _on_object_picker_item_deselected, scenes)
+	#Interface.show_object_picker(_on_object_picker_item_selected, ["Functions"], true, _on_object_picker_item_deselected, scenes)
+	pass
 
 
 func _on_object_picker_item_selected(key, value) -> void:

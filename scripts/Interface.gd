@@ -11,50 +11,77 @@ signal kiosk_mode_changed(in_kiosk_mode: bool)
 
 ## Stores all the components found in the folder, stored as {"folder_name": PackedScene}
 var components: Dictionary = {
-	"ChannelSlider": preload("res://components/ChannelSlider/ChannelSlider.tscn"),
-	"ColorSlider": preload("res://components/ColorSlider/ColorSlider.tscn"),
-	"ConfirmationBox": preload("res://components/ConfirmationBox/ConfirmationBox.tscn"),
-	"CueTriggerModeOption": preload("res://components/CueTriggerModeOption/CueTriggerModeOption.tscn"),
-	"DeskItemContainer": preload("res://components/DeskItemContainer/DeskItemContainer.tscn"),
-	"ItemListView": preload("res://components/ItemListView/ItemListView.tscn"),
-	"Knob": preload("res://components/Knob/Knob.tscn"),
-	"ListItem": preload("res://components/ListItem/ListItem.tscn"),
-	"ObjectPicker": preload("res://components/ObjectPicker/ObjectPicker.tscn"),
-	"PanelContainer": preload("res://components/PanelContainer/PanelContainer.tscn"),
-	"PanelSettingsContainer": preload("res://components/PanelSettingContainer/PanelSettingsContainer.tscn"),
-	"PlaybackRow": preload("res://components/PlaybackRow/PlaybackRow.tscn"),
-	"PopupWindow": preload("res://components/PopupWindow/PopupWindow.tscn"),
-	"TimerPicker": preload("res://components/TimePicker/TimePicker.tscn"),
-	"TriggerButton": preload("res://components/TriggerButton/TriggerButton.tscn"),
-	"VirtualFixture": preload("res://components/VirtualFixture/VirtualFixture.tscn"),
-	"Warning": preload("res://components/Warning/Warning.tscn")
+	"ChannelSlider": load("res://components/ChannelSlider/ChannelSlider.tscn"),
+	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
+	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
+	"CueTriggerModeOption": load("res://components/CueTriggerModeOption/CueTriggerModeOption.tscn"),
+	"DeskItemContainer": load("res://components/DeskItemContainer/DeskItemContainer.tscn"),
+	"ItemListView": load("res://components/ItemListView/ItemListView.tscn"),
+	"Knob": load("res://components/Knob/Knob.tscn"),
+	"ListItem": load("res://components/ListItem/ListItem.tscn"),
+	"ObjectPicker": load("res://components/ObjectPicker/ObjectPicker.tscn"),
+	"PanelContainer": load("res://components/PanelContainer/PanelContainer.tscn"),
+	"SettingsContainer": load("res://components/SettingsContainer/SettingsContainer.tscn"),
+	"PlaybackRow": load("res://components/PlaybackRow/PlaybackRow.tscn"),
+	"PopupWindow": load("res://components/PopupWindow/PopupWindow.tscn"),
+	"TimerPicker": load("res://components/TimePicker/TimePicker.tscn"),
+	"TriggerButton": load("res://components/TriggerButton/TriggerButton.tscn"),
+	"VirtualFixture": load("res://components/VirtualFixture/VirtualFixture.tscn"),
+	"Warning": load("res://components/Warning/Warning.tscn")
 }
 
 
 ## Stores all the panels found in the folder, stored as {"folder_name": PackedScene}
 var panels: Dictionary = {
-	"AddFixture": preload("res://panels/AddFixture/AddFixture.tscn"),
-	"AnimationEditor": preload("res://panels/AnimationEditor/AnimationEditor.tscn"),
-	"ColorPalette": preload("res://panels/ColorPalette/ColorPalette.tscn"),
-	"ColorBlock": preload("res://panels/ColorBlock/ColorBlock.tscn"),
-	"ColorPicker": preload("res://panels/ColorPicker/ColorPicker.tscn"),
-	"CuePlayback": preload("res://panels/CuePlayback/CuePlayback.tscn"),
-	"Clock": preload('res://panels/Clock/Clock.tscn'),
-	"Debug": preload("res://panels/Debug/Debug.tscn"),
-	"Desk": preload("res://panels/Desk/Desk.tscn"),
-	"Fixtures": preload("res://panels/Fixtures/Fixtures.tscn"),
-	"Functions": preload("res://panels/Functions/Functions.tscn"),
-	"IOControls": preload("res://panels/IOControls/IOControls.tscn"),
-	"Settings": preload("res://panels/Settings/Settings.tscn"),
-	"PlaybackButtons": preload("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
-	"Playbacks": preload("res://panels/Playbacks/Playbacks.tscn"),
-	"Programmer": preload("res://panels/Programmer/Programmer.tscn"),
-	"SaveLoad": preload("res://panels/SaveLoad/SaveLoad.tscn"),
-	"Universes": preload("res://panels/Universes/Universes.tscn"),
-	"VirtualFixtures": preload("res://panels/VirtualFixtures/VirtualFixtures.tscn")
+	"AddFixture": load("res://panels/AddFixture/AddFixture.tscn"),
+	"AnimationEditor": load("res://panels/AnimationEditor/AnimationEditor.tscn"),
+	"ColorPalette": load("res://panels/ColorPalette/ColorPalette.tscn"),
+	"ColorBlock": load("res://panels/ColorBlock/ColorBlock.tscn"),
+	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
+	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
+	"Clock": load('res://panels/Clock/Clock.tscn'),
+	"Debug": load("res://panels/Debug/Debug.tscn"),
+	"Desk": load("res://panels/Desk/Desk.tscn"),
+	"Fixtures": load("res://panels/Fixtures/Fixtures.tscn"),
+	"Functions": load("res://panels/Functions/Functions.tscn"),
+	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
+	"Settings": load("res://panels/Settings/Settings.tscn"),
+	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
+	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
+	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
+	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
+	"Universes": load("res://panels/Universes/Universes.tscn"),
+	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
 
+var panel_icons: Dictionary = {
+	"CuePlayback": load("res://assets/panel_icons/CuePlayback.png"),
+	"ColorPalette": load("res://assets/panel_icons/ColorPalette.png"),
+	"Playbacks": load("res://assets/panel_icons/Playbacks.png"),
+	"Programmer": load("res://assets/panel_icons/Programmer.png"),
+	"Clock": load("res://assets/panel_icons/Clock.png"),
+	"ColorBlock": load("res://assets/panel_icons/ColorBlock.png"),
+	"VirtualFixtures": load("res://assets/panel_icons/VirtualFixtures.png"),
+	"AnimationEditor": load("res://assets/panel_icons/AnimationEditor.png"),
+	"AddFixture": load("res://assets/panel_icons/AddFixture.png"),
+	"ColorPicker": load("res://assets/panel_icons/ColorPicker.png"),
+	"Debug": load("res://assets/panel_icons/Debug.png"),
+	"Fixtures": load("res://assets/panel_icons/Fixtures.png"),
+	"Functions": load("res://assets/panel_icons/Functions.png"),
+	"IOControls": load("res://assets/panel_icons/IOControls.png"),
+	"PlaybackButtons": load("res://assets/panel_icons/PlaybackButtons.png"),
+	"SaveLoad": load("res://assets/panel_icons/SaveLoad.png"),
+	"Settings": load("res://assets/panel_icons/Settings.png"),
+	"Universes": load("res://assets/panel_icons/Universes.png"),
+	"Desk": load("res://assets/panel_icons/Desk.png"),
+}
+
+
+## Stores the corresponding panel to access settings for each EngineComponent
+var component_settings_panels: Dictionary = {
+	"CueList": {"panel": load("res://panels/CuePlayback/CuePlayback.tscn"), "method": "set_cue_list"}
+}
 
 ## Folder path in which all the components are stored
 const components_folder: String = "res://components/"
@@ -76,21 +103,21 @@ var kiosk_password: Array[int] = [0, 0, 0, 0]
 
 
 ## The main object picker
-var _object_picker: Control
+var _object_picker: ObjectPicker
 
 ## The object pickers window
-var _object_picker_window: Window
+var _object_picker_base: Control
 
 ## The currently connected callable connected to the object picker
 var _object_picker_selected_signal_connection: Callable
 
-## The currently connected deselected callable connected to the object picker
-var _object_picker_deselected_signal_connection: Callable
+## All the added root nodes
+var _added_root_nodes: Array[Node] = []
 
 
 func _ready() -> void:
 	OS.set_low_processor_usage_mode(true)
-	1
+	
 	if not DirAccess.dir_exists_absolute(ui_library_location):
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
 	
@@ -100,6 +127,8 @@ func _ready() -> void:
 	
 	Core.resetting.connect(_on_engine_resetting)
 	_load()
+	
+	_set_up_object_picker()
 	
 	var cli_args: PackedStringArray = OS.get_cmdline_args()
 	
@@ -114,7 +143,13 @@ func _ready() -> void:
 
 
 func _on_engine_resetting() -> void:
+	for node: Node in _added_root_nodes:
+		remove_child(node)
+		node.queue_free()
+	_added_root_nodes = []
+	
 	get_tree().change_scene_to_file("res://Main.tscn")
+	_set_up_object_picker()
 	
 	# For some reason we need to wait 2 frames for SceneTree.change_scene_to_file to finish and load the new nodes
 	await get_tree().process_frame
@@ -124,8 +159,14 @@ func _on_engine_resetting() -> void:
 
 
 func _load() -> void:
-	_set_up_object_picker()
 	_try_auto_load.call_deferred()
+
+
+func _set_up_object_picker() -> void:
+	_object_picker_base = load("res://ObjectPickerDefault.tscn").instantiate()
+	_object_picker = _object_picker_base.get_node("ObjectPicker")
+	add_root_child(_object_picker_base)
+	
 
 
 func _try_auto_load() -> void:
@@ -135,30 +176,6 @@ func _try_auto_load() -> void:
 		var saved_data = JSON.parse_string(file)
 		if saved_data:
 			self.load(saved_data)
-
-
-## loads all the objects into the object picker
-func _set_up_object_picker() -> void:
-	if not get_tree().root.has_node("Main"):
-		return
-	_object_picker_window = get_tree().root.get_node("Main").get_node("ObjectPickerWindow")
-	_object_picker = get_tree().root.get_node("Main").get_node("ObjectPickerWindow/ObjectPicker")
-	_object_picker.load_objects(panels, "Panels")
-	
-	Core.universes_added.connect(func (arg1=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
-	Core.universes_removed.connect(func (arg1=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
-	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.universes, "Universes", "name"))
-	
-	Core.fixtures_added.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
-	Core.fixtures_removed.connect(func (arg1=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
-	Core.universe_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.fixtures, "Fixtures", "name"))
-	
-	Core.functions_added.connect(func (arg1=null): _object_picker.load_objects(Core.functions, "Functions", "name"))
-	Core.functions_removed.connect(func (arg1=null): _object_picker.load_objects(Core.functions, "Functions", "name"))
-	Core.function_name_changed.connect(func (arg1=null, arg2=null): _object_picker.load_objects(Core.functions, "Functions", "name"))
-	
-	_object_picker.closed.connect(hide_object_picker)
-
 
 
 func set_kiosk_mode(p_kiosk_mode: bool) -> void:
@@ -214,37 +231,35 @@ func _load_matching_scenes_in_folder(current_folder: String, packed_scenes: Dict
 		dir_access.list_dir_end()
 
 
+func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable, filter: Array[String] = []) -> void:
+	_object_picker.filter_allow_list = filter
+	_object_picker.set_user_filtering(filter == [])
+	_object_picker.set_select_mode(select_mode)
+	
+	if _object_picker_selected_signal_connection.is_valid():
+		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
+	
+	_object_picker_selected_signal_connection = callback
+	_object_picker.selection_confirmed.connect(func (selection) -> void:
+		_object_picker_base.hide()
+		callback.call(selection)
+	, CONNECT_ONE_SHOT)
+	
+	_object_picker.selection_canceled.connect(func () -> void:
+		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
+		_object_picker_selected_signal_connection = Callable()
+		_object_picker_base.hide()
+	, CONNECT_ONE_SHOT)
+	
+	_object_picker_base.move_to_front()
+	_object_picker_base.show()
 
-func show_object_picker(callback: Callable, filter: Array[String] = [], allow_multi_select: bool = false, deselect_callback: Callable = Callable(), selection: Array = []) -> void:
-	_object_picker.set_filter(filter)
-	_object_picker.set_multi_select(allow_multi_select)
-	_object_picker.set_selected(selection)
-	
-	_object_picker_window.show()
-	
-	_object_picker_selected_signal_connection = func (key: Variant, value: Variant):
-		callback.call(key, value)
-		
-		if not allow_multi_select:
-			_object_picker_window.hide()
-	
-	_object_picker_deselected_signal_connection = func (key: Variant, value: Variant):
-		deselect_callback.call(key, value)
-	
-	_object_picker.item_selected.connect(_object_picker_selected_signal_connection, CONNECT_PERSIST if allow_multi_select else CONNECT_ONE_SHOT)
-	
-	if deselect_callback.is_valid():
-		_object_picker.item_deselected.connect(_object_picker_deselected_signal_connection, CONNECT_PERSIST if allow_multi_select else CONNECT_ONE_SHOT)
-		
 
-## Hides the object picker
-func hide_object_picker() -> void:
-	_object_picker_window.hide()
-	if _object_picker_selected_signal_connection.is_valid() and _object_picker.item_selected.is_connected(_object_picker_selected_signal_connection):
-		_object_picker.item_selected.disconnect(_object_picker_selected_signal_connection)
-		
-	if _object_picker_deselected_signal_connection.is_valid() and _object_picker.item_deselected.is_connected(_object_picker_deselected_signal_connection):
-		_object_picker.item_deselected.disconnect(_object_picker_deselected_signal_connection)
+## Adds a node as a child to the root. Allowing to create popups
+func add_root_child(node: Node) -> void:
+	_added_root_nodes.append(node)
+	get_tree().root.add_child.call_deferred(node)
+
 
 
 func save() -> Dictionary:

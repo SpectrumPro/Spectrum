@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 ## Called when the color picker button is changed, then updates the color
-func _on_color_picker_button_color_changed(p_color: Color) -> void:
+func _on_color_picker_color_changed(p_color: Color) -> void:
 	color = p_color
 
 

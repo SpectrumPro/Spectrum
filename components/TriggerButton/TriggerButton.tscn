@@ -47,6 +47,6 @@ vertical_alignment = 1
 autowrap_mode = 3
 text_overrun_behavior = 3
 
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="button_up" from="." to="." method="_on_button_up"]
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="toggled" from="." to="." method="_on_toggled"]

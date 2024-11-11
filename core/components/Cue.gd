@@ -62,6 +62,10 @@ var function_triggers: Dictionary = {}
 
 func _component_ready() -> void:
 	self_class_name = "Cue"
+	icon = load("res://assets/icons/Cue.svg")
+	
+	add_accessible_method("fade_time", [TYPE_FLOAT], set_fade_time, get_fade_time, fade_time_changed, ["Seconds"])
+	add_accessible_method("pre_wait", [TYPE_FLOAT], set_pre_wait, get_pre_wait, pre_wait_time_changed, ["Seconds"])
 
 
 ## Stores data inside this cue
@@ -76,35 +80,34 @@ func _store_data(fixture: Fixture, method_name: String, value: Variant) -> bool:
 	return true
 
 
-## Sets the fade time
-func set_fade_time(p_fade_time: float) -> void:
-	Client.send_command(uuid, "set_fade_time", [p_fade_time])
+#region Local Methods
 
+## Sets the fade time
+func set_fade_time(p_fade_time: float) -> void: Client.send_command(uuid, "set_fade_time", [p_fade_time])
+func get_fade_time() -> float: return fade_time
 
 ## Sets the pre_wait time
-func set_pre_wait(p_set_pre_wait: float) -> void:
-	Client.send_command(uuid, "set_pre_wait", [p_set_pre_wait])
-
+func set_pre_wait(p_set_pre_wait: float) -> void: Client.send_command(uuid, "set_pre_wait", [p_set_pre_wait])
+func get_pre_wait() -> float: return pre_wait
 
 ## Sets the trigger mode time
-func set_trigger_mode(p_trigger_mode: TRIGGER_MODE) -> void:
-	Client.send_command(uuid, "set_trigger_mode", [p_trigger_mode])
-
+func set_trigger_mode(p_trigger_mode: TRIGGER_MODE) -> void: Client.send_command(uuid, "set_trigger_mode", [p_trigger_mode])
+func get_trigger_mode() -> TRIGGER_MODE: return trigger_mode
 
 ## Enables or disables timecode triggers
-func set_timecode_enabled(p_timecode_enabled: bool) -> void:
-	Client.send_command(uuid, "set_timecode_enabled", [p_timecode_enabled])
-
+func set_timecode_enabled(p_timecode_enabled: bool) -> void: Client.send_command(uuid, "set_timecode_enabled", [p_timecode_enabled])
+func get_timecode_enabled() -> bool: return timecode_enabled
 
 ## Adds a timecode trigger
-func set_timecode_trigger(frame: int) -> void:
-	Client.send_command(uuid, "set_timecode_trigger", [frame])
-
+func set_timecode_trigger(frame: int) -> void: Client.send_command(uuid, "set_timecode_trigger", [frame])
+func get_timecode_trigger() -> int: return timecode_trigger
 
 ## Sets the timecode trigger to the current frame as of calling this method
-func set_timecode_now() -> void:
-	Client.send_command(uuid, "set_timecode_now")
+func set_timecode_now() -> void: Client.send_command(uuid, "set_timecode_now")
+#endregion
 
+
+#region Server Methods
 
 ## INTERNAL: called when the fade time is changed on the server
 func on_fade_time_changed(p_fade_time: float) -> void:
@@ -139,7 +142,10 @@ func on_timecode_trigger_changed(p_timecode_trigger: int) -> void:
 
 func on_data_stored(fixture: Fixture, channel_key: String, value: Variant) -> void:
 	_store_data_static(fixture, channel_key, value, stored_data)
+#endregion
 
+
+#region Internal Methods
 
 func on_data_eraced(fixture: Fixture, channel_key: String) -> void:
 	_erace_data_static(fixture, channel_key, stored_data)
@@ -157,3 +163,4 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 	timecode_trigger = serialized_data.get("timecode_trigger", timecode_trigger)
 	
 	_load_stored_data(serialized_data.get("stored_data", {}), stored_data)
+#endregion

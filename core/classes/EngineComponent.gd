@@ -30,9 +30,16 @@ var uuid: String = ""
 ## The class_name of this component this should always be set by the object that extends EngineComponent
 var self_class_name: String = "EngineComponent"
 
+## The local icon for this component, used when displaying in th ui
+var icon: Texture2D = load("res://assets/icons/Component.svg")
 
-func _init(p_uuid: String = UUID_Util.v4()) -> void:
+## List of functions that are allowed to be called by external control scripts.
+var accessible_methods: Dictionary = {}
+
+
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	uuid = p_uuid
+	name = p_name
 	_component_ready()
 	
 	print_verbose("I am: ", name, " | ", uuid)
@@ -70,6 +77,19 @@ func get_user_meta(key: String, default = null) -> Variant:
 ## Returns all user meta
 func get_all_user_meta() -> Dictionary:
 	return user_meta
+
+
+## Adds a method that can be safley callled by client controls
+func add_accessible_method(name: String, types: Array[int], set_method: Callable, get_method: Callable = Callable(), changed_signal: Signal = Signal(), arg_description: Array[String] = []) -> void:
+	accessible_methods.merge({
+		name: {
+			"set": set_method,
+			"get": get_method,
+			"signal": changed_signal,
+			"types": types,
+			"arg_description": arg_description
+		}
+	})
 
 
 ## INTERNAL: Called when user meta is changed on the server
@@ -114,6 +134,7 @@ func on_delete_requested() -> void:
 	delete_requested.emit()
 	
 	print(uuid, " Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
+	ComponentDB.deregister_component(self)
 
 
 ## Overide this function to handle delete requests

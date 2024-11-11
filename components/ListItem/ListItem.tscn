@@ -31,6 +31,7 @@ layout_mode = 2
 
 [node name="Icon" type="TextureRect" parent="Container"]
 layout_mode = 2
+stretch_mode = 3
 
 [node name="IDTag" type="Label" parent="Container"]
 visible = false

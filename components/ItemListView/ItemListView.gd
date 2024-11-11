@@ -33,6 +33,7 @@ signal selection_changed(items: Array)
 
 @export var buttons_enabled: bool = true : set = set_buttons_enabled ## Shows or hides all the button in the ui
 @export var allow_multi_select: bool = true ## If the user should be able to select mutiple items at once
+@export var sort_alphabetically: bool = true
 
 @onready var item_container: VBoxContainer = self.get_node("PanelContainer2/ScrollContainer/ItemContainer")
 
@@ -45,7 +46,9 @@ var currently_highlighted_items: Array = []
 ## The most recently selected item
 var last_selected_item: Control
 
+## Stores a refernce back to the orignal object by the list node, {ListItem: EngineComponent}
 var object_refs: Dictionary
+
 
 func _ready() -> void:
 	set_show_separators(show_separators)
@@ -64,7 +67,7 @@ func _ready() -> void:
 	)
 	
 	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
-
+ 
 
 func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
 	$ToolBarContainer.visible = false if kiosk_mode else (true if show_tool_bar else false)
@@ -72,45 +75,63 @@ func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
 
 ## Adds an item to the list
 func add_items(items: Array, chips: Array = [], name_method: String = "", name_changed_signal: String = "") -> void:
-	
 	$PanelContainer2/ConfirmationBox.hide()
 	
-	
 	for item in items:
-		var new_item_node: ListItem = Interface.components.ListItem.instantiate()
+		add_item(item, chips, name_method, name_changed_signal)
+	
+	if sort_alphabetically:
+		sort()
+
+
+func add_item(item: Variant, chips: Array = [], name_method: String = "", name_changed_signal: String = "", icon: Texture2D = null) -> void:
+	var new_item_node: ListItem = Interface.components.ListItem.instantiate()
 		
-		if item is Object or item is Dictionary and _is_valid_object(item):
-			new_item_node.set_item_name(item.name)
-			
-			new_item_node.name = item.uuid
-			new_item_node.select_requested.connect(self._on_list_item_select_request)
-			
-			for chip: Array in chips:
-				if item.get(chip[1]):
-					new_item_node.add_chip(item, chip[0], item.get(chip[1]), item.get(chip[2]))
-			
-			if name_method:
-				new_item_node.set_name_method(item.get(name_method))
-			
-			if name_changed_signal:
-				new_item_node.set_name_changed_signal(item.get(name_changed_signal))
-				
+	if item is Object or item is Dictionary and _is_valid_object(item):
+		new_item_node.set_item_name(item.name)
 		
-		else:
-			new_item_node.set_item_name(str(item))
-			
-			new_item_node.name = str(item)
-			new_item_node.select_requested.connect(self._on_list_item_select_request)
+		new_item_node.name = item.uuid
+		new_item_node.select_requested.connect(self._on_list_item_select_request)
 		
-		item_container.add_child(new_item_node)
-		object_refs[new_item_node] = item
+		for chip: Array in chips:
+			if item.get(chip[1]):
+				new_item_node.add_chip(item, chip[0], item.get(chip[1]), item.get(chip[2]))
+		
+		if name_method:
+			new_item_node.set_name_method(item.get(name_method))
+		
+		if name_changed_signal:
+			new_item_node.set_name_changed_signal(item.get(name_changed_signal))
+		
+		if icon:
+			new_item_node.set_icon(icon)
+	
+	else:
+		new_item_node.set_item_name(str(item))
+		
+		new_item_node.name = str(item)
+		new_item_node.select_requested.connect(self._on_list_item_select_request)
+	
+	item_container.add_child(new_item_node)
+	object_refs[new_item_node] = item
+
+
+## Sorts all the items in this list by alphabetical order
+func sort() -> void:
+	var sorted_list_item_nodes: Array = object_refs.keys()
+	sorted_list_item_nodes.sort_custom(func(a, b): 
+		var a_name = object_refs[a].name if _is_valid_object(object_refs[a]) else str(object_refs[a])
+		var b_name = object_refs[b].name if _is_valid_object(object_refs[b]) else str(object_refs[b])
+		return a_name.naturalnocasecmp_to(b_name) < 0
+	)
+	
+	for list_item: ListItem in sorted_list_item_nodes:
+		item_container.move_child(list_item, sorted_list_item_nodes.find(list_item))
 
 
 ## Removes all items from the list
 func remove_all() -> void:
-	
 	$PanelContainer2/ConfirmationBox.hide()
-	
 	
 	object_refs = {}
 	last_selected_item = null

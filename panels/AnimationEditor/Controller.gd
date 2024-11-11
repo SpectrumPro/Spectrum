@@ -35,11 +35,11 @@ func _on_add_audio_track_pressed() -> void:
 	
 	var track_id = animation.add_track(Animation.TYPE_METHOD)
 	
-	var track_data = Interface.components.TrackData.instantiate()
+	var track_data = load("res://panels/AnimationEditor/TrackData.tscn").instantiate()
 	track_data.track_id = track_id
 	get_node(track_contents_container).add_child(track_data)
 	
-	var track_controls: Control = Interface.components.TrackControls.instantiate()
+	var track_controls: Control = load("res://panels/AnimationEditor/TrackControls.tscn").instantiate()
 	track_controls.track_data_container = track_data
 	track_controls.track_id = track_id
 	get_node(track_controls_container).add_child(track_controls)

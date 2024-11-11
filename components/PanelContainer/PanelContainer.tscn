@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cv51u5nenveg0" path="res://assets/icons/SplitBottom.svg" id="3_lwsyi"]
 [ext_resource type="Texture2D" uid="uid://c81i2f8d5q3sx" path="res://assets/icons/SplitRight.svg" id="4_w1noa"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="5_33068"]
-[ext_resource type="PackedScene" uid="uid://db5gkmntjtqmr" path="res://components/PanelSettingContainer/PanelSettingsContainer.tscn" id="8_uv36r"]
+[ext_resource type="PackedScene" uid="uid://db5gkmntjtqmr" path="res://components/SettingsContainer/SettingsContainer.tscn" id="8_uv36r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o6cbh"]
 
