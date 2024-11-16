@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bc4k82h455ix2"]
+
+[ext_resource type="Script" path="res://components/Table/TableItems/RowIndex.gd" id="1_mom7o"]
+
+[node name="RowIndex" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 50)
+size_flags_horizontal = 3
+script = ExtResource("1_mom7o")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_alignment = 1
+text_overrun_behavior = 3

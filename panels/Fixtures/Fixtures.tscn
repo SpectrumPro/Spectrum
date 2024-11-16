@@ -16,6 +16,7 @@ layout_mode = 2
 show_new = false
 show_take = false
 show_edit = false
+sort_alphabetically = false
 
 [connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]

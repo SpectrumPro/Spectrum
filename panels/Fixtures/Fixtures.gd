@@ -11,7 +11,7 @@ extends Control
 
 func _ready() -> void:
 	## Connect to fixture signals
-	Core.fixtures_added.connect(self._reload_fixtures)
+	Core.fixtures_added.connect(self._on_fixtures_added)
 	Core.fixtures_removed.connect(self._reload_fixtures)
 	
 	## Connect to universe signals
@@ -28,6 +28,11 @@ func _ready() -> void:
 func _reload_fixtures(arg1=null, arg2=null) -> void:
 	item_list_view.remove_all()
 	item_list_view.add_items(Core.fixtures.values(), [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
+
+
+## Called when fixtures are added
+func _on_fixtures_added(fixtures: Array[Fixture]) -> void:
+	item_list_view.add_items(fixtures, [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView

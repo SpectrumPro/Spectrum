@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkq5va4u70tau"]
+
+[ext_resource type="Script" path="res://panels/CueListTable/CueListTable.gd" id="1_2ygo6"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_yvabf"]
+[ext_resource type="PackedScene" uid="uid://dikufbor3ym75" path="res://components/Table/Table.tscn" id="2_278a8"]
+
+[node name="CueListTable" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_yvabf")
+script = ExtResource("1_2ygo6")
+
+[node name="Table" parent="." instance=ExtResource("2_278a8")]
+layout_mode = 2
+size_flags_horizontal = 3

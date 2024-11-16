@@ -48,7 +48,6 @@ text = "Object:"
 
 [node name="CurrentObject" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
-text = "Main CueList"
 label_settings = SubResource("LabelSettings_axtyc")
 
 [node name="ChangeObject" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
@@ -58,6 +57,7 @@ icon = ExtResource("2_31l28")
 [node name="Confirm" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+disabled = true
 text = "Confim"
 icon = ExtResource("3_hdv2q")
 
@@ -89,15 +89,8 @@ text = "Choose a Method:"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-item_count = 6
-item_0/text = "Go Next"
-item_1/text = "Go Previous"
-item_2/text = "Seek To"
-item_3/text = "Play"
-item_4/text = "Pause"
-item_5/text = "Stop"
 
-[node name="Button" type="Button" parent="VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer"]
+[node name="RemoveBinding" type="Button" parent="VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer"]
 layout_mode = 2
 text = "Remove Binding"
 icon = ExtResource("5_54dlw")
@@ -123,6 +116,7 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="SelectToEdit" type="Label" parent="VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
@@ -137,7 +131,15 @@ size_flags_vertical = 6
 text = "Selected method has no parameters"
 label_settings = SubResource("LabelSettings_hwsu5")
 
+[node name="SelectAnObject" type="Label" parent="VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Select an object to view methods"
+label_settings = SubResource("LabelSettings_hwsu5")
+
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ChangeObject" to="." method="_on_change_object_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Confirm" to="." method="_on_confirm_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="item_selected" from="VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer/MethodList" to="." method="_on_method_list_item_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer/RemoveBinding" to="." method="_on_remove_binding_pressed"]

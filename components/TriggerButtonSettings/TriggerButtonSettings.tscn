@@ -58,7 +58,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Editing Button: "
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ItemName" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -165,7 +165,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Background Color: "
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/BGColor"]
+[node name="BGColorPicker" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/BGColor"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -180,7 +180,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Border:"
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/Border"]
+[node name="BorderColorPicker" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/Border"]
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -192,14 +192,16 @@ layout_mode = 2
 layout_mode = 2
 text = "Border Width: "
 
-[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/HBoxContainer"]
+[node name="BorderWidth" type="SpinBox" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/HBoxContainer2"]
@@ -238,7 +240,14 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_qs2yx")
 
+[connection signal="text_changed" from="VBoxContainer/PanelContainer/HBoxContainer/ItemName" to="." method="_on_item_name_text_changed"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ButtonMode/VBoxContainer/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ButtonDown/VBoxContainer/ChooseButtonDownMethod" to="." method="_on_choose_button_down_method_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ButtonUp/VBoxContainer/ChooseButtonUpMethod" to="." method="_on_choose_button_up_method_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/Feedback/VBoxContainer/ChooseFeedbackMethod" to="." method="_on_choose_feedback_method_pressed"]
+[connection signal="color_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/BGColor/BGColorPicker" to="." method="_on_bg_color_picker_color_changed"]
+[connection signal="color_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/Border/BorderColorPicker" to="." method="_on_border_color_picker_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/HBoxContainer/BorderWidth" to="." method="_on_border_width_value_changed"]
 [connection signal="cancled" from="ComponentMethodPicker" to="." method="_on_component_method_picker_cancled"]
+[connection signal="method_confired" from="ComponentMethodPicker" to="." method="_on_component_method_picker_method_confired"]
+[connection signal="remove_requested" from="ComponentMethodPicker" to="." method="_on_component_method_picker_remove_requested"]

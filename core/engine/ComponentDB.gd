@@ -43,7 +43,7 @@ func register_component(component: EngineComponent) -> bool:
 	
 	if component.uuid in _component_requests:
 		for callback: Callable in _component_requests[component.uuid]:
-			callback.call(component)
+			if callback.is_valid(): callback.call(component)
 		
 		_component_requests.erase(component.uuid)
 	

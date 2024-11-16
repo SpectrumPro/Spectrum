@@ -6,17 +6,20 @@ class_name ComponentMethodPicker extends PanelContainer
 
 
 ## Emitted when the user confirms the method
-signal method_confired(method: Callable)
+signal method_confired(method_config: Dictionary)
 
 ## Emitted when the user presses the cancel button 
 signal cancled()
+
+## Emitted when the remove binding button is pressed
+signal remove_requested()
 
 
 ## The ItemList used for listing methods
 @onready var _method_list: ItemList = $VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer/MethodList
 
 ## The component used
-var component: EngineComponent = null
+var component: EngineComponent = null : set = set_component
 
 ## The current method
 var _current_method: Dictionary = {}
@@ -24,6 +27,45 @@ var _current_method: Dictionary = {}
 ## The HBox container for parameter controls
 var _parameters_v_box: VBoxContainer = null
 
+
+## The current config of the selected method
+var _current_config: Dictionary = {
+	"uuid": "",
+	"method_name": "",
+	"args": []
+}
+
+## Contains the args that will be auto loaded when loading a pre-existing config
+var _saved_args: Array = []
+
+
+## Sets the method config
+func set_method_config(method_config: Dictionary) -> void:
+	if method_config.uuid in ComponentDB.components:
+		set_component(ComponentDB.components[method_config.uuid])
+		
+		var index: int = component.accessible_methods.keys().find(method_config.method_name)
+		_method_list.select(index)
+		_on_method_list_item_selected(index)
+		
+		_saved_args = method_config.args
+
+
+## Sets the component
+func set_component(p_component: EngineComponent) -> void:
+	component = p_component
+	_update_method_list()
+	
+	if component:
+		$VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/CurrentObject.text = component.name
+		$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/SelectAnObject.hide()
+		_current_config.uuid = component.uuid
+	else:
+		$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/SelectAnObject.show()
+		_current_config.uuid = ""
+		_current_config.method_name = ""
+		_current_config.args = []
+	
 
 ## Updates the list of methods
 func _update_method_list() -> void:
@@ -44,6 +86,7 @@ func _update_parameter_controls() -> void:
 			$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/HasNoArgs.show()
 			$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/SelectToEdit.hide()
 			_remove_old_parameter_list()
+			_current_config.args = []
 			
 		else:
 			$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/HasNoArgs.hide()
@@ -59,22 +102,35 @@ func _update_parameter_controls() -> void:
 func _reload_parameter_list() -> void:
 	_remove_old_parameter_list()
 	
+	_current_config.args = []
 	_parameters_v_box = VBoxContainer.new()
 	
-	if _current_method:
+	if _current_method and len(_current_method.types):
+		_current_config.args.resize(len(_current_method.types))
+		_current_config.args.fill(null)
+		
 		for index: int in len(_current_method.types):
 			var data_type: int = _current_method.types[index]
+			var value: Variant = null
 			
 			if len(_current_method.arg_description) - 1 < index:
 				break
 			
+			if len(_saved_args) - 1 >= index:
+				if typeof(_saved_args[index]) == _current_method.types[index]:
+					value = _saved_args[index]
+					_current_config.args[index] = value
+			
 			match data_type:
 				TYPE_INT:
-					_parameters_v_box.add_child(_create_int_control(index, _current_method.arg_description[index]))
+					if value == null: value = 0
+					_parameters_v_box.add_child(_create_int_control(index, _current_method.arg_description[index], value))
 				TYPE_FLOAT:
-					_parameters_v_box.add_child(_create_float_control(index, _current_method.arg_description[index]))
+					if value == null: value = 0
+					_parameters_v_box.add_child(_create_float_control(index, _current_method.arg_description[index], value))
 				TYPE_BOOL:
-					_parameters_v_box.add_child(_create_bool_control(index, _current_method.arg_description[index]))
+					if value == null: value = false
+					_parameters_v_box.add_child(_create_bool_control(index, _current_method.arg_description[index], value))
 				_:
 					_parameters_v_box.add_child(_create_unsuported(data_type, _current_method.arg_description[index]))
 	
@@ -86,24 +142,33 @@ func _remove_old_parameter_list() -> void:
 		_parameters_v_box.queue_free()
 
 
-func _create_int_control(arg_index: int, arg_description: String) -> Control:
+func _create_int_control(arg_index: int, arg_description: String, value: int = 0) -> Control:
 	var spin_box: SpinBox = SpinBox.new()
 	spin_box.prefix = "int: "
+	
+	spin_box.set_value_no_signal(value)
+	spin_box.value_changed.connect(func (new_value: int): _current_config.args[arg_index] = new_value)
 	
 	return _get_base_control(arg_description, spin_box)
 
 
-func _create_float_control(arg_index: int, arg_description: String) -> Control:
+func _create_float_control(arg_index: int, arg_description: String, value: float = 0) -> Control:
 	var spin_box: SpinBox = SpinBox.new()
 	spin_box.step = 0.001
 	spin_box.prefix = "float: "
 	
+	spin_box.set_value_no_signal(value)
+	spin_box.value_changed.connect(func (new_value: float): _current_config.args[arg_index] = new_value)
+	
 	return _get_base_control(arg_description, spin_box)
 
 
-func _create_bool_control(arg_index: int, arg_description: String) -> Control:
+func _create_bool_control(arg_index: int, arg_description: String, value: bool = false) -> Control:
 	var check_button: CheckButton = CheckButton.new()
 	check_button.text = "True / False"
+	
+	check_button.set_pressed_no_signal(value)
+	check_button.toggled.connect(func (toggled_on: bool): _current_config.args[arg_index] = toggled_on)
 	
 	return _get_base_control(arg_description, check_button)
 
@@ -133,22 +198,24 @@ func _on_change_object_pressed() -> void:
 
 ## Called when an object is choosen
 func _on_object_picker_object_selected(objects: Array[EngineComponent]) -> void:
-	component = objects[0]
-	$VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/CurrentObject.text = component.name
-	
-	_update_method_list()
+	set_component(objects[0])
 
 
+## Called when a method is selected in the method list
 func _on_method_list_item_selected(index: int) -> void:
 	if component:
 		_current_method = component.accessible_methods.values()[index]
+		_current_config.method_name = component.accessible_methods.keys()[index]
 		_update_parameter_controls()
+		
+		$VBoxContainer/PanelContainer/HBoxContainer/Confirm.disabled = false
 
 
-func _on_confirm_pressed() -> void:
-	#method_confired.emit()
-	pass
+## Called when the confirm button is pressed
+func _on_confirm_pressed() -> void: method_confired.emit(_current_config)
 
+## Called when the cansel button is pressed
+func _on_cancel_pressed() -> void: cancled.emit()
 
-func _on_cancel_pressed() -> void:
-	cancled.emit()
+## Called wen the remove binding button is pressed
+func _on_remove_binding_pressed() -> void: remove_requested.emit()

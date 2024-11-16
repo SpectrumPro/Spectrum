@@ -104,6 +104,9 @@ func get_timecode_trigger() -> int: return timecode_trigger
 
 ## Sets the timecode trigger to the current frame as of calling this method
 func set_timecode_now() -> void: Client.send_command(uuid, "set_timecode_now")
+
+## Getter for number
+func get_number() -> float: return number
 #endregion
 
 

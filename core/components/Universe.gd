@@ -163,7 +163,12 @@ func _on_serialize_request() -> Dictionary:
 
 
 func _on_load_request(serialized_data: Dictionary) -> void:
-	for fixture_channel: String in serialized_data.get("fixtures", {}).keys():
+	var fixture_channels: Array = serialized_data.get("fixtures", {}).keys()
+	fixture_channels.sort_custom(func(a, b): 
+		return a.naturalnocasecmp_to(b) < 0
+	)
+	
+	for fixture_channel: String in fixture_channels:
 		for serialized_fixture: Dictionary in serialized_data.fixtures[fixture_channel]:
 			var new_fixture: Fixture = Fixture.new(serialized_fixture.get("uuid"))
 			new_fixture.load(serialized_fixture)

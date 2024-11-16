@@ -19,7 +19,7 @@ func _ready() -> void:
 		panel_item.set_title(panel_name.capitalize())
 		panel_item.set_info(panel_name)
 		
-		panel_item.set_icon(Interface.panel_icons.get(panel_name, Texture2D.new()))
+		if Interface.panel_icons.get(panel_name): panel_item.set_icon(Interface.panel_icons[panel_name])
 		
 		panel_item.pressed.connect(func () -> void:
 			panel_chosen.emit(Interface.panels[panel_name])

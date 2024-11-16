@@ -35,5 +35,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 text = "00:00:00:00"
 label_settings = SubResource("LabelSettings_2atlb")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="resized" from="." to="." method="_on_resized"]

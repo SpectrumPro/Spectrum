@@ -23,7 +23,7 @@ theme_override_icons/grabber = ExtResource("1_qgbu0")
 theme_override_icons/grabber_highlight = ExtResource("1_qgbu0")
 theme_override_styles/slider = SubResource("StyleBoxFlat_hv2sk")
 max_value = 1.0
-step = 0.0
+step = 0.01
 script = ExtResource("2_ge5bo")
 
 [connection signal="value_changed" from="." to="." method="_on_value_changed"]

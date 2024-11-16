@@ -218,6 +218,10 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 	var index: Variant = serialized_data.get("index")
 	if index is int and index != -1:
 		on_cue_changed(index_list[serialized_data.get("index")])
+		
+	_intensity = serialized_data.get("intensity", 1)
+	intensity_changed.emit(_intensity)
+
 
 
 func _on_delete_request() -> void:
