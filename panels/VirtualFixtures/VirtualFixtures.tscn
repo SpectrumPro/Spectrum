@@ -18,6 +18,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/grid_major = Color(0.0784314, 0.0784314, 0.0784314, 1)
 theme_override_colors/grid_minor = Color(0.101961, 0.101961, 0.101961, 1)
+zoom_min = 0.001
 show_minimap_button = false
 show_arrange_button = false
 

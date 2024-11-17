@@ -99,7 +99,7 @@ func on_dimmer_changed(value: int) -> void:
 ## INTERNAL: called when the channel is changed on the server
 func on_channel_changed(p_channel: int) -> void:
 	channel = p_channel
-	channel_changed.emit(channel_changed)
+	channel_changed.emit(channel)
 
 
 ## INTERNAL: called when an override value is changed on the server
