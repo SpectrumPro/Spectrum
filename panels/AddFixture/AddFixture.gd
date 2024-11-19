@@ -73,14 +73,12 @@ func _reload_menu() -> void:
 	if not current_fixture:
 		return
 		
-	for mode: String in current_fixture.modes:
-		self.get_node(fixture_modes_option).add_item(mode)
+	for mode: Dictionary in current_fixture.modes:
+		self.get_node(fixture_modes_option).add_item(mode.name)
 	
-	print(options.mode)
-	print()
 	self.get_node(fixture_modes_option).selected = options.mode
 	
-	for channel_key: String in current_fixture.modes.values()[options.mode].channels:
+	for channel_key: String in current_fixture.modes[options.mode].channels:
 		self.get_node(fixture_channel_list).add_item(channel_key.capitalize())
 
 
