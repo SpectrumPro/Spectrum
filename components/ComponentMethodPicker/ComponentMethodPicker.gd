@@ -6,7 +6,7 @@ class_name ComponentMethodPicker extends PanelContainer
 
 
 ## Emitted when the user confirms the method
-signal method_confired(method_config: Dictionary)
+signal method_confired(method_trigger: MethodTrigger)
 
 ## Emitted when the user presses the cancel button 
 signal cancled()
@@ -27,29 +27,25 @@ var _current_method: Dictionary = {}
 ## The HBox container for parameter controls
 var _parameters_v_box: VBoxContainer = null
 
-
-## The current config of the selected method
-var _current_config: Dictionary = {
-	"uuid": "",
-	"method_name": "",
-	"args": []
-}
+## The method trigger to be returned
+var _method_trigger: MethodTrigger = MethodTrigger.new()
 
 ## Contains the args that will be auto loaded when loading a pre-existing config
 var _saved_args: Array = []
 
 
 ## Sets the method config
-func set_method_config(method_config: Dictionary) -> void:
-	if method_config.uuid in ComponentDB.components:
-		set_component(ComponentDB.components[method_config.uuid])
+func set_method_config(method_trigger: MethodTrigger) -> void:
+	if method_trigger.get_uuid() in ComponentDB.components:
+		_method_trigger = MethodTrigger.new().deseralize(method_trigger.seralize())
+		_saved_args = _method_trigger.args
+		set_component(ComponentDB.components[_method_trigger.get_uuid()])
 		
-		var index: int = component.accessible_methods.keys().find(method_config.method_name)
+		var index: int = component.accessible_methods.keys().find(_method_trigger.get_method_name())
 		_method_list.select(index)
 		_on_method_list_item_selected(index)
 		
-		_saved_args = method_config.args
-
+	
 
 ## Sets the component
 func set_component(p_component: EngineComponent) -> void:
@@ -59,12 +55,9 @@ func set_component(p_component: EngineComponent) -> void:
 	if component:
 		$VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/CurrentObject.text = component.name
 		$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/SelectAnObject.hide()
-		_current_config.uuid = component.uuid
+		_method_trigger.set_uuid(component.uuid)
 	else:
 		$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/SelectAnObject.show()
-		_current_config.uuid = ""
-		_current_config.method_name = ""
-		_current_config.args = []
 	
 
 ## Updates the list of methods
@@ -86,7 +79,7 @@ func _update_parameter_controls() -> void:
 			$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/HasNoArgs.show()
 			$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/SelectToEdit.hide()
 			_remove_old_parameter_list()
-			_current_config.args = []
+			_method_trigger.args = []
 			
 		else:
 			$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer/HasNoArgs.hide()
@@ -102,12 +95,12 @@ func _update_parameter_controls() -> void:
 func _reload_parameter_list() -> void:
 	_remove_old_parameter_list()
 	
-	_current_config.args = []
+	_method_trigger.args = []
 	_parameters_v_box = VBoxContainer.new()
 	
 	if _current_method and len(_current_method.types):
-		_current_config.args.resize(len(_current_method.types))
-		_current_config.args.fill(null)
+		_method_trigger.args.resize(len(_current_method.types))
+		_method_trigger.args.fill(null)
 		
 		for index: int in len(_current_method.types):
 			var data_type: int = _current_method.types[index]
@@ -119,7 +112,6 @@ func _reload_parameter_list() -> void:
 			if len(_saved_args) - 1 >= index:
 				if typeof(_saved_args[index]) == _current_method.types[index]:
 					value = _saved_args[index]
-					_current_config.args[index] = value
 			
 			match data_type:
 				TYPE_INT:
@@ -133,6 +125,9 @@ func _reload_parameter_list() -> void:
 					_parameters_v_box.add_child(_create_bool_control(index, _current_method.arg_description[index], value))
 				_:
 					_parameters_v_box.add_child(_create_unsuported(data_type, _current_method.arg_description[index]))
+			
+			_method_trigger.args[index] = value
+			
 	
 	$VBoxContainer/PanelContainer2/HSplitContainer/VBoxContainer2/PanelContainer3/VBoxContainer.add_child(_parameters_v_box)
 
@@ -147,7 +142,7 @@ func _create_int_control(arg_index: int, arg_description: String, value: int = 0
 	spin_box.prefix = "int: "
 	
 	spin_box.set_value_no_signal(value)
-	spin_box.value_changed.connect(func (new_value: int): _current_config.args[arg_index] = new_value)
+	spin_box.value_changed.connect(func (new_value: int): _method_trigger.args[arg_index] = new_value)
 	
 	return _get_base_control(arg_description, spin_box)
 
@@ -158,7 +153,7 @@ func _create_float_control(arg_index: int, arg_description: String, value: float
 	spin_box.prefix = "float: "
 	
 	spin_box.set_value_no_signal(value)
-	spin_box.value_changed.connect(func (new_value: float): _current_config.args[arg_index] = new_value)
+	spin_box.value_changed.connect(func (new_value: float): _method_trigger.args[arg_index] = new_value)
 	
 	return _get_base_control(arg_description, spin_box)
 
@@ -168,7 +163,7 @@ func _create_bool_control(arg_index: int, arg_description: String, value: bool =
 	check_button.text = "True / False"
 	
 	check_button.set_pressed_no_signal(value)
-	check_button.toggled.connect(func (toggled_on: bool): _current_config.args[arg_index] = toggled_on)
+	check_button.toggled.connect(func (toggled_on: bool): _method_trigger.args[arg_index] = toggled_on)
 	
 	return _get_base_control(arg_description, check_button)
 
@@ -205,14 +200,14 @@ func _on_object_picker_object_selected(objects: Array[EngineComponent]) -> void:
 func _on_method_list_item_selected(index: int) -> void:
 	if component:
 		_current_method = component.accessible_methods.values()[index]
-		_current_config.method_name = component.accessible_methods.keys()[index]
+		_method_trigger.set_method_name(component.accessible_methods.keys()[index])
 		_update_parameter_controls()
 		
 		$VBoxContainer/PanelContainer/HBoxContainer/Confirm.disabled = false
 
 
 ## Called when the confirm button is pressed
-func _on_confirm_pressed() -> void: method_confired.emit(_current_config)
+func _on_confirm_pressed() -> void: method_confired.emit(_method_trigger)
 
 ## Called when the cansel button is pressed
 func _on_cancel_pressed() -> void: cancled.emit()

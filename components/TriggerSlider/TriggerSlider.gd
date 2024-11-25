@@ -61,7 +61,6 @@ func _on_feedback_object_found(object: EngineComponent) -> void:
 
 
 func _on_feedback_signal_emitted(p_value: Variant) -> void:
-	print(p_value)
 	set_value_no_signal(p_value as float)
 
 

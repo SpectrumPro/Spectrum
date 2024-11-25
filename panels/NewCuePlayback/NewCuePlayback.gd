@@ -20,7 +20,7 @@ var _previous_uuid: String = ""
 
 ## Sets the cuelist to control
 func set_cue_list(cue_list: CueList) -> void:
-	if _previous_uuid: ComponentDB.remove_request(_previous_uuid, _on_cue_list_object_found)
+	if _previous_uuid: ComponentDB.remove_request.call_deferred(_previous_uuid, _on_cue_list_object_found)
 	if _cue_list: _cue_list.cues_added.disconnect(_reload_cues)
 	
 	_cue_list = cue_list
@@ -42,8 +42,8 @@ func _reload_cues(arg1=null) -> void:
 			var new_cue_item: CueItem = Interface.components.CueItem.instantiate()
 			
 			_cues[cue.uuid] = new_cue_item
-			new_cue_item.set_cue(cue, _cue_list)
 			_cue_container.add_child(new_cue_item)
+			new_cue_item.set_cue(cue, _cue_list)
 
 
 ## Called when the cue name button is pressed
@@ -55,6 +55,14 @@ func _on_cue_name_pressed() -> void:
 
 ## Called when ComponentDB finds the cuelist
 func _on_cue_list_object_found(object: EngineComponent) -> void: if object is CueList: set_cue_list(object)
+
+
+#region Ui Callbacks
+
+func _on_previous_pressed() -> void: if _cue_list: _cue_list.go_previous()
+func _on_next_pressed() -> void: if _cue_list: _cue_list.go_next()
+
+#endregion
 
 
 ## Saves this into a dict

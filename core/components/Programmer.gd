@@ -19,9 +19,12 @@ func _component_ready() -> void:
 	self_class_name = "Programmer"
 
 
+## Clears the programmer
+func clear() -> void: Client.send_command("programmer", "clear")
+
+
 ## Sets the color of all the fixtures in fixtures, to color
 func set_color(fixtures: Array, color: Color) -> void:
-	
 	Client.send({
 		"for": "programmer",
 		"call": "set_color",

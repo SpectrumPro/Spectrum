@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnqivpcpimlwc"]
+[gd_scene load_steps=9 format=3 uid="uid://cnqivpcpimlwc"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_u3x3w"]
 [ext_resource type="Script" path="res://panels/NewCuePlayback/NewCuePlayback.gd" id="2_4bo1g"]
 [ext_resource type="Script" path="res://panels/NewCuePlayback/Controls.gd" id="3_ijo7h"]
+[ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/CueList.svg" id="3_qadkc"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="3_v1amt"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="4_nfbmp"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="6_knbom"]
@@ -33,6 +34,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Empty Playback"
+icon = ExtResource("3_qadkc")
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
@@ -90,3 +92,5 @@ text = "
 label_settings = SubResource("LabelSettings_fuler")
 
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/CueName" to="." method="_on_cue_name_pressed"]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed"]
+[connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Next" to="." method="_on_next_pressed"]

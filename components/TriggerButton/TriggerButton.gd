@@ -30,19 +30,11 @@ var _percentage: float = 0
 var _style_box: StyleBoxFlat = null
 
 
-## The default button config, stored here so it can be used to reset the config if needed
-var _default_button_config: Dictionary = {
-	"uuid": "",
-	"method_name": "",
-	"args": [],
-	"callable": Callable()
-}
-
 ## Config for the button up action
-var _button_up_config: Dictionary = _default_button_config.duplicate()
+var _button_up_trigger: MethodTrigger = MethodTrigger.new()
 
 ## Config for the button down action1
-var _button_down_config: Dictionary = _default_button_config.duplicate()
+var _button_down_trigger: MethodTrigger = MethodTrigger.new()
 
 
 func _ready() -> void:
@@ -107,63 +99,25 @@ func set_button_mode(p_button_mode: Mode) -> void:
 
 
 ## Sets the action for button up
-func set_button_up(component_uuid: String, method_name: String, args: Array) -> void:
-	if _button_up_config.uuid:
-		ComponentDB.remove_request(_button_up_config.uuid, _on_button_up_object_found)
-	
-	_button_up_config.uuid = component_uuid
-	_button_up_config.method_name = method_name
-	_button_up_config.args = args
-	
-	ComponentDB.request_component(component_uuid, _on_button_up_object_found)
-
+func set_button_up(method_trigger: MethodTrigger) -> void: 
+	_button_up_trigger.deseralize(method_trigger.seralize())
 
 ## Removes the button up binding
-func remove_button_up() -> void:
-	if _button_up_config.uuid:
-		ComponentDB.remove_request(_button_up_config.uuid, _on_button_up_object_found)
-	
-	_button_up_config = _default_button_config.duplicate()
-
+func remove_button_up() -> void: _button_up_trigger = MethodTrigger.new()
 
 ## Returns the button up config
-func get_button_up() -> Dictionary: return _button_up_config.duplicate()
-
-
-## Callback for when ComponentDB finds the object
-func _on_button_up_object_found(object: EngineComponent) -> void:
-	if object.accessible_methods.get(_button_up_config.method_name):
-		_button_up_config.callable = object.accessible_methods[_button_up_config.method_name].set.bindv(_button_up_config.args)
+func get_button_up() -> MethodTrigger: return _button_up_trigger
 
 
 ## Sets the action for button down
-func set_button_down(component_uuid: String, method_name: String, args: Array) -> void:
-	if _button_down_config.uuid:
-		ComponentDB.remove_request(_button_down_config.uuid, _on_button_down_object_found)
-	
-	_button_down_config.uuid = component_uuid
-	_button_down_config.method_name = method_name
-	_button_down_config.args = args
-	
-	ComponentDB.request_component(component_uuid, _on_button_down_object_found)
-
+func set_button_down(method_trigger: MethodTrigger) -> void: 
+	_button_down_trigger.deseralize(method_trigger.seralize())
 
 ## Removes the button down binding
-func remove_button_down() -> void:
-	if _button_down_config.uuid:
-		ComponentDB.remove_request(_button_down_config.uuid, _on_button_down_object_found)
-	
-	_button_down_config = _default_button_config.duplicate()
-
+func remove_button_down() -> void: _button_down_trigger = MethodTrigger.new()
 
 ## Returns the button down config
-func get_button_down() -> Dictionary: return _button_down_config.duplicate()
-
-
-## Callback for when ComponentDB finds the object
-func _on_button_down_object_found(object: EngineComponent) -> void:
-	if object.accessible_methods.get(_button_down_config.method_name):
-		_button_down_config.callable = object.accessible_methods[_button_down_config.method_name].set.bindv(_button_down_config.args)
+func get_button_down() -> MethodTrigger: return _button_down_trigger
 
 
 ## Sets the indicator value of this button
@@ -191,14 +145,14 @@ func _on_resized() -> void: set_value(_percentage)
 
 ## Called when this button is pushed down
 func _on_button_down() -> void:
-	if _button_down_config.callable.is_valid():
-		_button_down_config.callable.call()
+	if is_instance_valid(_button_down_trigger):
+		_button_down_trigger.call_method()
 
 
 ## Called when this button is let go
 func _on_button_up() -> void:
-	if _button_up_config.callable.is_valid():
-		_button_up_config.callable.call()
+	if is_instance_valid(_button_up_trigger):
+		_button_up_trigger.call_method()
 
 
 ## Called when this button is toggled in toggle mode, will call the corresponding _on_button_* method
@@ -213,16 +167,8 @@ func _on_button_toggled(toggled_on: bool) -> void:
 func serialize() -> Dictionary:
 	return {
 		"button_mode": button_mode,
-		"button_down": {
-			"uuid": _button_down_config.uuid,
-			"method_name": _button_down_config.method_name,
-			"args": _button_down_config.args
-		},
-		"button_up": {
-			"uuid": _button_up_config.uuid,
-			"method_name": _button_up_config.method_name,
-			"args": _button_up_config.args
-		},
+		"button_down": _button_down_trigger.seralize() if _button_down_trigger else {},
+		"button_up": _button_up_trigger.seralize() if _button_up_trigger else {},
 		"label": $Label.text,
 		"bg_color": var_to_str(get_bg_color()),
 		"border_color": var_to_str(get_border_color()),
@@ -237,22 +183,12 @@ func deserialize(serialized_data: Dictionary) -> void:
 	
 	if serialized_data.get("button_down", null) is Dictionary: 
 		var config: Dictionary = serialized_data.button_down
-		if config.get("uuid", "") and config.get("method_name", "") and config.get("args", []) is Array:
-			set_button_down(
-				config.uuid,
-				config.method_name,
-				config.get("args", [])
-			)
+		_button_down_trigger = MethodTrigger.new().deseralize(config)
 	
 	if serialized_data.get("button_up", null) is Dictionary: 
 		var config: Dictionary = serialized_data.button_up
-		if config.get("uuid", "") and config.get("method_name", "") and config.get("args", []) is Array:
-			print("Up: ", config.method_name)
-			set_button_up(
-				config.uuid,
-				config.method_name,
-				config.get("args", [])
-			)
+		_button_up_trigger = MethodTrigger.new().deseralize(config)
+
 	
 	var bg = str_to_var(serialized_data.get("bg_color", ""))
 	if bg is Color: set_bg_color(bg)

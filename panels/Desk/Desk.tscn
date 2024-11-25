@@ -15,6 +15,7 @@
 
 [sub_resource type="InputEventKey" id="InputEventKey_trkq2"]
 device = -1
+shift_pressed = true
 keycode = 4194312
 
 [sub_resource type="Shortcut" id="Shortcut_5ty2n"]
@@ -22,6 +23,7 @@ events = [SubResource("InputEventKey_trkq2")]
 
 [sub_resource type="InputEventKey" id="InputEventKey_lny0k"]
 device = -1
+shift_pressed = true
 keycode = 4194311
 
 [sub_resource type="Shortcut" id="Shortcut_h5qqq"]

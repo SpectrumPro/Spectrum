@@ -2,10 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_e3llf"]
 [ext_resource type="Script" path="res://components/Table/Table.gd" id="2_qeror"]
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_7i53o"]
-color = Color(0.362829, 0.362829, 0.362829, 0.4)
-thickness = 2
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="3_appd7"]
 
 [node name="Table" type="PanelContainer"]
 anchors_preset = 15
@@ -25,7 +22,7 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="Corner" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 
@@ -60,6 +57,12 @@ vertical_scroll_mode = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+icon = ExtResource("3_appd7")
+icon_alignment = 1
+
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -73,19 +76,6 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 3
 
-[node name="Seprator" type="Control" parent="VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer/VBoxContainer/Seprator"]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 5.0
-offset_top = -1.0
-offset_bottom = 3.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/separator = SubResource("StyleBoxLine_7i53o")
+[connection signal="minimum_size_changed" from="VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_minimum_size_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="minimum_size_changed" from="VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_minimum_size_changed"]

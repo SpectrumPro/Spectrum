@@ -242,11 +242,10 @@ func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable
 	if _object_picker_selected_signal_connection.is_valid():
 		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
 	
-	_object_picker_selected_signal_connection = callback
-	_object_picker.selection_confirmed.connect(func (selection) -> void:
+	_object_picker_selected_signal_connection = func (selection) -> void:
 		_object_picker_base.hide()
 		callback.call(selection)
-	, CONNECT_ONE_SHOT)
+	_object_picker.selection_confirmed.connect(_object_picker_selected_signal_connection, CONNECT_ONE_SHOT)
 	
 	_object_picker.selection_canceled.connect(func () -> void:
 		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)

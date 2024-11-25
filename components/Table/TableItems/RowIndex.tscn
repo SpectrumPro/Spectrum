@@ -10,8 +10,11 @@ script = ExtResource("1_mom7o")
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="Label" type="LineEdit" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-vertical_alignment = 1
-text_overrun_behavior = 3
+theme_override_colors/font_uneditable_color = Color(0.87451, 0.87451, 0.87451, 1)
+editable = false
+flat = true
+
+[connection signal="text_submitted" from="HBoxContainer/Label" to="." method="_on_label_text_submitted"]

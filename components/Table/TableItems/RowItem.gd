@@ -5,13 +5,36 @@ class_name RowItem extends Control
 ## Stores CellItems in a row
 
 
+## Adds data to the next empty cell
 func add_data(data: Variant, setter: Callable, changer: Signal) -> CellItem:
 	var cell_item: CellItem = load("res://components/Table/TableItems/CellItem.tscn").instantiate()
 	
 	cell_item.set_data(data)
 	cell_item.setter = setter
 	cell_item.set_signal(changer)
+	return _add_cell_item(cell_item)
+
+
+## Adds a button to the next empty cell
+func add_button(text: String, callback: Callable) -> CellItem:
+	var cell_item: CellItem = load("res://components/Table/TableItems/CellItem.tscn").instantiate()
 	
+	cell_item.set_button(text, callback)
+	return _add_cell_item(cell_item)
+
+
+## Adds a drop down to the next empty cell
+func add_dropdown(items: Array, current: int, callback: Callable, changer: Signal) -> CellItem:
+	var cell_item: CellItem = load("res://components/Table/TableItems/CellItem.tscn").instantiate()
+	
+	cell_item.set_dropdown(items, current, callback)
+	cell_item.set_signal(changer)
+	
+	return _add_cell_item(cell_item)
+
+
+## Adds the cell item to the row
+func _add_cell_item(cell_item: CellItem) -> CellItem:
 	$HBoxContainer.add_child(cell_item)
 	$HBoxContainer.add_child($HBoxContainer/Seprator.duplicate())
 	return cell_item

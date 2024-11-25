@@ -1,10 +1,34 @@
-[gd_scene load_steps=4 format=3 uid="uid://dkq5va4u70tau"]
+[gd_scene load_steps=9 format=3 uid="uid://dkq5va4u70tau"]
 
 [ext_resource type="Script" path="res://panels/CueListTable/CueListTable.gd" id="1_2ygo6"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_yvabf"]
 [ext_resource type="PackedScene" uid="uid://dikufbor3ym75" path="res://components/Table/Table.tscn" id="2_278a8"]
+[ext_resource type="Script" path="res://panels/CueListTable/CreateConfirmationBox.gd" id="4_s5qbg"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="4_vhkcs"]
 
-[node name="CueListTable" type="HBoxContainer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f81wy"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddi2f"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_v82q1"]
+font = ExtResource("4_vhkcs")
+
+[node name="CueListTable" type="Control"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,4 +39,110 @@ script = ExtResource("1_2ygo6")
 
 [node name="Table" parent="." instance=ExtResource("2_278a8")]
 layout_mode = 2
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 size_flags_horizontal = 3
+
+[node name="CreateConfirmationBox" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(570, 225.07)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -285.0
+offset_top = -112.535
+offset_right = 285.0
+offset_bottom = 112.535
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_f81wy")
+script = ExtResource("4_s5qbg")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CreateConfirmationBox"]
+custom_minimum_size = Vector2(464.225, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActionText" type="HBoxContainer" parent="CreateConfirmationBox/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="StoreLabel" type="Label" parent="CreateConfirmationBox/VBoxContainer2/ActionText"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Create new cue with selection of:"
+horizontal_alignment = 1
+
+[node name="NumOfFixtures" type="Label" parent="CreateConfirmationBox/VBoxContainer2/ActionText"]
+custom_minimum_size = Vector2(0, 24.55)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ddi2f")
+text = "0"
+label_settings = SubResource("LabelSettings_v82q1")
+vertical_alignment = 2
+
+[node name="FixturesLabel" type="Label" parent="CreateConfirmationBox/VBoxContainer2/ActionText"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "fixtures?"
+horizontal_alignment = 1
+
+[node name="SaveModes" type="HBoxContainer" parent="CreateConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="ModifiedChannels" type="Button" parent="CreateConfirmationBox/VBoxContainer2/SaveModes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+toggle_mode = true
+button_pressed = true
+text = "Modified Channels"
+
+[node name="AllChannels" type="Button" parent="CreateConfirmationBox/VBoxContainer2/SaveModes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+toggle_mode = true
+text = "All Channels"
+
+[node name="AllNoneZero" type="Button" parent="CreateConfirmationBox/VBoxContainer2/SaveModes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+toggle_mode = true
+text = "All None Zero"
+
+[node name="ConfirmationButtons" type="HBoxContainer" parent="CreateConfirmationBox/VBoxContainer2"]
+custom_minimum_size = Vector2(201.56, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="CreateConfirmation" type="Button" parent="CreateConfirmationBox/VBoxContainer2/ConfirmationButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Create"
+
+[node name="Cancel" type="Button" parent="CreateConfirmationBox/VBoxContainer2/ConfirmationButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Cancel"
+
+[connection signal="pressed" from="CreateConfirmationBox/VBoxContainer2/ConfirmationButtons/CreateConfirmation" to="CreateConfirmationBox" method="_on_create_confirmation_pressed"]
+[connection signal="pressed" from="CreateConfirmationBox/VBoxContainer2/ConfirmationButtons/Cancel" to="CreateConfirmationBox" method="_on_cancel_pressed"]

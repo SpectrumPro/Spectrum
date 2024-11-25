@@ -37,8 +37,8 @@ func set_trigger_button(p_trigger_button: TriggerButton) -> void:
 
 ## Updates the name on the button down button
 func _update_button_down_name() -> void:
-	var button_down_name: String = trigger_button.get_button_down().get("method_name", "")
-	var button_down_component_uuid: String = trigger_button.get_button_down().get("uuid", "")
+	var button_down_name: String = trigger_button.get_button_down().get_method_name() if trigger_button.get_button_down() else ""
+	var button_down_component_uuid: String = trigger_button.get_button_down().get_uuid() if trigger_button.get_button_down() else ""
 	
 	if button_down_name == "": 
 		button_down_name = "Choose"
@@ -53,8 +53,8 @@ func _update_button_down_name() -> void:
 
 ## Updates the name on the button up name
 func _update_button_up_name() -> void:
-	var button_up_name: String = trigger_button.get_button_up().get("method_name", "")
-	var button_up_component_uuid: String = trigger_button.get_button_up().get("uuid", "")
+	var button_up_name: String = trigger_button.get_button_up().get_method_name() if trigger_button.get_button_up() else ""
+	var button_up_component_uuid: String = trigger_button.get_button_up().get_uuid() if trigger_button.get_button_up() else ""
 	
 	if button_up_name == "": 
 		button_up_name = "Choose"
@@ -121,14 +121,14 @@ func _on_component_method_picker_remove_requested() -> void:
 
 
 ## Called when the user picks a method 
-func _on_component_method_picker_method_confired(method_config: Dictionary) -> void:
+func _on_component_method_picker_method_confired(method_trigger: MethodTrigger) -> void:
 	method_picker.hide()
 	match mode:
 		Mode.Down:
-			trigger_button.set_button_down(method_config.uuid, method_config.method_name, method_config.args)
+			trigger_button.set_button_down(method_trigger)
 			_update_button_down_name()
 		Mode.Up:
-			trigger_button.set_button_up(method_config.uuid, method_config.method_name, method_config.args)
+			trigger_button.set_button_up(method_trigger)
 			_update_button_up_name()
 		Mode.Feedback:
 			pass

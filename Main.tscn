@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://7f5erpa1ts1n"]
+[gd_scene load_steps=29 format=3 uid="uid://7f5erpa1ts1n"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_lygr6"]
 [ext_resource type="Script" path="res://Main.gd" id="2_2mnc0"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="9_l0dk1"]
 [ext_resource type="Texture2D" uid="uid://c6rls43ddilxg" path="res://assets/icons/Save.svg" id="10_nretb"]
 [ext_resource type="Script" path="res://Tabs.gd" id="11_g0pp1"]
+[ext_resource type="Texture2D" uid="uid://dyd2xybu6duv4" path="res://assets/icons/NewWindow.svg" id="13_8fm6r"]
 [ext_resource type="PackedScene" uid="uid://bhrc5gkly1noh" path="res://components/ConfirmationBox/ConfirmationBox.tscn" id="13_yplrd"]
 [ext_resource type="PackedScene" uid="uid://dm6rs78fm1lh4" path="res://panels/SaveLoad/SaveLoad.tscn" id="14_3qwxp"]
 [ext_resource type="PackedScene" uid="uid://d2mjxku8bnm0o" path="res://panels/Settings/Settings.tscn" id="14_45enf"]
@@ -184,6 +185,10 @@ layout_mode = 2
 tooltip_text = "Edit Current Tab"
 icon = ExtResource("9_l0dk1")
 
+[node name="NewWindow" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("13_8fm6r")
+
 [node name="FileButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 
@@ -329,6 +334,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/NewTab" to="." method="_on_new_tab_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/CloseTab" to="." method="_on_close_tab_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/EditTab" to="." method="_on_edit_tab_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/NewWindow" to="." method="_on_new_window_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/FileButtons/HBoxContainer/File" to="." method="_on_file_pressed"]
 [connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/FileButtons/HBoxContainer/File" to="." method="_on_file_toggled"]
 [connection signal="pressed" from="ConfirmationBox/VBoxContainer/HBoxContainer/Cancel" to="." method="_on_close_confirmation_cancel_pressed"]

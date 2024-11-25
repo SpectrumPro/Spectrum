@@ -2,7 +2,7 @@
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 class_name EngineComponentDB extends Node
-## Stores all the current somponents in the engine
+## Stores all the current components in the engine
 
 
 ## Emitted when a component is added to this engine
@@ -42,9 +42,9 @@ func register_component(component: EngineComponent) -> bool:
 	components_by_classname[component.self_class_name].append(component)
 	
 	if component.uuid in _component_requests:
-		for callback: Callable in _component_requests[component.uuid]:
-			if callback.is_valid(): callback.call(component)
-		
+		for callback in _component_requests[component.uuid]:
+			if callback.is_valid(): 
+				callback.call(component)
 		_component_requests.erase(component.uuid)
 	
 	component_added.emit(component)
@@ -69,7 +69,7 @@ func get_components_by_classname(classname: String) -> Array:
 
 
 ## Use this method if you need to call a function once a component is added to the engine
-func request_component(uuid: String, callback: Callable) -> void:
+func request_component(uuid: String, callback) -> void:
 	if uuid in components:
 		callback.call(components[uuid])
 		

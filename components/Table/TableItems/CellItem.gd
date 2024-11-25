@@ -11,6 +11,15 @@ var data: Variant = null : set = set_data
 ## The method to call when the data changes
 var setter: Callable = Callable()
 
+## The callback for the button
+var button_callback: Callable = Callable()
+
+## The callback for the dropdown
+var dropdown_callback: Callable = Callable()
+
+## All the items in the drop down
+var dropdown_items: Array = []
+
 ## The signal that will change the data
 var changer: Signal = Signal() : set = set_signal
 
@@ -41,6 +50,30 @@ func set_data(data: Variant) -> void:
 			$HBox/BoolEdit.set_pressed_no_signal(data)
 
 
+## Shows a button instead of a data box
+func set_button(text: String, callback: Callable) -> void:
+	_hide_all()
+	button_callback = callback
+	
+	$HBox/Button.text = text
+	$HBox/Button.show()
+
+
+## Shows a drop down options
+func set_dropdown(items: Array, current: int, callback: Callable) -> void:
+	_hide_all()
+	
+	$HBox/OptionButton.clear()
+	dropdown_callback = callback
+	dropdown_items = items
+	
+	for item in items:
+		$HBox/OptionButton.add_item(str(item))
+	
+	$HBox/OptionButton.select(current)
+	$HBox/OptionButton.show()
+
+
 ## Sets the signal
 func set_signal(p_changer: Signal) -> void:
 	if not changer.is_null(): changer.disconnect(_on_signal_emitted)
@@ -50,16 +83,23 @@ func set_signal(p_changer: Signal) -> void:
 
 ## Called when the changer signal is emitted
 func _on_signal_emitted(value: Variant) -> void:
-	match typeof(value):
-		TYPE_STRING: 
-			$HBox/StringEdit.text = value
-		TYPE_INT: 
-			$HBox/IntEdit.set_value_no_signal(value)
-		TYPE_FLOAT: 
-			$HBox/FloatEdit.set_value_no_signal(value)
-		TYPE_BOOL: 
-			$HBox/BoolEdit.set_pressed_no_signal(value)
+	if $HBox/Button.visible:
+		pass
 	
+	elif $HBox/OptionButton.visible and value is int and value <= len(dropdown_items) - 1:
+		$HBox/OptionButton.select(value)
+	
+	else:
+		match typeof(value):
+			TYPE_STRING: 
+				$HBox/StringEdit.text = value
+			TYPE_INT: 
+				$HBox/IntEdit.set_value_no_signal(value)
+			TYPE_FLOAT: 
+				$HBox/FloatEdit.set_value_no_signal(value)
+			TYPE_BOOL: 
+				$HBox/BoolEdit.set_pressed_no_signal(value)
+		
 
 ## Hides all the edit nodes
 func _hide_all() -> void:
@@ -67,6 +107,9 @@ func _hide_all() -> void:
 	$HBox/FloatEdit.hide()
 	$HBox/IntEdit.hide()
 	$HBox/StringEdit.hide()
+	
+	$HBox/Button.hide()
+	$HBox/OptionButton.hide()
 
 
 ## Callbacks for the inputs
@@ -74,3 +117,9 @@ func _on_string_edit_text_submitted(new_text: String) -> void: if setter.is_vali
 func _on_int_edit_value_changed(value: float) -> void: if setter.is_valid(): setter.call(value)
 func _on_float_edit_value_changed(value: float) -> void: if setter.is_valid(): setter.call(value)
 func _on_bool_edit_toggled(toggled_on: bool) -> void: if setter.is_valid(): setter.call(toggled_on)
+
+## Button callback
+func _on_button_pressed() -> void: if button_callback.is_valid(): button_callback.call()
+
+## Dropdown callback
+func _on_option_button_item_selected(index: int) -> void: if dropdown_callback.is_valid(): dropdown_callback.call(index)

@@ -70,6 +70,7 @@ layout_mode = 2
 size_flags_vertical = 10
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 10
@@ -86,10 +87,11 @@ texture = ExtResource("3_u1n7c")
 [node name="CueNumber" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
 mouse_filter = 1
-text = "1.5"
+text = "1.4"
 label_settings = SubResource("LabelSettings_odw3y")
 
 [node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 mouse_filter = 1
@@ -110,6 +112,7 @@ text = "5.0"
 label_settings = SubResource("LabelSettings_i6drb")
 
 [node name="PanelContainer4" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 mouse_filter = 1
 

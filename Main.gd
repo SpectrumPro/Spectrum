@@ -32,6 +32,10 @@ func _ready() -> void:
 	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
 
 
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("clear_programmer"): Core.programmer.clear()
+
+
 func _on_connection_closed() -> void:
 	if not Core.is_expecting_disconnect:
 		var animation: Tween = create_tween()
@@ -143,6 +147,8 @@ func _on_settings_toggled(toggled_on: bool) -> void:
 	$Settings.move_to_front()
 
 
+#region Tabs
+
 func _on_new_tab_pressed() -> void:
 	#var new_panel: Desk = desk_panel.instantiate()
 	var new_panel: Desk = Interface.panels.Desk.instantiate()
@@ -190,3 +196,20 @@ func _on_rename_box_rename_pressed() -> void:
 	if _rename_input_box.text:
 		_tab_bar.set_tab_title(_tab_bar.current_tab, _rename_input_box.text)
 		$RenameBox.hide()
+
+
+func _on_new_window_pressed() -> void:
+	var current_tab_idx: int = _tab_bar.current_tab
+	var tab_content: Control = _tab_container.get_child(current_tab_idx)
+	
+	_tab_bar.remove_tab(current_tab_idx)
+	_tab_container.remove_tab(current_tab_idx)
+	
+	var new_window: Window = Window.new()
+	new_window.add_child(tab_content)
+	
+	tab_content.show()
+	add_child(new_window)
+
+
+#endregion

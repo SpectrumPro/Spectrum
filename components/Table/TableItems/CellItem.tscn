@@ -42,7 +42,24 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 
+[node name="Button" type="Button" parent="HBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+
+[node name="OptionButton" type="OptionButton" parent="HBox"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+text_overrun_behavior = 3
+selected = 0
+allow_reselect = true
+
 [connection signal="text_submitted" from="HBox/StringEdit" to="." method="_on_string_edit_text_submitted"]
 [connection signal="value_changed" from="HBox/IntEdit" to="." method="_on_int_edit_value_changed"]
 [connection signal="value_changed" from="HBox/FloatEdit" to="." method="_on_float_edit_value_changed"]
 [connection signal="toggled" from="HBox/BoolEdit" to="." method="_on_bool_edit_toggled"]
+[connection signal="pressed" from="HBox/Button" to="." method="_on_button_pressed"]
+[connection signal="item_selected" from="HBox/OptionButton" to="." method="_on_option_button_item_selected"]

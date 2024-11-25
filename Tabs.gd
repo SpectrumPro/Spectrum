@@ -27,7 +27,7 @@ func remove_tab(idx: int) -> void:
 		if _last_tab == children[idx]:
 			_last_tab = null
 		
-		children[idx].queue_free()
+		remove_child(children[idx])
 
 
 func add_tab(node: Control, switch_to: bool = true) -> void:
