@@ -34,7 +34,7 @@ var _fixture_signal_connections: Dictionary = {}
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	self_class_name = "Universe"
+	set_self_class("Universe")
 	icon = load("res://assets/icons/Universe.svg")
 
 

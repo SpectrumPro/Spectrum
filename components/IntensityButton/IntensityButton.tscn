@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://c30mlwfrsxbcl"]
+
+[ext_resource type="Texture2D" uid="uid://c8wnnqs5lxs4j" path="res://assets/icons/Brightness.svg" id="1_x0k6q"]
+[ext_resource type="Script" path="res://components/IntensityButton/IntensityButton.gd" id="2_5y0g3"]
+
+[node name="IntensityButton" type="Button"]
+mouse_default_cursor_shape = 10
+keep_pressed_outside = true
+icon = ExtResource("1_x0k6q")
+script = ExtResource("2_5y0g3")

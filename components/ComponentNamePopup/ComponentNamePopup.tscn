@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://dkdq40xavnqdl"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_h4ca0"]
+[ext_resource type="Script" path="res://components/ComponentNamePopup/ComponentNamePopup.gd" id="2_mpv4w"]
+[ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="3_vj7rn"]
+[ext_resource type="Texture2D" uid="uid://b3hmh5jlggqxa" path="res://assets/icons/cross.svg" id="4_rspsp"]
+
+[node name="ComponentNamePopup" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
+theme = ExtResource("1_h4ca0")
+script = ExtResource("2_mpv4w")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Name"
+expand_to_text_length = true
+select_all_on_focus = true
+
+[node name="Confirm" type="Button" parent="HBox"]
+layout_mode = 2
+icon = ExtResource("3_vj7rn")
+
+[node name="Cancel" type="Button" parent="HBox"]
+layout_mode = 2
+icon = ExtResource("4_rspsp")
+
+[connection signal="text_submitted" from="HBox/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="HBox/Confirm" to="." method="_on_confirm_pressed"]
+[connection signal="pressed" from="HBox/Cancel" to="." method="_on_cancel_pressed"]

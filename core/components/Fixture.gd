@@ -46,7 +46,7 @@ const MAX_DMX_VALUE: int = 255
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	self_class_name = "Fixture"
+	set_self_class("Fixture")
 	icon = load("res://assets/icons/Fixture.svg")
 
 

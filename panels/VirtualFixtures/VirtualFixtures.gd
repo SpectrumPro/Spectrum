@@ -41,10 +41,9 @@ func _ready() -> void:
 	_vertical_distribute = _add_menu_hbox_button(ResourceLoader.load("res://assets/icons/Vertical_distribute.svg"), self._align.bind(ORIENTATION_VERTICAL), "Align the selected fixtures verticality", true)
 	
 	Values.connect_to_selection_value("selected_fixtures", _selected_fixtures_changed)
-	Core.fixtures_added.connect(try_load_fixtures)
-	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
+	ComponentDB.request_class_callback("Fixture", try_load_fixtures)
 	
-	try_load_fixtures(Core.fixtures.values())
+	try_load_fixtures(ComponentDB.get_components_by_classname("Fixture"))
 
 ## Function to add a button to the Graph Edits menu HBox, with callbacks, tool tips, and shortcuts
 func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = "", disabled: bool = false) -> Button:
@@ -61,11 +60,6 @@ func _add_menu_hbox_button(content:Variant, method: Callable, tooltip: String = 
 	
 	$VirtualFixtures.get_menu_hbox().add_child(button)
 	return button
-
-
-func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
-	$VirtualFixtures.show_menu = not kiosk_mode
-	$VirtualFixtures.show_grid = not kiosk_mode 
 
 
 ## Callback for the Add Selected Fixtures button
@@ -151,7 +145,7 @@ func _selected_fixtures_changed(p_fixtures: Array) -> void:
 
 
 ## Called when a fixture is added to this engine, will check if it has any virtual fixtures, if so they will be added
-func try_load_fixtures(p_fixtures: Array) -> void:
+func try_load_fixtures(p_fixtures: Array, removed = null) -> void:
 	for fixture: Fixture in p_fixtures:
 		for uuid: String in fixture.get_user_meta("virtual_fixtures", {}).keys():
 			if not uuid in virtual_fixtures.keys():

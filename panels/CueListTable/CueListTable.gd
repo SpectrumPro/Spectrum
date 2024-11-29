@@ -1,12 +1,15 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name CueListTable extends Control
+class_name CueListTable extends UIPanel
 ## A table for editing cuelists
 
 
 ## The main table node
-@onready var table: Table = $Table
+@onready var table: Table = $VBoxContainer/Table
+
+## The name button
+@onready var _name_button: Button = $VBoxContainer/PanelContainer2/HBoxContainer/CueName 
 
 ## The cuelist 
 var _cue_list: CueList = null
@@ -14,8 +17,6 @@ var _cue_list: CueList = null
 ## The uuid of the cuelist used when this panel was saved
 var _previous_uuid: String = ""
 
-## The name button
-var _name_button: Button
 
 
 ## All the parmiters that can be changed
@@ -31,10 +32,11 @@ var _data_keys: Array = [
 
 func _ready() -> void:
 	_create_columns()
-	_add_name_button()
 	
 	table.add_row_button_pressed.connect(func (): $CreateConfirmationBox.show())
 	$CreateConfirmationBox.confirmed.connect(_on_add_cue_confirmed)
+	
+	set_move_resize_handle($VBoxContainer/PanelContainer2/HBoxContainer/EditControls/HBoxContainer/MoveResize)
 
 
 ## Sets the cue list
@@ -64,29 +66,6 @@ func _reload_table() -> void:
 	if _cue_list:
 		for cue_number: float in _cue_list.index_list:
 			_add_cue_row(_cue_list.cues[cue_number])
-
-
-func _add_name_button() -> void:
-	var new_button: Button = Button.new()
-	_name_button = new_button
-	
-	new_button.flat = true
-	new_button.text = "Empty Table"
-	new_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	
-	new_button.pressed.connect(func (): 
-		Interface.show_object_picker(
-			ObjectPicker.SelectMode.Single, 
-			func (objects: Array): 
-				if objects[0] is CueList: set_cue_list(objects[0]), 
-			["CueList"]
-		)
-	)
-	
-	new_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	new_button.icon = load("res://assets/icons/CueList.svg")
-	
-	table.get_corner_node().add_child(new_button)
 
 
 ## Creats the colums
@@ -162,3 +141,12 @@ func load(saved_data: Dictionary) -> void:
 	if "uuid" in saved_data:
 		_previous_uuid = saved_data.uuid
 		ComponentDB.request_component(saved_data.uuid, _on_cue_list_object_found)
+
+## Called when the CueName button is pressed
+func _on_cue_name_pressed() -> void:
+	Interface.show_object_picker(
+		ObjectPicker.SelectMode.Single, 
+		func (objects: Array): 
+			if objects[0] is CueList: set_cue_list(objects[0]), 
+		["CueList"]
+	)

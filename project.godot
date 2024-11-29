@@ -30,14 +30,15 @@ driver/enable_input=true
 
 [autoload]
 
-ComponentDB="*res://core/engine/ComponentDB.gd"
-Interface="*res://scripts/Interface.gd"
+ClassList="*res://core/global/ClassList.gd"
+ComponentDB="*res://core/global/ComponentDB.gd"
+Interface="*res://scripts/global/Interface.gd"
 Core="*res://core/engine/Engine.gd"
 MainSocketClient="*res://core/WebSocketClient.gd"
 MainUDPSocketClient="*res://scripts/networking/UDPSocketClient.gd"
-Client="*res://scripts/Client.gd"
-Values="*res://scripts/Values.gd"
-InputServer="*res://scripts/Input.gd"
+Client="*res://core/engine/Client.gd"
+Values="*res://scripts/global/Values.gd"
+InputServer="*res://scripts/global/Input.gd"
 
 [debug]
 

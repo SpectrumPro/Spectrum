@@ -148,12 +148,11 @@ var _reload_highlights_signal_callback: Callable = func (arg1=null, arg2=null, a
 
 
 func _ready() -> void:
-	Core.functions_added.connect(_on_functions_added)
-	Core.functions_removed.connect(_on_functions_removed)
+	ComponentDB.request_class_callback("Function", func (added, removed):
+		if added: _on_functions_added(added)
+		if removed: _on_functions_removed(removed)
+	)
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
-	
-	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
-	
 	
 	global_cue.set_item_name("Global")
 	
@@ -201,13 +200,6 @@ func _ready() -> void:
 	remove_child(settings_node)
 	settings_node.show()
 	reload()
-
-
-func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
-	set_edit_mode(false)
-	$VBoxContainer/PanelContainer/HBoxContainer/EditMode.visible = not kiosk_mode
-	$VBoxContainer/PanelContainer/HBoxContainer/Store.visible = not kiosk_mode
-
 
 
 func set_edit_mode(edit_mode: bool) -> void:
@@ -499,8 +491,8 @@ func _on_mode_changed(mode: CueList.MODE) -> void:
 
 
 func _find_cue_list() -> void:
-	if saved_cue_list_uuid in Core.functions:
-		var found_cue_list: CueList = Core.functions[saved_cue_list_uuid]
+	if saved_cue_list_uuid in ComponentDB.get_components_by_classname("Function"):
+		var found_cue_list: CueList = ComponentDB.components[saved_cue_list_uuid]
 		if current_cue_list == null:
 			set_cue_list(found_cue_list)
 
@@ -743,7 +735,7 @@ func _on_save_mode_changed(button: Button) -> void:
 ## Called when the New / Update button is pressed
 func _on_new_update_button_pressed() -> void:
 	if not current_cue_list:
-		Core.create_function("CueList", func (new_cue_list: Function):
+		Core.create_component("CueList", "", func (new_cue_list: Function):
 			if new_cue_list is CueList:
 				set_cue_list(new_cue_list)
 		)

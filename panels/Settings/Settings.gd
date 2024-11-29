@@ -16,8 +16,6 @@ func _ready() -> void:
 	MainSocketClient.connected_to_server.connect(_on_connected_to_server)
 	MainSocketClient.connection_closed.connect(_on_connection_closed)
 	
-	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
-	
 	ip_input.editable = MainSocketClient.last_state == WebSocketPeer.STATE_CLOSED
 	_reload_ui()
 
@@ -31,14 +29,6 @@ func _on_connected_to_server() -> void:
 func _on_connection_closed() -> void:
 	ip_input.editable = true
 	_reload_ui()
-
-
-func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
-	$VBoxContainer/KioskMode.text = "Exit Kiosk Mode" if kiosk_mode else "Enter Kiosk Mode"
-	
-	$VBoxContainer/HBoxContainer/Connect.disabled = kiosk_mode
-	$VBoxContainer/HBoxContainer/Disconnect.disabled = kiosk_mode
-	$VBoxContainer/IpAddr.editable = not kiosk_mode
 
 
 ## Reloads the status label from the current connection state

@@ -1,8 +1,16 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-extends Node
+class_name CoreClient extends Node
 ## Client side network control
+
+
+## Emitted when we connect to the server
+signal connected_to_server()
+
+## Emitted when the connection closes
+signal connection_closed()
+
 
 ## Contains a list of networked objects, stores their functions and data types of there args
 var _networked_objects: Dictionary = {}
@@ -16,6 +24,9 @@ var _networked_objects_delete_callbacks: Dictionary = {}
 func _ready() -> void:
 	MainSocketClient.message_received.connect(self._on_message_receved)
 	MainUDPSocketClient.packet_recieved.connect(self._on_udp_message_receved)
+	
+	MainSocketClient.connected_to_server.connect(func (): connected_to_server.emit())
+	MainSocketClient.connection_closed.connect(func (): connection_closed.emit())
 
 
 ## Starts the server on the given port, 

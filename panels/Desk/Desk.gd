@@ -38,8 +38,6 @@ var _just_deleted_size: Vector2 = Vector2(100, 100)
 
 func _ready() -> void:
 	edit_mode = false
-	
-	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
 
 
 #region Public Methods
@@ -203,12 +201,6 @@ func load(saved_data: Dictionary) -> void:
 
 
 #region Ui Signals
-
-
-func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
-	if kiosk_mode: set_edit_mode(false) 
-	$VBoxContainer/PanelContainer.visible = not kiosk_mode
-
 
 ## Called when an object is selected in the object picker, used to add new objects
 func _on_panel_picker_panel_chosen(panel: PackedScene):

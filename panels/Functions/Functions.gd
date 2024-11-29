@@ -14,24 +14,28 @@ extends Control
 
 func _ready() -> void:
 	## Connect to function signals
-	Core.functions_added.connect(self._reload_functions)
-	Core.functions_removed.connect(self._reload_functions)
+	ComponentDB.request_class_callback("Function", _update_list)
 	
-	remove_child(_popup_container)
+	## Connect to selection signals
 	Interface.add_root_child(_popup_container)
 	
-	_reload_functions()
+	_update_list(ComponentDB.get_components_by_classname("Function"))
 
 
-## Reload the list of functions
-func _reload_functions(arg1=null, arg2=null) -> void:
-	item_list_view.remove_all()
-	item_list_view.add_items(Core.functions.values(), [["fade_in_speed", "set_fade_in_speed", "fade_in_speed_changed"], ["fade_out_speed", "set_fade_out_speed", "fade_out_speed_changed"]], "set_name", "name_changed")
+## Reload the list of fixtures
+func _update_list(added: Array = [], removed: Array = []) -> void:
+	if removed:
+		item_list_view.remove_items(removed)
+	
+	for function: Function in added:
+		if function is not Cue:
+			item_list_view.add_item(function, [["fade_in_speed", "set_fade_in_speed", "fade_in_speed_changed"], ["fade_out_speed", "set_fade_out_speed", "fade_out_speed_changed"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView
 func _on_item_list_view_delete_requested(items: Array) -> void:
-	Core.remove_functions(items)
+	for function: Function in items:
+		function.delete()
 
 
 ## Called when the selection has changed
@@ -56,3 +60,13 @@ func _on_item_list_view_edit_requested(items: Array) -> void:
 		_popup_container.set_node(settings_panel)
 	
 	_popup_container.show()
+
+
+func _on_item_list_view_add_requested() -> void:
+	$CreateFunction.show()
+
+
+func _on_create_function_component_added(component: EngineComponent) -> void:
+	$ComponentNamePopup.set_component(component)
+	$ComponentNamePopup.show()
+	$ComponentNamePopup.focus()

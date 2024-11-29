@@ -50,7 +50,7 @@ var index_list: Array = []
 var _is_playing: bool = false
 
 func _component_ready() -> void:
-	self_class_name = "CueList"
+	set_self_class("CueList")
 	icon = load("res://assets/icons/CueList.svg")
 	
 	add_accessible_method("play", [TYPE_NIL], play, is_playing, played)
@@ -63,6 +63,8 @@ func _component_ready() -> void:
 	add_accessible_method("seek_to", [TYPE_FLOAT], seek_to, get_current_cue_number, cue_changed, ["Cue Number"])
 	
 	add_accessible_method("set_mode", [TYPE_INT], set_mode, get_mode, mode_changed, ["Loop Mode, 0: Normal, 1: Loop"])
+	add_accessible_method("global_fade_time", [TYPE_FLOAT], set_global_fade_time, Callable(), Signal(), ["Fade Time"])
+	add_accessible_method("global_pre_wait", [TYPE_FLOAT], set_global_pre_wait, Callable(), Signal(), ["Fade Time"])
 
 
 #region Local Methods
@@ -102,6 +104,13 @@ func duplicate_cue(cue_number: float) -> void: Client.send_command(uuid, "duplic
 ## Changes the current mode
 func set_mode(p_mode: MODE) -> void: Client.send_command(uuid, "set_mode", [p_mode])
 func get_mode() -> MODE: return mode
+
+## Sets the fade time for all cues
+func set_global_fade_time(fade_time: float) -> void: Client.send_command(uuid, "set_global_fade_time", [fade_time])
+
+## Sets the pre wait time for all cues
+func set_global_pre_wait(pre_wait: float) -> void: Client.send_command(uuid, "set_global_pre_wait", [pre_wait])
+
 #endregion
 
 

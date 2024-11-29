@@ -102,4 +102,14 @@ func remove_from_selection_value(value_name: String, array_to_remove: Array):
 func get_selection_value(value_name: String, default: Variant = []) -> Variant:
 	return selection_values.get(value_name, default)
 
+
+## TODO: Called when a engine component emits delete_requested and is in a static value
+#func _on_engine_component_deleted_static(selection_value: String, component: EngineComponent) -> void:
+	#remove_from_selection_value(selection_value, [component])
+
+
+## Called when an EngineComponent emits delete_requested and is in a selection value
+func _on_engine_component_deleted_selection_value(selection_value: String, component: EngineComponent) -> void:
+	remove_from_selection_value(selection_value, [component])
+
 #endregion

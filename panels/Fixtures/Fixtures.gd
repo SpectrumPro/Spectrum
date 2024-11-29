@@ -11,28 +11,21 @@ extends Control
 
 func _ready() -> void:
 	## Connect to fixture signals
-	Core.fixtures_added.connect(self._on_fixtures_added)
-	Core.fixtures_removed.connect(self._reload_fixtures)
-	
-	## Connect to universe signals
-	Core.universes_added.connect(self._reload_fixtures)
-	Core.universes_removed.connect(self._reload_fixtures)
+	ComponentDB.request_class_callback("Fixture", _update_list)
 	
 	## Connect to selection signals
 	Values.connect_to_selection_value("selected_fixtures", item_list_view.set_selected)
 	
-	_reload_fixtures()
+	_update_list(ComponentDB.get_components_by_classname("Fixture"))
 
 
 ## Reload the list of fixtures
-func _reload_fixtures(arg1=null, arg2=null) -> void:
-	item_list_view.remove_all()
-	item_list_view.add_items(Core.fixtures.values(), [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
-
-
-## Called when fixtures are added
-func _on_fixtures_added(fixtures: Array[Fixture]) -> void:
-	item_list_view.add_items(fixtures, [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
+func _update_list(added: Array = [], removed: Array = []) -> void:
+	if removed:
+		item_list_view.remove_items(removed)
+	
+	if added:
+		item_list_view.add_items(added, [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView

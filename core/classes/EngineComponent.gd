@@ -28,7 +28,10 @@ var user_meta: Dictionary
 var uuid: String = ""
 
 ## The class_name of this component this should always be set by the object that extends EngineComponent
-var self_class_name: String = "EngineComponent"
+var self_class_name: String = "EngineComponent" : set = set_self_class
+
+## Stores all the classes this component inherits from
+var class_tree: Array[String] = ["EngineComponent"]
 
 ## The local icon for this component, used when displaying in th ui
 var icon: Texture2D = load("res://assets/icons/Component.svg")
@@ -77,6 +80,12 @@ func get_user_meta(key: String, default = null) -> Variant:
 ## Returns all user meta
 func get_all_user_meta() -> Dictionary:
 	return user_meta
+
+
+## Sets the self class name
+func set_self_class(p_self_class_name: String) -> void:
+	class_tree.append(p_self_class_name)
+	self_class_name = p_self_class_name
 
 
 ## Adds a method that can be safley callled by client controls

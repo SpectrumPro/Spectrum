@@ -28,14 +28,12 @@ var options: Dictionary = {
 
 
 func _ready() -> void:
-	Core.universes_added.connect(self._reload_universes)
-	Core.universes_removed.connect(self._reload_universes)
-	Core.universe_name_changed.connect(self._reload_universes)
+	ComponentDB.request_class_callback("Universe", _reload_universes)
 	_reload_universes()
 	
-	Core.fixtures_definitions_updated.connect(self._reload_fixture_tree)
-	if Core.fixtures_definitions:
-		_reload_fixture_tree()
+	#Core.fixtures_definitions_updated.connect(self._reload_fixture_tree)
+	#if Core.fixtures_definitions:
+		#_reload_fixture_tree()
 	
 
 
@@ -87,7 +85,7 @@ func _reload_universes(arg1=null, arg2=null) -> void:
 	
 	self.get_node(fixture_universe_option).clear()
 	
-	for universe: Universe in Core.universes.values():
+	for universe: Universe in ComponentDB.get_components_by_classname("Universe"):
 		self.get_node(fixture_universe_option).add_item(universe.name)
 
 

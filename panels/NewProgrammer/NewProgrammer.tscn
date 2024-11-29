@@ -1,0 +1,96 @@
+[gd_scene load_steps=8 format=3 uid="uid://dnyj8vnwwbi2v"]
+
+[ext_resource type="Script" path="res://panels/NewProgrammer/NewProgrammer.gd" id="1_1et7p"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_g6b0b"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="2_d1kw8"]
+[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="3_va7xv"]
+[ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_4cl7o"]
+[ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="5_63w8m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s20c8"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="NewProgrammer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_g6b0b")
+script = ExtResource("1_1et7p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s20c8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Programmer"
+expand_to_text_length = true
+flat = true
+
+[node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+current_tab = 0
+tab_count = 1
+tab_0/title = "Light"
+
+[node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_d1kw8")
+
+[node name="Button2" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_va7xv")
+
+[node name="MoveResize" type="TextureRect" parent="VBoxContainer/PanelContainer/HBoxContainer/EditControls/HBoxContainer"]
+modulate = Color(0.255659, 0.255659, 0.255659, 1)
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 13
+texture = ExtResource("5_63w8m")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="TabContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Light" type="ScrollContainer" parent="VBoxContainer/TabContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Light"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ChannelSlider" parent="VBoxContainer/TabContainer/Light/HBoxContainer" instance=ExtResource("4_4cl7o")]
+layout_mode = 2
+size_flags_horizontal = 2
+label_text = "Dimmer"

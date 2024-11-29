@@ -64,13 +64,8 @@ func _ready() -> void:
 	
 	$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
 		$PanelContainer2/ConfirmationBox.hide()
-	)
-	
-	Interface.kiosk_mode_changed.connect(_on_kiosk_mode_changed)
- 
+	) 
 
-func _on_kiosk_mode_changed(kiosk_mode: bool) -> void:
-	$ToolBarContainer.visible = false if kiosk_mode else (true if show_tool_bar else false)
 
 
 ## Adds an item to the list
@@ -78,13 +73,13 @@ func add_items(items: Array, chips: Array = [], name_method: String = "", name_c
 	$PanelContainer2/ConfirmationBox.hide()
 	
 	for item in items:
-		add_item(item, chips, name_method, name_changed_signal)
+		add_item(item, chips, name_method, name_changed_signal, null, true)
 	
 	if sort_alphabetically:
 		sort()
 
 
-func add_item(item: Variant, chips: Array = [], name_method: String = "", name_changed_signal: String = "", icon: Texture2D = null) -> void:
+func add_item(item: Variant, chips: Array = [], name_method: String = "", name_changed_signal: String = "", icon: Texture2D = null, _no_sort: bool = false) -> void:
 	var new_item_node: ListItem = Interface.components.ListItem.instantiate()
 		
 	if item is Object or item is Dictionary and _is_valid_object(item):
@@ -114,6 +109,9 @@ func add_item(item: Variant, chips: Array = [], name_method: String = "", name_c
 	
 	item_container.add_child(new_item_node)
 	object_refs[new_item_node] = item
+	
+	if not _no_sort and sort_alphabetically:
+		sort()
 
 
 ## Sorts all the items in this list by alphabetical order
@@ -140,6 +138,30 @@ func remove_all() -> void:
 	for item in item_container.get_children():
 		item_container.remove_child(item)
 		item.queue_free()
+
+
+## Removes a single item from the list
+func remove_item(item: Variant) -> void:
+	if not item in object_refs.values():
+		return  # Item doesn't exist in the list
+	
+	var list_item_node: ListItem = item_container.get_node(item.uuid)
+	
+	if list_item_node:
+		item_container.remove_child(list_item_node)
+		list_item_node.queue_free()
+		object_refs.erase(list_item_node)
+
+		if last_selected_item == item:
+			last_selected_item = null
+
+		currently_selected_items.erase(item)
+
+
+## Removes multiple items from the list
+func remove_items(items: Array) -> void:
+	for item in items:
+		remove_item(item)
 
 
 ## Converts a list of list Item nodes into the objects they are representing
@@ -313,6 +335,7 @@ func _on_delete_pressed() -> void:
 
 func _on_delete_confirmation() -> void:
 	delete_requested.emit(currently_selected_items)
+	$PanelContainer2/ConfirmationBox.hide()
 
 
 func _on_item_container_gui_input(event: InputEvent) -> void:

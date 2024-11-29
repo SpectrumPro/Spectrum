@@ -1,12 +1,8 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-extends Node
+class_name ClientInterface extends Node
 ## Main script for the spectrum interface
-
-
-## Emitted when kiosk_mode is changed
-signal kiosk_mode_changed(in_kiosk_mode: bool)
 
 
 ## Stores all the components found in the folder, stored as {"folder_name": PackedScene}
@@ -51,9 +47,11 @@ var panels: Dictionary = {
 	"Settings": load("res://panels/Settings/Settings.tscn"),
 	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
+	"NewProgrammer": load("res://panels/NewProgrammer/NewProgrammer.tscn"),
 	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
 	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
 	"Universes": load("res://panels/Universes/Universes.tscn"),
+	"NewVirtualFixtures": load("res://panels/NewVirtualFixtures/VirtualFixtures.tscn"),
 	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
@@ -86,23 +84,10 @@ var component_settings_panels: Dictionary = {
 	"CueList": {"panel": load("res://panels/CuePlayback/CuePlayback.tscn"), "method": "set_cue_list"}
 }
 
-## Folder path in which all the components are stored
-const components_folder: String = "res://components/"
-
-## Folder path in which all the panels are sotred
-const panels_folder: String = "res://panels/"
-
 
 var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
 ## The location for storing all the save show files
 var ui_library_location: String = "user://UILibrary"
-
-
-## Kiosk mode state, will disable all edit actions in the ui, only allowing showing none-destructive controls to the user
-var kiosk_mode: bool = false: set = set_kiosk_mode
-
-## A 4 digit pin used to disable kiosk mode
-var kiosk_password: Array[int] = [0, 0, 0, 0]
 
 
 ## The main object picker
@@ -124,25 +109,14 @@ func _ready() -> void:
 	if not DirAccess.dir_exists_absolute(ui_library_location):
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
 	
-	Core.fixtures_removed.connect(func (fixtures: Array): 
-		Values.remove_from_selection_value("selected_fixtures", fixtures)
+	ComponentDB.request_class_callback("Fixture", func (added: Array, removed: Array):
+		Values.remove_from_selection_value("selected_fixtures", removed)
 	)
 	
 	Core.resetting.connect(_on_engine_resetting)
 	_load()
 	
 	_set_up_object_picker()
-	
-	var cli_args: PackedStringArray = OS.get_cmdline_args()
-	
-	kiosk_mode = "--kiosk" in cli_args
-	if kiosk_mode:
-		kiosk_mode_changed.emit(kiosk_mode)
-		
-		var passcode_index: int = cli_args.find("--relay-server") + 1
-		
-		if passcode_index < cli_args.size() and cli_args[passcode_index].is_valid_ip_address():
-			print((cli_args[passcode_index] as String).split() as Array[int])
 
 
 func _on_engine_resetting() -> void:
@@ -179,14 +153,6 @@ func _try_auto_load() -> void:
 		var saved_data = JSON.parse_string(file)
 		if saved_data:
 			self.load(saved_data)
-
-
-func set_kiosk_mode(p_kiosk_mode: bool) -> void:
-	if p_kiosk_mode == kiosk_mode:
-		return
-	
-	kiosk_mode = p_kiosk_mode
-	kiosk_mode_changed.emit(kiosk_mode)
 
 
 ## Returnes all the packed scenes in the given folder, a pack scene must be in a folder, with the same name as the folder it is in

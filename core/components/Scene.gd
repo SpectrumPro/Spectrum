@@ -33,7 +33,7 @@ var fade_out_speed: float = 2
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	self_class_name = "Scene"
+	set_self_class("Scene")
 	icon = load("res://assets/icons/Scene.svg")
 	
 	add_accessible_method("enabled", [TYPE_BOOL], set_enabled, is_enabled, state_changed, ["Set Enable State"])

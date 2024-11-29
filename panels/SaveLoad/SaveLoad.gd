@@ -4,7 +4,10 @@
 extends PanelContainer
 ## Ui panel for saving, loading, and merging files
 
+
+## The current selected file
 var _current_file: String = ""
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -13,8 +16,7 @@ func _ready() -> void:
 	else:
 		MainSocketClient.connected_to_server.connect(func ():
 			_load_from_server()
-		, CONNECT_ONE_SHOT)## Sets the color of all the fixtures in [pram fixtures], to color
-
+		, CONNECT_ONE_SHOT)
 
 
 func refresh() -> void:
@@ -27,10 +29,10 @@ func refresh() -> void:
 func _load_from_server() -> void:
 	Client.send({
 		"for": "engine",
-		"call": "get_all_shows_from_library",
+		"call": "get_all_saves_from_library",
 		"args": []
-	}, func(shows: Array):
-		$VBoxContainer/ItemListView.add_items(shows)
+	}, func(saves: Array):
+		$VBoxContainer/ItemListView.add_items(saves)
 	)
 
 
@@ -41,18 +43,8 @@ func _on_item_list_view_selection_changed(items: Array) -> void:
 
 func _on_open_pressed() -> void:
 	if _current_file:
-		Client.send({
-			"for": "engine",
-			"call": "reset",
-			"args": []
-		}, func():
-			Client.send({
-				"for": "engine",
-				"call": "load_from_file",
-				"args": [_current_file]
-			})
-			pass
-		)
+		Client.send_command("engine", "reset_and_load", [_current_file])
+
 
 
 func _on_save_pressed() -> void:

@@ -20,6 +20,7 @@ var _intensity: float = 0
 
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	add_accessible_method("intensity", [TYPE_FLOAT], set_intensity, get_intensity, intensity_changed, ["Intensity"])
+	set_self_class("Function")
 	super._init(p_uuid, p_name)
 
 
@@ -76,8 +77,8 @@ func _erace_data_static(fixture: Fixture, channel_key: String, stored_data: Dict
 ## Loads the stored data, by calling the given method
 func _load_stored_data(serialized_stored_data: Dictionary, stored_data: Dictionary, store_method: Callable = _store_data_static) -> void:
 	for fixture_uuid: String in serialized_stored_data.keys():
-		if fixture_uuid in Core.fixtures:
-			var fixture: Fixture = Core.fixtures[fixture_uuid]
+		if ComponentDB.components[fixture_uuid] is Fixture:
+			var fixture: Fixture = ComponentDB.components[fixture_uuid]
 
 			for channel_key: String in serialized_stored_data[fixture_uuid]:
 				var stored_item: Dictionary = serialized_stored_data[fixture_uuid][channel_key]

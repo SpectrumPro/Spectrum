@@ -30,6 +30,9 @@ signal right_clicked
 ## The new size of this item, used during processing
 @onready var _new_size: Vector2 = self.size
 
+### The new size of this item, used when the panel emits request_resize
+#var _new_size_resize_handle: Vector2 = self.position
+
 ## The lable node that displays the position and size of this item
 @onready var _label_node: Label = $Handles/PanelContainer/Label
 
@@ -66,14 +69,19 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 func set_panel(panel: Control) -> void:
 	if _panel:
 		remove_child(_panel)
+		
+		if _panel.has_signal("request_move"): (_panel.request_move as Signal).disconnect(_on_panel_request_move)
+		if _panel.has_signal("request_resize"): (_panel.request_resize as Signal).disconnect(_on_panel_request_move)
+	
+	_panel = panel
 	
 	if panel:
-		_panel = panel
 		add_child(_panel)
 		move_child(_panel, 0)
-	else:
-		_panel = null
-
+		
+		if _panel.has_signal("request_move"): (_panel.request_move as Signal).connect(_on_panel_request_move)
+		if _panel.has_signal("request_resize"): (_panel.request_resize as Signal).connect(_on_panel_request_resize)
+	
 
 ## Gets the panel node set with set_panel, otherwise null
 func get_panel() -> Variant:
@@ -105,7 +113,6 @@ func _on_background_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_new_position += event.relative
 		_new_position = _new_position.abs()
-		#_new_position = _new_position.clamp(Vector2.ZERO, get_parent().size - size)
 		
 		self.position = _new_position.snapped(snapping_distance)
 		
@@ -124,11 +131,23 @@ func _on_br_handle_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_new_size += event.relative
 		_new_size = _new_size.abs()
-		#_new_size = _new_size.clamp(custom_minimum_size, Vector2.INF)
 		self.size = _new_size.snapped(snapping_distance)
 		update_label()
 	
 	if event.is_pressed():
 		clicked.emit()
+
+
+## Called when the client UIPanel emits request_move
+func _on_panel_request_move(by: Vector2) -> void:
+	_new_position += by
+	position = snapped(_new_position, snapping_distance)
+
+
+## Called when the client UIPanel emits request_move
+func _on_panel_request_resize(by: Vector2) -> void:
+	if Input.is_key_pressed(KEY_SHIFT): by = by * 4
+	_new_size += by
+	size = snapped(_new_size, snapping_distance)
 
 #endregion

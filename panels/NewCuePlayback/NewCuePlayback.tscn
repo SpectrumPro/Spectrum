@@ -1,12 +1,30 @@
-[gd_scene load_steps=9 format=3 uid="uid://cnqivpcpimlwc"]
+[gd_scene load_steps=16 format=3 uid="uid://cnqivpcpimlwc"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_u3x3w"]
 [ext_resource type="Script" path="res://panels/NewCuePlayback/NewCuePlayback.gd" id="2_4bo1g"]
 [ext_resource type="Script" path="res://panels/NewCuePlayback/Controls.gd" id="3_ijo7h"]
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/CueList.svg" id="3_qadkc"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="3_v1amt"]
+[ext_resource type="Texture2D" uid="uid://dghhvu27mcp3u" path="res://assets/icons/PlayPause.svg" id="4_m1awm"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="4_nfbmp"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="4_rm56x"]
+[ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="5_3wccy"]
+[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="5_aga74"]
+[ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="6_hamjg"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="6_knbom"]
+[ext_resource type="Texture2D" uid="uid://c8wnnqs5lxs4j" path="res://assets/icons/Brightness.svg" id="6_s2hdx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pkwr7"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_fuler"]
 font = ExtResource("6_knbom")
@@ -25,17 +43,67 @@ script = ExtResource("2_4bo1g")
 layout_mode = 2
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pkwr7")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2"]
 layout_mode = 2
 
 [node name="CueName" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 0
 text = "Empty Playback"
 icon = ExtResource("3_qadkc")
 flat = true
+
+[node name="CuePlaybackControls" type="PanelContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls"]
+layout_mode = 2
+
+[node name="PlayPause" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("4_m1awm")
+
+[node name="Stop" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("5_3wccy")
+
+[node name="Brightnes" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 10
+keep_pressed_outside = true
+icon = ExtResource("6_s2hdx")
+
+[node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer/EditControls"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("4_rm56x")
+
+[node name="Button2" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("5_aga74")
+
+[node name="MoveResize" type="TextureRect" parent="VBoxContainer/PanelContainer2/HBoxContainer/EditControls/HBoxContainer"]
+modulate = Color(0.255659, 0.255659, 0.255659, 1)
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 13
+texture = ExtResource("6_hamjg")
+expand_mode = 4
+stretch_mode = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -92,5 +160,7 @@ text = "
 label_settings = SubResource("LabelSettings_fuler")
 
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/CueName" to="." method="_on_cue_name_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/PlayPause" to="." method="_on_play_pause_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Previous" to="." method="_on_previous_pressed"]
 [connection signal="pressed" from="VBoxContainer/Controls/HBoxContainer/Next" to="." method="_on_next_pressed"]

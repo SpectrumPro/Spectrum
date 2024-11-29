@@ -61,7 +61,7 @@ var function_triggers: Dictionary = {}
 
 
 func _component_ready() -> void:
-	self_class_name = "Cue"
+	set_self_class("Cue")
 	icon = load("res://assets/icons/Cue.svg")
 	
 	add_accessible_method("fade_time", [TYPE_FLOAT], set_fade_time, get_fade_time, fade_time_changed, ["Seconds"])

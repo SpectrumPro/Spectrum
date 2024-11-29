@@ -1,6 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://jv514a664gha"]
+[gd_scene load_steps=5 format=3 uid="uid://jv514a664gha"]
 
 [ext_resource type="Script" path="res://components/VirtualFixture/VirtualFixture.gd" id="1_4xcqs"]
+[ext_resource type="Shader" path="res://assets/shaders/Glow.gdshader" id="2_rxc1o"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bd4x4"]
+shader = ExtResource("2_rxc1o")
+shader_parameter/rect_size = Vector2(0.1, 0.1)
+shader_parameter/bness = 0.185
+shader_parameter/fall_off_scale = 2.82
+shader_parameter/b_offset = 0.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0nr4c"]
 bg_color = Color(0, 0, 0, 1)
@@ -18,9 +26,20 @@ anti_aliasing_size = 0.618
 [node name="VirtualFixture" type="GraphElement"]
 offset_right = 100.0
 offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
 script = ExtResource("1_4xcqs")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+material = SubResource("ShaderMaterial_bd4x4")
+layout_mode = 2
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 115.0
+offset_bottom = 115.0
+mouse_filter = 1
 
 [node name="Color Box" type="PanelContainer" parent="."]
 layout_mode = 2

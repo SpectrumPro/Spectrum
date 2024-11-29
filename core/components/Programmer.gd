@@ -16,7 +16,7 @@ enum SAVE_MODE {
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
 	name = "Programmer"
-	self_class_name = "Programmer"
+	set_self_class("Programmer")
 
 
 ## Clears the programmer
