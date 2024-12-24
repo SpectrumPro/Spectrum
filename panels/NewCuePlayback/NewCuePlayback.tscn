@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="5_3wccy"]
 [ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="5_aga74"]
 [ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="6_hamjg"]
+[ext_resource type="PackedScene" uid="uid://c30mlwfrsxbcl" path="res://components/IntensityButton/IntensityButton.tscn" id="6_i5qdf"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="6_knbom"]
-[ext_resource type="Texture2D" uid="uid://c8wnnqs5lxs4j" path="res://assets/icons/Brightness.svg" id="6_s2hdx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pkwr7"]
 content_margin_left = 5.0
@@ -73,11 +73,8 @@ icon = ExtResource("4_m1awm")
 layout_mode = 2
 icon = ExtResource("5_3wccy")
 
-[node name="Brightnes" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer"]
+[node name="IntensityButton" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer" instance=ExtResource("6_i5qdf")]
 layout_mode = 2
-mouse_default_cursor_shape = 10
-keep_pressed_outside = true
-icon = ExtResource("6_s2hdx")
 
 [node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2

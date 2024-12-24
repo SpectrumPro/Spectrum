@@ -37,3 +37,9 @@ func _on_move_resize_gui_input(event: InputEvent) -> void:
 			
 			MOUSE_BUTTON_MASK_RIGHT:
 				request_resize.emit(event.screen_relative)
+
+func save() -> Dictionary: return _save()
+func _save() -> Dictionary: return {}
+
+func load(saved_data: Dictionary) -> void: _load(saved_data)
+func _load(saved_data: Dictionary) -> void: pass

@@ -221,7 +221,7 @@ func _update_filter() -> void:
  
 func _create_filter_class_button(class_name_string: String) -> Button:
 	var filter_button: Button = Button.new()
-	filter_button.icon = ClassList.get_class_icon(class_name_string)
+	filter_button.icon = Interface.get_class_icon(class_name_string)
 	filter_button.toggle_mode = true
 	
 	var tool_tip_name: String = class_name_string.capitalize()

@@ -55,6 +55,7 @@ func set_cue_list(cue_list: CueList) -> void:
 		_cue_list.name_changed.connect(_on_cue_list_on_name_changed)
 	
 	_name_button.text = cue_list.name
+	$VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton.set_function(_cue_list)
 	_reload_table()
 
 
@@ -131,16 +132,17 @@ func _on_cue_list_object_found(object: EngineComponent) -> void: if object is Cu
 
 
 ## Saves this into a dict
-func save() -> Dictionary:
+func _save() -> Dictionary:
 	if _cue_list: return { "uuid": _cue_list.uuid }
 	else: return {}
 
 
 ## Loads this from a dict
-func load(saved_data: Dictionary) -> void:
+func _load(saved_data: Dictionary) -> void:
 	if "uuid" in saved_data:
 		_previous_uuid = saved_data.uuid
 		ComponentDB.request_component(saved_data.uuid, _on_cue_list_object_found)
+
 
 ## Called when the CueName button is pressed
 func _on_cue_name_pressed() -> void:
@@ -150,3 +152,10 @@ func _on_cue_name_pressed() -> void:
 			if objects[0] is CueList: set_cue_list(objects[0]), 
 		["CueList"]
 	)
+
+
+func _on_previous_pressed() -> void: if _cue_list: _cue_list.go_previous()
+func _on_go_pressed() -> void: pass
+func _on_next_pressed() -> void: if _cue_list: _cue_list.go_next()
+func _on_play_pause_pressed() -> void: if _cue_list: _cue_list.pause() if _cue_list.is_playing() else _cue_list.play()
+func _on_stop_pressed() -> void: if _cue_list: _cue_list.stop()

@@ -90,6 +90,11 @@ func get_components_by_classname(classname: String) -> Array:
 	return components_by_classname.get(classname, [])
 
 
+## Gets a component by a uuid
+func get_component(uuid: String) -> EngineComponent:
+	return components.get(uuid)
+
+
 ## Use this method if you need to call a function once a component is added to the engine. This will only be called once
 func request_component(uuid: String, callback) -> void:
 	if uuid in components:

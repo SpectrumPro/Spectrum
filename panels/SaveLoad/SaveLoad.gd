@@ -55,7 +55,7 @@ func _on_save_pressed() -> void:
 			"for": "engine",
 			"call": "save",
 			"args": [file_name]
-		}, func ():
+		}, func (error: Error):
 			refresh()
 		)
 	

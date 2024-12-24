@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ds5mmj3a0ukl4"
-path="res://.godot/imported/Fixture_group.svg-e2609b2ed9e7e2a3d5675fc5d4201123.ctex"
+uid="uid://cciy4j4akeigb"
+path="res://.godot/imported/Corner.svg-d43ed4cfaa7b42c0970ed8a8ea7be520.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/Fixture_group.svg"
-dest_files=["res://.godot/imported/Fixture_group.svg-e2609b2ed9e7e2a3d5675fc5d4201123.ctex"]
+source_file="res://assets/icons/Corner.svg"
+dest_files=["res://.godot/imported/Corner.svg-d43ed4cfaa7b42c0970ed8a8ea7be520.ctex"]
 
 [params]
 
@@ -32,6 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=0.5
+svg/scale=1.0
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

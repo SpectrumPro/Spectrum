@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-class_name CuePlayback extends UIPanel
+class_name UICuePlayback extends UIPanel
 ## Ui panel for playing back cuelists
 
 
@@ -35,7 +35,7 @@ func set_cue_list(cue_list: CueList) -> void:
 	
 	_reload_cues()
 	$VBoxContainer/PanelContainer2/HBoxContainer/CueName.text = cue_list.name
-
+	$VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton.set_function(cue_list)
 
 ## Reloads the list of cues
 func _reload_cues(arg1=null) -> void:
@@ -75,13 +75,13 @@ func _on_stop_pressed() -> void: if _cue_list: _cue_list.stop()
 
 
 ## Saves this into a dict
-func save() -> Dictionary:
+func _save() -> Dictionary:
 	if _cue_list: return { "uuid": _cue_list.uuid }
 	else: return {}
 
 
 ## Loads this from a dict
-func load(saved_data: Dictionary) -> void:
+func _load(saved_data: Dictionary) -> void:
 	if "uuid" in saved_data:
 		_previous_uuid = saved_data.uuid
 		ComponentDB.request_component(saved_data.uuid, _on_cue_list_object_found)

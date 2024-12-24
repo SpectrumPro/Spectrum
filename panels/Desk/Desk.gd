@@ -1,16 +1,16 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-class_name Desk extends PanelContainer
+class_name UIDesk extends UIPanel
 ## A customisable ui layout
 
 
-#region Public Members
 ## Emitted when edit mode is toggled
 signal edit_mode_toggled(edit_mode: bool)
 
 ## Emitted when the snapping distance is changed, will be 0 when snapping is dissabled
 signal snapping_distance_changed(snapping_distance: Vector2)
+
 
 ## Whether or not to allow panels to be edited, deleted or added
 var edit_mode: bool = false : set = set_edit_mode
@@ -20,7 +20,6 @@ var snapping_enabled: bool = true : set = set_snapping_enabled
 
 ## The snapping distance of desk items in px
 var snapping_distance: Vector2 = Vector2(20, 20) : set = set_snapping_distance
-#endregion
 
 
 #region Private Members
@@ -101,8 +100,8 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 
 
 ## Adds a new panel to this desk
-func add_panel(panel: Control, new_position: Vector2 = _just_deleted_pos, new_size: Vector2 = _just_deleted_size, container_name: String = "") -> Control:
-	var new_node: Control = Interface.components.DeskItemContainer.instantiate()
+func add_panel(panel: Control, new_position: Vector2 = _just_deleted_pos, new_size: Vector2 = _just_deleted_size, container_name: String = "") -> DeskItemContainer:
+	var new_node: DeskItemContainer = Interface.components.DeskItemContainer.instantiate()
 	new_node.set_edit_mode(true)
 	
 	## Connect signals to the item container
@@ -143,22 +142,8 @@ func open_settings(node: DeskItemContainer = null) -> void:
 func save() -> Dictionary:
 	var items: Array = []
 	
-	for desk_item_container: Control in _container_node.get_children():
-		
-		var settings: Dictionary = {}
-		var panel: Control = desk_item_container.get_panel()
-		
-		if  panel.get("save") is Callable:
-			settings = panel.save()
-		
-		var script_name: String = panel.get_script().resource_path.get_file()
-			
-		items.append({
-			"type": script_name.substr(0, script_name.rfind(".")),
-			"position": [desk_item_container.position.x, desk_item_container.position.y],
-			"size": [desk_item_container.size.x, desk_item_container.size.y],
-			"settings": settings
-		})
+	for desk_item_container: DeskItemContainer in _container_node.get_children():
+		items.append(desk_item_container.save())
 	
 	return {
 		"items": items,
@@ -168,7 +153,7 @@ func save() -> Dictionary:
 ## Loads all the items in this desk form thoes returned by save()
 func load(saved_data: Dictionary) -> void:
 	
-	if saved_data.has("items"):
+	if saved_data.get("items") is Array:
 		for saved_panel: Dictionary in saved_data.items:
 			if saved_panel.get("type", "") in Interface.panels:
 				var new_panel: Control = Interface.panels[saved_panel.type].instantiate()
@@ -181,22 +166,8 @@ func load(saved_data: Dictionary) -> void:
 				if len(saved_panel.get("size", [])) == 2:
 					new_size = Vector2(int(saved_panel.size[0]), int(saved_panel.size[1]))
 				
-				add_panel(new_panel, new_position, new_size)
-				
-				if new_panel.get("load") is Callable:
-					new_panel.load(saved_panel.get("settings", {}))
-				
-				
-	
-	#for container_name: String in saved_data:
-		#if saved_data[container_name].get("type", "") in Interface.panel:
-			#var panel: Control = Interface.panels[ saved_data[container_name].type]
-			#var position: Vector2 = saved_data[container_name].get("position", Vector2.ZERO)
-			#var size: Vector2 = saved_data[container_name].get("size", Vector2(100, 100))
-			#
-			#var new_desk_item_container: DeskItemContainer = add_panel(panel, position, size)
-			#
-			#new_desk_item_container.load(saved_data[container_name].get("settings", {}))
+				add_panel(new_panel, new_position, new_size).load.call_deferred(saved_panel)
+
 #endregion
 
 

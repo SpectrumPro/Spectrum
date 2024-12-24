@@ -207,7 +207,7 @@ func _on_method_list_item_selected(index: int) -> void:
 
 
 ## Called when the confirm button is pressed
-func _on_confirm_pressed() -> void: method_confired.emit(_method_trigger)
+func _on_confirm_pressed() -> void: method_confired.emit(MethodTrigger.new().deseralize(_method_trigger.seralize()))
 
 ## Called when the cansel button is pressed
 func _on_cancel_pressed() -> void: cancled.emit()

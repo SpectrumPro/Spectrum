@@ -47,6 +47,7 @@ var panels: Dictionary = {
 	"Settings": load("res://panels/Settings/Settings.tscn"),
 	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
+	"Pad": load("res://panels/Pad/Pad.tscn"),
 	"NewProgrammer": load("res://panels/NewProgrammer/NewProgrammer.tscn"),
 	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
 	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
@@ -82,6 +83,19 @@ var panel_icons: Dictionary = {
 ## Stores the corresponding panel to access settings for each EngineComponent
 var component_settings_panels: Dictionary = {
 	"CueList": {"panel": load("res://panels/CuePlayback/CuePlayback.tscn"), "method": "set_cue_list"}
+}
+
+
+## Stores the default icons for all the classes
+var icon_class_list: Dictionary = {
+	"EngineComponent": load("res://assets/icons/Component.svg"),
+	"Universe": load("res://assets/icons/Universe.svg"),
+	"Fixture": load("res://assets/icons/Fixture.svg"),
+	"FixtureGroup": load("res://assets/icons/FixtureGroup.svg"),
+	"Programmer": load("res://assets/icons/Programmer.svg"),
+	"Cue": load("res://assets/icons/Cue.svg"),
+	"Scene": load("res://assets/icons/Scene.svg"),
+	"CueList": load("res://assets/icons/CueList.svg"),
 }
 
 
@@ -143,7 +157,6 @@ func _set_up_object_picker() -> void:
 	_object_picker_base = load("res://ObjectPickerDefault.tscn").instantiate()
 	_object_picker = _object_picker_base.get_node("ObjectPicker")
 	add_root_child(_object_picker_base)
-	
 
 
 func _try_auto_load() -> void:
@@ -200,6 +213,7 @@ func _load_matching_scenes_in_folder(current_folder: String, packed_scenes: Dict
 		dir_access.list_dir_end()
 
 
+## Shows the object picker
 func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable, filter: Array[String] = []) -> void:
 	_object_picker.filter_allow_list = filter
 	_object_picker.set_user_filtering(filter == [])
@@ -228,6 +242,10 @@ func add_root_child(node: Node) -> void:
 	_added_root_nodes.append(node)
 	get_tree().root.add_child.call_deferred(node)
 
+
+## Gets a class icon
+func get_class_icon(class_name_string: String) -> Texture2D:
+	return icon_class_list.get(class_name_string, load("res://assets/icons/Component.svg"))
 
 
 func save() -> Dictionary:

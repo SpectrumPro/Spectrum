@@ -8,7 +8,6 @@ class_name VirtualFixture extends GraphElement
 ## The fixture linked to this virtual fixture
 var fixture: Fixture : set = set_fixture
 
-
 ## Allows the user to define how much to blend diffent colors, bigger values will help show what other colors are active on a light, and will have a better vis of the real light
 var color_blend_buffer: float = 0.7
 

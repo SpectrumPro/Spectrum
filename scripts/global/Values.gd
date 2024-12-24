@@ -103,6 +103,11 @@ func get_selection_value(value_name: String, default: Variant = []) -> Variant:
 	return selection_values.get(value_name, default)
 
 
+## Returns the length of a selection value
+func len_of(value_name: String) -> int:
+	return len(selection_values.get(value_name, []))
+
+
 ## TODO: Called when a engine component emits delete_requested and is in a static value
 #func _on_engine_component_deleted_static(selection_value: String, component: EngineComponent) -> void:
 	#remove_from_selection_value(selection_value, [component])

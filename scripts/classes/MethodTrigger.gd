@@ -33,7 +33,8 @@ func set_uuid(p_uuid: String) -> void:
 	_component = null
 	_method = Callable()
 	
-	ComponentDB.request_component(_uuid, _on_component_found)
+	if _uuid:
+		ComponentDB.request_component(_uuid, _on_component_found)
 
 
 ## Sets the method name
@@ -45,6 +46,14 @@ func set_method_name(p_method_name: String) -> void:
 ## Getters for the values
 func get_uuid() -> String: return _uuid
 func get_method_name() -> String: return _method_name
+func get_component() -> EngineComponent: return _component
+
+## Returns this MethodTrigger as a string
+func get_as_string() -> String:
+	if _component and _method_name:
+		return _component.name + "." + _method_name 
+	else:
+		return ""
 
 
 ## Trys to set the method from the object and method name

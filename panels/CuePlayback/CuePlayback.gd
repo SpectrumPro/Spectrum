@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-extends PanelContainer
+class_name UICuePlaybackOLD extends UIPanel
 ## UI Panel for controlling a CueList
 
 

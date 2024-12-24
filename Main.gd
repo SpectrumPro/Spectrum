@@ -50,7 +50,7 @@ func _on_connection_closed() -> void:
 func save() -> Array:
 	var save_data: Array = []
 	
-	for panel: Control in _tab_container.get_children():
+	for panel: UIPanel in _tab_container.get_children():
 		if panel.get("save") is Callable:
 			var script_name: String =  panel.get_script().resource_path.get_file()
 			
@@ -144,10 +144,8 @@ func _on_settings_toggled(toggled_on: bool) -> void:
 
 func _on_new_tab_pressed() -> void:
 	#var new_panel: Desk = desk_panel.instantiate()
-	var new_panel: Desk = Interface.panels.Desk.instantiate()
+	var new_panel: UIDesk = Interface.panels.Desk.instantiate()
 	#var new_panel: Desk = preload("res://panels/Desk/Desk.tscn").instantiate()
-	
-	print(Interface.panels)
 	
 	_tab_bar.add_tab("Desk")
 	_tab_bar.current_tab = _tab_bar.tab_count - 1

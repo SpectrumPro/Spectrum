@@ -1,7 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3wayg6lhg7u"]
+[gd_scene load_steps=9 format=3 uid="uid://d3wayg6lhg7u"]
 
 [ext_resource type="Script" path="res://panels/ColorPalette/ColorPalette.gd" id="1_jjrjg"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_sjs5a"]
+[ext_resource type="Texture2D" uid="uid://cxj2da5hi1g4s" path="res://assets/icons/Palette.svg" id="3_6e5bs"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="4_0bpsf"]
+[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="5_gf0ev"]
+[ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="6_4r3pt"]
+[ext_resource type="PackedScene" uid="uid://8b2b2j0iltv8" path="res://components/DataPalette/DataPalette.tscn" id="7_2wcmm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chvgm"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="ColorPalette" type="PanelContainer"]
 anchors_preset = 15
@@ -12,50 +29,71 @@ grow_vertical = 2
 theme = ExtResource("1_sjs5a")
 script = ExtResource("1_jjrjg")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="ScrollContainer"]
+[node name="TitleBar" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_chvgm")
 
-[node name="Settings" type="PanelContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TitleBar"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
+[node name="Button" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer"]
+layout_mode = 2
+text = "Color Palette"
+icon = ExtResource("3_6e5bs")
+flat = true
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/TitleBar/HBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TitleBar/HBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Settings/VBoxContainer/HBoxContainer"]
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/TitleBar/HBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Number Of Colors"
+prefix = "Rows:"
 
-[node name="NumberOfColors" type="SpinBox" parent="Settings/VBoxContainer/HBoxContainer"]
+[node name="SpinBox2" type="SpinBox" parent="VBoxContainer/TitleBar/HBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+prefix = "Columns:"
+
+[node name="EditControls" type="PanelContainer" parent="VBoxContainer/TitleBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TitleBar/HBoxContainer/EditControls"]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Settings/VBoxContainer"]
+[node name="EditMode" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer/EditControls/HBoxContainer"]
 layout_mode = 2
+tooltip_text = "Toggle Edit Mode"
+disabled = true
+toggle_mode = true
+icon = ExtResource("4_0bpsf")
 
-[node name="ShowReset" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
+[node name="Settings" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer/EditControls/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Show Reset"
+tooltip_text = "Open Settings"
+icon = ExtResource("5_gf0ev")
 
-[node name="ShowWhite" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
+[node name="MoveResize" type="TextureRect" parent="VBoxContainer/TitleBar/HBoxContainer/EditControls/HBoxContainer"]
+modulate = Color(0.255659, 0.255659, 0.255659, 1)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Show White"
+tooltip_text = "Move & Resize"
+mouse_filter = 0
+mouse_default_cursor_shape = 13
+texture = ExtResource("6_4r3pt")
+expand_mode = 4
+stretch_mode = 5
 
-[node name="ShowBlack" type="CheckButton" parent="Settings/VBoxContainer/HBoxContainer2"]
+[node name="DataPalette" parent="VBoxContainer" instance=ExtResource("7_2wcmm")]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Show Black"
-
-[connection signal="resized" from="ScrollContainer/GridContainer" to="." method="_on_grid_container_resized"]
-[connection signal="value_changed" from="Settings/VBoxContainer/HBoxContainer/NumberOfColors" to="." method="_on_number_of_colors_value_changed"]
-[connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowReset" to="." method="set_show_reset"]
-[connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowWhite" to="." method="set_show_white"]
-[connection signal="toggled" from="Settings/VBoxContainer/HBoxContainer2/ShowBlack" to="." method="set_show_black"]

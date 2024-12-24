@@ -30,14 +30,11 @@ signal right_clicked
 ## The new size of this item, used during processing
 @onready var _new_size: Vector2 = self.size
 
-### The new size of this item, used when the panel emits request_resize
-#var _new_size_resize_handle: Vector2 = self.position
-
 ## The lable node that displays the position and size of this item
 @onready var _label_node: Label = $Handles/PanelContainer/Label
 
 ## The panel node
-var _panel: Control = null
+var _panel: UIPanel = null
 #endregion
 
 
@@ -66,12 +63,12 @@ func set_snapping_distance(p_snapping_distance: Vector2) -> void:
 
 
 ## Sets the panel node of this item
-func set_panel(panel: Control) -> void:
+func set_panel(panel: UIPanel) -> void:
 	if _panel:
 		remove_child(_panel)
 		
-		if _panel.has_signal("request_move"): (_panel.request_move as Signal).disconnect(_on_panel_request_move)
-		if _panel.has_signal("request_resize"): (_panel.request_resize as Signal).disconnect(_on_panel_request_move)
+		_panel.request_move.disconnect(_on_panel_request_move)
+		_panel.request_resize.disconnect(_on_panel_request_move)
 	
 	_panel = panel
 	
@@ -79,8 +76,8 @@ func set_panel(panel: Control) -> void:
 		add_child(_panel)
 		move_child(_panel, 0)
 		
-		if _panel.has_signal("request_move"): (_panel.request_move as Signal).connect(_on_panel_request_move)
-		if _panel.has_signal("request_resize"): (_panel.request_resize as Signal).connect(_on_panel_request_resize)
+		_panel.request_move.connect(_on_panel_request_move)
+		_panel.request_resize.connect(_on_panel_request_resize)
 	
 
 ## Gets the panel node set with set_panel, otherwise null
@@ -99,9 +96,28 @@ func update_label() -> void:
 
 
 ## Loads the settings for this node from the settings returned by save()
+func save() -> Dictionary:
+	var saved_data: Dictionary = {
+		"type": "",
+		"position": [position.x, position.y],
+		"size": [size.x, size.y],
+		"settings": {}
+	}
+	
+	if _panel:
+		var script_name: String = _panel.get_script().resource_path.get_file()
+		print(script_name.substr(0, script_name.rfind(".")))
+		saved_data.merge({
+			"type": script_name.substr(0, script_name.rfind(".")),
+			"settings": _panel.save()
+		}, true)
+		
+	return saved_data 
+
+## Loads the settings for this node from the settings returned by save()
 func load(saved_data: Dictionary) -> void:
-	if has_node("Panel") and $Panel.get("load") is Callable:
-		$Panel.load(saved_data)
+	if _panel:
+		_panel.load(saved_data.get("settings", {}))
 
 #endregion
 

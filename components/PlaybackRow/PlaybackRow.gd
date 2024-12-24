@@ -59,9 +59,8 @@ signal label_changed(new_label: String)
 			"button_down": { "method_name": "pause" },
 		},
 		button3: {
-			"label": "Flash",
-			"button_down": { "method_name": "intensity", "args": [1] },
-			"button_up": { "method_name": "intensity", "args": [0] },
+			"label": "Stop",
+			"button_down": { "method_name": "stop" },
 		},
 		button4: {
 			"label": "Go Previous",

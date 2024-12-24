@@ -65,7 +65,8 @@ func set_user_meta(key: String, value: Variant): rpc("set_user_meta", [key, valu
 func delete_user_meta(key: String) -> void: rpc("delete_user_meta", [key])
 
 ## Sets the name of this component
-func set_name(new_name) -> void: rpc("set_name", [new_name])
+func set_name(new_name) -> void: 
+	rpc("set_name", [new_name])
 
 ## Always call this function when you want to delete this component. 
 ## As godot uses reference counting, this object will not truly be deleted untill no other script holds a refernce to it.
@@ -137,7 +138,11 @@ func _on_serialize_request() -> Dictionary:
 
 
 ## INTERNAL: called when this object has been requested to be deleted from the server
-func on_delete_requested() -> void:
+func on_delete_requested() -> void: local_delete()
+
+
+## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
+func local_delete() -> void:
 	_on_delete_request()
 	
 	delete_requested.emit()
