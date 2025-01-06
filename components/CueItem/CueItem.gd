@@ -45,19 +45,21 @@ func set_cue(cue: Cue, cue_list: CueList) -> void:
 	
 	_cue = cue
 	_cue_list = cue_list
-	_cue_list.cue_changed.connect(_on_cue_number_changed)
 	
-	_cue.name_changed.connect(set_cue_name)
-	_cue.number_changed.connect(set_number)
-	_cue.fade_time_changed.connect(set_fade_time)
-	_cue.pre_wait_time_changed.connect(set_pre_wait)
-	_cue.trigger_mode_changed.connect(set_trigger_mode)
-	
-	set_cue_name(_cue.name)
-	set_number(_cue.number)
-	set_fade_time(_cue.fade_time)
-	set_pre_wait(_cue.pre_wait)
-	set_trigger_mode(_cue.trigger_mode)
+	if _cue and _cue_list:
+		_cue_list.cue_changed.connect(_on_cue_number_changed)
+		
+		_cue.name_changed.connect(set_cue_name)
+		_cue.number_changed.connect(set_number)
+		_cue.fade_time_changed.connect(set_fade_time)
+		_cue.pre_wait_time_changed.connect(set_pre_wait)
+		_cue.trigger_mode_changed.connect(set_trigger_mode)
+		
+		set_cue_name(_cue.name)
+		set_number(_cue.number)
+		set_fade_time(_cue.get_fade_time())
+		set_pre_wait(_cue.get_pre_wait())
+		set_trigger_mode(_cue.get_trigger_mode())
 
 
 ## Shows or hides the status bar
@@ -77,14 +79,14 @@ func set_status_bar(state: bool, time: float) -> void:
 ## Called when the CueList cue number changes
 func _on_cue_number_changed(cue_number: float) -> void:
 	if cue_number == _cue.number:
-		set_status_bar(true, _cue.fade_time)
+		set_status_bar(true, _cue.get_fade_time())
 	
 	elif _is_enabled: 
 		var fade_time: float = 0
-		if cue_number in _cue_list.cues:
-			fade_time = _cue_list.cues[cue_number].fade_time
+		if _cue_list.get_cue(cue_number):
+			fade_time = _cue_list.get_cue(cue_number).get_fade_time()
 		else:
-			fade_time = _cue.fade_time
+			fade_time = _cue.get_fade_time()
 		
 		set_status_bar(false, fade_time)
 

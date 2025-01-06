@@ -1,20 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cebqk3au5iwx0"]
+[gd_scene load_steps=7 format=3 uid="uid://cebqk3au5iwx0"]
 
 [ext_resource type="Script" path="res://components/DeskItemContainer/DeskItemContainer.gd" id="1_u1i3e"]
 [ext_resource type="Texture2D" uid="uid://bi6l77hvjlekh" path="res://assets/icons/Resize.svg" id="2_gw62f"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="3_70702"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ikhvr"]
-bg_color = Color(0.154876, 0.154876, 0.154876, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.310617, 0.310617, 0.310617, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q375a"]
 bg_color = Color(0.199988, 0.199988, 0.199988, 0.760784)
@@ -37,17 +25,24 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_burcd"]
 font = ExtResource("3_70702")
 
-[node name="DeskItemContainer" type="PanelContainer"]
+[node name="DeskItemContainer" type="Control"]
 clip_contents = true
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 3
+anchors_preset = 0
 offset_right = 160.0
 offset_bottom = 160.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_ikhvr")
 script = ExtResource("1_u1i3e")
 selected_color = Color(0.404511, 0.404511, 0.404511, 0.760784)
 normal_color = Color(0.2, 0.2, 0.2, 0.760784)
 
 [node name="Handles" type="Control" parent="."]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Background" type="Panel" parent="Handles"]
 layout_mode = 1

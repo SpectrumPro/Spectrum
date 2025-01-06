@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://8mfy3g85o3g5"]
+[gd_scene load_steps=5 format=3 uid="uid://8mfy3g85o3g5"]
 
 [ext_resource type="Script" path="res://panels/Clock/Clock.gd" id="1_8tr61"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_r82tc"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="2_546b1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2atlb"]
@@ -14,6 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_r82tc")
 script = ExtResource("1_8tr61")
 
 [node name="Control" type="Control" parent="."]
@@ -38,4 +40,4 @@ label_settings = SubResource("LabelSettings_2atlb")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="resized" from="." to="." method="_set_font_size"]

@@ -42,6 +42,11 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 
+[node name="ColorEdit" type="ColorPickerButton" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+edit_alpha = false
+
 [node name="Button" type="Button" parent="HBox"]
 visible = false
 layout_mode = 2
@@ -54,7 +59,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 flat = true
 text_overrun_behavior = 3
-selected = 0
 allow_reselect = true
 
 [connection signal="text_submitted" from="HBox/StringEdit" to="." method="_on_string_edit_text_submitted"]

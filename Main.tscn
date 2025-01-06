@@ -1,28 +1,12 @@
-[gd_scene load_steps=29 format=3 uid="uid://7f5erpa1ts1n"]
+[gd_scene load_steps=12 format=3 uid="uid://7f5erpa1ts1n"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_lygr6"]
-[ext_resource type="Script" path="res://Main.gd" id="2_2mnc0"]
+[ext_resource type="Script" path="res://scripts/ui/Main.gd" id="2_2mnc0"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="3_7gl8s"]
-[ext_resource type="Texture2D" uid="uid://dt0khkr0ltw70" path="res://assets/icons/Programmer.svg" id="3_tfxir"]
-[ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://assets/icons/Scene.svg" id="4_tr1fx"]
-[ext_resource type="Texture2D" uid="uid://dis005hfepinf" path="res://assets/icons/Fixture.svg" id="5_1f8l4"]
-[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="6_0hk34"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="7_4ai6i"]
-[ext_resource type="Texture2D" uid="uid://db0vd5iwegdsu" path="res://assets/icons/Functions.svg" id="8_cx8fr"]
-[ext_resource type="Texture2D" uid="uid://dqr6mygroiluf" path="res://assets/icons/NewPanel.svg" id="9_eituf"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="9_l0dk1"]
-[ext_resource type="Texture2D" uid="uid://c6rls43ddilxg" path="res://assets/icons/Save.svg" id="10_nretb"]
-[ext_resource type="Script" path="res://Tabs.gd" id="11_g0pp1"]
-[ext_resource type="Texture2D" uid="uid://dyd2xybu6duv4" path="res://assets/icons/NewWindow.svg" id="13_8fm6r"]
-[ext_resource type="PackedScene" uid="uid://bhrc5gkly1noh" path="res://components/ConfirmationBox/ConfirmationBox.tscn" id="13_yplrd"]
-[ext_resource type="PackedScene" uid="uid://dm6rs78fm1lh4" path="res://panels/SaveLoad/SaveLoad.tscn" id="14_3qwxp"]
-[ext_resource type="PackedScene" uid="uid://d2mjxku8bnm0o" path="res://panels/Settings/Settings.tscn" id="14_45enf"]
+[ext_resource type="Script" path="res://scripts/ui/Tabs.gd" id="11_g0pp1"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="14_jv1kq"]
-[ext_resource type="PackedScene" uid="uid://bwxr0mrsrt0iu" path="res://panels/Programmer/Programmer.tscn" id="15_dmmgm"]
-[ext_resource type="PackedScene" uid="uid://baortk0rwrhup" path="res://panels/Playbacks/Playbacks.tscn" id="17_ghhoa"]
-[ext_resource type="PackedScene" uid="uid://d12eb0smjpwuk" path="res://panels/Fixtures/Fixtures.tscn" id="18_6dgbh"]
-[ext_resource type="PackedScene" uid="uid://cedqo06n6en8u" path="res://panels/Functions/Functions.tscn" id="21_8ew8x"]
-[ext_resource type="PackedScene" uid="uid://bojo5mnmadf4j" path="res://components/PanelPicker/PanelPicker.tscn" id="22_w80v3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8efsq"]
 font = ExtResource("3_7gl8s")
@@ -71,23 +55,7 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tjok"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.309804, 0.309804, 0.309804, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[node name="Main" type="PanelContainer"]
+[node name="Main" type="PanelContainer" node_paths=PackedStringArray("_flash_background", "_tab_container", "_quick_access_container")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -95,8 +63,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_lygr6")
 script = ExtResource("2_2mnc0")
+_flash_background = NodePath("FlashBG")
+_tab_container = NodePath("VBoxContainer/Tabs")
+_quick_access_container = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/QuickAccessButtons")
 
-[node name="WarningBG" type="ColorRect" parent="."]
+[node name="FlashBG" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(1, 0, 0, 0)
 
@@ -112,60 +83,41 @@ layout_mode = 2
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="Control" parent="VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-
-[node name="QuickAccessButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons"]
-layout_mode = 2
-
-[node name="Programmer" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
-layout_mode = 2
-tooltip_text = "Open Programmer"
-toggle_mode = true
-icon = ExtResource("3_tfxir")
-
-[node name="Scenes" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
-layout_mode = 2
-tooltip_text = "Open Scene Playbacks"
-toggle_mode = true
-icon = ExtResource("4_tr1fx")
-
-[node name="Fixtures" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
-layout_mode = 2
-tooltip_text = "Open Fixture List"
-toggle_mode = true
-icon = ExtResource("5_1f8l4")
-
-[node name="Settings" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
-layout_mode = 2
-tooltip_text = "Open Settings Window"
-toggle_mode = true
-icon = ExtResource("6_0hk34")
-
-[node name="Functions" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
-layout_mode = 2
-tooltip_text = "Open Settings Window"
-toggle_mode = true
-icon = ExtResource("8_cx8fr")
-
-[node name="PanelPicker" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer"]
-layout_mode = 2
-toggle_mode = true
-icon = ExtResource("9_eituf")
 
 [node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -872.0
+offset_right = 872.0
+offset_bottom = 48.0
+grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_5tdu7")
 theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_b4c16")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_kwxcw")
 tab_alignment = 1
 
-[node name="TabAndWindowButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 1
+offset_right = 10.0
+offset_bottom = 48.0
+
+[node name="QuickAccessButtons" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
+
+[node name="TabAndWindowButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -138.0
+offset_bottom = 48.0
+grow_horizontal = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons"]
 layout_mode = 2
@@ -185,163 +137,12 @@ layout_mode = 2
 tooltip_text = "Edit Current Tab"
 icon = ExtResource("9_l0dk1")
 
-[node name="NewWindow" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer"]
-layout_mode = 2
-icon = ExtResource("13_8fm6r")
-
-[node name="FileButtons" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/FileButtons"]
-layout_mode = 2
-
-[node name="File" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/FileButtons/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
-tooltip_text = "Open Save Load Window"
-toggle_mode = true
-icon = ExtResource("10_nretb")
-
-[node name="Tabs" type="Control" parent="VBoxContainer"]
+[node name="Tabs" type="Control" parent="VBoxContainer" node_paths=PackedStringArray("_tab_bar")]
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("11_g0pp1")
+_tab_bar = NodePath("../PanelContainer/HBoxContainer/TabBar")
 
-[node name="ConfirmationBox" parent="." instance=ExtResource("13_yplrd")]
-visible = false
-custom_minimum_size = Vector2(500, 150)
-layout_mode = 2
-
-[node name="Label" parent="ConfirmationBox/VBoxContainer" index="0"]
-text = "Are you sure want to close this? This can not be undone"
-
-[node name="HBoxContainer" parent="ConfirmationBox/VBoxContainer" index="1"]
-custom_minimum_size = Vector2(300, 0)
-
-[node name="DELETE" parent="ConfirmationBox/VBoxContainer/HBoxContainer" index="1"]
-text = "Close"
-
-[node name="RenameBox" type="PanelContainer" parent="."]
-visible = false
-custom_minimum_size = Vector2(355, 150)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RenameBox"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="RenameBox/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Rename Tab"
-
-[node name="LineEdit" type="LineEdit" parent="RenameBox/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_colors/font_placeholder_color = Color(1, 0, 0, 1)
-placeholder_text = "Tab Name"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="RenameBox/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="Cancel" type="Button" parent="RenameBox/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Cancel"
-
-[node name="Rename" type="Button" parent="RenameBox/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Rename"
-
-[node name="SaveLoad" parent="." instance=ExtResource("14_3qwxp")]
-visible = false
-custom_minimum_size = Vector2(0, 495.55)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="Programmer" parent="." instance=ExtResource("15_dmmgm")]
-visible = false
-custom_minimum_size = Vector2(1000, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="Playbacks" parent="." instance=ExtResource("17_ghhoa")]
-visible = false
-custom_minimum_size = Vector2(0, 500)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="Fixtures" parent="." instance=ExtResource("18_6dgbh")]
-visible = false
-custom_minimum_size = Vector2(800, 500)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="Settings" parent="." instance=ExtResource("14_45enf")]
-visible = false
-custom_minimum_size = Vector2(355, 202.405)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="Functions" parent="." instance=ExtResource("21_8ew8x")]
-visible = false
-custom_minimum_size = Vector2(800, 500)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="PanelPicker" parent="." instance=ExtResource("22_w80v3")]
-visible = false
-custom_minimum_size = Vector2(1000, 800)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[node name="PanelPopupContainer" type="PanelContainer" parent="."]
-visible = false
-custom_minimum_size = Vector2(600, 400)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_0tjok")
-
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Programmer" to="." method="_on_programmer_toggled"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Scenes" to="." method="_on_scenes_toggled"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Fixtures" to="." method="_on_fixtures_toggled"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Settings" to="." method="_on_settings_toggled"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/Functions" to="." method="_on_functions_toggled"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/QuickAccessButtons/HBoxContainer/PanelPicker" to="." method="_on_panel_picker_toggled"]
-[connection signal="tab_changed" from="VBoxContainer/PanelContainer/HBoxContainer/TabBar" to="VBoxContainer/Tabs" method="change_tab"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/NewTab" to="." method="_on_new_tab_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/CloseTab" to="." method="_on_close_tab_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/EditTab" to="." method="_on_edit_tab_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/TabAndWindowButtons/HBoxContainer/NewWindow" to="." method="_on_new_window_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/FileButtons/HBoxContainer/File" to="." method="_on_file_pressed"]
-[connection signal="toggled" from="VBoxContainer/PanelContainer/HBoxContainer/FileButtons/HBoxContainer/File" to="." method="_on_file_toggled"]
-[connection signal="pressed" from="ConfirmationBox/VBoxContainer/HBoxContainer/Cancel" to="." method="_on_close_confirmation_cancel_pressed"]
-[connection signal="pressed" from="ConfirmationBox/VBoxContainer/HBoxContainer/DELETE" to="." method="_on_close_confirmation_pressed"]
-[connection signal="pressed" from="RenameBox/VBoxContainer/HBoxContainer/Cancel" to="." method="_on_rename_box_cancel_pressed"]
-[connection signal="pressed" from="RenameBox/VBoxContainer/HBoxContainer/Rename" to="." method="_on_rename_box_rename_pressed"]
-[connection signal="cancel_pressed" from="PanelPicker" to="." method="_on_panel_picker_cancel_pressed"]
-[connection signal="panel_chosen" from="PanelPicker" to="." method="_on_panel_picker_panel_chosen"]
-
-[editable path="ConfirmationBox"]

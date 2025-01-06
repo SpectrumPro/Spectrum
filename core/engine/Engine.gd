@@ -11,87 +11,172 @@ signal components_added(components: Array[EngineComponent])
 ## Emitted when components are removed from the engine
 signal components_removed(components: Array[EngineComponent])
 
-
 ## Emitted when this engine is about to reset
-signal resetting
+signal resetting()
+
+## Emited when the file name is changed
+signal file_name_changed()
 
 ## Emitted when this engine has finished loading
-signal load_finished
-
-
-## Output frequency of this engine, defaults to 45hz. defined as 1.0 / desired frequency
-var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
-
-## The programmer used for programming vixtures, and saving them to scenes, this programmer is not a networked object, and is only stored localy
-var programmer: Programmer = Programmer.new()
-
-
-var server_ip_address: String = "127.0.0.1"
-var server_websocket_port: int = 3824
-var server_udp_port: int = 3823
-
+signal load_finished()
 
 ## Used to see if the engine should reset when connecting to a server
 var _is_engine_fresh: bool = true
 
-## Defines if the client is expecting to disconnect from the server
-var is_expecting_disconnect: bool = false
+## The current file name
+var _current_file_name: String = ""
+
+
+var network_config: Dictionary = {
+	"callbacks": {
+		"on_components_added": _add_components,
+		"on_components_removed": _remove_components,
+		"on_resetting": _reset,
+		"on_file_name_changed": _set_file_name,
+	}
+}
+
+
+var EngineConfig = {
+	## Network objects will be auto added to the servers networked objects index
+	"network_objects": [
+		{
+			"object": (self),
+			"name": "engine"
+		},
+		{
+			"object": (Programmer),
+			"name": "programmer"
+		},
+		{
+			"object": (FixtureLibrary),
+			"name": "FixtureLibrary"
+		},
+		{
+			"object": (ClassList),
+			"name": "classlist"
+		},
+	],
+	## Root classes are the primary classes that will be seralized and loaded 
+	"root_classes": [
+		"Universe",
+		"Function"
+	]
+}
 
 
 func _ready() -> void:
-	Client.add_networked_object("engine", self)
+	Details.print_startup_detils()
 	
-	MainSocketClient.connected_to_server.connect(func() :
-		_is_engine_fresh = false
-		is_expecting_disconnect = false
-		load_from_server()
-	)
-	
-	connect_to_server(server_ip_address)
+	_add_auto_network_classes.call_deferred()
+	MainSocketClient.connected_to_server.connect(_on_connected_to_server)
+	Client.connect_to_server()
 
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("reload"):
-		connect_to_server(server_ip_address)
+## Adds network objects as specifyed in EngineConfig
+func _add_auto_network_classes() -> void:
+	for config: Dictionary in EngineConfig.network_objects:
+		Client.add_networked_object(config.name, config.object)
 
 
-## Connects to the server
-func connect_to_server(ip: String):
-	
+## Called when we connect to the server
+func _on_connected_to_server() -> void:
 	if not _is_engine_fresh:
-		reset()
-	
-	server_ip_address = ip
-	Client.connect_to_server(server_ip_address, server_websocket_port, server_udp_port)
-
-
-## Resets the engine
-func reset() -> void:
-	resetting.emit()
-	disconnect_from_server()
-	
-	Client.add_networked_object("engine", self)
-	Values.reset()
-	
-	print("Performing Engine Reset!")
-
-
-## Disconnects from the server
-func disconnect_from_server() -> void:
-	is_expecting_disconnect = true
-	Client.disconnect_from_server()
+		_reset()
+		
+	_is_engine_fresh = false
+	_load_from_server()
 
 
 ## Requests the current state from the server and loads it localy
-func load_from_server() -> void:
-	Client.send_command("engine", "serialize", [], func (responce):
-		load_from(responce)
+func _load_from_server() -> void:
+	Client.send_command("engine", "serialize", []).then(func (responce):
+		_load_from(responce)
 	)
 
 
+## Loads this engine from serialized data
+func _load_from(serialized_data: Dictionary) -> void:
+	_set_file_name(str(serialized_data.get("file_name", "")))
+	
+	var just_added_universes: Array[Universe] = []
+	
+	for universe_uuid: String in serialized_data.get("Universe", {}).keys():
+		var new_universe: Universe = Universe.new(universe_uuid, serialized_data.Universe[universe_uuid].name)
+		
+		just_added_universes.append(new_universe)
+		new_universe.load.call_deferred(serialized_data.Universe[universe_uuid])
+	
+	_add_components(just_added_universes)
+	
+	var just_added_functions: Array[Function] = []
+	# Loops through each function in the save file (if any), and adds them into the engine
+	for function_uuid: String in serialized_data.get("Function", {}):
+		if serialized_data.Function[function_uuid].get("class_name", "") in ClassList.function_class_table:
+			var new_function: Function = ClassList.function_class_table[serialized_data.Function[function_uuid]["class_name"]].new(function_uuid, serialized_data.Function[function_uuid].name)
+			
+			just_added_functions.append(new_function)
+			new_function.load.call_deferred(serialized_data.Function[function_uuid])
+	
+	_add_components(just_added_functions)
+	
+	load_finished.emit()
+
+
+## Returns a serialized copy of the engine from the server
+func serialize() -> Promise: 
+	return Client.send_command("engine", "serialize")
+
+## Saves this file to disk on the server
+func save(file_name: String = _current_file_name) -> Promise: 
+	return Client.send_command("engine", "save", [file_name])
+
+## Loads a file on the server
+func load_from_file(file_name: String) -> Promise: 
+	return Client.send_command("engine", "load_from_file", [file_name])
+
+## Resets and loads from a new file
+func reset_and_load(file_name: String) -> Promise:
+	return Client.send_command("engine", "reset_and_load", [file_name])
+
+
+## Gets all the save files from the library
+func get_all_saves_from_library() -> Promise: return Client.send_command("engine", "get_all_saves_from_library")
+
+
+## Gets the current file name
+func get_file_name() -> String: return _current_file_name
+
+## Sets the current file name
+func _set_file_name(p_file_name: String) -> void:
+	_current_file_name = p_file_name
+	file_name_changed.emit(_current_file_name)
+
+
+## Renames a save file
+func rename_file(orignal_name: String, new_name: String) -> Promise: return Client.send_command("engine", "rename_file", [orignal_name, new_name])
+
+## Deletes a save file
+func delete_file(file_name: String) -> Promise: return Client.send_command("engine", "delete_file", [file_name])
+
+
+## Resets the server engine to the default state
+func reset() -> Promise: return Client.send_command("engine", "reset")
+
+## Internal: Resets this engine to its default state
+func _reset():
+	print("Performing Engine Reset!")
+	_set_file_name("")
+	resetting.emit()  
+	
+	for object_class_name: String in EngineConfig.root_classes:
+		for component: EngineComponent in ComponentDB.get_components_by_classname(object_class_name):
+			component.local_delete()
+
+
 ## Creates and adds a new component using the classname to get the type, will return null if the class is not found
-func create_component(classname: String, name: String = "", callback: Callable = Callable()) -> void: 
-	Client.send_command("engine", "create_component", [classname, name], callback)
+func create_component(classname: String, name: String = "", callback: Callable = Callable()) -> Promise: 
+	return Client.send_command("engine", "create_component", [classname, name])
 
 
 ## Server: Adds a component to the engine
@@ -114,7 +199,7 @@ func _add_component(component: EngineComponent, no_signal: bool = false) -> Engi
 
 
 ## Server: Adds mutiple componets to this engine at once
-func add_components(components: Array[EngineComponent]) -> void: Client.send_command("engine", "add_components", [components])
+func add_components(components: Array) -> void: Client.send_command("engine", "add_components", [components])
 
 ## Internal: Adds mutiple components to this engine at once
 func _add_components(components: Array, no_signal: bool = false) -> Array[EngineComponent]:
@@ -128,9 +213,6 @@ func _add_components(components: Array, no_signal: bool = false) -> Array[Engine
 	components_added.emit(just_added_components)
 	
 	return just_added_components
-
-## Callback: Called when components are added on the server
-func on_components_added(components: Array) -> void: _add_components(components)
 
 
 ## Server: Removes a component from this engine
@@ -154,7 +236,7 @@ func _remove_component(component: EngineComponent, no_signal: bool = false) -> b
 
 
 ## Server: Removes mutiple components at once
-func remove_components(components: Array[EngineComponent]) -> void: Client.send_command("engine", "remove_components", [components])
+func remove_components(components: Array) -> void: Client.send_command("engine", "remove_components", [components])
 
 ## Internal: Removes mutiple universes at once from this engine
 func _remove_components(components: Array, no_signal: bool = false) -> void:
@@ -167,33 +249,3 @@ func _remove_components(components: Array, no_signal: bool = false) -> void:
 	
 	if not no_signal and just_removed_components:
 		components_removed.emit(just_removed_components)
-
-## Callback: Called when components are removed on the server
-func on_components_removed(components: Array) -> void: _remove_components(components)
-
-
-## Loads this engine from serialized data
-func load_from(serialized_data: Dictionary) -> void:
-	var just_added_universes: Array[Universe] = []
-	
-	for universe_uuid: String in serialized_data.get("Universe", {}).keys():
-		var new_universe: Universe = Universe.new(universe_uuid, serialized_data.Universe[universe_uuid].name)
-		
-		just_added_universes.append(new_universe)
-		new_universe.load.call_deferred(serialized_data.Universe[universe_uuid])
-	
-	_add_components(just_added_universes)
-	
-	
-	var just_added_functions: Array[Function] = []
-	# Loops through each function in the save file (if any), and adds them into the engine
-	for function_uuid: String in serialized_data.get("Function", {}):
-		if serialized_data.Function[function_uuid].get("class_name", "") in ClassList.function_class_table:
-			var new_function: Function = ClassList.function_class_table[serialized_data.Function[function_uuid]["class_name"]].new(function_uuid, serialized_data.Function[function_uuid].name)
-			
-			just_added_functions.append(new_function)
-			new_function.load.call_deferred(serialized_data.Function[function_uuid])
-	
-	_add_components(just_added_functions)
-	
-	load_finished.emit()

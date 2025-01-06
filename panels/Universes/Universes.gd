@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-extends Control
+class_name UIUniverses extends UIPanel
 ## GUI element for managing universes
 
 
@@ -17,16 +17,18 @@ var _current_universe: Universe = null
 
 func _ready() -> void:
 	## Connect to universe signals
-	Core.universes_added.connect(self._reload_universes)
-	Core.universes_removed.connect(self._reload_universes)
+	ComponentDB.request_class_callback("Universe", _update_list)
 	
-	_reload_universes()
+	_update_list(ComponentDB.get_components_by_classname("Universe"))
 
 
-## Reload the list of universes
-func _reload_universes(arg1=null, arg2=null) -> void:
-	universe_list.remove_all()
-	universe_list.add_items(Core.universes.values(), [], "set_name", "name_changed")
+## Reload the list of fixtures
+func _update_list(added: Array = [], removed: Array = []) -> void:
+	if removed:
+		universe_list.remove_items(removed)
+	
+	for universe: Universe in added:
+		universe_list.add_item(universe, [], "set_name", "name_changed")
 
 
 func _reload_io(arg1=null) -> void:
@@ -42,7 +44,7 @@ func _reload_io(arg1=null) -> void:
 
 ## Called when the delete button is pressed on the ItemListView
 func _on_universe_list_delete_requested(items: Array) -> void:
-	Core.remove_universes(items)
+	Core.remove_components(items as Array[EngineComponent])
 	if _current_universe in items:
 		_current_universe.outputs_added.disconnect(_reload_io)
 		_current_universe.outputs_removed.disconnect(_reload_io)
@@ -52,7 +54,7 @@ func _on_universe_list_delete_requested(items: Array) -> void:
 
 ## Called when the add button is pressed
 func _on_universe_list_add_requested() -> void:
-	Core.add_universe()
+	Core.create_component("Universe")
 
 
 ## Called when the selection is changed

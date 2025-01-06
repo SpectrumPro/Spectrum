@@ -10,6 +10,8 @@ var components: Dictionary = {
 	"ChannelSlider": load("res://components/ChannelSlider/ChannelSlider.tscn"),
 	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
 	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
+	"NameDialogBox": load("res://components/NameDialogBox/NameDialogBox.tscn"),
+	"DialogBoxContainer": load("res://components/DialogBoxContainer/DialogBoxContainer.tscn"),
 	"CueItem": load("res://components/CueItem/CueItem.tscn"),
 	"CueTriggerModeOption": load("res://components/CueTriggerModeOption/CueTriggerModeOption.tscn"),
 	"DeskItemContainer": load("res://components/DeskItemContainer/DeskItemContainer.tscn"),
@@ -18,13 +20,13 @@ var components: Dictionary = {
 	"ListItem": load("res://components/ListItem/ListItem.tscn"),
 	"ObjectPicker": load("res://components/ObjectPicker/ObjectPicker.tscn"),
 	"PanelContainer": load("res://components/PanelContainer/PanelContainer.tscn"),
+	"PanelPicker": load("res://components/PanelPicker/PanelPicker.tscn"),
 	"SettingsContainer": load("res://components/SettingsContainer/SettingsContainer.tscn"),
 	"PlaybackRow": load("res://components/PlaybackRow/PlaybackRow.tscn"),
 	"PopupWindow": load("res://components/PopupWindow/PopupWindow.tscn"),
 	"TimerPicker": load("res://components/TimePicker/TimePicker.tscn"),
 	"TriggerButton": load("res://components/TriggerButton/TriggerButton.tscn"),
-	"VirtualFixture": load("res://components/VirtualFixture/VirtualFixture.tscn"),
-	"Warning": load("res://components/Warning/Warning.tscn")
+	"Warning": load("res://components/Warning/Warning.tscn"),
 }
 
 
@@ -38,6 +40,7 @@ var panels: Dictionary = {
 	"NewCuePlayback": load("res://panels/NewCuePlayback/NewCuePlayback.tscn"),
 	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
 	"CueListTable": load("res://panels/CueListTable/CueListTable.tscn"),
+	"DataContainerTable": load("res://panels/DataContainerTable/DataContainerTable.tscn"),
 	"Clock": load('res://panels/Clock/Clock.tscn'),
 	"Debug": load("res://panels/Debug/Debug.tscn"),
 	"Desk": load("res://panels/Desk/Desk.tscn"),
@@ -52,11 +55,21 @@ var panels: Dictionary = {
 	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
 	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
 	"Universes": load("res://panels/Universes/Universes.tscn"),
-	"NewVirtualFixtures": load("res://panels/NewVirtualFixtures/VirtualFixtures.tscn"),
 	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
 
+## Panels sorted into categories
+var sorted_panels: Dictionary = {
+	"Playbacks": ["NewCuePlayback", "CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
+	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable"],
+	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "NewProgrammer"],
+	"Visualization": ["VirtualFixtures"],
+	"Widgets": ["Clock", "ColorBlock"],
+}
+
+
+## Stores all panel icons
 var panel_icons: Dictionary = {
 	"CuePlayback": load("res://assets/panel_icons/CuePlayback.png"),
 	"ColorPalette": load("res://assets/panel_icons/ColorPalette.png"),
@@ -99,7 +112,9 @@ var icon_class_list: Dictionary = {
 }
 
 
+## Home Path
 var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
+
 ## The location for storing all the save show files
 var ui_library_location: String = "user://UILibrary"
 
@@ -107,14 +122,20 @@ var ui_library_location: String = "user://UILibrary"
 ## The main object picker
 var _object_picker: ObjectPicker
 
-## The object pickers window
-var _object_picker_base: Control
-
 ## The currently connected callable connected to the object picker
 var _object_picker_selected_signal_connection: Callable
 
-## All the added root nodes
-var _added_root_nodes: Array[Node] = []
+## The main panel picker
+var _panel_picker: PanelPicker
+
+## The panel pickers promise callback
+var _panel_picker_promise: Promise = Promise.new()
+
+## The container that stores all dialog boxes
+var _dialog_box_container: DialogBoxContainer
+
+## The container for cusoem popups
+var _custom_popup_container: Control
 
 
 func _ready() -> void:
@@ -128,37 +149,91 @@ func _ready() -> void:
 	)
 	
 	Core.resetting.connect(_on_engine_resetting)
-	_load()
+	
+	_try_auto_load.call_deferred()
+	_set_up_custom_popups()
+	_set_up_object_picker()
+	_set_up_panel_picker()
+	_set_up_dialog_box_container()
+
+
+## Called for all notifications
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		show_confirmation_dialog("Are you sure you want to close the app? Unsaved UI changes will lost.").confirmed.connect(func():
+			get_tree().quit()
+		)
+
+
+## Called when the engine is resetting, Will reload the whole ui layout
+func _on_engine_resetting() -> void:
+	for popup: Control in _custom_popup_container.get_children():
+		_custom_popup_container.remove_child(popup)
+		popup.queue_free()
 	
 	_set_up_object_picker()
-
-
-func _on_engine_resetting() -> void:
-	for node: Node in _added_root_nodes:
-		remove_child(node)
-		node.queue_free()
-	_added_root_nodes = []
+	_set_up_panel_picker()
+	_set_up_dialog_box_container()
 	
 	get_tree().change_scene_to_file("res://Main.tscn")
-	_set_up_object_picker()
 	
 	# For some reason we need to wait 2 frames for SceneTree.change_scene_to_file to finish and load the new nodes
 	await get_tree().process_frame
 	await get_tree().process_frame
 	
-	_load()
+	_custom_popup_container.move_to_front()
+	_try_auto_load()
+
+## Sets up the custom popup container
+func _set_up_custom_popups() -> void:
+	_custom_popup_container = Control.new()
+	
+	_custom_popup_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_custom_popup_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	get_tree().root.add_child.call_deferred(_custom_popup_container)
 
 
-func _load() -> void:
-	_try_auto_load.call_deferred()
-
-
+## Sets up the object picker
 func _set_up_object_picker() -> void:
-	_object_picker_base = load("res://ObjectPickerDefault.tscn").instantiate()
-	_object_picker = _object_picker_base.get_node("ObjectPicker")
-	add_root_child(_object_picker_base)
+	_object_picker = load("res://components/ObjectPicker/ObjectPicker.tscn").instantiate()
+	
+	_object_picker.set_anchors_preset(Control.PRESET_CENTER)
+	_object_picker.custom_minimum_size = Vector2(820, 430)
+	_object_picker.hide()
+	
+	_object_picker.selection_canceled.connect(func () -> void:
+		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
+		_object_picker_selected_signal_connection = Callable()
+		hide_custom_popup(_object_picker)
+	)
+	
+	add_custom_popup(_object_picker)
 
 
+## Sets up the panel picker
+func _set_up_panel_picker() -> void:
+	_panel_picker = components.PanelPicker.instantiate()
+	
+	_panel_picker.set_anchors_preset(Control.PRESET_CENTER)
+	_panel_picker.custom_minimum_size = Vector2(820, 630)
+	
+	_panel_picker.panel_chosen.connect(func (panel: PackedScene):
+		_panel_picker_promise.resolve([panel])
+		hide_custom_popup(_panel_picker)
+	)
+	_panel_picker.cancel_pressed.connect(hide_custom_popup.bind(_panel_picker))
+	
+	add_custom_popup(_panel_picker)
+
+
+## Sets up the dialog box container
+func _set_up_dialog_box_container() -> void:
+	_dialog_box_container = components.DialogBoxContainer.instantiate()
+	add_custom_popup(_dialog_box_container)
+
+
+## Try auto load the ui
 func _try_auto_load() -> void:
 	if FileAccess.file_exists(ui_library_location + "/main"):
 		var file: String = FileAccess.open(ui_library_location + "/main", FileAccess.READ).get_as_text()
@@ -166,51 +241,6 @@ func _try_auto_load() -> void:
 		var saved_data = JSON.parse_string(file)
 		if saved_data:
 			self.load(saved_data)
-
-
-## Returnes all the packed scenes in the given folder, a pack scene must be in a folder, with the same name as the folder it is in
-func get_packed_scenes_from_folder(folder: String) -> Dictionary:
-	var packed_scenes: Dictionary = {}
-	var scenes_folder: DirAccess = DirAccess.open(folder)
-	
-	if scenes_folder:
-		_load_matching_scenes_in_folder(folder, packed_scenes)
-		
-		scenes_folder.list_dir_begin()
-		var folder_name: String = scenes_folder.get_next()
-		
-		while folder_name != "":
-			if scenes_folder.current_is_dir() and folder_name != "." and folder_name != "..":
-				var subfolder_path: String = folder + "/" + folder_name
-				_load_matching_scenes_in_folder(subfolder_path, packed_scenes, folder_name)
-				
-			folder_name = scenes_folder.get_next()
-		
-		scenes_folder.list_dir_end()
-	
-	return packed_scenes
-
-
-## Finds the packed scene file, and checks if its name matches its parent folder
-func _load_matching_scenes_in_folder(current_folder: String, packed_scenes: Dictionary, folder_name: String = "") -> void:
-	var dir_access: DirAccess = DirAccess.open(current_folder)
-	
-	if dir_access:
-		dir_access.list_dir_begin()
-		var file_name: String = dir_access.get_next()
-		
-		while file_name != "":
-			if file_name.ends_with(".tscn") or file_name.ends_with(".scn"):
-				var base_file_name = file_name.get_basename()
-				if folder_name == "" or base_file_name == folder_name:
-					var file_path: String = current_folder + "/" + file_name
-					var scene_resource = ResourceLoader.load(file_path)
-					var key_name = base_file_name if folder_name == "" else folder_name
-					packed_scenes[key_name] = scene_resource
-			
-			file_name = dir_access.get_next()
-		
-		dir_access.list_dir_end()
 
 
 ## Shows the object picker
@@ -223,24 +253,71 @@ func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable
 		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
 	
 	_object_picker_selected_signal_connection = func (selection) -> void:
-		_object_picker_base.hide()
+		hide_custom_popup(_object_picker)
 		callback.call(selection)
+	
 	_object_picker.selection_confirmed.connect(_object_picker_selected_signal_connection, CONNECT_ONE_SHOT)
 	
-	_object_picker.selection_canceled.connect(func () -> void:
-		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
-		_object_picker_selected_signal_connection = Callable()
-		_object_picker_base.hide()
-	, CONNECT_ONE_SHOT)
-	
-	_object_picker_base.move_to_front()
-	_object_picker_base.show()
+	show_custom_popup(_object_picker)
+
+
+## Shows the panel picker
+func show_panel_picker() -> Promise:
+	_panel_picker_promise.clear()
+	show_custom_popup(_panel_picker)
+	return _panel_picker_promise
+
+
+## Shows a regular confirmation dialog
+func show_confirmation_dialog(title: String) -> ConfirmationBox:
+	return _dialog_box_container.add_confirmation_dialog(title)
+
+
+## Shows a regular confirmation dialog
+func show_info_dialog(title: String) -> ConfirmationBox:
+	return _dialog_box_container.add_info_dialog(title)
+
+
+## Shows a delete confirmation dialog
+func show_delete_confirmation(title: String = "") -> ConfirmationBox:
+	return _dialog_box_container.add_delete_confirmation(title)
+
+
+## Shows a rename dialog
+func show_name_dialog(title: String = "", default_text: String = "") -> NameDialogBox:
+	return _dialog_box_container.add_name_dialog_box(title, default_text)
 
 
 ## Adds a node as a child to the root. Allowing to create popups
-func add_root_child(node: Node) -> void:
-	_added_root_nodes.append(node)
-	get_tree().root.add_child.call_deferred(node)
+func add_custom_popup(popup: Control) -> void:
+	if is_instance_valid(popup):
+		if popup.get_parent_control():
+			popup.get_parent_control().remove_child(popup)
+		
+		if popup is UIPanel:
+			popup.close_request.connect(hide_custom_popup.bind(popup))
+			popup.set_display_mode(UIPanel.DisplayMode.Popup)
+		
+		popup.hide()
+		_custom_popup_container.add_child(popup)
+
+
+## Removes a custom popup
+func remove_custom_popup(popup: Control) -> void:
+	if popup in _custom_popup_container.get_children():
+		_custom_popup_container.remove_child(popup)
+
+
+## Shows a custom popup
+func show_custom_popup(popup: Control) -> void:
+	popup.move_to_front()
+	_dialog_box_container.move_to_front()
+	popup.show()
+
+
+## Hides a custom popup
+func hide_custom_popup(popup: Control) -> void:
+	popup.hide()
 
 
 ## Gets a class icon
@@ -248,17 +325,19 @@ func get_class_icon(class_name_string: String) -> Texture2D:
 	return icon_class_list.get(class_name_string, load("res://assets/icons/Component.svg"))
 
 
+## Saves the current ui layout to a file
+func save_to_file():
+	Utils.save_json_to_file(ui_library_location, "main", save())
+
+
+## Saves this ui to a dictionary
 func save() -> Dictionary:
 	return {
 		"main_window": get_tree().root.get_node("Main").save()
 	}
 
 
-## Saves the current ui layout to a file
-func save_to_file():
-	Utils.save_json_to_file(ui_library_location, "main", save())
-
-
+## Loads this ui from a dictionary
 func load(saved_data: Dictionary) -> void:
 	if saved_data.has("main_window") and get_tree().root.has_node("Main"):
 		get_tree().root.get_node("Main").load(saved_data.main_window)

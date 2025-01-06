@@ -30,28 +30,25 @@ signal cue_numbers_changed(new_numbers: Dictionary)
 signal mode_changed(mode: MODE)
 
 
-## The current cue number
-var current_cue_number: float = -1
-
-## The current active, and previous active cue
-var current_cue: Cue = null
-var last_cue: Cue = null
+## The current cue
+var _current_cue: Cue = null
 
 ## The current mode of this cuelist. When in loop mode the cuelist will not reset fixtures to 0-value when looping back to the start
 enum MODE {NORMAL, LOOP}
-var mode: int = MODE.NORMAL
+var _mode: int = MODE.NORMAL
 
 ## Stores all the cues, theese are stored unordored
-var cues: Dictionary = {}
+var _cues: Dictionary = {}
 
 ## Stores an ordored list of all the cue indexes
-var index_list: Array = []
+var _index_list: Array = []
 
-var _is_playing: bool = false
+## Is this cue autoplaying
+var _autoplay: bool = false
+
 
 func _component_ready() -> void:
-	set_self_class("CueList")
-	icon = load("res://assets/icons/CueList.svg")
+	_set_self_class("CueList")
 	
 	add_accessible_method("play", [TYPE_NIL], play, is_playing, played)
 	add_accessible_method("pause", [TYPE_NIL], pause, is_playing, paused)
@@ -65,13 +62,21 @@ func _component_ready() -> void:
 	add_accessible_method("set_mode", [TYPE_INT], set_mode, get_mode, mode_changed, ["Loop Mode, 0: Normal, 1: Loop"])
 	add_accessible_method("global_fade_time", [TYPE_FLOAT], set_global_fade_time, Callable(), Signal(), ["Fade Time"])
 	add_accessible_method("global_pre_wait", [TYPE_FLOAT], set_global_pre_wait, Callable(), Signal(), ["Fade Time"])
+	
+	register_callback("on_cue_changed", _seek_to)
+	register_callback("on_played", _play)
+	register_callback("on_paused", _pause)
+	register_callback("on_stopped", _stop)
+	register_callback("on_cues_added", _add_cues)
+	register_callback("on_cues_removed", _remove_cues)
+	register_callback("on_cue_numbers_changed", _change_cue_numbers)
+	register_callback("on_mode_changed", _change_mode)
 
 
-#region Local Methods
 
 ## Plays this CueList, starting at index, or from the current index
 func play() -> void: Client.send_command(uuid, "play")
-func is_playing() -> bool: return _is_playing
+func is_playing() -> bool: return _autoplay
 
 ## Pauses the CueList at the current state
 func pause() -> void: Client.send_command(uuid, "pause")
@@ -87,7 +92,8 @@ func go_previous() -> void: Client.send_command(uuid, "go_previous")
 
 ## Skips to the cue provided in index
 func seek_to(cue_index: float) -> void: Client.send_command(uuid, "seek_to", [cue_index])
-func get_current_cue_number() -> float: return current_cue_number
+func get_current_cue_number() -> float: return _current_cue.number if _current_cue else -1
+func get_current_cue() -> Cue: return _current_cue
 
 ## Moves the cue at cue_number up. By swappign the number with the next cue in the list
 func move_cue_up(cue_number: float) -> void: Client.send_command(uuid, "move_cue_up", [cue_number])
@@ -103,7 +109,7 @@ func duplicate_cue(cue_number: float) -> void: Client.send_command(uuid, "duplic
 
 ## Changes the current mode
 func set_mode(p_mode: MODE) -> void: Client.send_command(uuid, "set_mode", [p_mode])
-func get_mode() -> MODE: return mode
+func get_mode() -> MODE: return _mode
 
 ## Sets the fade time for all cues
 func set_global_fade_time(fade_time: float) -> void: Client.send_command(uuid, "set_global_fade_time", [fade_time])
@@ -111,39 +117,53 @@ func set_global_fade_time(fade_time: float) -> void: Client.send_command(uuid, "
 ## Sets the pre wait time for all cues
 func set_global_pre_wait(pre_wait: float) -> void: Client.send_command(uuid, "set_global_pre_wait", [pre_wait])
 
-#endregion
+
+## Gets the index list
+func get_index_list() -> Array: 
+	return _index_list
 
 
-
-#region Server Methods
-## INTERNAL: Called when the number is changed on the server
-func on_cue_changed(cue_number: float) -> void:
-	current_cue_number = cue_number
-	cue_changed.emit(current_cue_number)
+## Returns the index of a cue
+func get_cue_index(p_cue: Cue) -> int:
+	return _index_list.find(p_cue.number)
 
 
-## INTERNAL: Called when this cuelist is played on the server
-func on_played():
-	_is_playing = true
+## Gets a cue from a cue number
+func get_cue(p_cue_number: float) -> Cue:
+	return _cues.get(p_cue_number)
+
+
+## Internal: Seeks to a cue
+func _seek_to(p_cue_number: float) -> void:
+	if p_cue_number in _cues:
+		_current_cue = _cues[p_cue_number]
+	else:
+		_current_cue = null
+	
+	cue_changed.emit(p_cue_number)
+
+
+## Internal: Plays this cuelist 
+func _play():
+	_autoplay = true
 	played.emit()
 
 
-## INTERNAL: Called when this cuelist is played on the server
-func on_paused():
-	_is_playing = false
+## Internal: Pauses this cuelist
+func _pause():
+	_autoplay = false
 	paused.emit()
 
 
-## INTERNAL: Called when this cuelist is stopped on the server
-func on_stopped():
-	_is_playing = false
-	current_cue_number = -1
-	
-	cue_changed.emit(current_cue_number)
+## Internal: Stops this cuelist
+func _stop():
+	_autoplay = false
+	_current_cue = null
+	cue_changed.emit(-1)
 
 
-## INTERNAL: Called when a cue is added on the server
-func on_cues_added(p_cues: Array) -> void:
+## Internal: Adds cues to this cuelist
+func _add_cues(p_cues: Array) -> void:
 	for cue in p_cues:
 		if cue is Cue:
 			_add_cue(cue, cue.number)
@@ -152,13 +172,11 @@ func on_cues_added(p_cues: Array) -> void:
 ## Adds a pre existing cue to this CueList
 ## Returnes false if the cue already exists in this list, or if the index is already in use
 func _add_cue(cue: Cue, number: float = 0, no_signal: bool = false) -> bool:
-	cues[number] = cue
-	index_list.append(number)
-	index_list.sort()
+	_cues[number] = cue
+	_index_list.append(number)
+	_index_list.sort()
 	
-	Client.add_networked_object(cue.uuid, cue, cue.delete_requested)
 	ComponentDB.register_component(cue)
-
 	
 	if not no_signal:
 		cues_added.emit([cue])
@@ -166,15 +184,14 @@ func _add_cue(cue: Cue, number: float = 0, no_signal: bool = false) -> bool:
 	return true
 
 
-## INTERNAL: Called when a cue is removed from the server
-func on_cues_removed(p_cues: Array) -> void:
-	
-	var just_removed_cues: Array = []
+## Internal: Removes cues from this cuelist
+func _remove_cues(p_cues: Array) -> void:
+	var just_removed_cues: Array[Cue] = []
 	
 	for cue in p_cues:
-		if cue is Cue and cue.number in cues: 
-			index_list.erase(cue.number)
-			cues.erase(cue.number)
+		if cue is Cue and cue.number in _cues: 
+			_index_list.erase(cue.number)
+			_cues.erase(cue.number)
 			
 			just_removed_cues.append(cue)
 	
@@ -183,34 +200,32 @@ func on_cues_removed(p_cues: Array) -> void:
 
 
 ## INTERNAL: Called when cue numbers are changed on the server
-func on_cue_numbers_changed(new_numbers: Dictionary) -> void:
+func _change_cue_numbers(new_numbers: Dictionary) -> void:
 	for new_number: float in new_numbers.keys():
 		var cue: Cue = new_numbers[new_number]
-		index_list.erase(cue.number)
-		cues.erase(cue.number)
+		_index_list.erase(cue.number)
+		_cues.erase(cue.number)
 		
 	for new_number: float in new_numbers.keys():
 		var cue: Cue = new_numbers[new_number]
-		index_list.append(new_number)
-		index_list.sort()
+		_index_list.append(new_number)
+		_index_list.sort()
 
-		cues[new_number] = cue
+		_cues[new_number] = cue
 		cue.number = new_number
 	
 	cue_numbers_changed.emit(new_numbers)
 
 
-## INTERNAL: Called when the mode is changed on the server
-func on_mode_changed(p_mode: MODE) -> void:
-	mode = p_mode
-	mode_changed.emit(mode)
-#endregion
+## Internal: Changes the mode
+func _change_mode(p_mode: MODE) -> void:
+	_mode = p_mode
+	mode_changed.emit(_mode)
 
 
-
-#region Local Methods
-func _on_load_request(serialized_data: Dictionary) -> void:
-	mode = int(serialized_data.get("mode", MODE.NORMAL))
+## Loads this CueList from a dictionary
+func _load_request(serialized_data: Dictionary) -> void:
+	_mode = int(serialized_data.get("mode", MODE.NORMAL))
 	
 	var just_added_cues: Array = []
 	
@@ -226,14 +241,13 @@ func _on_load_request(serialized_data: Dictionary) -> void:
 	
 	var index: Variant = serialized_data.get("index")
 	if index is int and index != -1:
-		on_cue_changed(index_list[serialized_data.get("index")])
+		_seek_to(_index_list[serialized_data.get("index")])
 		
 	_intensity = serialized_data.get("intensity", 1)
 	intensity_changed.emit(_intensity)
 
 
-
-func _on_delete_request() -> void:
-	for cue: Cue in cues.values():
-		cue.on_delete_requested()
-#endregion
+## Called when this CueList is to be deleted
+func _delete_request() -> void:
+	for cue: Cue in _cues.values():
+		cue.local_delete()

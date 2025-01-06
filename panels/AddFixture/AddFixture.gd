@@ -31,10 +31,10 @@ func _ready() -> void:
 	ComponentDB.request_class_callback("Universe", _reload_universes)
 	_reload_universes()
 	
-	#Core.fixtures_definitions_updated.connect(self._reload_fixture_tree)
-	#if Core.fixtures_definitions:
-		#_reload_fixture_tree()
-	
+	FixtureLibrary.manifests_loaded.connect(self._reload_fixture_tree)
+	if FixtureLibrary.is_loaded():
+		_reload_fixture_tree()
+
 
 
 ## Reload the fixture tree, where the parent elements are the brand, and child elements being the fixtures
@@ -46,18 +46,18 @@ func _reload_fixture_tree() -> void:
 	var root: TreeItem = tree.create_item()
 	tree.hide_root = true
 	
-	for manufacturer: String in Core.fixtures_definitions.keys():
+	for manufacturer: String in FixtureLibrary.fixture_manifests.keys():
 		var manufacturer_item: TreeItem = tree.create_item(root)
 		manufacturer_item.set_text(0, manufacturer)
 		manufacturer_item.collapsed = true
 		
 		loaded_fixtures[manufacturer] = {}
 		
-		for fixture: String in Core.fixtures_definitions[manufacturer].keys():
+		for fixture: String in FixtureLibrary.fixture_manifests[manufacturer].keys():
 			var fixture_item: TreeItem = tree.create_item(manufacturer_item)
-			fixture_item.set_text(0, Core.fixtures_definitions[manufacturer][fixture].info.name)
+			fixture_item.set_text(0, FixtureLibrary.fixture_manifests[manufacturer][fixture].info.name)
 			
-			loaded_fixtures[manufacturer][Core.fixtures_definitions[manufacturer][fixture].info.name] = Core.fixtures_definitions[manufacturer][fixture]
+			loaded_fixtures[manufacturer][FixtureLibrary.fixture_manifests[manufacturer][fixture].info.name] = FixtureLibrary.fixture_manifests[manufacturer][fixture]
 
 
 ## Reloads the channel list and mode option button ui elements
@@ -115,7 +115,7 @@ func _on_add_fixture_button_pressed() -> void:
 	if self.get_node(fixture_universe_option).selected < 0:
 		return
 		
-	Core.universes.values()[self.get_node(fixture_universe_option).selected].add_fixtures_from_manifest(
+	ComponentDB.get_components_by_classname("Universe")[self.get_node(fixture_universe_option).selected].add_fixtures_from_manifest(
 		current_fixture, 
 		options.mode, 
 		options.channel, 

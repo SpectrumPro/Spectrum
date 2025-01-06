@@ -13,7 +13,19 @@ signal selection_canceled()
 
 
 ## The tree node
-@onready var tree: Tree = $VBoxContainer/Tree
+@export var _tree: Tree = null
+
+## Vbox that contains all the filter buttons
+@export var _filter_container: VBoxContainer = null
+
+## The selection label
+@export var _selection_label: Label = null
+
+## The title
+@export var _title: Label = null
+
+## The select button
+@export var _select_button: Button = null
 
 
 ## Stores all the items that are in the tree, stored as {"class_name": {"uuid", TreeItem}}
@@ -62,6 +74,9 @@ func _ready() -> void:
 	_reset()
 	_update_selection_label()
 	_update_filter()
+	
+	for component: EngineComponent in ComponentDB.components.values():
+		_add_component(component)
 
 
 ## Resets the tree and root node
@@ -75,15 +90,15 @@ func _reset() -> void:
 	_component_refs = {}
 	_filter_buttons = {}
 	
-	tree.clear()
+	_tree.clear()
 	
-	_root_item = tree.create_item()
+	_root_item = _tree.create_item()
 	_root_item.set_text(0, "Components")
 
 
 ## Sets the selection mode on the tree node
 func set_select_mode(select_mode: SelectMode) -> void:
-	tree.set_select_mode(select_mode as Tree.SelectMode)
+	_tree.set_select_mode(select_mode as Tree.SelectMode)
 	
 	var title: String = ""
 	match select_mode:
@@ -92,7 +107,7 @@ func set_select_mode(select_mode: SelectMode) -> void:
 		SelectMode.Multi:
 			title = "Select Objects:"
 	
-	$VBoxContainer/PanelContainer/HBoxContainer/Title.text = title
+	_title.text = title
 
 
 ## Allows the user to filter for classes, if false, the filter is locked.
@@ -121,19 +136,19 @@ func _add_component(component: EngineComponent) -> void:
 	if component.self_class_name in tree_items:
 		parent_node = tree_items[component.self_class_name].parent
 	else:
-		parent_node = tree.create_item(_root_item)
+		parent_node = _tree.create_item(_root_item)
 		
 		var parent_name: String = component.self_class_name.capitalize()
 		if not parent_name.ends_with("s"):
 			parent_name += "s"
 			
 		parent_node.set_text(0, parent_name)
-		parent_node.set_icon(0, component.icon)
+		parent_node.set_icon(0, Interface.get_class_icon(component.self_class_name))
 		
 		tree_items[component.self_class_name] = {"parent": parent_node}
 	
-	var item: TreeItem = tree.create_item(parent_node)
-	item.set_icon(0, component.icon)
+	var item: TreeItem = _tree.create_item(parent_node)
+	item.set_icon(0, Interface.get_class_icon(component.self_class_name))
 	item.set_text(0, component.name)
 	
 	tree_items[component.self_class_name][component.uuid] = item
@@ -148,6 +163,9 @@ func _add_component(component: EngineComponent) -> void:
 
 ## Removes a component from the list
 func _remove_component(component: EngineComponent) -> void:
+	if not component in _component_refs.values():
+		return
+	
 	component.name_changed.disconnect(_signal_connections[component])
 	
 	var tree_item: TreeItem = tree_items[component.self_class_name][component.uuid]
@@ -201,8 +219,8 @@ func _update_selection_label() -> void:
 	else:
 		name_list = "Select An Item..."
 	
-	$VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/SelectionLabel.text = name_list
-	$VBoxContainer/PanelContainer/HBoxContainer/Select.disabled = not selected_items
+	_selection_label.text = name_list
+	_select_button.disabled = not selected_items
 
 
 ## Updates the filter, to show and hide classes
@@ -212,11 +230,10 @@ func _update_filter() -> void:
 		(tree_items[class_name_string].parent as TreeItem).visible = not is_filtred_for
 		
 		if class_name_string in _filter_buttons:
-			#(_filter_buttons[class_name_string] as Button).set_pressed_no_signal(not is_filtred_for)
-			pass
+			(_filter_buttons[class_name_string] as Button).set_pressed_no_signal(class_name_string in filter_allow_list)
 		else:
 			_filter_buttons[class_name_string] = _create_filter_class_button(class_name_string)
-			$VBoxContainer/PanelContainer/HBoxContainer/FilterButtonContainer.add_child(_filter_buttons[class_name_string])
+			_filter_container.add_child(_filter_buttons[class_name_string])
 
  
 func _create_filter_class_button(class_name_string: String) -> Button:
@@ -259,17 +276,16 @@ func _on_tree_multi_selected(item: TreeItem, column: int, selected: bool) -> voi
 
 
 func _on_tree_item_selected() -> void:
-	if tree.select_mode == Tree.SelectMode.SELECT_MULTI:
+	if _tree.select_mode == Tree.SelectMode.SELECT_MULTI:
 		return
 	
-	var item: TreeItem = tree.get_selected()
+	var item: TreeItem = _tree.get_selected()
 	if item in _component_refs:
 		selected_items = [_component_refs[item]]
 	else:
 		selected_items = []
 	
 	_update_selection_label()
-	
 
 
 func _on_select_pressed() -> void:

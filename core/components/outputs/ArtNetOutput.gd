@@ -35,7 +35,7 @@ func output() -> void:
 
 
 ## Called when this output is requested to serialize its config
-func _on_serialize_request():
+func _serialize_request():
 	
 	return {
 		"ip_address": ip_address,
@@ -45,5 +45,5 @@ func _on_serialize_request():
 
 
 ## Called when this object is requested to be deleted
-func _on_delete_request():
+func _delete_request():
 	pass

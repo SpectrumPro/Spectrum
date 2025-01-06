@@ -6,15 +6,12 @@ class_name UIClock extends UIPanel
 
 
 func _ready() -> void:
+	$Control/Label.label_settings = $Control/Label.label_settings.duplicate()
 	_set_font_size()
 
 
 func _process(delta: float) -> void:
 	$Control/Label.text = Time.get_time_string_from_system()
-
-
-func _on_resized() -> void:
-	_set_font_size()
 
 
 func _set_font_size() -> void:

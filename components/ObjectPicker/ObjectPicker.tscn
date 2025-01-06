@@ -1,24 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://dbnnu7jnlptmo"]
+[gd_scene load_steps=7 format=3 uid="uid://dbnnu7jnlptmo"]
 
 [ext_resource type="Script" path="res://components/ObjectPicker/ObjectPicker.gd" id="1_3t2ra"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_akku3"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_0huxx"]
 [ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="3_vjtw4"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/PanelMenuBar.tres" id="4_g81kc"]
 [ext_resource type="Texture2D" uid="uid://b3hmh5jlggqxa" path="res://assets/icons/cross.svg" id="4_v3fuu"]
 
-[node name="ObjectPicker" type="PanelContainer"]
+[node name="ObjectPicker" type="PanelContainer" node_paths=PackedStringArray("_tree", "_filter_container", "_selection_label", "_title", "_select_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_akku3")
+theme_override_styles/panel = ExtResource("2_0huxx")
 script = ExtResource("1_3t2ra")
+_tree = NodePath("VBoxContainer/HBoxContainer/Tree")
+_filter_container = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/FilterButtonContainer")
+_selection_label = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/SelectionLabel")
+_title = NodePath("VBoxContainer/PanelContainer/HBoxContainer/Title")
+_select_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/Select")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_styles/panel = ExtResource("4_g81kc")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
@@ -26,10 +35,6 @@ layout_mode = 2
 [node name="Title" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "Select an Object:"
-
-[node name="FilterButtonContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -40,24 +45,45 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.775063, 0.775063, 0.775063, 1)
 text_overrun_behavior = 3
 
-[node name="Select" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Select" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Select"
 icon = ExtResource("3_vjtw4")
 
-[node name="Cancel" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Cancel" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
 text = "Cancel"
 icon = ExtResource("4_v3fuu")
 
-[node name="Tree" type="Tree" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("4_g81kc")
+
+[node name="FilterButtonContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Tree" type="Tree" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 select_mode = 2
 
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Select" to="." method="_on_select_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
-[connection signal="item_selected" from="VBoxContainer/Tree" to="." method="_on_tree_item_selected"]
-[connection signal="multi_selected" from="VBoxContainer/Tree" to="." method="_on_tree_multi_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/Select" to="." method="_on_select_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="item_selected" from="VBoxContainer/HBoxContainer/Tree" to="." method="_on_tree_item_selected"]
+[connection signal="multi_selected" from="VBoxContainer/HBoxContainer/Tree" to="." method="_on_tree_multi_selected"]

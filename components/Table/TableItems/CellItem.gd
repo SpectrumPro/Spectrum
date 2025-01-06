@@ -48,6 +48,10 @@ func set_data(data: Variant) -> void:
 		TYPE_BOOL:
 			$HBox/BoolEdit.show()
 			$HBox/BoolEdit.set_pressed_no_signal(data)
+		
+		TYPE_COLOR:
+			$HBox/ColorEdit.show()
+			$HBox/ColorEdit.set_pick_color(data)
 
 
 ## Shows a button instead of a data box
@@ -107,6 +111,7 @@ func _hide_all() -> void:
 	$HBox/FloatEdit.hide()
 	$HBox/IntEdit.hide()
 	$HBox/StringEdit.hide()
+	$HBox/ColorEdit.hide()
 	
 	$HBox/Button.hide()
 	$HBox/OptionButton.hide()

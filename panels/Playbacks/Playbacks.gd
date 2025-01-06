@@ -5,24 +5,17 @@ class_name UIPlaybacks extends UIPanel
 ## Ui panel for controling scenes, with sliders and extra buttons
 
 
-## The settings node used to choose what scenes are to be shown 
-@onready var settings_node: Control = $Settings
-
-@onready var _add_row_button: Button = $Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer/AddRow
-@onready var _dummy_container: HBoxContainer = $Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer
-@onready var _scroll_container: ScrollContainer = $Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer
+@export var _add_row_button: Button = null
+@export var _dummy_container: HBoxContainer = null
+@export var _scroll_container: ScrollContainer = null
 
 
 ## TriggerButton and TriggerSlider settings panels
-@onready var _trigger_button_settings: TriggerButtonSettings = $Settings/VBoxContainer/HSplitContainer/TriggerButtonSettings
-@onready var _trigger_slider_settings: TriggerSliderSettings = $Settings/VBoxContainer/HSplitContainer/TriggerSliderSettings
+@export var _trigger_button_settings: TriggerButtonSettings = null
+@export var _trigger_slider_settings: TriggerSliderSettings = null
 
 
 @export var auto_add_new_scenes: bool = false
-
-
-func _ready() -> void:
-	remove_child($Settings)
 
 
 ## Auto setups a Playback row

@@ -5,15 +5,9 @@ class_name UIDesk extends UIPanel
 ## A customisable ui layout
 
 
-## Emitted when edit mode is toggled
-signal edit_mode_toggled(edit_mode: bool)
-
 ## Emitted when the snapping distance is changed, will be 0 when snapping is dissabled
 signal snapping_distance_changed(snapping_distance: Vector2)
 
-
-## Whether or not to allow panels to be edited, deleted or added
-var edit_mode: bool = false : set = set_edit_mode
 
 ## Whether snapping is enabled in this desk
 var snapping_enabled: bool = true : set = set_snapping_enabled
@@ -35,8 +29,6 @@ var _just_deleted_size: Vector2 = Vector2(100, 100)
 
 #endregion
 
-func _ready() -> void:
-	edit_mode = false
 
 
 #region Public Methods
@@ -65,21 +57,6 @@ func select_item(item: Control) -> void:
 func deselect_item(item: Control) -> void:
 	item.set_selected(false)
 	_selected_items.erase(item)
-
-
-## Called when the edit mode toggle is pressed
-func set_edit_mode(p_edit_mode: bool) -> void:
-	edit_mode = p_edit_mode
-	$VBoxContainer/PanelContainer/HBoxContainer/EditMode.set_pressed_no_signal(edit_mode)
-	
-	for node: Control in $VBoxContainer/PanelContainer/HBoxContainer.get_children():
-		if node is Button and not node is CheckButton:
-			node.disabled = not edit_mode
-			
-		if node is SpinBox:
-			node.editable = edit_mode
-		
-	edit_mode_toggled.emit(edit_mode)
 
 
 ## Sets whether snapping is enabled in this desk
@@ -113,7 +90,7 @@ func add_panel(panel: Control, new_position: Vector2 = _just_deleted_pos, new_si
 	
 	## Add the new panel that was selected in the object picker
 	new_node.set_panel(panel)
-	new_node.set_edit_mode(edit_mode)
+	new_node.set_edit_mode(get_edit_mode())
 	
 	new_node.position = new_position
 	new_node.size = new_size
@@ -127,15 +104,9 @@ func add_panel(panel: Control, new_position: Vector2 = _just_deleted_pos, new_si
 
 func open_settings(node: DeskItemContainer = null) -> void:
 	if _selected_items or node:
-		var panel: Control = _selected_items[0].get_panel() if not node else node.get_panel()
+		var panel: UIPanel = _selected_items[0].get_panel() if not node else node.get_panel()
 		
-		if "settings_node" in panel:
-			$PanelSettingsContainer.set_node(panel.settings_node)
-		
-	else:
-		$PanelSettingsContainer.remove_node()
-	
-	$PanelSettingsContainer.show()
+		panel.set_show_settings(true)
 
 
 ## Returns a dictionary containing all the panels, there position, sizes, and setting for this desk
@@ -173,21 +144,11 @@ func load(saved_data: Dictionary) -> void:
 
 #region Ui Signals
 
-## Called when an object is selected in the object picker, used to add new objects
-func _on_panel_picker_panel_chosen(panel: PackedScene):
-	$PanelPicker.hide()
-	add_panel(panel.instantiate())
-
-
-## Called when the cancel button is pressed on the PanelPicker
-func _on_panel_picker_cancel_pressed() -> void:
-	$PanelPicker.hide()
-
-
 ## Called when the add button is pressed
 func _on_add_pressed() -> void:
-	$PanelPicker.show()
-	set_edit_mode(true)
+	Interface.show_panel_picker().then(func (panel: PackedScene):
+		add_panel(panel.instantiate())
+	)
 
 
 ## Removes the selected items from this desk
@@ -246,10 +207,9 @@ func _on_container_gui_input(event: InputEvent) -> void:
 		if event.is_pressed() and edit_mode:
 			select_none()
 		
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			$PanelPicker.hide()
-		
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed() and edit_mode:
-			$PanelPicker.show()
-		
+			Interface.show_panel_picker().then(func (panel: PackedScene):
+				add_panel(panel.instantiate())
+			)
+				
 #endregion

@@ -15,6 +15,7 @@ config/description="Realtime node based DMX controller"
 config/version="0.4.0"
 run/main_scene="res://Main.tscn"
 config/use_custom_user_dir=true
+config/auto_accept_quit=false
 config/features=PackedStringArray("4.3")
 boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
 boot_splash/image="res://assets/Icon_small.png"
@@ -32,6 +33,8 @@ driver/enable_input=true
 
 ClassList="*res://core/global/ClassList.gd"
 ComponentDB="*res://core/global/ComponentDB.gd"
+Programmer="*res://core/global/Programmer.gd"
+FixtureLibrary="*res://core/global/FixtureLibrary.gd"
 Interface="*res://scripts/global/Interface.gd"
 Core="*res://core/engine/Engine.gd"
 MainSocketClient="*res://scripts/networking/WebSocketClient.gd"

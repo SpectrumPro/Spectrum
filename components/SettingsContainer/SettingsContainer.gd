@@ -5,6 +5,10 @@ class_name SettingsContainer extends PanelContainer
 ## Ui Container to store settings
 
 
+## Emitted when the close button is pressed
+signal closed_pressed()
+
+
 ## Sets the node in the settings panel
 func set_node(node: Control) -> void:
 	remove_node()

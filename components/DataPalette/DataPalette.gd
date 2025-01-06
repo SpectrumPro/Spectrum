@@ -72,6 +72,8 @@ func _update_container_size() -> void:
 			var new_item: PaletteItemComponent = PaletteItemComponent.new()
 			new_item.set_item_disabled(true)
 			
+			
+			
 		pass
 	
 	elif total > current:

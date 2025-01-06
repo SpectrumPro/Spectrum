@@ -1,21 +1,41 @@
-[gd_scene load_steps=4 format=3 uid="uid://dwsi4kwpfl3r6"]
+[gd_scene load_steps=6 format=3 uid="uid://dwsi4kwpfl3r6"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_dx2mn"]
 [ext_resource type="Script" path="res://components/Table/TableItems/RowItem.gd" id="2_b5myd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1qn6t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vsrp3"]
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0.435294, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_a410s"]
 color = Color(0.364706, 0.364706, 0.364706, 0.4)
 grow_begin = 0.0
 thickness = 66
 
-[node name="RowItem" type="HBoxContainer"]
+[node name="RowItem" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 50)
-offset_right = 10.0
+offset_right = 23.0
 offset_bottom = 50.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme = ExtResource("1_dx2mn")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1qn6t")
 script = ExtResource("2_b5myd")
+
+[node name="Selection" type="Panel" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vsrp3")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

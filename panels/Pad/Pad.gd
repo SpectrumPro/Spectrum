@@ -22,9 +22,6 @@ class_name UIPad extends UIPanel
 ## The cursor
 @export var cursor: TextureRect
 
-## The settings panel
-@export var settings_node: Control
-
 ## The method picker
 @export var method_picker: ComponentMethodPicker
 

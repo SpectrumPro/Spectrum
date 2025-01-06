@@ -12,6 +12,15 @@ signal connected_to_server()
 signal connection_closed()
 
 
+## Default server ip address
+var ip_address: String = "127.0.0.1"
+
+## Default server port
+var websocket_port: int = 3824
+
+## Default server udp port
+var udp_port: int = 3823
+
 ## Contains a list of networked objects, stores their functions and data types of there args
 var _networked_objects: Dictionary = {}
 
@@ -21,35 +30,46 @@ var _callbacks: Dictionary = {}
 ## All the objects that have been networked
 var _networked_objects_delete_callbacks: Dictionary = {}
 
+## Is this server expecting a disconnect
+var _is_expecting_disconnect: bool = false
+
+
 func _ready() -> void:
 	MainSocketClient.message_received.connect(self._on_message_receved)
 	MainUDPSocketClient.packet_recieved.connect(self._on_udp_message_receved)
 	
-	MainSocketClient.connected_to_server.connect(func (): connected_to_server.emit())
-	MainSocketClient.connection_closed.connect(func (): connection_closed.emit())
+	MainSocketClient.connected_to_server.connect(func (): 
+		connected_to_server.emit()
+		_is_expecting_disconnect = false
+	)
+	
+	MainSocketClient.connection_closed.connect(func (): 
+		connection_closed.emit()
+		(func (): _is_expecting_disconnect = true).call_deferred()
+	)
 
 
 ## Starts the server on the given port, 
-func connect_to_server(ip: String, websocket_port: int, udp_port: int):
+func connect_to_server(p_ip: String = ip_address, p_websocket_port: int = websocket_port, p_udp_port: int = udp_port):
 	print("Connecting to websocket server")
 
-	var err = MainSocketClient.connect_to_url("ws://" + ip + ":" + str(websocket_port))
+	var err = MainSocketClient.connect_to_url("ws://" + p_ip + ":" + str(p_websocket_port))
 	if err != OK:
 		print("Error connecting to websocket server | errorcode: ", error_string(err))
 		return
 	
-	print("Websocket connected to: ws://", ip, ":", websocket_port)
+	print("Websocket connected to: ws://", p_ip, ":", p_websocket_port)
 
 	print()
 
 	print("Connecting to UDP server")
 
-	err = MainUDPSocketClient.connect_to_host(ip, udp_port)
+	err = MainUDPSocketClient.connect_to_host(p_ip, p_udp_port)
 	if err != OK:
 		print("Error connecting to UDP server | errorcode: ", error_string(err))
 		return
 	
-	print("UDP client connected to: ", ip, ":", udp_port)
+	print("UDP client connected to: ", p_ip, ":", p_udp_port)
 	
 	print()
 
@@ -70,24 +90,37 @@ func disconnect_from_server() -> void:
 	MainUDPSocketClient.close()
 
 
+## Checks if this client is expecting a disconnect from the server
+func is_expecting_disconnect() -> bool:
+	return _is_expecting_disconnect
+
+
+## Checks if this client is connected to a server
+func is_connected_to_server() -> bool:
+	return MainSocketClient.last_state == WebSocketPeer.STATE_OPEN
+
 
 ## Send a message to the server, all data passed is automatically converted to strings, and serialised
-func send(data: Dictionary, callback: Callable = Callable()) -> void:
-	if callback.is_valid():
-		var callback_id = UUID_Util.v4()
-		_callbacks[callback_id] = callback
-		data.callback_id = callback_id
-	
+func send(data: Dictionary) -> void:
 	MainSocketClient.send(var_to_str(Utils.objects_to_uuids(data)))
 
 
 ## Sends a command to the server
-func send_command(object_id: String, method: String, args: Array = [], callback: Callable = Callable()) -> void:
-	Client.send({
+func send_command(object_id: String, method: String, args: Array = []) -> Promise:
+	var data: Dictionary = {
 		"for": object_id,
 		"call": method,
 		"args": args
-	}, callback)
+	}
+
+	var promise: Promise = Promise.new()
+	var callback_id = UUID_Util.v4()
+
+	_callbacks[callback_id] = promise
+	data.callback_id = callback_id
+
+	Client.send(data)
+	return promise
 
 
 ## Add a network object
@@ -104,12 +137,9 @@ func add_networked_object(object_name: String, object: Object, delete_signal: Si
 	var method_list: Array = object.get_script().get_script_method_list()
 	
 	if not delete_signal.is_null():
-		_networked_objects_delete_callbacks[object_name] = {
-			"callable":remove_networked_object.bind(object_name),
-			"signal":delete_signal
-			}
-		 
-		delete_signal.connect(_networked_objects_delete_callbacks[object_name].callable)
+		delete_signal.connect(func ():
+			remove_networked_object(object_name)
+		, CONNECT_ONE_SHOT)
 	
 	# Loop through each function on the object that is being added, and create a dictionary containing the avaibal function, and their args
 	for index: int in range(len(method_list)):
@@ -134,10 +164,10 @@ func add_networked_object(object_name: String, object: Object, delete_signal: Si
 
 ## Remove a network object
 func remove_networked_object(object_name: String) -> void:
-	print_verbose("Removing Networked Object: ", object_name)
-	if _networked_objects_delete_callbacks.has(object_name):
-		(_networked_objects_delete_callbacks[object_name].signal as Signal).disconnect(_networked_objects_delete_callbacks[object_name].callable)
-		_networked_objects_delete_callbacks.erase(object_name)
+	print("Removing Networked Object: ", object_name)
+	#if _networked_objects_delete_callbacks.has(object_name):
+		#(_networked_objects_delete_callbacks[object_name].signal as Signal).disconnect(_networked_objects_delete_callbacks[object_name].callable)
+		#_networked_objects_delete_callbacks.erase(object_name)
 		
 	_networked_objects.erase(object_name)
 
@@ -148,35 +178,41 @@ func _on_message_receved(message: Variant) -> void:
 	message = str_to_var(message)
 	if not message is Dictionary:
 		return
+
+	var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
 	
 	# Convert all seralized objects to objects refs
 	
 	# If command has the "signal" value, check if its a valid function in the network object specifyed in the command.for value
 	if "signal" in message and message.get("for") in _networked_objects:
 		var networked_object: Dictionary = _networked_objects[message.for]
+		var network_config: Dictionary = networked_object.object.get("network_config")
 		
 		# Check if the function still exists, in case it is no longer valid
-		if networked_object.object.has_method(message.signal):
-			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
-			var method: Dictionary = networked_object.functions[command.signal]
-			
-			_call_method(networked_object, command.signal, method, command.get("args", []))
+		if network_config.get("callbacks", {}).has(message.signal):
+			var method: Callable = network_config.callbacks[message.signal]
+			method.callv(command.get("args", []))
+		else:
+			print("You broke it!")
+	
 	
 	# Check if it has "callback_id"
 	if "callback_id" in message:
 		
 		# Check if the callback_id in regestered in _callbacks
-		if message.get("callback_id", "") in _callbacks:
-			var command: Dictionary = Utils.uuids_to_objects(message, _networked_objects)
-			print_verbose("Calling Method: ", _callbacks[command.callback_id])
-			if not command.get("response") == null:
-				_callbacks[command.callback_id].call(command.response)
+		if message.callback_id in _callbacks:
+			print_verbose("Calling Method Callback: ", _callbacks[command.callback_id])
+			
+			if command.has("response"):
+				_callbacks[command.callback_id].resolve([command.response])
+			
 			else:
-				_callbacks[command.callback_id].call()
+				_callbacks[command.callback_id].resolve([])
 			
 			_callbacks.erase(command.callback_id)
 
 
+## Called when high frequency UDP message is recieved
 func _on_udp_message_receved(message: Variant) -> void:
 	if not message is Dictionary:
 		return
@@ -184,12 +220,17 @@ func _on_udp_message_receved(message: Variant) -> void:
 	for object_array: Variant in message.keys():
 		if object_array is Array and len(object_array) == 2:
 			var networked_object: Dictionary = _networked_objects.get(object_array[0], {})
+			var network_config: Dictionary = networked_object.object.get("network_config")
 			
-			if networked_object and object_array[1] in networked_object.functions:
-				_call_method(networked_object, object_array[1], networked_object.functions[object_array[1]], message[object_array])
-			
+			# Check if the function still exists, in case it is no longer valid
+			if network_config.get("callbacks", {}).has(object_array[1]):
+				var method: Callable = network_config.callbacks[object_array[1]]
+				method.callv(message[object_array])
+			else:
+				print("You broke it!")
 
 
+## Function to call a method, checks all method types befour calling
 func _call_method(networked_object: Dictionary, method_name: String, method_dict: Dictionary, args: Array = []):
 	# Loop through all the args passed from the server, and check the type of them against the function in the networked object
 	for index in len(args):

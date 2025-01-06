@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name CreatFunctionComponent extends PanelContainer
+class_name CreateFunctionComponent extends PanelContainer
 ## UI component to create a new function
 
 
@@ -17,10 +17,6 @@ signal component_added(component: EngineComponent)
 
 ## The item list node
 @onready var item_list: ItemList = $VBoxContainer/ItemList
-
-## The description label 
-@onready var description: Label = $VBoxContainer/PanelContainer2/HBoxContainer/Description
-
 
 ## Auto hides this node when a button is pushed
 @export var auto_hide: bool = false

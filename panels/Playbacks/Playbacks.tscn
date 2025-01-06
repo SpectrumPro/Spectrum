@@ -1,20 +1,29 @@
-[gd_scene load_steps=6 format=3 uid="uid://baortk0rwrhup"]
+[gd_scene load_steps=7 format=3 uid="uid://baortk0rwrhup"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_8dmeu"]
 [ext_resource type="Script" path="res://panels/Playbacks/Playbacks.gd" id="1_io88g"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_psu7s"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="8_5f7rw"]
 [ext_resource type="PackedScene" uid="uid://dhim1qpe23x0i" path="res://components/TriggerButtonSettings/TriggerButtonSettings.tscn" id="8_14mkr"]
 [ext_resource type="PackedScene" uid="uid://brq6gv04pu72i" path="res://components/TriggerSliderSettings/TriggerSliderSettings.tscn" id="10_ni381"]
 
-[node name="Playbacks" type="PanelContainer"]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 974.0
-offset_bottom = 633.0
+[node name="Playbacks" type="PanelContainer" node_paths=PackedStringArray("_add_row_button", "_dummy_container", "_scroll_container", "_trigger_button_settings", "_trigger_slider_settings", "settings_node")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_8dmeu")
+theme_override_styles/panel = ExtResource("2_psu7s")
 script = ExtResource("1_io88g")
+_add_row_button = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer/AddRow")
+_dummy_container = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer")
+_scroll_container = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer")
+_trigger_button_settings = NodePath("Settings/VBoxContainer/HSplitContainer/TriggerButtonSettings")
+_trigger_slider_settings = NodePath("Settings/VBoxContainer/HSplitContainer/TriggerSliderSettings")
+settings_node = NodePath("Settings")
 
 [node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2

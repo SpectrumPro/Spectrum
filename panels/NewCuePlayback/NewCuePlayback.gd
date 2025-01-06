@@ -19,10 +19,6 @@ var _cues: Dictionary = {}
 var _previous_uuid: String = ""
 
 
-func _ready() -> void:
-	set_move_resize_handle($VBoxContainer/PanelContainer2/HBoxContainer/EditControls/HBoxContainer/MoveResize)
-
-
 ## Sets the cuelist to control
 func set_cue_list(cue_list: CueList) -> void:
 	if _previous_uuid: ComponentDB.remove_request.call_deferred(_previous_uuid, _on_cue_list_object_found)
@@ -37,15 +33,17 @@ func set_cue_list(cue_list: CueList) -> void:
 	$VBoxContainer/PanelContainer2/HBoxContainer/CueName.text = cue_list.name
 	$VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton.set_function(cue_list)
 
+
 ## Reloads the list of cues
 func _reload_cues(arg1=null) -> void:
 	for old_cue_item: CueItem in _cue_container.get_children():
 		_cue_container.remove_child(old_cue_item)
+		old_cue_item.set_cue(null, null)
 		old_cue_item.queue_free()
 	
 	if _cue_list:
-		for index: float in _cue_list.index_list:
-			var cue: Cue = _cue_list.cues[index]
+		for index: float in _cue_list.get_index_list():
+			var cue: Cue = _cue_list.get_cue(index)
 			var new_cue_item: CueItem = Interface.components.CueItem.instantiate()
 			
 			_cues[cue.uuid] = new_cue_item

@@ -9,9 +9,6 @@ class_name UICuePlaybackOLD extends UIPanel
 signal cue_selected(cue: Cue)
 
 
-## The settings node used to choose what scenes are to be shown 
-@onready var settings_node: Control = $Settings
-
 ## Toggles showing the title bar
 @export var show_title_bar: bool = true : set = set_show_title_bar
 
@@ -47,9 +44,6 @@ var cue_refs: Dictionary
 var old_index: float = 0
 
 
-## Edit mode
-var _edit_mode: bool = false
-
 ## Current selected Cue object
 var _current_selected_cue: Cue = null
 
@@ -78,7 +72,7 @@ var _cue_active_color: Color = Color.DIM_GRAY
 
 @onready var global_cue: ListItem = $VBoxContainer/List/VBoxContainer/GlobalCue
 
-@onready var edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
+@onready var local_edit_controls: PanelContainer = $VBoxContainer/PanelContainer/HBoxContainer/EditControls
 
 @onready var new_update_button: Button = $VBoxContainer/PanelContainer/HBoxContainer/NewUpdateButton
 
@@ -130,7 +124,7 @@ var _label_background_stylebox: StyleBoxFlat = null
 var store_function_button_group: ButtonGroup = null
 @onready var store_function_buttons: Dictionary = {
 	"merge": $StoreConfirmationBox/VBoxContainer2/StoreModes/Merge,
-	"erace": $StoreConfirmationBox/VBoxContainer2/StoreModes/Erace,
+	"erase": $StoreConfirmationBox/VBoxContainer2/StoreModes/erase,
 	"new_cue": $StoreConfirmationBox/VBoxContainer2/StoreModes/NewCue,
 }
 
@@ -202,10 +196,10 @@ func _ready() -> void:
 	reload()
 
 
-func set_edit_mode(edit_mode: bool) -> void:
-	_edit_mode = edit_mode
+func set_edit_mode(p_edit_mode: bool) -> void:
+	edit_mode = edit_mode
 	reload()
-	edit_controls.visible = edit_mode
+	local_edit_controls.visible = edit_mode
 
 
 func set_show_title_bar(p_show_title_bar: bool) -> void:
@@ -284,7 +278,7 @@ func _on_selected_fixtures_changed(selected_fixtures: Array) -> void:
 	else:
 		$NewUpdateConfirmationBox/VBoxContainer2/ActionText/NumOfFixtures.text = "All"
 	
-	if _edit_mode:
+	if edit_mode:
 		_highlight_cues_with_stored_fixtures(selected_fixtures)
 
 
@@ -315,7 +309,7 @@ func reload() -> void:
 			fade_times.append(cue.fade_time)
 			pre_wait_times.append(cue.pre_wait)
 			
-			if _edit_mode:
+			if edit_mode:
 				new_list_item.set_name_method(cue.set_name)
 				new_list_item.set_id_method(current_cue_list.set_cue_number.bind(cue))
 				
@@ -350,7 +344,7 @@ func reload() -> void:
 				_handle_cue_change(cue_number)
 			
 			if not cue.data_stored.is_connected(_reload_highlights_signal_callback): cue.data_stored.connect(_reload_highlights_signal_callback)
-			if not cue.data_eraced.is_connected(_reload_highlights_signal_callback): cue.data_eraced.connect(_reload_highlights_signal_callback)
+			if not cue.data_erased.is_connected(_reload_highlights_signal_callback): cue.data_erased.connect(_reload_highlights_signal_callback)
 			
 			new_list_item.select_requested.connect(func(arg1=null):
 				_on_select_requested(new_list_item, cue_number))
@@ -363,14 +357,14 @@ func reload() -> void:
 		
 		_global_cue_fade_time.set_value_no_signal(Utils.get_most_common_value(fade_times))
 		_global_cue_pre_wait_time.set_value_no_signal(Utils.get_most_common_value(pre_wait_times))
-		global_cue.visible = _edit_mode
+		global_cue.visible = edit_mode
 		
 	_reload_labels()
 	_reload_name()
-	new_update_button.visible = not _edit_mode
-	$VBoxContainer/PanelContainer/HBoxContainer/Store.visible = _edit_mode
+	new_update_button.visible = not edit_mode
+	$VBoxContainer/PanelContainer/HBoxContainer/Store.visible = edit_mode
 	
-	if _edit_mode:
+	if edit_mode:
 		_highlight_cues_with_stored_fixtures(Values.get_selection_value("selected_fixtures", []))
 
 
@@ -407,7 +401,7 @@ func _highlight_cues_with_stored_fixtures(fixtures: Array) -> void:
 		var new_color: Color = _cue_active_color if cue.number == current_cue_list.current_cue_number else _cue_default_color
 		
 		for fixture: Fixture in fixtures:
-			if fixture in cue.stored_data.keys():
+			if fixture in cue.get_fixture_data().keys():
 				new_color = _cue_highlight_color
 				break
 		
@@ -700,8 +694,8 @@ func _on_store_confirmation_pressed() -> void:
 				store_function = "merge_into_cue"
 				args_needs_cue_number = true
 				
-			store_function_buttons.erace:
-				store_function = "erace_from_cue"
+			store_function_buttons.erase:
+				store_function = "erase_from_cue"
 				args_needs_cue_number = true
 				
 			store_function_buttons.new_cue:

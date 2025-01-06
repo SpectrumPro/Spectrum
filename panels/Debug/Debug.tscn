@@ -1,13 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://dqatkkghk5b2q"]
+[gd_scene load_steps=12 format=3 uid="uid://dqatkkghk5b2q"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_804im"]
 [ext_resource type="Script" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
+[ext_resource type="Texture2D" uid="uid://chva73v2q1246" path="res://assets/icons/Bug.svg" id="3_2fxag"]
+[ext_resource type="Texture2D" uid="uid://dlikb8or3xepr" path="res://assets/icons/Reset.svg" id="4_p3gkg"]
+[ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="5_ktb1m"]
+[ext_resource type="Texture2D" uid="uid://bjpa56jg5lki7" path="res://assets/icons/Skull.svg" id="6_hgh5s"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="7_31sgn"]
+[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="8_urdo5"]
+[ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="9_1kl5l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cu10"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="SystemFont" id="SystemFont_fhcgp"]
 font_names = PackedStringArray("Open Sans")
 font_weight = 925
 
-[node name="Debug" type="PanelContainer"]
+[node name="Debug" type="PanelContainer" node_paths=PackedStringArray("move_resize_handle")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,36 +36,95 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_804im")
 script = ExtResource("2_f46o2")
+move_resize_handle = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer/MoveResize")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Title" type="PanelContainer" parent="VBoxContainer"]
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2cu10")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Title"]
+[node name="CueName" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
+text = "Debug"
+icon = ExtResource("3_2fxag")
+flat = true
 
-[node name="Title" type="Label" parent="VBoxContainer/Title/HBoxContainer"]
-layout_mode = 2
-text = "Debug Menu"
-
-[node name="Stop" type="Button" parent="VBoxContainer/Title/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
-text = "Stop Server"
 
-[node name="Crash" type="Button" parent="VBoxContainer/Title/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Reset" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "Resets the server and all clients to there default state"
+text = "Reset Server"
+icon = ExtResource("4_p3gkg")
+
+[node name="Stop" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+tooltip_text = "Stops the server"
+text = "Stop Server"
+icon = ExtResource("5_ktb1m")
+
+[node name="Crash" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "CRASH THE SERVER"
 theme_override_colors/font_disabled_color = Color(0.713726, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_disabled_color = Color(0.713726, 0, 0, 1)
 theme_override_fonts/font = SubResource("SystemFont_fhcgp")
 text = "CRASH SERVER"
+icon = ExtResource("6_hgh5s")
+
+[node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("7_31sgn")
+
+[node name="Button2" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("8_urdo5")
+
+[node name="MoveResize" type="TextureRect" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer"]
+modulate = Color(0.255659, 0.255659, 0.255659, 1)
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 13
+texture = ExtResource("9_1kl5l")
+expand_mode = 4
+stretch_mode = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -55,21 +133,34 @@ size_flags_vertical = 3
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DumpNetworkedObjects" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/GridContainer"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+columns = 3
+
+[node name="DumpNetworkedObjects" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Dump Networked Objects"
 
-[node name="GetUniqueId" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/GridContainer"]
+[node name="GetUniqueId" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "OS.get_unique_id()"
 
-[node name="ListFunctions" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/GridContainer"]
+[node name="ListFunctions" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "List Functions"
+
+[node name="GetComponentUUID" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Get Component UUID"
 
 [node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -86,13 +177,15 @@ horizontal_scroll_mode = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
 layout_mode = 2
-text = "Send Message To Server:"
+text = "Send Command:"
 
 [node name="For" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For"]
 layout_mode = 2
@@ -103,11 +196,13 @@ text = "For:"
 
 [node name="For" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 placeholder_text = "UUID"
 expand_to_text_length = true
 
 [node name="Call" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call"]
 layout_mode = 2
@@ -118,11 +213,13 @@ text = "Call:"
 
 [node name="Method" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 placeholder_text = "Method"
 expand_to_text_length = true
 
 [node name="Args" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args"]
 layout_mode = 2
@@ -133,18 +230,22 @@ text = "Args:"
 
 [node name="Args" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "[]"
 placeholder_text = "Args: Array"
 expand_to_text_length = true
 
 [node name="SendMessageToServer" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Send"
 
-[connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
-[connection signal="pressed" from="VBoxContainer/Title/HBoxContainer/Crash" to="." method="_on_crash_pressed"]
-[connection signal="resized" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer" to="." method="_on_grid_container_resized"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer/HBoxContainer/Reset" to="." method="_on_reset_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/PanelContainer/HBoxContainer/Crash" to="." method="_on_crash_pressed"]
+[connection signal="resized" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer" to="." method="_on_grid_container_resized"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetComponentUUID" to="." method="_on_get_component_uuid_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessageToServer" to="." method="_on_send_message_to_server_pressed"]

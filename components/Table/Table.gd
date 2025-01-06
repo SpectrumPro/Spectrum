@@ -8,6 +8,15 @@ class_name Table extends PanelContainer
 ## Emitted when the add row button is pressed
 signal add_row_button_pressed()
 
+## Emitted when a row is selected
+signal row_selected(row: RowHeadder)
+
+## Emitted when a column is selected
+signal column_selected(colum: ColumnIndex)
+
+## Emitted when nothing is selected
+signal nothing_selected()
+
 
 ## The Scroll Containers
 @onready var table_scroll_container: ScrollContainer = $VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer
@@ -22,8 +31,15 @@ signal add_row_button_pressed()
 ## The add button
 @onready var add_row_button: Button = $VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer/AddButton
 
-## Stores all the rows
-var _rows: Dictionary = {}
+
+## Stores all the row items. {{index: RowItem}
+var _row_items: Dictionary = {}
+
+## Current selected row
+var _selected_row: RowHeadder
+
+## Current selected column
+var _selected_column: ColumnIndex
 
 
 func _ready() -> void:
@@ -35,10 +51,12 @@ func _ready() -> void:
 
 
 ## Gets the corner node, so you can add custem lables or buttons
-func get_corner_node() -> PanelContainer: return $VBoxContainer/HBoxContainer/Corner
+func get_corner_node() -> PanelContainer: 
+	return $VBoxContainer/HBoxContainer/Corner
 
 ## Shows or hides the add row button
-func set_show_add_button(show: bool) -> void: add_row_button.visible = show
+func set_show_add_button(show: bool) -> void: 
+	add_row_button.visible = show
 
 
 ## Clears this table, removing all items, row, and columns
@@ -50,6 +68,7 @@ func clear() -> void:
 
 ## Removes all the columns
 func clear_columns() -> void:
+	_selected_column = null
 	for column_item: ColumnIndex in column_item_container.get_children():
 		column_item_container.remove_child(column_item)
 		column_item.queue_free()
@@ -57,15 +76,18 @@ func clear_columns() -> void:
 
 ## Removes all the rows
 func clear_rows() -> void:
+	_selected_row = null
 	for row_item: Node in row_item_container.get_children():
-		if row_item is RowIndex:
+		if row_item is RowHeadder:
 			row_item_container.remove_child(row_item)
 			row_item.queue_free()
-	_rows = {}
+	_row_items = {}
 
 
 ## Removes all the cell items
 func clear_cells() -> void:
+	_selected_column = null
+	_selected_row = null
 	for node: Control in cell_item_container.get_children():
 		cell_item_container.remove_child(node)
 		node.queue_free()
@@ -98,8 +120,8 @@ func create_columns(columns: Array[String]) -> Array[ColumnIndex]:
 
 
 ## Adds a new row to this table
-func create_row(row_name: String) -> RowIndex:
-	var new_row: RowIndex = load("res://components/Table/TableItems/RowIndex.tscn").instantiate()
+func create_row(row_name: String) -> RowHeadder:
+	var new_row: RowHeadder = load("res://components/Table/TableItems/RowHeadder.tscn").instantiate()
 	var new_row_item: RowItem = load("res://components/Table/TableItems/RowItem.tscn").instantiate()
 	
 	row_item_container.add_child(new_row)
@@ -107,16 +129,22 @@ func create_row(row_name: String) -> RowIndex:
 	add_row_button.move_to_front()
 	
 	new_row.set_text(row_name)
-	new_row.row_index = new_row.get_index()
-	new_row.row_item = new_row_item
+	new_row.index = new_row.get_index()
 	
-	_rows[new_row.row_index] = new_row_item
+	new_row.row_item = new_row_item
+	new_row_item.headder = new_row
+	
+	new_row.clicked.connect(func ():
+		set_row_selected(new_row.index)
+	)
+	
+	_row_items[new_row.index] = new_row_item
 	return new_row
 
 
 ## Created mutiple rows at once
-func create_rows(rows: Array[String]) -> Array[RowIndex]:
-	var new_rows: Array[RowIndex]
+func create_rows(rows: Array[String]) -> Array[RowHeadder]:
+	var new_rows: Array[RowHeadder]
 	
 	for row_name: String in rows:
 		new_rows.append(create_row(row_name))
@@ -124,25 +152,74 @@ func create_rows(rows: Array[String]) -> Array[RowIndex]:
 	return new_rows
 
 
+## Removes a row
+func remove_row(row_index: int) -> void:
+	if not row_index in _row_items: return
+	
+	if _selected_row.index == row_index:
+		deselect_all()
+	
+	var row_header: RowHeadder = _row_items[row_index].headder
+	row_item_container.remove_child(row_header)
+	cell_item_container.remove_child(row_header.row_item)
+	
+	_row_items.erase(row_index)
+
+
+## Moves a row, by changing the child order
+func move_row(row_index: int, to: int) -> void:
+	if not row_index in _row_items: return
+	
+	var row_header: RowHeadder = _row_items[row_index].headder
+	row_item_container.move_child(row_header, to)
+	cell_item_container.move_child(row_header.row_item, to)
+
+
 ## Adds a cellitem with data in it
 func add_data(row_index: int, data: Variant, setter: Callable, changer: Signal) -> CellItem:
-	if not row_index in _rows: return null
+	if not row_index in _row_items: return null
 	
-	return (_rows[row_index] as RowItem).add_data(data, setter, changer)
+	return (_row_items[row_index] as RowItem).add_data(data, setter, changer)
 
 
 ## Adds a button
 func add_button(row_index: int, text: String, callback: Callable) -> CellItem:
-	if not row_index in _rows: return null
+	if not row_index in _row_items: return null
 	
-	return (_rows[row_index] as RowItem).add_button(text, callback)
+	return (_row_items[row_index] as RowItem).add_button(text, callback)
 
 
 ## Adds a dropdown
 func add_dropdown(row_index: int, items: Array, current: int ,callback: Callable, changer: Signal) -> CellItem:
-	if not row_index in _rows: return null
+	if not row_index in _row_items: return null
 	
-	return (_rows[row_index] as RowItem).add_dropdown(items, current, callback, changer)
+	return (_row_items[row_index] as RowItem).add_dropdown(items, current, callback, changer)
+
+
+## Selectes nothing
+func deselect_all() -> void:
+	if _selected_row:
+		_selected_row.set_selected(false)
+		_selected_row = null
+	
+	nothing_selected.emit()
+
+
+## Sets a row selected
+func set_row_selected(index: int) -> void:
+	if _row_items.has(index):
+		if _selected_row:
+			_selected_row.set_selected(false)
+		
+		_selected_row = _row_items[index].headder
+		_selected_row.set_selected(true)
+		
+		row_selected.emit(_selected_row)
+
+
+## Returns the selected row or null
+func get_selected_row() -> RowHeadder:
+	return _selected_row
 
 
 ## Updates the min Y size of the rows, fixing issues with scrolling
@@ -172,3 +249,8 @@ func _on_add_button_pressed() -> void: add_row_button_pressed.emit()
 
 func _on_v_box_container_minimum_size_changed() -> void:
 	_update_row_min_size()
+
+
+func _on_h_box_container_2_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_mask == MOUSE_BUTTON_MASK_LEFT and event.is_pressed():
+		deselect_all()

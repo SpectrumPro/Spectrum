@@ -1,183 +1,283 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
 class_name Universe extends EngineComponent
-## Enngie class for handling universes, and there outputs
+## Engine component for handling universes, and there outputs
 
 
-## Emitted when fixtures are added to this universe
+## Emited when a fixture / fixtures are added to this universe, contains a list of all fixture uuids for server-client synchronization
 signal fixtures_added(fixtures: Array[Fixture])
 
-## Emitted when fixtures are removed to this universe
+## Emited when a fixture / fixtures are removed from this universe, contains a list of all fixture uuids for server-client synchronization
 signal fixtures_removed(fixtures: Array[Fixture])
 
-## Emitted when outputs are added to this universe
+## Emited when a output / outputs are added to this universe, contains a list of all output uuids for server-client synchronization
 signal outputs_added(outputs: Array[DataOutputPlugin])
 
-## Emitted when outputs are removed to this universe
+## Emited when a output / outputs are removed from this universe, contains a list of all output uuids for server-client synchronization
 signal outputs_removed(outputs: Array[DataOutputPlugin])
 
 
-## Dictionary containing all the fixtures in this universe
-var fixtures: Dictionary = {}
-
 ## Dictionary containing all the fixtures in this universe, stored as channel:Array[fixture]
-var fixture_channels: Dictionary = {} 
+var _fixture_channels: Dictionary = {} 
+
+## Dictionary containing all the fixtures in this universe, stored as uuid:fixture
+var _fixtures: Dictionary = {}
 
 ## Dictionary containing all the outputs in this universe
-var outputs: Dictionary = {} 
+var _outputs: Dictionary = {} 
 
+## Dictionary containing the current dmx data of this universe, this is constantly updated, so modifying this manualy will cause unexpected outcomes
+var _dmx_data: Dictionary = {} 
 
-## Stores callables that are connected to fixture signals [br]
-var _fixture_signal_connections: Dictionary = {}
+## Stores dmx overrides, sotred at {channel:value}. theese values will always override other data passed to this universe
+var _dmx_overrides: Dictionary = {}
 
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
-	set_self_class("Universe")
-	icon = load("res://assets/icons/Universe.svg")
-
-
-## Adds mutiple new fixtures to this universe, from a fixture manifest [br]
-## [param start_channel] is the first channel that will be asigned [br]
-## [param offset] adds a channel gap between each fixture [br]
-## Will return false is manifest is not valid, otherwise Array[Fixture]
-func add_fixtures_from_manifest(fixture_manifest: Dictionary, mode:int, start_channel: int, quantity:int, offset:int = 0) -> void:
-	Client.send_command(uuid, "add_fixtures_from_manifest", [fixture_manifest, mode, start_channel, quantity, offset])
-
-
-## Adds an output to this universe
-func add_output(output: DataOutputPlugin):
-	Client.send_command(uuid, "add_output", [output])
-
-
-## Remove mutiple outputs from this universe
-func remove_outputs(p_outputs: Array) -> void:
-	Client.send_command(uuid, "remove_outputs", [p_outputs])
-
-
-## INTERNAL: called when an output or output is added to the server
-func on_outputs_added(p_outputs: Array, output_uuids: Array) -> void:
-	_add_outputs(p_outputs)
-
-
-## INTERNAL: called when an output or outputs are removed from this universe
-func on_outputs_removed(p_outputs: Array) -> void:
+	_set_self_class("Universe")
 	
-	var just_removed_outputs: Array[DataOutputPlugin]
+	register_callback("on_fixtures_added", _add_fixtures)
+	register_callback("on_fixtures_removed", _remove_fixtures)
+	register_callback("on_outputs_added", _add_outputs)
+	register_callback("on_outputs_removed", _remove_outputs)
+
+
+## Creates a new output by class name
+func create_output(p_output_class_name: String) -> Promise: return rpc("create_output", [p_output_class_name])
+
+
+## Adds a new output to this universe, returning false if this output can't be added
+func add_output(p_output: DataOutputPlugin) -> Promise: return rpc("add_output", [p_output])
+
+## Internal: Adds an output to this universe
+func _add_output(p_output: DataOutputPlugin, p_no_signal: bool = false) -> bool:
+	if p_output in _outputs.values():
+		return false
 	
-	for output in p_outputs:
-		if output in outputs.values():
-			
-			just_removed_outputs.append(output)
-			outputs.erase(output.uuid)
+	_outputs[p_output.uuid] = p_output
 	
-	if just_removed_outputs:
-		outputs_removed.emit(just_removed_outputs)
-
-
-## INTERNAL: called when an fixture or fixtures are added to this universe
-func on_fixtures_added(p_fixtures: Array, fixture_uuids: Array) -> void:
-	_add_fixtures(p_fixtures)
-
-
-## INTERNAL: called when an fixture or fixtures are added to this universe
-func on_fixtures_removed(p_fixtures: Array, fixture_uuids: Array) -> void:
-	_remove_fixtures(p_fixtures)
-
-
-## INTERNAL: adds a output or outputs to this universe
-func _add_outputs(p_outputs: Array) -> void:
-	var just_added_outputs: Array[DataOutputPlugin]
+	p_output.delete_requested.connect(_remove_output.bind(p_output), CONNECT_ONE_SHOT)
+	ComponentDB.register_component(p_output)
 	
-	for output in p_outputs:
+	if not p_no_signal:
+		outputs_added.emit([p_output])
+	
+	return true
+
+
+## Adds mutiple outputs to this univere at once
+func add_outputs(p_outputs: Array) -> Promise: return rpc("add_outputs", [p_outputs])
+
+## Internal: Adds mutiple outputs at once
+func _add_outputs(p_outputs: Array, p_no_signal: bool = false) -> void:
+	var just_added_outputs: Array[DataOutputPlugin] = []
+
+	for output: Variant in p_outputs:
 		if output is DataOutputPlugin:
-			
-			Client.add_networked_object(output.uuid, output, output.delete_requested)
-			ComponentDB.register_component(output)
-			output.delete_requested.connect(self.on_outputs_removed.bind([output]), CONNECT_ONE_SHOT)
-			just_added_outputs.append(output)
-			outputs[output.uuid] = output
-	
-	if just_added_outputs:
+			if _add_output(output, true):
+				just_added_outputs.append(output)
+
+	if not p_no_signal and just_added_outputs:
 		outputs_added.emit(just_added_outputs)
 
 
-## INTERNAL: adds a fixtures or fixtures to this universe
-func _add_fixtures(p_fixtures: Array) -> void:
-	var just_added_fixtures: Array[Fixture]
-	
-	for fixture in p_fixtures:
-		if fixture is Fixture:
-			
-			Client.add_networked_object(fixture.uuid, fixture, fixture.delete_requested)
-			ComponentDB.register_component(fixture)
+## Removes a output from this engine
+func remove_output(p_output: DataOutputPlugin) -> Promise: return rpc("remove_output", [p_output])
 
-			fixture.delete_requested.connect(self._remove_fixtures.bind([fixture]), CONNECT_ONE_SHOT)
-			
-			just_added_fixtures.append(fixture)
-			
-			if not fixture_channels.get(fixture.channel):
-				fixture_channels[fixture.channel] = []
-			
-			fixture_channels[fixture.channel].append(fixture)
-			fixtures[fixture.uuid] = fixture
-			
-	if just_added_fixtures:
+## Internal: Removes a output from this universe
+func _remove_output(p_output: DataOutputPlugin, p_no_signal: bool = false) -> bool: 
+	if not p_output in _outputs.values():
+		return false
+	
+	ComponentDB.deregister_component(p_output)
+	_outputs.erase(p_output.uuid)
+
+	if not p_no_signal:
+		outputs_removed.emit([p_output])
+	
+	return true
+
+
+## Removes mutiple outputs from this universe
+func remove_outputs(p_outputs: Array) -> Promise: return rpc("remove_outputs", [p_outputs])
+
+## Internal: Removes mutiple outputs from this universe
+func _remove_outputs(p_outputs: Array, p_no_signal: bool = false) -> void:
+	var just_removed_outputs: Array[DataOutputPlugin] = []
+
+	for output: Variant in p_outputs:
+		if output is DataOutputPlugin:
+			if _remove_output(output, true):
+				just_removed_outputs.append(output)
+	
+	if not p_no_signal and just_removed_outputs:
+		outputs_removed.emit(just_removed_outputs)
+
+
+
+## Adds a new fixture to this universe, from a fixture manifest
+func create_fixture_from_manifest(p_fixture_manifest: Dictionary, p_mode: int, p_channel: int) -> Promise:
+	return rpc("create_fixture_from_manifest", [p_fixture_manifest, p_mode, p_channel])
+
+
+## Adds a new fixture to this universe
+func add_fixture(p_fixture: Fixture, p_channel: int = -1) -> Promise: return rpc("add_fixture", [p_fixture, p_channel])
+
+## Internal: Adds a new fixture to this universe
+func _add_fixture(p_fixture: Fixture, p_channel: int = -1, p_no_signal: bool = false) -> bool:
+	if p_fixture in _fixtures.values():
+		return false
+
+	var fixture_channel: int = p_fixture.get_channel() if p_channel == -1 else p_channel
+	p_fixture._set_channel(fixture_channel)
+	
+	if not _fixture_channels.get(fixture_channel):
+		_fixture_channels[fixture_channel] = []
+	
+	_fixture_channels[fixture_channel].append(p_fixture)
+	_fixtures[p_fixture.uuid] = p_fixture
+
+	ComponentDB.register_component(p_fixture)
+	p_fixture.delete_requested.connect(_remove_fixture.bind(p_fixture), CONNECT_ONE_SHOT)
+
+	if not p_no_signal:
+		fixtures_added.emit([p_fixture])
+	
+	return true
+
+
+## Adds mutiple fixtures to this universe
+func add_fixtures(p_fixtures: Array) -> Promise: return rpc("add_fixtures", [p_fixtures])
+
+## Internal: Adds mutiple fixtures to this universe
+func _add_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
+	var just_added_fixtures: Array[Fixture] = []
+
+	for fixture: Variant in p_fixtures:
+		if fixture is Fixture:
+			if _add_fixture(fixture):
+				just_added_fixtures.append(fixture)
+	
+	if not p_no_signal and just_added_fixtures:
 		fixtures_added.emit(just_added_fixtures)
 
 
+## Adds mutiple new fixtures to this universe, from a fixture manifest
+## start_channel is the first channel that will be asigned
+## offset adds a channel gap between each fixture
+func add_fixtures_from_manifest(p_fixture_manifest: Dictionary, p_mode: int, p_start_channel: int, p_quantity: int, p_offset: int = 0) -> Promise:
+	return rpc("add_fixtures_from_manifest", [p_fixture_manifest, p_mode, p_start_channel, p_quantity, p_offset])
 
-## INTERNAL: removes a fixture / fixtures from this universe
-func _remove_fixtures(p_fixtures: Array) -> void:
-	var just_removed_fixtures: Array[Fixture]
+
+## Removes a fixture from this universe
+func remove_fixture(p_fixture: Fixture) -> Promise: return rpc("remove_fixture", [p_fixture])
+
+## Internal: Removes a fixture from this universe
+func _remove_fixture(p_fixture: Fixture, p_no_signal: bool = false) -> bool:
+	if not p_fixture in _fixtures.values():
+		return false
 	
-	for fixture in p_fixtures:
-		if fixture in fixtures.values():
-			
-			just_removed_fixtures.append(fixture)
-			fixture_channels[fixture.channel].erase(fixture)
-			fixtures.erase(fixture.uuid)
+	_fixtures.erase(p_fixture.uuid)
+	_fixture_channels[p_fixture.get_channel()].erase(p_fixture)
 	
-	if just_removed_fixtures:
-		fixtures_removed.emit(just_removed_fixtures)
+	if not _fixture_channels[p_fixture.get_channel()]:
+		_fixture_channels.erase(p_fixture.get_channel())
+	
+	ComponentDB.deregister_component(p_fixture)
+	
+	if not p_no_signal:
+		fixtures_removed.emit([p_fixture])
+	
+	return true
+		
+
+
+## Removes mutiple fixtures from this universe
+func remove_fixtures(p_fixtures: Array) -> Promise: return rpc("remove_fixtures", [p_fixtures])
+
+## Internal: Removes mutiple fixtures from this universe
+func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
+	var just_removed_fixtures: Array[Fixture] = []
+	
+	for fixture: Variant in p_fixtures:
+		if fixture is Fixture:
+			if _remove_fixture(fixture, true):
+				just_removed_fixtures.append(fixture)
+	
+	if not p_no_signal and just_removed_fixtures:
+		outputs_removed.emit(just_removed_fixtures)
+		
+
+## Returns all fixture on the given channel
+func get_fixture_by_channel(p_channel: int) -> Array[Fixture]:
+	var fixtures: Array[Fixture] = []
+	fixtures.assign(_fixture_channels.get(p_channel, []))
+
+	return fixtures
+
+
+## Sets a manual dmx channel to the set value
+func set_dmx_override(p_channel: int, p_value: int) -> Promise: return rpc("set_dmx_override", [p_channel, p_value])
+
+## Removes a manual dmx override
+func remove_dmx_override(p_channel: int) -> Promise: return rpc("remove_dmx_override", [p_channel]) 
+
+## Removes all dmx overrides
+func remove_all_dmx_overrides() -> Promise: return rpc("remove_all_dmx_overrides")
 
 
 ## Serializes this universe
-func _on_serialize_request() -> Dictionary:
-	
-	var serialized_outputs = {}
-	var serialized_fixtures = {}
-	
-	for output: DataOutputPlugin in outputs.values():
+func _serialize_request() -> Dictionary:
+	var serialized_outputs: Dictionary = {}
+	var serialized_fixtures: Dictionary = {}
+
+	for output: DataOutputPlugin in _outputs.values():
 		serialized_outputs[output.uuid] = output.serialize()
 	
-	for fixture: Fixture in fixtures.values():
-		serialized_fixtures[fixture.uuid] = fixture.serialize()
-		
-	
+	for channel: int in _fixture_channels.keys():
+		serialized_fixtures[str(channel)] = []
+
+		for fixture: Fixture in _fixture_channels[channel]:
+			serialized_fixtures[str(channel)].append(fixture.serialize())
+
 	return {
-		"fixtures":serialized_fixtures,
-		"outputs":serialized_outputs,
+		"outputs": serialized_outputs,
+		"fixtures": serialized_fixtures
 	}
 
 
-func _on_load_request(serialized_data: Dictionary) -> void:
-	var fixture_channels: Array = serialized_data.get("fixtures", {}).keys()
-	fixture_channels.sort_custom(func(a, b): 
-		return a.naturalnocasecmp_to(b) < 0
-	)
-	
-	for fixture_channel: String in fixture_channels:
-		for serialized_fixture: Dictionary in serialized_data.fixtures[fixture_channel]:
+## Called when this universe is to be deleted, see [method EngineComponent.delete]
+func _delete_request():
+	_remove_outputs(_outputs.values())
+	_remove_fixtures(_fixtures.values())
+
+
+## Loads this universe from a serialised universe
+func _load_request(p_serialized_data: Dictionary) -> void:
+	var just_added_fixtures: Array[Fixture] = []
+	var just_added_output: Array[DataOutputPlugin] = []
+
+	for fixture_channel: String in p_serialized_data.get("fixtures", []):
+		for serialized_fixture: Dictionary in p_serialized_data.fixtures[fixture_channel]:
 			var new_fixture: Fixture = Fixture.new(serialized_fixture.get("uuid"))
 			new_fixture.load(serialized_fixture)
-			_add_fixtures([new_fixture])
+			
+			_add_fixture(new_fixture, -1, true)
+			just_added_fixtures.append(new_fixture)
 			
 	
-	for output_uuid: String in serialized_data.get("outputs", {}).keys():
-		if serialized_data.outputs[output_uuid].get("class_name", "") in ClassList.global_class_table:
-			var new_output: DataOutputPlugin = ClassList.global_class_table[serialized_data.outputs[output_uuid]["class_name"]].new(output_uuid)
+	for output_uuid: String in p_serialized_data.get("outputs", {}).keys():
+		if p_serialized_data.outputs[output_uuid].get("class_name", "") in ClassList.output_class_table.keys():
+			var new_output: DataOutputPlugin = ClassList.output_class_table[p_serialized_data.outputs[output_uuid]["class_name"]].new(output_uuid)
+			new_output.load(p_serialized_data.outputs[output_uuid])
 			
-			_add_outputs([new_output])
-			new_output.load(serialized_data.outputs[output_uuid])
+			_add_output(new_output, true)
+			just_added_output.append(new_output)
+
+	if just_added_fixtures:
+		fixtures_added.emit(just_added_fixtures)
+	
+	if just_added_output:
+		outputs_added.emit(just_added_output)

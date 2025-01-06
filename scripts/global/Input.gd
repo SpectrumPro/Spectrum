@@ -53,9 +53,17 @@ func _ready() -> void:
 	OS.open_midi_inputs()
 	print(OS.get_connected_midi_inputs())
 
+
 ## Called for every InputEvent
 func _input(event: InputEvent) -> void:
-	if event is InputEventMIDI: _handle_midi_input(event)
+	if event is InputEventMIDI: 
+		_handle_midi_input(event)
+	
+	if event.is_action_pressed("reload"):
+		Client.connect_to_server()
+	
+	if Input.is_action_just_pressed("clear_programmer"): 
+		Programmer.clear()
 
 
 ## Handles Midi input events

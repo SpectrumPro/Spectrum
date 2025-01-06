@@ -34,8 +34,6 @@ var _component_requests: Dictionary = {}
 
 func _ready() -> void:
 	Core.resetting.connect(func () -> void:
-		components = {}
-		components_by_classname = {}
 		_just_changed_components = {}
 		_class_callbacks = {}
 		_emit_class_callbacks_queued = false
@@ -48,6 +46,7 @@ func register_component(component: EngineComponent) -> bool:
 	if component.uuid in components:
 		return false
 	
+	print("register_component: ", component)
 	components[component.uuid] = component
 	
 	for classname in component.class_tree:
@@ -62,8 +61,9 @@ func register_component(component: EngineComponent) -> bool:
 		_component_requests.erase(component.uuid)
 	
 	_check_class_callbacks(component)
+	component.delete_requested.connect(deregister_component.bind(component), CONNECT_ONE_SHOT)
 	
-	Client.add_networked_object(component.uuid, component)
+	Client.add_networked_object(component.uuid, component, component.delete_requested)
 	component_added.emit(component)
 	return true
 
@@ -72,8 +72,11 @@ func register_component(component: EngineComponent) -> bool:
 func deregister_component(component: EngineComponent) -> bool:
 	if not component.uuid in components:
 		return false
-		
-	components.erase(component.uuid)
+	
+	print()
+	print("deregister_component: ", component)
+	print("Returned: ", components.erase(component.uuid))
+	print()
 	
 	for classname in component.class_tree:
 		components_by_classname[classname].erase(component)
@@ -87,7 +90,7 @@ func deregister_component(component: EngineComponent) -> bool:
 
 ## Gets all the loaded components by classname
 func get_components_by_classname(classname: String) -> Array:
-	return components_by_classname.get(classname, [])
+	return components_by_classname.get(classname, []).duplicate()
 
 
 ## Gets a component by a uuid
@@ -125,7 +128,7 @@ func request_class_callback(classname: String, callback: Callable) -> void:
 
 
 ## Removes a request for a class callback
-func remove_class_callback(classname, callback: Callable) -> void:
+func remove_class_callback(classname: String, callback: Callable) -> void:
 	if _class_callbacks.has(classname):
 		_class_callbacks[classname].erase(callback)
 

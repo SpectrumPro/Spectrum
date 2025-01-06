@@ -26,13 +26,13 @@ signal label_changed(new_label: String)
 	"Scene": {
 		button1: {
 			"label": "Toggle", 
-			"button_down": { "method_name": "set_enabled", "args": [true] },
-			"button_up": { "method_name": "set_enabled", "args": [false] },
+			"button_down": { "method_name": "enabled", "args": [true] },
+			"button_up": { "method_name": "enabled", "args": [false] },
 			"button_mode": TriggerButton.Mode.Toggle
 		},
 		button2: {
 			"label": "Enable",
-			"button_down": { "method_name": "set_enabled", "args": [true] },
+			"button_down": { "method_name": "enabled", "args": [true] },
 		},
 		button3: {
 			"label": "Flash",
@@ -41,7 +41,7 @@ signal label_changed(new_label: String)
 		},
 		button4: {
 			"label": "Disable",
-			"button_down": { "method_name": "set_enabled", "args": [false] },
+			"button_down": { "method_name": "enabled", "args": [false] },
 		},
 		button5: {"visible": false},
 		slider: { 

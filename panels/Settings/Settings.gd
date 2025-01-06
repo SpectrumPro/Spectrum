@@ -1,8 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-class_name SettingsPanel extends PanelContainer
-
+class_name UISettings extends UIPanel
 ## UI panel for client settings
 
 
@@ -46,16 +45,15 @@ func _reload_ui() -> void:
 			status = "Disconnected"
 	
 	status_label.text = status
-	
-	ip_input.text = Core.server_ip_address
+	ip_input.text = Client.ip_address
 
 
 func _on_connect_pressed() -> void:
-	Core.connect_to_server(ip_input.text)
+	Client.connect_to_server(ip_input.text)
 
 
 func _on_disconnect_pressed() -> void:
-	Core.disconnect_from_server()
+	Client.disconnect_from_server()
 
 
 func _on_kiosk_mode_pressed() -> void:

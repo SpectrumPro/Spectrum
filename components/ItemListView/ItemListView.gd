@@ -60,9 +60,9 @@ func _ready() -> void:
 	set_show_edit(show_edit)
 	set_show_delete(show_delete)
 	
-	$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/DELETE.pressed.connect(self._on_delete_confirmation)
+	$PanelContainer2/ConfirmationBox/VBoxContainer/Modes/DeleteMode/DELETE.pressed.connect(self._on_delete_confirmation)
 	
-	$PanelContainer2/ConfirmationBox/VBoxContainer/HBoxContainer/Cancel.pressed.connect(func():
+	$PanelContainer2/ConfirmationBox/VBoxContainer/Modes/DeleteMode/Cancel.pressed.connect(func():
 		$PanelContainer2/ConfirmationBox.hide()
 	) 
 

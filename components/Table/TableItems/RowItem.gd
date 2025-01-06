@@ -5,6 +5,10 @@ class_name RowItem extends Control
 ## Stores CellItems in a row
 
 
+## The corresponding row index
+var headder: RowHeadder
+
+
 ## Adds data to the next empty cell
 func add_data(data: Variant, setter: Callable, changer: Signal) -> CellItem:
 	var cell_item: CellItem = load("res://components/Table/TableItems/CellItem.tscn").instantiate()
@@ -31,6 +35,11 @@ func add_dropdown(items: Array, current: int, callback: Callable, changer: Signa
 	cell_item.set_signal(changer)
 	
 	return _add_cell_item(cell_item)
+
+
+## Shows or hides the selected border
+func set_selected(selected: bool) -> void:
+	$Selection.visible = selected
 
 
 ## Adds the cell item to the row

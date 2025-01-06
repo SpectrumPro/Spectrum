@@ -50,6 +50,7 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_filter = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer2/PanelContainer"]
 layout_mode = 2
@@ -69,6 +70,7 @@ icon_alignment = 1
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer2/PanelContainer2"]
 layout_mode = 2
@@ -79,6 +81,7 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 3
 
+[connection signal="gui_input" from="VBoxContainer/HBoxContainer2" to="." method="_on_h_box_container_2_gui_input"]
 [connection signal="minimum_size_changed" from="VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_minimum_size_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="minimum_size_changed" from="VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_minimum_size_changed"]

@@ -27,6 +27,9 @@ var current_color: Color = Color.BLACK
 ## Wether or not to send randomise commands from each slider, or globaly
 var send_randomise_command: bool = false : set = set_send_randomise_command
 
+## Max number of times to send a new color packet per second
+var _call_interval: float = 1.0 / 45.0 # 1 second divided by 45
+
 ## Used to time the output of the color picker, so we don't dos the server
 var _last_call_time: int = 0
 
@@ -111,9 +114,9 @@ func set_disabled(p_disabled: bool) -> void:
 func _on_color_picker_color_changed(color: Color) -> void:
 	var current_time = Time.get_ticks_msec() / 1000.0  # Convert milliseconds to seconds
 	
-	if current_time - _last_call_time >= Core.call_interval:
+	if current_time - _last_call_time >= _call_interval:
 		current_color = color
-		Core.programmer.set_color(Values.get_selection_value("selected_fixtures", []), current_color)
+		Programmer.set_color(Values.get_selection_value("selected_fixtures", []), current_color)
 		
 		_update_rgb()
 		_update_hsv()

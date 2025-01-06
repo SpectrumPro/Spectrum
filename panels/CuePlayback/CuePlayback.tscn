@@ -50,7 +50,7 @@ variation_embolden = 0.82
 [sub_resource type="LabelSettings" id="LabelSettings_cktj4"]
 font = SubResource("FontVariation_8ydje")
 
-[node name="CuePlayback" type="PanelContainer"]
+[node name="CuePlayback" type="PanelContainer" node_paths=PackedStringArray("settings_node")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -58,6 +58,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_kkl7c")
 script = ExtResource("2_0mtdo")
+settings_node = NodePath("Settings")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -357,11 +358,11 @@ size_flags_vertical = 4
 text = "Merge
 "
 
-[node name="Erace" type="Button" parent="StoreConfirmationBox/VBoxContainer2/StoreModes"]
+[node name="erase" type="Button" parent="StoreConfirmationBox/VBoxContainer2/StoreModes"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-text = "Erace"
+text = "erase"
 
 [node name="NewCue" type="Button" parent="StoreConfirmationBox/VBoxContainer2/StoreModes"]
 layout_mode = 2
@@ -892,11 +893,4 @@ label_text = ""
 [connection signal="toggled" from="Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer2/HBoxContainer/ShowTitleBar" to="." method="set_show_title_bar"]
 [connection signal="toggled" from="Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer2/HBoxContainer/ShowList" to="." method="set_show_list"]
 [connection signal="toggled" from="Settings/VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer2/HBoxContainer/ShowControls" to="." method="set_show_controls"]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer/Visible" to="." method="_on_visible_toggled" binds= [0]]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer3/VBoxContainer/HBoxContainer/Visible" to="." method="_on_visible_toggled" binds= [1]]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer4/VBoxContainer/HBoxContainer2/Visible" to="." method="_on_visible_toggled" binds= [2]]
 [connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/PanelContainer5/VBoxContainer/HBoxContainer2/StatusVisible" to="." method="_on_status_visible_toggled"]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer5/VBoxContainer/HBoxContainer/Visible" to="." method="_on_visible_toggled" binds= [3]]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer6/VBoxContainer/HBoxContainer2/Visible" to="." method="_on_visible_toggled" binds= [4]]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer7/VBoxContainer/HBoxContainer2/Visible" to="." method="_on_visible_toggled" binds= [5]]
-[connection signal="toggled" from="Settings/VBoxContainer/PanelContainer/VBoxContainer/HBoxContainer2/PanelContainer8/VBoxContainer/HBoxContainer2/Visible" to="." method="_on_visible_toggled" binds= [6]]

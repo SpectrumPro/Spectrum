@@ -1,5 +1,6 @@
-[gd_scene load_steps=18 format=3 uid="uid://bwxr0mrsrt0iu"]
+[gd_scene load_steps=19 format=3 uid="uid://bwxr0mrsrt0iu"]
 
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_2fi00"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
 [ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
 [ext_resource type="Script" path="res://panels/Programmer/ColorPicker.gd" id="2_dumhd"]
@@ -14,17 +15,17 @@
 [ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="11_snl23"]
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
 
-[sub_resource type="Gradient" id="Gradient_hsna0"]
+[sub_resource type="Gradient" id="Gradient_o3amq"]
 offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_gfs3r"]
-gradient = SubResource("Gradient_hsna0")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_uyiex"]
+gradient = SubResource("Gradient_o3amq")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wxp3e"]
-texture = SubResource("GradientTexture2D_gfs3r")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tlyyj"]
+texture = SubResource("GradientTexture2D_uyiex")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfwup"]
 content_margin_left = 5.0
@@ -43,6 +44,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_2fi00")
 script = ExtResource("1_xonfe")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -189,7 +191,7 @@ visible = true
 visible = true
 
 [node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
-theme_override_styles/panel = SubResource("StyleBoxTexture_wxp3e")
+theme_override_styles/panel = SubResource("StyleBoxTexture_tlyyj")
 
 [node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
 text = "Hue"
