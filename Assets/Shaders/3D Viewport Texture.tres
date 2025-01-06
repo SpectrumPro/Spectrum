@@ -1,4 +1,0 @@
-[gd_resource type="ViewportTexture" format=3 uid="uid://bb2intl85wa0n"]
-
-[resource]
-viewport_path = NodePath("TabContainer/3D/SubViewportContainer/SubViewport")

@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://03t7su6t2rq2"]
+
+[ext_resource type="Script" path="res://panels/Universes/Universes.gd" id="2_dy1nn"]
+[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="2_nny3h"]
+
+[node name="Universes" type="PanelContainer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_dy1nn")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+
+[node name="UniverseList" parent="HSplitContainer" instance=ExtResource("2_nny3h")]
+layout_mode = 2
+show_take = false
+show_edit = false
+
+[node name="IOList" parent="HSplitContainer" instance=ExtResource("2_nny3h")]
+layout_mode = 2
+show_take = false
+show_edit = false
+buttons_enabled = false
+
+[connection signal="add_requested" from="HSplitContainer/UniverseList" to="." method="_on_universe_list_add_requested"]
+[connection signal="delete_requested" from="HSplitContainer/UniverseList" to="." method="_on_universe_list_delete_requested"]
+[connection signal="selection_changed" from="HSplitContainer/UniverseList" to="." method="_on_universe_list_selection_changed"]
+[connection signal="add_requested" from="HSplitContainer/IOList" to="." method="_on_io_list_add_requested"]
+[connection signal="delete_requested" from="HSplitContainer/IOList" to="." method="_on_io_list_delete_requested"]
+[connection signal="selection_changed" from="HSplitContainer/IOList" to="." method="_on_io_list_selection_changed"]

@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="CodeLayoutGuidelines.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:zoom="0.74772475"
+     inkscape:cx="386.50586"
+     inkscape:cy="548.33012"
+     inkscape:window-width="2560"
+     inkscape:window-height="1374"
+     inkscape:window-x="1920"
+     inkscape:window-y="29"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       id="grid2"
+       units="mm"
+       originx="0"
+       originy="0"
+       spacingx="0.99999998"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <rect
+       x="139.96033"
+       y="510.66607"
+       width="481.35006"
+       height="196.70101"
+       id="rect4" />
+    <rect
+       x="253.44168"
+       y="57.686353"
+       width="978.108"
+       height="151.30846"
+       id="rect2" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-6" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-2" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-0" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-6-6" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-2-7" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-0-4" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-6-6-5" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-0-9" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-6-6-2" />
+    <rect
+       x="139.96033"
+       y="510.66608"
+       width="481.35007"
+       height="196.701"
+       id="rect4-2" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-8-0-9-7" />
+    <rect
+       x="253.44168"
+       y="57.686352"
+       width="978.10797"
+       height="151.30846"
+       id="rect2-2-6" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#3485fd;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1"
+       width="190"
+       height="20"
+       x="10"
+       y="10" />
+    <rect
+       style="fill:#7e36f4;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-5"
+       width="190"
+       height="19.999996"
+       x="10"
+       y="35" />
+    <rect
+       style="fill:#dd5498;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-5-2"
+       width="190"
+       height="19.999996"
+       x="10"
+       y="60" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-18.065355,-0.85114469)"
+       id="text2"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan9"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan8">Class Name, and Copyright</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,22.773496,24.148852)"
+       id="text2-5"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan11"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan10">Signals</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,4.9678645,49.98601)"
+       id="text2-5-0"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-6);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan13"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan12">Public Members
+</tspan></tspan></text>
+    <rect
+       style="fill:#e25563;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-55"
+       width="190"
+       height="19.999994"
+       x="10"
+       y="85" />
+    <rect
+       style="fill:#ffcb2f;fill-opacity:1;stroke:none;stroke-width:5.94008;stroke-linecap:round"
+       id="rect1-5-4"
+       width="90"
+       height="24.999996"
+       x="10"
+       y="160" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,3.2604751,74.986009)"
+       id="text2-6"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-2);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan15"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan14">Private Members</tspan></tspan></text>
+    <rect
+       style="fill:#fd933a;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-55-6"
+       width="190"
+       height="19.999992"
+       x="10"
+       y="110" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,12.998382,99.986007)"
+       id="text2-6-3"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-2-6);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan17"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan16">Initialization</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-43.634805,152.48601)"
+       id="text2-5-5"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-0);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan19"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan18">Public Methods</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-45.342191,187.48601)"
+       id="text2-5-0-6"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-6-6);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan21"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan20">Private Methods</tspan></tspan></text>
+    <rect
+       style="fill:#ffcb2f;fill-opacity:1;stroke:none;stroke-width:3.75683;stroke-linecap:round"
+       id="rect1-5-4-6"
+       width="90"
+       height="9.9999971"
+       x="110"
+       y="160" />
+    <rect
+       style="fill:#6dc381;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-5-2-7-4"
+       width="190"
+       height="20.000013"
+       x="10.000005"
+       y="194.99998" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,61.919378,146.76777)"
+       id="text2-5-5-9"
+       style="font-weight:600;font-size:20px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-0-9);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="76.067417"
+         id="tspan23"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan22">Public RPC Methods</tspan></tspan></text>
+    <rect
+       style="fill:#ffcb2f;fill-opacity:1;stroke:none;stroke-width:3.75683;stroke-linecap:round"
+       id="rect1-5-4-6-1"
+       width="90"
+       height="9.9999819"
+       x="110.00001"
+       y="175" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,55.943006,161.24454)"
+       id="text2-5-5-9-1"
+       style="font-weight:600;font-size:20px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-0-9-7);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="76.067417"
+         id="tspan25"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan24">RPC Private Counterpart</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,4.6578104,184.986)"
+       id="text2-5-0-6-4"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-6-6-2);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan27"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan26">Private Methods</tspan></tspan></text>
+    <rect
+       style="fill:#44d2a8;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-55-5"
+       width="190"
+       height="19.999989"
+       x="10"
+       y="220" />
+    <rect
+       style="fill:#61c0cf;fill-opacity:1;stroke:none;stroke-width:7.71957;stroke-linecap:round"
+       id="rect1-5-4-4"
+       width="190"
+       height="19.999983"
+       x="10"
+       y="245" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-8.1538147,209.98598)"
+       id="text2-6-4"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-2-7);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan29"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan28">UI or Server Callbacks</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-28.018235,234.98597)"
+       id="text2-5-5-3"
+       style="font-weight:600;font-size:32px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Semi-Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-8-0-4);display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="253.44141"
+         y="87.096539"
+         id="tspan31"><tspan
+           style="font-weight:bold;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold'"
+           id="tspan30">Serialization and Deserialization</tspan></tspan></text>
+    <rect
+       style="fill:#d3d3d3;fill-opacity:1;stroke:none;stroke-width:4.39591;stroke-linecap:round"
+       id="rect3"
+       width="90"
+       height="14.999996"
+       x="10"
+       y="140" />
+    <rect
+       style="fill:#d3d3d3;fill-opacity:1;stroke:none;stroke-width:4.39591;stroke-linecap:round"
+       id="rect3-2"
+       width="90"
+       height="14.999996"
+       x="110.00001"
+       y="140" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,92.559375,8.9883715)"
+       id="text3-1"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:20px;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect4-2);display:inline;fill:#585858;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="139.96094"
+         y="528.68918"
+         id="tspan32">Client Components: </tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-17.52658,8.9883715)"
+       id="text3"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:20px;font-family:'Arial Rounded MT Bold';-inkscape-font-specification:'Arial Rounded MT Bold,  Bold';text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect4);display:inline;fill:#585858;fill-opacity:1;stroke:none;stroke-width:24.313;stroke-linecap:round"><tspan
+         x="139.96094"
+         y="528.68918"
+         id="tspan33">Server Components and UI: </tspan></text>
+    <path
+       style="fill:#d3d3d3;fill-opacity:0.498039;stroke:#d3d3d3;stroke-width:0.856348;stroke-linecap:butt;stroke-dasharray:none;stroke-opacity:1"
+       d="m 105,135 v 54.99999"
+       id="path8"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#d3d3d3;fill-opacity:0.498039;stroke:#d3d3d3;stroke-width:1;stroke-linecap:butt;stroke-dasharray:none;stroke-opacity:1"
+       d="M 10,135 H 200"
+       id="path8-3"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#d3d3d3;fill-opacity:0.498039;stroke:#d3d3d3;stroke-width:1;stroke-linecap:butt;stroke-dasharray:none;stroke-opacity:1"
+       d="M 10,189.99999 H 200"
+       id="path8-3-8"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

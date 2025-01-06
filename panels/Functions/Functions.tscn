@@ -1,0 +1,79 @@
+[gd_scene load_steps=8 format=3 uid="uid://cedqo06n6en8u"]
+
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_es5ky"]
+[ext_resource type="Script" path="res://panels/Functions/Functions.gd" id="2_bfwkh"]
+[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="3_knoqd"]
+[ext_resource type="PackedScene" uid="uid://b0wxeveie0uk8" path="res://components/CreateFunction/CreateFunction.tscn" id="4_ifan4"]
+[ext_resource type="PackedScene" uid="uid://dkdq40xavnqdl" path="res://components/ComponentNamePopup/ComponentNamePopup.tscn" id="5_yy71q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxlfg"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvpr3"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Functions" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_es5ky")
+script = ExtResource("2_bfwkh")
+
+[node name="ItemListView" parent="." instance=ExtResource("3_knoqd")]
+layout_mode = 2
+show_select = false
+show_invert = false
+show_take = false
+show_edit = false
+show_separators = false
+
+[node name="CreateFunction" parent="." instance=ExtResource("4_ifan4")]
+visible = false
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_sxlfg")
+auto_hide = true
+
+[node name="ComponentNamePopup" parent="." instance=ExtResource("5_yy71q")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_mvpr3")
+auto_hide = true
+
+[connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
+[connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]
+[connection signal="edit_requested" from="ItemListView" to="." method="_on_item_list_view_edit_requested"]
+[connection signal="selection_changed" from="ItemListView" to="." method="_on_item_list_view_selection_changed"]
+[connection signal="component_added" from="CreateFunction" to="." method="_on_create_function_component_added"]

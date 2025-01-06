@@ -1,361 +1,251 @@
-# Copyright (c) 2024 Liam Sherwin
-# All rights reserved.
+# Copyright (c) 2024 Liam Sherwin, All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 class_name CoreEngine extends Node
-## The core engine that powers Spectrum
+## The client side engine that powers Spectrum
 
-signal universe_name_changed(universe: Universe, new_name: String) ## Emitted when any of the universes in this engine have there name changed
-signal universes_added(universe: Array[Universe])
-signal universes_removed(universe_uuids: Array[String])
-signal universe_selection_changed(selected_universes: Array[Universe])
 
-signal fixture_name_changed(fixture: Fixture, new_name)
-signal fixture_added(fixture: Array[Fixture])
-signal fixture_removed(fixture_uuid: Array)
-signal fixture_selection_changed(selected_fixtures: Array[Fixture])
+## Emitted when components are added to the engine
+signal components_added(components: Array[EngineComponent])
 
-signal scenes_added(scene: Array[Scene])
-signal scenes_removed(scene_uuids: Array)
+## Emitted when components are removed from the engine
+signal components_removed(components: Array[EngineComponent])
 
-signal output_timer() ## Emited [call_interval] number of times per second
+## Emitted when this engine is about to reset
+signal resetting()
 
-var universes: Dictionary = {}
-var fixtures: Dictionary = {}
-var fixtures_definitions: Dictionary = {}
-var scenes: Dictionary = {} 
-var selected_fixtures: Array[Fixture] = []
-var selected_universes: Array[Universe] = []
+## Emited when the file name is changed
+signal file_name_changed()
 
-var input_plugins: Dictionary = {}
-var output_plugins: Dictionary = {}
+## Emitted when this engine has finished loading
+signal load_finished()
 
-const fixture_path: String = "res://core/fixtures/"
-const input_plugin_path: String = "res://core/io_plugins/input_plugins/"
-const output_plugin_path: String = "res://core/io_plugins/output_plugins/"
+## Used to see if the engine should reset when connecting to a server
+var _is_engine_fresh: bool = true
 
-var current_file_name: String = ""
-var current_file_path: String = ""
+## The current file name
+var _current_file_name: String = ""
 
-var programmer = Programmer.new()
 
-var call_interval: float = 1.0 / 45.0  # 1 second divided by 45
+var network_config: Dictionary = {
+	"callbacks": {
+		"on_components_added": _add_components,
+		"on_components_removed": _remove_components,
+		"on_resetting": _reset,
+		"on_file_name_changed": _set_file_name,
+	}
+}
 
-var accumulated_time: float = 0.0
+
+var EngineConfig = {
+	## Network objects will be auto added to the servers networked objects index
+	"network_objects": [
+		{
+			"object": (self),
+			"name": "engine"
+		},
+		{
+			"object": (Programmer),
+			"name": "programmer"
+		},
+		{
+			"object": (FixtureLibrary),
+			"name": "FixtureLibrary"
+		},
+		{
+			"object": (ClassList),
+			"name": "classlist"
+		},
+	],
+	## Root classes are the primary classes that will be seralized and loaded 
+	"root_classes": [
+		"Universe",
+		"Function"
+	]
+}
+
 
 func _ready() -> void:
-	programmer.engine = self
+	Details.print_startup_detils()
 	
-	OS.set_low_processor_usage_mode(true)
-	reload_io_plugins()
-	reload_fixtures()
+	_add_auto_network_classes.call_deferred()
+	MainSocketClient.connected_to_server.connect(_on_connected_to_server)
+	Client.connect_to_server()
 
 
-func _process(delta: float) -> void:
-	# Accumulate the time
-	accumulated_time += delta
-	
-	# Check if enough time has passed since the last function call
-	if accumulated_time >= call_interval:
-		# Call the function
-		output_timer.emit()
+## Adds network objects as specifyed in EngineConfig
+func _add_auto_network_classes() -> void:
+	for config: Dictionary in EngineConfig.network_objects:
+		Client.add_networked_object(config.name, config.object)
+
+
+## Called when we connect to the server
+func _on_connected_to_server() -> void:
+	if not _is_engine_fresh:
+		_reset()
 		
-		# Subtract the interval from the accumulated time
-		accumulated_time -= call_interval
+	_is_engine_fresh = false
+	_load_from_server()
 
 
-#region Save Load
-func save(file_name: String = current_file_name, file_path: String = current_file_name) -> Error:
-	var save_file: Dictionary = {}
-	
-	save_file.universes = serialize_universes()
-	save_file.scenes = serialize_scenes()
-	
-	return Utils.save_json_to_file(file_path, file_name, save_file)
-
-
-func load(file_path) -> void:
-	## Loads a save file and deserialize the data
-	
-	var saved_file = FileAccess.open(file_path, FileAccess.READ)
-	var serialized_data: Dictionary = JSON.parse_string(saved_file.get_as_text())
-	
-	## Loops through each universe in the save file (if any), and loads them into the engine
-	for universe_uuid: String in serialized_data.get("universes", {}):
-		var serialized_universe: Dictionary = serialized_data.universes[universe_uuid]
-		
-		var new_universe: Universe = new_universe(serialized_universe.name, false, serialized_universe, universe_uuid)
-		universes[new_universe.uuid] = new_universe
-	
-	for scene_uuid: String in serialized_data.get("scenes", {}):
-		var serialized_scene: Dictionary = serialized_data.scenes[scene_uuid]
-		
-		var new_scene: Scene = new_scene(Scene.new(), true, serialized_scene, scene_uuid)
-		
-		scenes_added.emit(scenes)
-#endregion
-
-
-#region Universes
-func new_universe(name: String = "New Universe", no_signal: bool = false, serialised_data: Dictionary = {}, uuid: String = "") -> Universe:
-	## Adds a new universe
-	
-	var new_universe: Universe = Universe.new()
-	
-	new_universe.engine = self
-	
-	if serialised_data:
-		new_universe.load_from(serialised_data)
-	else:
-		new_universe.name = name
-	
-	if uuid:
-		new_universe.uuid = uuid
-	
-	universes[new_universe.uuid] = new_universe
-
-	if not no_signal:
-		universes_added.emit([new_universe])
-	
-	_connect_universe_signals(new_universe)
-	
-	return new_universe
-
-
-func _connect_universe_signals(universe: Universe):
-	## Connects all the signals of the new universe to the signals of this engine
-	
-	universe.name_changed.connect(
-		func(new_name: String):
-			universe_name_changed.emit(universe, new_name)
-	)
-	
-	universe.fixture_name_changed.connect(
-		func(fixture: Fixture, new_name: String):
-			fixture_name_changed.emit(fixture, new_name)
-	)
-	
-	universe.fixtures_added.connect(
-		func(fixtures: Array[Fixture]):
-			fixture_added.emit(fixtures)
-	)
-	
-	universe.fixtures_deleted.connect(
-		func(fixture_uuids: Array):
-			fixture_removed.emit(fixture_uuids)
+## Requests the current state from the server and loads it localy
+func _load_from_server() -> void:
+	Client.send_command("engine", "serialize", []).then(func (responce):
+		_load_from(responce)
 	)
 
 
-func remove_universe(universe: Universe, no_signal: bool = false) -> bool: 
-	## Removes a universe
+## Loads this engine from serialized data
+func _load_from(serialized_data: Dictionary) -> void:
+	_set_file_name(str(serialized_data.get("file_name", "")))
 	
-	if universe in universes.values():
+	var just_added_universes: Array[Universe] = []
+	
+	for universe_uuid: String in serialized_data.get("Universe", {}).keys():
+		var new_universe: Universe = Universe.new(universe_uuid, serialized_data.Universe[universe_uuid].name)
 		
-		universe.delete()
-		universes.erase(universe.uuid)
-		selected_universes.erase(universe)
-		
-		var uuid: String = universe.uuid
-		
-		universe.free()
+		just_added_universes.append(new_universe)
+		new_universe.load.call_deferred(serialized_data.Universe[universe_uuid])
+	
+	_add_components(just_added_universes)
+	
+	var just_added_functions: Array[Function] = []
+	# Loops through each function in the save file (if any), and adds them into the engine
+	for function_uuid: String in serialized_data.get("Function", {}):
+		if serialized_data.Function[function_uuid].get("class_name", "") in ClassList.function_class_table:
+			var new_function: Function = ClassList.function_class_table[serialized_data.Function[function_uuid]["class_name"]].new(function_uuid, serialized_data.Function[function_uuid].name)
+			
+			just_added_functions.append(new_function)
+			new_function.load.call_deferred(serialized_data.Function[function_uuid])
+	
+	_add_components(just_added_functions)
+	
+	load_finished.emit()
+
+
+## Returns a serialized copy of the engine from the server
+func serialize() -> Promise: 
+	return Client.send_command("engine", "serialize")
+
+## Saves this file to disk on the server
+func save(file_name: String = _current_file_name) -> Promise: 
+	return Client.send_command("engine", "save", [file_name])
+
+## Loads a file on the server
+func load_from_file(file_name: String) -> Promise: 
+	return Client.send_command("engine", "load_from_file", [file_name])
+
+## Resets and loads from a new file
+func reset_and_load(file_name: String) -> Promise:
+	return Client.send_command("engine", "reset_and_load", [file_name])
+
+
+## Gets all the save files from the library
+func get_all_saves_from_library() -> Promise: return Client.send_command("engine", "get_all_saves_from_library")
+
+
+## Gets the current file name
+func get_file_name() -> String: return _current_file_name
+
+## Sets the current file name
+func _set_file_name(p_file_name: String) -> void:
+	_current_file_name = p_file_name
+	file_name_changed.emit(_current_file_name)
+
+
+## Renames a save file
+func rename_file(orignal_name: String, new_name: String) -> Promise: return Client.send_command("engine", "rename_file", [orignal_name, new_name])
+
+## Deletes a save file
+func delete_file(file_name: String) -> Promise: return Client.send_command("engine", "delete_file", [file_name])
+
+
+## Resets the server engine to the default state
+func reset() -> Promise: return Client.send_command("engine", "reset")
+
+## Internal: Resets this engine to its default state
+func _reset():
+	print("Performing Engine Reset!")
+	_set_file_name("")
+	resetting.emit()  
+	
+	for object_class_name: String in EngineConfig.root_classes:
+		for component: EngineComponent in ComponentDB.get_components_by_classname(object_class_name):
+			component.local_delete()
+
+
+## Creates and adds a new component using the classname to get the type, will return null if the class is not found
+func create_component(classname: String, name: String = "", callback: Callable = Callable()) -> Promise: 
+	return Client.send_command("engine", "create_component", [classname, name])
+
+
+## Server: Adds a component to the engine
+func add_component(component: EngineComponent) -> void: Client.send_command("engine", "add_component", [component])
+
+## Internal: Adds a new component to this engine
+func _add_component(component: EngineComponent, no_signal: bool = false) -> EngineComponent:
+	
+	# Check if this component is not already apart of this engine
+	if not component in ComponentDB.components.values():
+		ComponentDB.register_component(component)
 		
 		if not no_signal:
-			universes_removed.emit([uuid])
+			components_added.emit([component])
+		
+	else:
+		print("Component: ", component.uuid, " is already in this engine")
+	
+	return component
+
+
+## Server: Adds mutiple componets to this engine at once
+func add_components(components: Array) -> void: Client.send_command("engine", "add_components", [components])
+
+## Internal: Adds mutiple components to this engine at once
+func _add_components(components: Array, no_signal: bool = false) -> Array[EngineComponent]:
+	var just_added_components: Array[EngineComponent]
+	
+	# Loop though all the components requeted, and check there type
+	for component in components:
+		if component is EngineComponent:
+			just_added_components.append(_add_component(component, true))
+	
+	components_added.emit(just_added_components)
+	
+	return just_added_components
+
+
+## Server: Removes a component from this engine
+func remove_component(component: EngineComponent) -> void: Client.send_command("engine", "remove_component", [component])
+
+## Internal: Removes a universe from this engine
+func _remove_component(component: EngineComponent, no_signal: bool = false) -> bool:
+	# Check if this universe is part of this engine
+	if component in ComponentDB.components.values():
+		ComponentDB.deregister_component(component)
+		
+		if not no_signal:
+			components_removed.emit([component])
 		
 		return true
-
+		
+	# If not return false
 	else:
+		print("Component: ", component.uuid, " is not part of this engine")
 		return false
 
 
-func remove_universes(universes_to_remove: Array, no_signal: bool = false) -> void:
-	## Removes mutiple universes at once
-	
-	var uuids: Array = []
-	
-	for universe: Universe in universes_to_remove:
-		uuids.append(universe.uuid)
-		deselect_universes([universe], no_signal)
-		remove_universe(universe, true)
-	
-	if not no_signal:
-		universes_removed.emit(uuids)
+## Server: Removes mutiple components at once
+func remove_components(components: Array) -> void: Client.send_command("engine", "remove_components", [components])
 
-
-func serialize_universes() -> Dictionary:
-	## Serializes all universes and returnes them in a dictionary 
+## Internal: Removes mutiple universes at once from this engine
+func _remove_components(components: Array, no_signal: bool = false) -> void:
+	var just_removed_components: Array = []
 	
-	var serialized_universes: Dictionary = {}
+	for component in components:
+		if component is EngineComponent:
+			if _remove_component(component, true):
+				just_removed_components.append(component)
 	
-	for universe: Universe in universes.values():
-		serialized_universes[universe.uuid] = universe.serialize()
-		
-	return serialized_universes
-
-
-func select_universes(universes_to_select: Array, no_signal: bool = false) -> void:
-	## Selects all the fixtures passed to this function
-	
-	for universe: Universe in universes_to_select:
-		if universe not in selected_universes:
-			selected_universes.append(universe)
-			universe.set_selected(true)
-	
-	if not no_signal:
-		universe_selection_changed.emit(selected_universes)
-
-
-func set_universe_selection(universes_to_select: Array) -> void:
-	## Changes the selection to be the universes passed to this function
-
-	deselect_universes(selected_universes, true)
-	select_universes(universes_to_select)
-
-
-func deselect_universes(universes_to_deselect: Array, no_signal: bool = false) -> void:
-	## Selects all the fixtures passed to this function
-	
-	for universe: Universe in universes_to_deselect.duplicate():
-		if universe in selected_universes:
-			selected_universes.erase(universe)
-			universe.set_selected(false)
-	
-	if not no_signal:
-		universe_selection_changed.emit(selected_universes)
-
-#endregion
-
-
-#region IO
-func reload_io_plugins() -> void:
-	## Loads all output plugins from the folder
-	
-	output_plugins = {}
-	
-	var output_plugin_folder : DirAccess = DirAccess.open(output_plugin_path)
-	
-	for plugin in output_plugin_folder.get_files():
-		var uninitialized_plugin = ResourceLoader.load(output_plugin_path + plugin)
-		
-		var initialized_plugin: DataIOPlugin = uninitialized_plugin.new()
-		var plugin_name: String = initialized_plugin.name
-		
-		if plugin_name in output_plugins.keys():
-			plugin_name = plugin_name +  " " + UUID_Util.v4()
-		
-		output_plugins[plugin] = {"plugin":uninitialized_plugin, "plugin_name":plugin_name}
-		initialized_plugin.free()
-#endregion
-
-
-#region Fixtures 
-
-
-func reload_fixtures() -> void:
-	## Loads fixture definition files from a folder
-	
-	fixtures_definitions = {}
-	
-	var access = DirAccess.open(fixture_path)
-	
-	for fixture_folder in access.get_directories():
-		
-		for fixture in access.open(fixture_path+"/"+fixture_folder).get_files():
-			
-			var manifest_file = FileAccess.open(fixture_path+fixture_folder+"/"+fixture, FileAccess.READ)
-			var manifest = JSON.parse_string(manifest_file.get_as_text())
-			
-			manifest.info.file_path = fixture_path+fixture_folder+"/"+fixture
-			
-			if fixtures_definitions.has(manifest.info.brand):
-				fixtures_definitions[manifest.info.brand][manifest.info.name] = manifest
-			else:
-				fixtures_definitions[manifest.info.brand] = {manifest.info.name:manifest}
-
-
-func select_fixtures(fixtures: Array, no_signal: bool = false) -> void:
-	## Selects all the fixtures passed to this function
-	
-	for fixture: Fixture in fixtures:
-		if fixture not in selected_fixtures:
-			selected_fixtures.append(fixture)
-			fixture.set_selected(true)
-	
-	if not no_signal:
-		fixture_selection_changed.emit(selected_fixtures)
-
-
-func set_fixture_selection(fixtures: Array) -> void:
-	## Changes the selection to be the fixtures passed to this function
-	
-	deselect_fixtures(selected_fixtures, true)
-	select_fixtures(fixtures)
-
-func deselect_fixtures(fixtures: Array, no_signal: bool = false) -> void:
-	## Deselects all the fixtures pass to this function
-	
-	for fixture: Fixture in fixtures.duplicate():
-		if fixture in selected_fixtures:
-			selected_fixtures.erase(fixture)
-			fixture.set_selected(false)
-	
-	if not no_signal:
-		fixture_selection_changed.emit(selected_fixtures)
-#endregion
-
-
-#region Scenes
-
-func new_scene(scene: Scene = Scene.new(), no_signal: bool = false, serialized_data: Dictionary = {}, uuid: String = "") -> Scene:
-	## Adds a scene to this engine, creats a new one if none is passed
-	
-	if uuid:
-		scene.uuid = uuid
-	
-	scene.engine = self
-	
-	if serialized_data:
-		scene.load_from(serialized_data)
-	
-	
-	scenes[scene.uuid] = scene
-	
-	if not no_signal:
-		scenes_added.emit([scene])
-	
-	return scene
-
-
-func remove_scenes(scenes_to_remove: Array, no_signal: bool = false) -> void:
-	## Removes a scene from this engine
-	
-	var uuids: Array = []
-	
-	for scene: Scene in scenes_to_remove:
-		uuids.append(scene.uuid)
-		scenes.erase(scene.uuid)
-		
-		scene.delete()
-		scene.free()
-	
-	
-	if not no_signal:
-		scenes_removed.emit(uuids)
-
-
-func serialize_scenes() -> Dictionary:
-	## Serializes all scenes and returnes them in a dictionary 
-	
-	var serialized_scenes: Dictionary = {}
-	
-	for scene: Scene in scenes.values():
-		serialized_scenes[scene.uuid] = scene.serialize()
-	
-	return serialized_scenes
-
-
-#endregion
-
-
-func animate(function: Callable, from: Variant, to: Variant, duration: int) -> void:
-	var animation = get_tree().create_tween()
-	animation.tween_method(function, from, to, duration)
+	if not no_signal and just_removed_components:
+		components_removed.emit(just_removed_components)

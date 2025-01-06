@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://dnyj8vnwwbi2v"]
+
+[ext_resource type="Script" path="res://panels/NewProgrammer/NewProgrammer.gd" id="1_1et7p"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_g6b0b"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="3_opfmq"]
+[ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_4cl7o"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s20c8"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.205117, 0.205117, 0.205117, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="NewProgrammer" type="PanelContainer" node_paths=PackedStringArray("edit_controls")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_g6b0b")
+script = ExtResource("1_1et7p")
+edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s20c8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Programmer"
+expand_to_text_length = true
+flat = true
+
+[node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+current_tab = 0
+tab_count = 1
+tab_0/title = "Light"
+
+[node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_opfmq")]
+layout_mode = 2
+
+[node name="TabContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Light" type="ScrollContainer" parent="VBoxContainer/TabContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Light"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ChannelSlider" parent="VBoxContainer/TabContainer/Light/HBoxContainer" instance=ExtResource("4_4cl7o")]
+layout_mode = 2
+size_flags_horizontal = 2
+label_text = "Dimmer"

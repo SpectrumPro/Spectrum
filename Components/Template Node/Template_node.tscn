@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bwmvjnfun7n3k"]
-
-[node name="TemplateNode" type="GraphNode"]
-offset_right = 257.0
-offset_bottom = 93.0
-title = "Template Node"

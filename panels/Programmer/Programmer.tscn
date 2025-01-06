@@ -1,0 +1,470 @@
+[gd_scene load_steps=19 format=3 uid="uid://bwxr0mrsrt0iu"]
+
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_2fi00"]
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jp1gn"]
+[ext_resource type="Script" path="res://panels/Programmer/Programmer.gd" id="1_xonfe"]
+[ext_resource type="Script" path="res://panels/Programmer/ColorPicker.gd" id="2_dumhd"]
+[ext_resource type="Script" path="res://panels/Programmer/ColorSystem.gd" id="2_xdlid"]
+[ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_rvdr4"]
+[ext_resource type="Script" path="res://panels/Programmer/Channels.gd" id="6_drfid"]
+[ext_resource type="Script" path="res://panels/Programmer/Controls.gd" id="7_itgph"]
+[ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="7_jvu0q"]
+[ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://assets/icons/Scene.svg" id="7_ofqgp"]
+[ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/CueList.svg" id="8_7bmnv"]
+[ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="8_yo7wt"]
+[ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="11_snl23"]
+[ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="14_xpe2t"]
+
+[sub_resource type="Gradient" id="Gradient_o3amq"]
+offsets = PackedFloat32Array(0, 0.171103, 0.319392, 0.492395, 0.659696, 0.838403, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0.938596, 0, 1, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_uyiex"]
+gradient = SubResource("Gradient_o3amq")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tlyyj"]
+texture = SubResource("GradientTexture2D_uyiex")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfwup"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 0.0627451, 0.0627451, 0.403922)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Programmer" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_2fi00")
+script = ExtResource("1_xonfe")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 355)
+layout_mode = 2
+theme = ExtResource("1_jp1gn")
+
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 0
+use_hidden_tabs_for_min_size = true
+
+[node name="Light" type="HBoxContainer" parent="HBoxContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Light"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="QuickButtons" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/QuickButtons"]
+layout_mode = 2
+
+[node name="FULL" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/QuickButtons/VBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 3
+text = "FULL"
+
+[node name="ZERO" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/QuickButtons/VBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 3
+text = "ZERO"
+
+[node name="RESET" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/QuickButtons/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "RESET"
+
+[node name="LevelControls" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ColorSystem" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls"]
+layout_mode = 2
+script = ExtResource("2_xdlid")
+
+[node name="Dimmer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
+layout_mode = 2
+
+[node name="DimmerSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/Dimmer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "Dimmer"
+disabled = true
+object_id = "programmer"
+method = "Dimmer"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["Dimmer"]
+reset_method = "reset_Dimmer"
+send_selection_value = "selected_fixtures"
+
+[node name="ColorSliders" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders"]
+layout_mode = 2
+
+[node name="Red" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "Red"
+show_warning_bg = false
+disabled = true
+show_gradient_bg = true
+graident_top_color = Color(1, 0, 0, 1)
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["r"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+
+[node name="Green" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "Green"
+show_warning_bg = false
+disabled = true
+show_gradient_bg = true
+graident_top_color = Color(0, 1, 0, 1)
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["g"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+
+[node name="Blue" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "Blue"
+show_warning_bg = false
+disabled = true
+show_gradient_bg = true
+graident_top_color = Color(0, 0, 1, 1)
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["b"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+
+[node name="Hue" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
+visible = false
+layout_mode = 2
+label_text = "Hue"
+max_value = 360
+disabled = true
+show_gradient_bg = true
+graident_top_color = Color(1, 1, 0, 1)
+graident_bottom_color = Color(1, 0, 0, 1)
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["h"]
+send_reset_command = false
+send_selection_value = "selected_fixtures"
+metadata/_edit_group_ = true
+
+[node name="WarningBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue" index="0"]
+visible = true
+
+[node name="GraidentContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue" index="1"]
+visible = true
+
+[node name="GraidentBG" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/GraidentContainer" index="0"]
+theme_override_styles/panel = SubResource("StyleBoxTexture_tlyyj")
+
+[node name="Label" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/LabelContainer" index="0"]
+text = "Hue"
+
+[node name="VSlider" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer" index="1"]
+max_value = 360.0
+editable = false
+
+[node name="Max" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer" index="1"]
+max_value = 360.0
+value = 360.0
+
+[node name="Min" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/VSlider/PanelContainer/VBoxContainer" index="2"]
+max_value = 360.0
+
+[node name="SpinBox" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer" index="2"]
+max_value = 360.0
+editable = false
+
+[node name="Reset" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/HBoxContainer" index="0"]
+disabled = true
+
+[node name="Random" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue/MarginContainer/VBoxContainer/HBoxContainer" index="1"]
+disabled = true
+
+[node name="Saturation" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
+visible = false
+layout_mode = 2
+label_text = "Sat"
+show_warning_bg = false
+disabled = true
+show_gradient_bg = true
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["s"]
+send_selection_value = "selected_fixtures"
+
+[node name="Value" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer" instance=ExtResource("4_rvdr4")]
+visible = false
+layout_mode = 2
+label_text = "Value"
+show_warning_bg = false
+disabled = true
+show_gradient_bg = true
+object_id = "programmer"
+send_randomise_command = false
+randomise_method = "set_color_random"
+randomise_args = ["v"]
+send_selection_value = "selected_fixtures"
+
+[node name="ColorPicker" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker"]
+layout_mode = 2
+
+[node name="WarningBG" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vfwup")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 43.33)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ColorMode" type="TabBar" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/PanelContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+tab_alignment = 1
+tab_count = 2
+tab_0/title = "RGB"
+tab_1/title = "HSV"
+
+[node name="Control" type="Control" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(253.21, 213.805)
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 6
+
+[node name="ColorPicker" type="ColorPicker" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/Control"]
+layout_mode = 1
+offset_left = 3.21002
+offset_right = 314.21
+offset_bottom = 272.0
+scale = Vector2(0.8, 0.8)
+size_flags_horizontal = 10
+size_flags_vertical = 0
+theme_override_constants/h_width = 43
+color = Color(0, 0, 0, 1)
+picker_shape = 2
+can_add_swatches = false
+sampler_visible = false
+color_modes_visible = false
+sliders_visible = false
+hex_visible = false
+presets_visible = false
+script = ExtResource("2_dumhd")
+
+[node name="ColorReset" type="Button" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Reset"
+
+[node name="ExtraIntensityChannels" type="PanelContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels"]
+layout_mode = 2
+
+[node name="White" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "White"
+disabled = true
+object_id = "programmer"
+method = "ColorIntensityWhite"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["ColorIntensityWhite"]
+reset_method = "reset_ColorIntensityWhite"
+send_selection_value = "selected_fixtures"
+
+[node name="Amber" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "Amber"
+disabled = true
+object_id = "programmer"
+method = "ColorIntensityAmber"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["ColorIntensityAmber"]
+reset_method = "reset_ColorIntensityAmber"
+send_selection_value = "selected_fixtures"
+
+[node name="UV" parent="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ExtraIntensityChannels/HBoxContainer" instance=ExtResource("4_rvdr4")]
+layout_mode = 2
+label_text = "UV"
+disabled = true
+object_id = "programmer"
+method = "ColorIntensityUV"
+send_randomise_command = false
+randomise_method = "set_random"
+randomise_args = ["ColorIntensityUV"]
+reset_method = "reset_ColorIntensityUV"
+send_selection_value = "selected_fixtures"
+
+[node name="Channels" type="VBoxContainer" parent="HBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+script = ExtResource("6_drfid")
+metadata/_tab_index = 1
+
+[node name="UniverseContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Channels"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Channels/UniverseContainer"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Enable" type="Button" parent="HBoxContainer/TabContainer/Channels/UniverseContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+text = "Enable"
+
+[node name="PanelContainer2" type="PanelContainer" parent="HBoxContainer/TabContainer/Channels"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/TabContainer/Channels/PanelContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Universe:"
+
+[node name="OptionButton" type="OptionButton" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 2
+allow_reselect = true
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer"]
+layout_mode = 2
+
+[node name="Left" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("7_jvu0q")
+
+[node name="Right" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("8_yo7wt")
+
+[node name="ClearAll" type="Button" parent="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Clear All"
+
+[node name="Controls" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+script = ExtResource("7_itgph")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Controls"]
+layout_mode = 2
+
+[node name="SaveToScene" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Save to Scene"
+icon = ExtResource("7_ofqgp")
+
+[node name="SaveToCueList" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Save to CueList"
+icon = ExtResource("8_7bmnv")
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/Controls/VBoxContainer"]
+layout_mode = 2
+
+[node name="Import" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Import values from selected fixtures"
+icon = ExtResource("14_xpe2t")
+
+[node name="Locate" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Locate the selected fixtures"
+icon = ExtResource("11_snl23")
+
+[node name="All" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 10
+tooltip_text = "All Mode: Effect all the fixtures the same"
+toggle_mode = true
+button_pressed = true
+text = "A"
+
+[node name="Individual" type="Button" parent="HBoxContainer/Controls/VBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Individual Mode: Some controls effect fixtures individual"
+toggle_mode = true
+text = "I"
+
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Red" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_red_sider_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Green" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_green_slider_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Blue" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_blue_slider_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_hue_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Saturation" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_saturation_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Value" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_value_value_changed"]
+[connection signal="tab_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/PanelContainer/ColorMode" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_mode_tab_changed"]
+[connection signal="resized" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/Control" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/Control/ColorPicker" method="_on_control_resized"]
+[connection signal="color_changed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/Control/ColorPicker" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_picker_color_changed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/ColorPicker/PanelContainer/VBoxContainer/ColorReset" to="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem" method="_on_color_reset_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Channels/UniverseContainer/ScrollContainer/Enable" to="HBoxContainer/TabContainer/Channels" method="_on_enable_pressed"]
+[connection signal="item_selected" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/OptionButton" to="HBoxContainer/TabContainer/Channels" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer/Left" to="HBoxContainer/TabContainer/Channels" method="_on_left_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/PanelContainer/HBoxContainer/Right" to="HBoxContainer/TabContainer/Channels" method="_on_right_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Channels/PanelContainer2/HBoxContainer2/ClearAll" to="HBoxContainer/TabContainer/Channels" method="_on_clear_all_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/SaveToScene" to="HBoxContainer/Controls" method="_on_save_to_scene_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/SaveToCueList" to="HBoxContainer/Controls" method="_on_save_to_cue_list_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/Import" to="HBoxContainer/Controls" method="_on_import_pressed"]
+[connection signal="pressed" from="HBoxContainer/Controls/VBoxContainer/Locate" to="HBoxContainer/Controls" method="_on_locate_pressed"]
+[connection signal="toggled" from="HBoxContainer/Controls/VBoxContainer/Locate" to="HBoxContainer/Controls" method="_on_locate_toggled"]
+
+[editable path="HBoxContainer/TabContainer/Light/ScrollContainer/HBoxContainer/LevelControls/ColorSystem/ColorSliders/HBoxContainer/Hue"]
