@@ -15,7 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="8_mu2lg"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="10_adrlv"]
 
-[node name="SaveLoad" type="PanelContainer" node_paths=PackedStringArray("_tree", "_loading_label", "_file_action_buttons", "_current_file_name", "edit_controls", "settings_node")]
+[node name="SaveLoad" type="PanelContainer" node_paths=PackedStringArray("_tree", "_loading_label", "_file_action_buttons", "_current_file_name", "_save_button", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,8 +28,8 @@ _tree = NodePath("VBoxContainer/Tree")
 _loading_label = NodePath("VBoxContainer/Tree/LoadingLabel")
 _file_action_buttons = [NodePath("VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Open"), NodePath("VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Rename"), NodePath("VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Delete")]
 _current_file_name = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/LineEdit")
+_save_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/Save")
 edit_controls = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/EditControls")
-settings_node = NodePath("Settings")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -70,6 +70,7 @@ layout_mode = 2
 [node name="Save" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+disabled = true
 text = "Save"
 icon = ExtResource("3_wj17c")
 
@@ -119,6 +120,8 @@ icon = ExtResource("6_ba13f")
 
 [node name="EditControls" parent="VBoxContainer/PanelContainer2/HBoxContainer" instance=ExtResource("10_adrlv")]
 layout_mode = 2
+show_edit = false
+show_settings = false
 
 [node name="Tree" type="Tree" parent="VBoxContainer"]
 layout_mode = 2

@@ -31,8 +31,6 @@ signal close_request()
 ## Display mode for this panel
 enum DisplayMode {Panel, Popup}
 
-## The current settigns node, if any
-var _settings_node: Control = null
 
 ## Edit mode state
 var edit_mode: bool = false : set = set_edit_mode
@@ -40,6 +38,14 @@ var edit_mode: bool = false : set = set_edit_mode
 ## Edit mode disabled state
 var _edit_mode_disabled: bool = false
 
+## Display mode for this panel
+var _display_mode: DisplayMode = DisplayMode.Panel
+
+## The current settigns node, if any
+var _settings_node: Control = null
+
+## Mouse warp distance
+var _mouse_warp: Vector2
 
 
 func _init() -> void:
@@ -61,6 +67,10 @@ func set_edit_controls(node: UIPanelEditControls) -> void:
 		edit_controls.edit_button.toggled.connect(_on_edit_button_toggled)
 		edit_controls.settings_button.toggled.connect(_on_settings_button_toggled)
 		edit_controls.close_button.pressed.connect(_on_close_button_pressed)
+		
+		edit_controls.settings_button.visible = edit_controls.show_settings
+		edit_controls.edit_button.visible = edit_controls.show_edit
+		edit_controls.close_button.visible = edit_controls.show_close
 
 
 ## Sets the settings node
@@ -82,10 +92,10 @@ func set_settings_node(node: Control) -> void:
 
 ## Sets the display mode
 func set_display_mode(mode: DisplayMode) -> void:
-	if not is_instance_valid(edit_controls):
-		return 
+	_display_mode = mode
 	
-	edit_controls.close_button.visible = (mode == DisplayMode.Popup)
+	if is_instance_valid(edit_controls):
+		edit_controls.close_button.visible = (mode == DisplayMode.Popup)
 
 
 ## Sets the edit mode state
@@ -147,12 +157,25 @@ func enable_button_array(buttons: Array[Button]) -> void:
 func _on_move_resize_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		event = event as InputEventMouseMotion
+		var relative: Vector2 = event.screen_relative - _mouse_warp
+		_mouse_warp = Vector2.ZERO
 		match event.button_mask:
 			MOUSE_BUTTON_MASK_LEFT:
-				request_move.emit(event.screen_relative)
+				request_move.emit(relative)
+				if _display_mode == DisplayMode.Popup:
+					position.x = clamp(position.x + relative.x, 0, get_parent_control().size.x - size.x)
+					position.y = clamp(position.y + relative.y, 0, get_parent_control().size.y - size.y)
 			
 			MOUSE_BUTTON_MASK_RIGHT:
-				request_resize.emit(event.screen_relative)
+				request_resize.emit(relative)
+				if _display_mode == DisplayMode.Popup:
+					size.x = clamp(size.x + relative.x, 0, get_parent_control().size.x - position.x)
+					size.y = clamp(size.y + relative.y, 0, get_parent_control().size.y - position.y)
+					
+					var gp: Vector2 = get_global_mouse_position()
+					if gp.y <= 0:
+						_mouse_warp = Vector2(0, edit_controls.move_resize_handle.global_position.y)
+						Input.warp_mouse(Vector2(gp.x, _mouse_warp.y))
 
 
 ## Called when the edit mode button is toggled

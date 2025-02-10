@@ -27,6 +27,12 @@ signal selection_canceled()
 ## The select button
 @export var _select_button: Button = null
 
+## Object picker main panel
+@export var _object_picker_main: VBoxContainer
+
+## The built-in create component panel
+@export var _create_component: CreateComponent
+
 
 ## Stores all the items that are in the tree, stored as {"class_name": {"uuid", TreeItem}}
 var tree_items: Dictionary = {}
@@ -77,6 +83,8 @@ func _ready() -> void:
 	
 	for component: EngineComponent in ComponentDB.components.values():
 		_add_component(component)
+	
+	_create_component.set_mode(CreateComponent.Mode.Component)
 
 
 ## Resets the tree and root node
@@ -131,6 +139,9 @@ func remove_from_filter(class_name_string: String) -> void:
 
 ## Adds a component to the tree
 func _add_component(component: EngineComponent) -> void:
+	if ClassList.is_class_hidden(component.self_class_name):
+		return
+	
 	var parent_node: TreeItem = null
 	
 	if component.self_class_name in tree_items:
@@ -144,6 +155,7 @@ func _add_component(component: EngineComponent) -> void:
 			
 		parent_node.set_text(0, parent_name)
 		parent_node.set_icon(0, Interface.get_class_icon(component.self_class_name))
+		parent_node.set_custom_color(0, Color.WEB_GRAY)
 		
 		tree_items[component.self_class_name] = {"parent": parent_node}
 	
@@ -234,6 +246,12 @@ func _update_filter() -> void:
 		else:
 			_filter_buttons[class_name_string] = _create_filter_class_button(class_name_string)
 			_filter_container.add_child(_filter_buttons[class_name_string])
+	
+	for object: EngineComponent in selected_items.duplicate():
+		if not object.self_class_name in filter_allow_list:
+			selected_items.erase(object)
+	
+	_update_selection_label()
 
  
 func _create_filter_class_button(class_name_string: String) -> Button:
@@ -288,9 +306,40 @@ func _on_tree_item_selected() -> void:
 	_update_selection_label()
 
 
+## Called when an item is dubble clicked
+func _on_tree_item_activated() -> void:
+	var item: TreeItem = _tree.get_selected()
+	if item in _component_refs:
+		selected_items = [_component_refs[item]]
+		_on_select_pressed()
+
+
+## Called when the plus button is presses
+func _on_create_new_pressed() -> void:
+	_object_picker_main.hide()
+	_create_component.show()
+
+
+## Called when the cancel button is pressed in the create component panel
+func _on_create_component_canceled() -> void:
+	_object_picker_main.show()
+	_create_component.hide()
+
+
+## Called when a component has been added to the engine from the create component panel
+func _on_create_component_component_created(component: EngineComponent) -> void:
+	_object_picker_main.show()
+	_create_component.hide()
+	
+	_tree.deselect_all()
+	_tree.set_selected(_component_refs.keys()[_component_refs.values().find(component)], 0)
+
+
+## Called when the select button is pressed
 func _on_select_pressed() -> void:
 	selection_confirmed.emit(selected_items)
 
 
+## Called when the cancel button is pressed
 func _on_cancel_pressed() -> void:
 	selection_canceled.emit()

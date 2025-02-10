@@ -6,7 +6,7 @@ class_name Details extends RefCounted
 
 static var version: String = "1.0.0 Beta"
 
-static var schema_version: int = 3
+static var schema_version: int = 4
 
 static var copyright: String = "(c) 2024 Liam Sherwin. Licensed under GPL v3."
 

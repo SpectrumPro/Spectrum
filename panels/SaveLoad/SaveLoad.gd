@@ -17,6 +17,9 @@ class_name UISaveFiles extends UIPanel
 ## Current file name label
 @export var _current_file_name: LineEdit
 
+## The save button
+@export var _save_button: Button
+
 
 ## All the currtent listed files
 var _listed_files: Array[String]
@@ -64,6 +67,7 @@ func _reload_saves() -> Promise:
 ## Sets the file name
 func _set_file_name(file_name: String) -> void:
 	_current_file_name.text = file_name
+	_save_button.disabled = file_name == ""
 
 
 ## Sorts the files

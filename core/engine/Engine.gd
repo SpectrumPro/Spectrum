@@ -112,8 +112,9 @@ func _load_from(serialized_data: Dictionary) -> void:
 	var just_added_functions: Array[Function] = []
 	# Loops through each function in the save file (if any), and adds them into the engine
 	for function_uuid: String in serialized_data.get("Function", {}):
-		if serialized_data.Function[function_uuid].get("class_name", "") in ClassList.function_class_table:
-			var new_function: Function = ClassList.function_class_table[serialized_data.Function[function_uuid]["class_name"]].new(function_uuid, serialized_data.Function[function_uuid].name)
+		var classname: String = serialized_data.Function[function_uuid].get("class_name", "")
+		if ClassList.has_class(classname, "Function"):
+			var new_function: Function = ClassList.get_class_script(classname).new(function_uuid, serialized_data.Function[function_uuid].name)
 			
 			just_added_functions.append(new_function)
 			new_function.load.call_deferred(serialized_data.Function[function_uuid])
@@ -175,7 +176,7 @@ func _reset():
 
 
 ## Creates and adds a new component using the classname to get the type, will return null if the class is not found
-func create_component(classname: String, name: String = "", callback: Callable = Callable()) -> Promise: 
+func create_component(classname: String, name: String = "") -> Promise: 
 	return Client.send_command("engine", "create_component", [classname, name])
 
 

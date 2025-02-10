@@ -8,16 +8,10 @@ class_name UIFunctions extends UIPanel
 ## The ItemListView used to store the functions
 @onready var item_list_view: ItemListView = $ItemListView
 
-## The settings container
-@onready var _popup_container: SettingsContainer = $SettingsContainer
-
 
 func _ready() -> void:
 	## Connect to function signals
 	ComponentDB.request_class_callback("Function", _update_list)
-	
-	## Connect to selection signals
-	Interface.add_custom_popup(_popup_container)
 	
 	_update_list(ComponentDB.get_components_by_classname("Function"))
 

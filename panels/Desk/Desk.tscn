@@ -109,6 +109,7 @@ suffix = "px"
 [node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("11_wp0lx")]
 layout_mode = 2
 size_flags_horizontal = 10
+show_settings = false
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

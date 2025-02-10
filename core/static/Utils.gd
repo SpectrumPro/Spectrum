@@ -70,8 +70,8 @@ static func uuids_to_objects(data: Variant, networked_objects: Dictionary):
 					return networked_objects[data._object_ref].get("object", null)
 					
 				elif "_class_name" in data.keys():
-					if data["_class_name"] in ClassList.global_class_table:
-						var initialized_object = ClassList.global_class_table[data["_class_name"]].new(data._object_ref)
+					if ClassList.has_class(data["_class_name"]):
+						var initialized_object = ClassList.get_class_script(data["_class_name"]).new(data._object_ref)
 						
 						if initialized_object.has_method("load") and "_serialized_object" in data.keys():
 							initialized_object.load(data._serialized_object)

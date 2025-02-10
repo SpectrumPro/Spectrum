@@ -33,7 +33,7 @@ var _quick_access_config: Array = [
 	{
 		"panel": Interface.panels.Fixtures,
 		"icon": load("res://assets/icons/Fixture.svg"),
-		"size": Vector2.ZERO
+		"size": Vector2(800, 500)
 	},
 	{
 		"panel": Interface.panels.Functions,
@@ -76,21 +76,35 @@ func _reload_quick_access() -> void:
 		var new_button: Button = Button.new()
 		var new_panel: UIPanel = config.panel.instantiate()
 		
-		new_panel.custom_minimum_size = config.size
-		new_panel.set_anchors_preset(Control.PRESET_CENTER)
 		new_panel.hide()
 		
+		get_tree().process_frame.connect(func ():
+			new_panel.set_anchors_preset(Control.PRESET_CENTER)
+			new_panel.size = config.size
+			new_panel.position = (size / 2) - (config.size / 2)
+		, CONNECT_ONE_SHOT)
+		
 		new_button.icon = config.icon
-		new_button.pressed.connect(Interface.show_custom_popup.bind(new_panel))
+		new_button.toggle_mode = true
+		new_button.toggled.connect(func (toggled_on: bool):
+			if toggled_on:
+				Interface.show_custom_popup(new_panel)
+			else:
+				Interface.hide_custom_popup(new_panel)
+		)
+		new_panel.close_request.connect(new_button.set_pressed_no_signal.bind(false))
 		
 		_quick_access_container.add_child(new_button)
 		Interface.add_custom_popup(new_panel)
+		
+	
 
 
 ## Saves all the tabs
 func _save() -> Dictionary:
 	var saved_data: Dictionary = {
-		"tabs": []
+		"tabs": [],
+		"current": _tab_container.get_current_tab()
 	}
 	
 	for panel: UIPanel in _tab_container.get_children():
@@ -113,6 +127,8 @@ func _load(saved_data: Dictionary) -> void:
 			
 			_tab_container.add_tab(str(saved_panel.get("name", "")), new_panel)
 			new_panel.load(saved_panel.get("settings", {}))
+	
+	_tab_container.change_tab(saved_data.get("current", 0))
 
 
 ## Called when the new tab button is pressed

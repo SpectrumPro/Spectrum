@@ -107,19 +107,23 @@ func send(data: Dictionary) -> void:
 
 ## Sends a command to the server
 func send_command(object_id: String, method: String, args: Array = []) -> Promise:
-	var data: Dictionary = {
-		"for": object_id,
-		"call": method,
-		"args": args
-	}
-
 	var promise: Promise = Promise.new()
-	var callback_id = UUID_Util.v4()
+	
+	if MainSocketClient.last_state == WebSocketPeer.STATE_OPEN:
+		var data: Dictionary = {
+			"for": object_id,
+			"call": method,
+			"args": args
+		}
 
-	_callbacks[callback_id] = promise
-	data.callback_id = callback_id
+		var callback_id = UUID_Util.v4()
+		_callbacks[callback_id] = promise
+		data.callback_id = callback_id
 
-	Client.send(data)
+		Client.send(data)
+	else:
+		promise.reject.call_deferred()
+	
 	return promise
 
 
@@ -193,7 +197,7 @@ func _on_message_receved(message: Variant) -> void:
 			var method: Callable = network_config.callbacks[message.signal]
 			method.callv(command.get("args", []))
 		else:
-			print("You broke it!")
+			print_verbose("Unknown Object: ", message.for, " Signal: ", message.signal)
 	
 	
 	# Check if it has "callback_id"
@@ -220,6 +224,10 @@ func _on_udp_message_receved(message: Variant) -> void:
 	for object_array: Variant in message.keys():
 		if object_array is Array and len(object_array) == 2:
 			var networked_object: Dictionary = _networked_objects.get(object_array[0], {})
+			
+			if not networked_object:
+				return
+				
 			var network_config: Dictionary = networked_object.object.get("network_config")
 			
 			# Check if the function still exists, in case it is no longer valid

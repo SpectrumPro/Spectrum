@@ -5,6 +5,16 @@ class_name UIDebug extends UIPanel
 ## UI Panel use for debugging
 
 
+## Message for object input
+@export var message_for: LineEdit
+
+## Message object method
+@export var message_method: LineEdit
+
+## Message method args
+@export var message_args: LineEdit
+
+
 ## Sets the text in the output
 func set_output(output: Variant) -> void:
 	var result: String = ""
@@ -17,13 +27,13 @@ func set_output(output: Variant) -> void:
 	$VBoxContainer/PanelContainer/HBoxContainer/Output.text = result
 
 
-## Will reset the engine
+## Resets the engine
 func _on_reset_pressed() -> void: Client.send_command("debug", "reset")
 
-## Will quit the engine
+## Quits the engine
 func _on_stop_pressed() -> void: Client.send_command("debug", "quit")
 
-## Will crash the server
+## Crash the server
 func _on_crash_pressed() -> void: Client.send_command("debug", "crash")
 
 
@@ -55,10 +65,33 @@ func _on_list_functions_pressed() -> void:
 
 
 func _on_send_message_to_server_pressed() -> void:
-	Client.send_command(
-		$VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer/For.text,
-		$VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer/Method.text,
-		str_to_var($VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer/Args.text)
-	).then(func (result: Variant = null):
-		set_output(result)
-	)
+	var args: Variant = str_to_var(message_args.text)
+	
+	if args is Array:
+		Client.send_command(
+			message_for.text,
+			message_method.text,
+			args
+		).then(func (result: Variant = null):
+			set_output(result)
+		)
+
+
+## Saves this panel into a dictonary
+func _save() -> Dictionary:
+	return {
+		"message": {
+			"for": message_for.text,
+			"method": message_method.text,
+			"args": message_args.text
+		}
+	}
+
+
+## Loads this panel from a dictonary
+func _load(saved_data: Dictionary) -> void:
+	var message: Dictionary = saved_data.get_or_add("message", {})
+	
+	message_for.text = message.get("for", "")
+	message_method.text = message.get("method", "")
+	message_args.text = message.get("args", "")

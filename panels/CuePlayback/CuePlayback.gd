@@ -729,7 +729,7 @@ func _on_save_mode_changed(button: Button) -> void:
 ## Called when the New / Update button is pressed
 func _on_new_update_button_pressed() -> void:
 	if not current_cue_list:
-		Core.create_component("CueList", "", func (new_cue_list: Function):
+		Core.create_component("CueList").then(func (new_cue_list: Function):
 			if new_cue_list is CueList:
 				set_cue_list(new_cue_list)
 		)

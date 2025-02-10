@@ -9,9 +9,8 @@ class_name CoreFixtureLibrary extends Node
 signal manifests_loaded()
 
 
-## All the current fixture manifests
-var fixture_manifests: Dictionary = {}
-
+## All the current fixture manifests, sorted by manufacturer and fixture
+var _sorted_fixture_manifests: Dictionary = {}
 
 ## Loaded state
 var _is_loaded: bool = false
@@ -20,8 +19,8 @@ var _is_loaded: bool = false
 ## Load the fixture definitions from the folders, buit in manifests will override user manifests
 func _ready() -> void:
 	Client.connected_to_server.connect(func ():
-		Client.send_command("FixtureLibrary", "get_loaded_fixture_manifests", []).then(func (p_fixture_manifests):
-			fixture_manifests = p_fixture_manifests
+		Client.send_command("FixtureLibrary", "get_sorted_fixture_manifests", []).then(func (p_sorted_fixture_manifests):
+			_sorted_fixture_manifests = p_sorted_fixture_manifests
 			manifests_loaded.emit()
 			_is_loaded = true
 		)
@@ -29,9 +28,15 @@ func _ready() -> void:
 
 
 ## Returnes all currently loaded fixture manifests
-func get_loaded_fixture_manifests() -> Dictionary:
-	return fixture_manifests.duplicate(true)
+func get_sorted_fixture_manifests() -> Dictionary:
+	return _sorted_fixture_manifests.duplicate(true)
+
+
+## Creates a new fixture from a manifest
+func create_fixture(manifest_uuid: String, universe: Universe, config: Dictionary) -> void:
+	Client.send_command("FixtureLibrary", "create_fixture", [manifest_uuid, universe, config])
 
 
 ## Check loaded state
-func is_loaded() -> bool: return _is_loaded
+func is_loaded() -> bool: 
+	return _is_loaded

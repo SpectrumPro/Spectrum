@@ -10,6 +10,7 @@ var components: Dictionary = {
 	"ChannelSlider": load("res://components/ChannelSlider/ChannelSlider.tscn"),
 	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
 	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
+	"CreateComponent": load("res://components/CreateComponent/CreateComponent.tscn"),
 	"NameDialogBox": load("res://components/NameDialogBox/NameDialogBox.tscn"),
 	"DialogBoxContainer": load("res://components/DialogBoxContainer/DialogBoxContainer.tscn"),
 	"CueItem": load("res://components/CueItem/CueItem.tscn"),
@@ -47,6 +48,7 @@ var panels: Dictionary = {
 	"Fixtures": load("res://panels/Fixtures/Fixtures.tscn"),
 	"Functions": load("res://panels/Functions/Functions.tscn"),
 	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
+	"Image": load("res://panels/Image/Image.tscn"),
 	"Settings": load("res://panels/Settings/Settings.tscn"),
 	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
@@ -65,7 +67,7 @@ var sorted_panels: Dictionary = {
 	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable"],
 	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "NewProgrammer"],
 	"Visualization": ["VirtualFixtures"],
-	"Widgets": ["Clock", "ColorBlock"],
+	"Widgets": ["Clock", "ColorBlock", "Image"],
 }
 
 
@@ -103,12 +105,17 @@ var component_settings_panels: Dictionary = {
 var icon_class_list: Dictionary = {
 	"EngineComponent": load("res://assets/icons/Component.svg"),
 	"Universe": load("res://assets/icons/Universe.svg"),
+	"DMXFixture": load("res://assets/icons/DMXFixture.svg"),
 	"Fixture": load("res://assets/icons/Fixture.svg"),
 	"FixtureGroup": load("res://assets/icons/FixtureGroup.svg"),
 	"Programmer": load("res://assets/icons/Programmer.svg"),
 	"Cue": load("res://assets/icons/Cue.svg"),
 	"Scene": load("res://assets/icons/Scene.svg"),
 	"CueList": load("res://assets/icons/CueList.svg"),
+	"DataPalette": load("res://assets/icons/Palette.svg"),
+	"DMXOutput": load("res://assets/icons/DMXOutput.svg"),
+	"ArtNetOutput": load("res://assets/icons/ArtNet.svg"),
+	"Function": load("res://assets/icons/Function.svg"),
 }
 
 
@@ -131,6 +138,12 @@ var _panel_picker: PanelPicker
 ## The panel pickers promise callback
 var _panel_picker_promise: Promise = Promise.new()
 
+## The CreateComponent popup
+var _create_component_popup: CreateComponent
+
+## The CreateComponent popup promise callback
+var _create_component_promise: Promise = Promise.new()
+
 ## The container that stores all dialog boxes
 var _dialog_box_container: DialogBoxContainer
 
@@ -152,9 +165,7 @@ func _ready() -> void:
 	
 	_try_auto_load.call_deferred()
 	_set_up_custom_popups()
-	_set_up_object_picker()
-	_set_up_panel_picker()
-	_set_up_dialog_box_container()
+	_set_up_custom_pickers()
 
 
 ## Called for all notifications
@@ -165,16 +176,21 @@ func _notification(what: int) -> void:
 		)
 
 
+## Sets-up all the custom picker components
+func _set_up_custom_pickers():
+	_set_up_object_picker()
+	_set_up_panel_picker()
+	_set_up_create_component()
+	_set_up_dialog_box_container()
+
+
 ## Called when the engine is resetting, Will reload the whole ui layout
 func _on_engine_resetting() -> void:
 	for popup: Control in _custom_popup_container.get_children():
 		_custom_popup_container.remove_child(popup)
 		popup.queue_free()
 	
-	_set_up_object_picker()
-	_set_up_panel_picker()
-	_set_up_dialog_box_container()
-	
+	_set_up_custom_pickers()
 	get_tree().change_scene_to_file("res://Main.tscn")
 	
 	# For some reason we need to wait 2 frames for SceneTree.change_scene_to_file to finish and load the new nodes
@@ -200,7 +216,6 @@ func _set_up_object_picker() -> void:
 	
 	_object_picker.set_anchors_preset(Control.PRESET_CENTER)
 	_object_picker.custom_minimum_size = Vector2(820, 430)
-	_object_picker.hide()
 	
 	_object_picker.selection_canceled.connect(func () -> void:
 		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
@@ -225,6 +240,26 @@ func _set_up_panel_picker() -> void:
 	_panel_picker.cancel_pressed.connect(hide_custom_popup.bind(_panel_picker))
 	
 	add_custom_popup(_panel_picker)
+
+
+## Sets up the component creator
+func _set_up_create_component() -> void:
+	_create_component_popup = components.CreateComponent.instantiate()
+	
+	_create_component_popup.set_anchors_preset(Control.PRESET_CENTER)
+	_create_component_popup.custom_minimum_size = Vector2(820, 630)
+	
+	_create_component_popup.component_created.connect(func (component: EngineComponent):
+		_create_component_promise.resolve([component])
+		hide_custom_popup(_create_component_popup)
+	)
+	_create_component_popup.class_confirmed.connect(func (classname: String):
+		_create_component_promise.resolve([classname])
+		hide_custom_popup(_create_component_popup)
+	)
+	_create_component_popup.canceled.connect(hide_custom_popup.bind(_create_component_popup))
+	
+	add_custom_popup(_create_component_popup)
 
 
 ## Sets up the dialog box container
@@ -259,6 +294,18 @@ func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable
 	_object_picker.selection_confirmed.connect(_object_picker_selected_signal_connection, CONNECT_ONE_SHOT)
 	
 	show_custom_popup(_object_picker)
+
+
+## Shows the create component popup
+func show_create_component(mode: CreateComponent.Mode, class_filter: String) -> Promise:
+	_create_component_promise.clear()
+	
+	_create_component_popup.deselect_all()
+	_create_component_popup.set_mode(mode)
+	_create_component_popup.set_class_filter(class_filter)
+	
+	show_custom_popup(_create_component_popup)
+	return _create_component_promise
 
 
 ## Shows the panel picker
@@ -299,7 +346,7 @@ func add_custom_popup(popup: Control) -> void:
 			popup.set_display_mode(UIPanel.DisplayMode.Popup)
 		
 		popup.hide()
-		_custom_popup_container.add_child(popup)
+		_custom_popup_container.add_child.call_deferred(popup)
 
 
 ## Removes a custom popup
@@ -321,9 +368,14 @@ func hide_custom_popup(popup: Control) -> void:
 
 
 ## Gets a class icon
-func get_class_icon(class_name_string: String) -> Texture2D:
-	return icon_class_list.get(class_name_string, load("res://assets/icons/Component.svg"))
-
+func get_class_icon(classname: String) -> Texture2D:
+	var icon: Texture2D = icon_class_list.get(classname, null)
+	
+	if not icon and ClassList.is_class_custom(classname):
+		icon = icon_class_list.get(ClassList.get_custon_classes()[classname][-2])
+	
+	return icon
+ 
 
 ## Saves the current ui layout to a file
 func save_to_file():

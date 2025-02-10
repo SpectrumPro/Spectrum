@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpj5ee27m3m18"
+uid="uid://suxc1wls2vnt"
 path="res://.godot/imported/Universe.svg-824dd946e9e991e20868a34f8bddda8b.ctex"
 metadata={
 "vram_texture": false
@@ -32,6 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=0.5
+svg/scale=1.0
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

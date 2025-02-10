@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://dnyj8vnwwbi2v"]
+[gd_scene load_steps=7 format=3 uid="uid://dnyj8vnwwbi2v"]
 
 [ext_resource type="Script" path="res://panels/NewProgrammer/NewProgrammer.gd" id="1_1et7p"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_g6b0b"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="3_opfmq"]
-[ext_resource type="PackedScene" uid="uid://cbtm8eq5rbugv" path="res://components/ChannelSlider/ChannelSlider.tscn" id="4_4cl7o"]
+[ext_resource type="Texture2D" uid="uid://dt0khkr0ltw70" path="res://assets/icons/Programmer.svg" id="3_pkyyd"]
+[ext_resource type="Script" path="res://scripts/ui/Tabs.gd" id="4_mnqvg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s20c8"]
 content_margin_left = 5.0
@@ -38,35 +39,22 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_s20c8")
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="LineEdit" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "Programmer"
-expand_to_text_length = true
+icon = ExtResource("3_pkyyd")
 flat = true
 
 [node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 2
-current_tab = 0
-tab_count = 1
-tab_0/title = "Light"
 
 [node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("3_opfmq")]
 layout_mode = 2
+size_flags_horizontal = 10
+show_edit = false
 
-[node name="TabContainer" type="PanelContainer" parent="VBoxContainer"]
+[node name="CustomTabContainer" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_tab_bar")]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="Light" type="ScrollContainer" parent="VBoxContainer/TabContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Light"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="ChannelSlider" parent="VBoxContainer/TabContainer/Light/HBoxContainer" instance=ExtResource("4_4cl7o")]
-layout_mode = 2
-size_flags_horizontal = 2
-label_text = "Dimmer"
+script = ExtResource("4_mnqvg")
+_tab_bar = NodePath("../PanelContainer/HBoxContainer/TabBar")

@@ -28,29 +28,30 @@ const self_selected_color: Color = Color.WHITE
 
 ## Sets the BG color of this virtual fixture
 func render_color(arg1=null):
-	if is_instance_valid(fixture):
-		var current_values: Dictionary = fixture.get_current_values()
-		var color: Color = current_values.get("set_color", Color.BLACK)
-		
-		var ColorIntensityWhite = current_values.get("ColorIntensityWhite")
-		if ColorIntensityWhite != null: color = _blend_color(color, Color.WHITE, ColorIntensityWhite)
-		
-		var ColorIntensityAmber = current_values.get("ColorIntensityAmber")
-		if ColorIntensityAmber != null: color = _blend_color(color, Color.ORANGE_RED, ColorIntensityAmber)
-		
-		var ColorIntensityUV = current_values.get("ColorIntensityUV")
-		if ColorIntensityUV != null: color = _blend_color(color, Color.BLUE_VIOLET, ColorIntensityUV)
-		
-		
-		if "Dimmer" in fixture.get_channels():
-			var dimmer_value: int = current_values.get("Dimmer", 0)
-			if len(fixture.get_channels()) == 1:
-				color = _blend_color(color, Color.from_string("F6E7D2", Color.ORANGE), dimmer_value)
-			else:
-				color = color.darkened(remap(Fixture.MAX_DMX_VALUE - dimmer_value, 0, Fixture.MAX_DMX_VALUE, 0.0, 1.0))
-		
-		
-		set_color(color)
+	pass
+	#if is_instance_valid(fixture):
+		#var current_values: Dictionary = fixture.get_current_values()
+		#var color: Color = current_values.get("set_color", Color.BLACK)
+		#
+		#var ColorIntensityWhite = current_values.get("ColorIntensityWhite")
+		#if ColorIntensityWhite != null: color = _blend_color(color, Color.WHITE, ColorIntensityWhite)
+		#
+		#var ColorIntensityAmber = current_values.get("ColorIntensityAmber")
+		#if ColorIntensityAmber != null: color = _blend_color(color, Color.ORANGE_RED, ColorIntensityAmber)
+		#
+		#var ColorIntensityUV = current_values.get("ColorIntensityUV")
+		#if ColorIntensityUV != null: color = _blend_color(color, Color.BLUE_VIOLET, ColorIntensityUV)
+		#
+		#
+		#if "Dimmer" in fixture.get_channels():
+			#var dimmer_value: int = current_values.get("Dimmer", 0)
+			#if len(fixture.get_channels()) == 1:
+				#color = _blend_color(color, Color.from_string("F6E7D2", Color.ORANGE), dimmer_value)
+			#else:
+				#color = color.darkened(remap(Fixture.MAX_DMX_VALUE - dimmer_value, 0, Fixture.MAX_DMX_VALUE, 0.0, 1.0))
+		#
+		#
+		#set_color(color)
 
 
 ## Sets the base color
@@ -78,7 +79,8 @@ func set_self_selected(state: bool) -> void:
 
 ## Custom blend function for colors
 func _blend_color(blend_target: Color, base_color: Color, darken_amount: int) -> Color:
-	return Utils.get_htp_color(blend_target, base_color.darkened(remap(Fixture.MAX_DMX_VALUE - darken_amount, 0, Fixture.MAX_DMX_VALUE, 0.0, 1.0)))
+	#return Utils.get_htp_color(blend_target, base_color.darkened(remap(Fixture.MAX_DMX_VALUE - darken_amount, 0, Fixture.MAX_DMX_VALUE, 0.0, 1.0)))
+	return Color.BLACK
 
 
 ## Sets the fixture linked to this virtual fixture

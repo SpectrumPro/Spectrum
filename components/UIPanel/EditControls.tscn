@@ -8,6 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="5_x6bqw"]
 
 [node name="EditControls" type="PanelContainer" node_paths=PackedStringArray("edit_button", "settings_button", "close_button", "move_resize_handle")]
+custom_minimum_size = Vector2(25, 50)
+offset_right = 30.0
+offset_bottom = 50.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme = ExtResource("1_bsx7u")
@@ -40,6 +43,7 @@ icon = ExtResource("5_x6bqw")
 modulate = Color(0.255659, 0.255659, 0.255659, 1)
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 0
 mouse_default_cursor_shape = 13
 texture = ExtResource("3_vg853")

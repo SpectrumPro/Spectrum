@@ -8,9 +8,8 @@ class_name CustomTabContainer extends Control
 ## The tab bar to control this tab container
 @export var _tab_bar: TabBar = null
 
-
 ## The last opened tab
-var _last_tab: Control = null
+@export var last_tab: Control = null
 
 
 func _ready() -> void:
@@ -32,12 +31,12 @@ func change_tab(idx: int) -> void:
 	var children: Array = get_children()
 	
 	if idx in range(len(children)):
-		if _last_tab:
-			_last_tab.hide()
+		if last_tab:
+			last_tab.hide()
 		
 		_tab_bar.current_tab = idx
 		children[idx].show()
-		_last_tab = children[idx]
+		last_tab = children[idx]
 
 
 ## Remove a tab
@@ -45,8 +44,8 @@ func remove_tab(idx: int) -> void:
 	var children: Array[Node] = get_children()
 	
 	if idx in range(len(children)):
-		if _last_tab == children[idx]:
-			_last_tab = null
+		if last_tab == children[idx]:
+			last_tab = null
 		
 		_tab_bar.remove_tab(idx)
 		children[idx].queue_free()

@@ -5,86 +5,78 @@ class_name UIUniverses extends UIPanel
 ## GUI element for managing universes
 
 
-## The ItemListView used to store the universes
-@onready var universe_list: ItemListView = $HSplitContainer/UniverseList
+## The ItemList for showing all universe outputs
+@export var _output_list: ItemList = null
 
-## The ItemListView used to store the io plugins
-@onready var io_list: ItemListView =  $HSplitContainer/IOList
-
-## The currentley selected universe displayed in the edit panel
-var _current_universe: Universe = null
+## The RemoveOutput button
+@export var _remove_output: Button = null
 
 
-func _ready() -> void:
-	## Connect to universe signals
-	ComponentDB.request_class_callback("Universe", _update_list)
+## The current selected universe
+var _universe: Universe = null
+
+## All signals that need to be connected / disconnected from the universe
+var _universe_signal_connections: Dictionary = {
+	"outputs_added": _add_outputs,
+	"outputs_removed": _remove_outputs
+}
+
+var _output_signal_connections: Dictionary = {
+	"name_changed": _on_output_name_changed
+}
+
+## RefMap for DMXOutput:ItemList_idx
+var _output_map: RefMap = RefMap.new()
+
+
+## Sets the current universe
+func set_universe(universe: Universe) -> void:
+	Utils.disconnect_signals(_universe_signal_connections, _universe)
+	_universe = universe
+	Utils.connect_signals(_universe_signal_connections, _universe)
 	
-	_update_list(ComponentDB.get_components_by_classname("Universe"))
+	_add_outputs(_universe.get_outputs().values())
 
 
-## Reload the list of fixtures
-func _update_list(added: Array = [], removed: Array = []) -> void:
-	if removed:
-		universe_list.remove_items(removed)
-	
-	for universe: Universe in added:
-		universe_list.add_item(universe, [], "set_name", "name_changed")
+## Called when outputs are added to the universe
+func _add_outputs(outputs: Array) -> void:
+	for output: DMXOutput in outputs:
+		_output_map.map(output, _output_list.add_item(output.name, Interface.get_class_icon(output.self_class_name)))
+		Utils.connect_signals_with_bind(_output_signal_connections, output)
 
 
-func _reload_io(arg1=null) -> void:
-	io_list.remove_all()
-	
-	if _current_universe:
-		io_list.add_items(_current_universe.outputs.values(), [], "set_name", "name_changed")
-		io_list.set_buttons_enabled(true)
-	else:
-		io_list.set_buttons_enabled(false)
+## Called when outputs are removed from the universe
+func _remove_outputs(outputs: Array) -> void:
+	for output: DMXOutput in outputs:
+		_output_list.remove_item(_output_map.left(output))
+		_output_map.erase_left(output)
+		Utils.disconnect_signals_with_bind(_output_signal_connections, output)
 
 
-
-## Called when the delete button is pressed on the ItemListView
-func _on_universe_list_delete_requested(items: Array) -> void:
-	Core.remove_components(items as Array[EngineComponent])
-	if _current_universe in items:
-		_current_universe.outputs_added.disconnect(_reload_io)
-		_current_universe.outputs_removed.disconnect(_reload_io)
-		
-		_current_universe = null
-		_reload_io()
-
-## Called when the add button is pressed
-func _on_universe_list_add_requested() -> void:
-	Core.create_component("Universe")
+## Called when an output is renamed
+func _on_output_name_changed(new_name: String, output: DMXOutput) -> void:
+	_output_list.set_item_text(_output_map.left(output), new_name)
 
 
-## Called when the selection is changed
-func _on_universe_list_selection_changed(items: Array) -> void:
-	universe_list.set_selected(items)
-	
-	if _current_universe:
-		_current_universe.outputs_added.disconnect(_reload_io)
-		_current_universe.outputs_removed.disconnect(_reload_io)
-	
-	if len(items) == 1:
-		_current_universe = items[0]
-		_current_universe.outputs_added.connect(_reload_io)
-		_current_universe.outputs_removed.connect(_reload_io)
-	
-	else:
-		_current_universe = null
-	
-	_reload_io()
+## Called when the NewOutput button is pressed
+func _on_new_output_pressed() -> void:
+	Interface.show_create_component(CreateComponent.Mode.Class, "DMXOutput").then(func (classname: String):
+		_universe.create_output(classname)
+	)
 
 
-func _on_io_list_add_requested() -> void:
-	if _current_universe:
-		_current_universe.add_output(ArtNetOutput.new())
+## Called when the RemoveOutput button is pressed
+func _on_remove_output_pressed() -> void:
+	for idx: int in _output_list.get_selected_items():
+		_output_map.right(idx).delete()
 
 
-func _on_io_list_delete_requested(items: Array) -> void:
-	if _current_universe:
-		_current_universe.remove_outputs(items)
+## Called when an item is selected in the OutputList
+func _on_outputs_list_multi_selected(index: int, selected: bool) -> void:
+	_remove_output.disabled = not _output_list.is_anything_selected()
 
 
-func _on_io_list_selection_changed(items: Array) -> void:
-	io_list.set_selected(items)
+## Called when nothing is clicked in the OutputList
+func _on_outputs_list_empty_clicked(at_position: Vector2, mouse_button_index: int) -> void:
+	_remove_output.disabled = true
+	_output_list.deselect_all()

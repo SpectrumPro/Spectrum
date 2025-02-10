@@ -25,7 +25,7 @@ func _update_list(added: Array = [], removed: Array = []) -> void:
 		item_list_view.remove_items(removed)
 	
 	if added:
-		item_list_view.add_items(added, [["channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
+		item_list_view.add_items(added, [["_channel", "set_channel", "channel_changed"]], "set_name", "name_changed")
 
 
 ## Called when the delete button is pressed on the ItemListView
