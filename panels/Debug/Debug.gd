@@ -64,6 +64,13 @@ func _on_list_functions_pressed() -> void:
 	set_output(output)
 
 
+## Shows an objectpicker then a ComponentNamePopup
+func _on_change_name_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func(objects: Array):
+		Interface.show_name_prompt(objects[0])
+	)
+
+
 func _on_send_message_to_server_pressed() -> void:
 	var args: Variant = str_to_var(message_args.text)
 	

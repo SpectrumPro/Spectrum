@@ -11,6 +11,7 @@ var components: Dictionary = {
 	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
 	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
 	"CreateComponent": load("res://components/CreateComponent/CreateComponent.tscn"),
+	"ComponentNamePopup": load("res://components/ComponentNamePopup/ComponentNamePopup.tscn"),
 	"NameDialogBox": load("res://components/NameDialogBox/NameDialogBox.tscn"),
 	"DialogBoxContainer": load("res://components/DialogBoxContainer/DialogBoxContainer.tscn"),
 	"CueItem": load("res://components/CueItem/CueItem.tscn"),
@@ -144,6 +145,9 @@ var _create_component_popup: CreateComponent
 ## The CreateComponent popup promise callback
 var _create_component_promise: Promise = Promise.new()
 
+## The NamePickerComponent popup
+var _name_popup: NamePickerComponent
+
 ## The container that stores all dialog boxes
 var _dialog_box_container: DialogBoxContainer
 
@@ -181,6 +185,7 @@ func _set_up_custom_pickers():
 	_set_up_object_picker()
 	_set_up_panel_picker()
 	_set_up_create_component()
+	_set_up_name_popup()
 	_set_up_dialog_box_container()
 
 
@@ -262,6 +267,17 @@ func _set_up_create_component() -> void:
 	add_custom_popup(_create_component_popup)
 
 
+## Sets up the component name popup
+func _set_up_name_popup() -> void:
+	_name_popup = components.ComponentNamePopup.instantiate()
+	_name_popup.set_anchors_preset(Control.PRESET_CENTER)
+	
+	_name_popup.component_renamed.connect(func (arg): hide_custom_popup(_name_popup))
+	_name_popup.canceled.connect(hide_custom_popup.bind(_name_popup))
+	
+	add_custom_popup(_name_popup)
+
+
 ## Sets up the dialog box container
 func _set_up_dialog_box_container() -> void:
 	_dialog_box_container = components.DialogBoxContainer.instantiate()
@@ -306,6 +322,12 @@ func show_create_component(mode: CreateComponent.Mode, class_filter: String) -> 
 	
 	show_custom_popup(_create_component_popup)
 	return _create_component_promise
+
+
+## Shows the ComponentNamePopup
+func show_name_prompt(for_component: EngineComponent) -> void:
+	_name_popup.set_component(for_component)
+	show_custom_popup(_name_popup)
 
 
 ## Shows the panel picker

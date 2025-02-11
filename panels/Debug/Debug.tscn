@@ -131,6 +131,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Get Component UUID"
 
+[node name="ChangeName" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Change Component Name"
+
 [node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -217,4 +221,5 @@ text = "Send"
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetComponentUUID" to="." method="_on_get_component_uuid_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ChangeName" to="." method="_on_change_name_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessageToServer" to="." method="_on_send_message_to_server_pressed"]

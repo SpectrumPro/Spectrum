@@ -13,20 +13,20 @@ signal canceled()
 
 
 ## The EngineComponent
-var component: EngineComponent = null : set = set_component
+var _component: EngineComponent = null
 
-## Auto hides this node when the name is confirmed
-@export var auto_hide: bool = false
+## Component signal connections
+var _component_signal_connections: Dictionary = {
+	"name_changed": _on_component_name_changed
+}
 
 
 ## Sets the component
 func set_component(p_component: EngineComponent) -> void:
-	if is_instance_valid(component): component.name_changed.disconnect(_on_component_name_changed)
-	
-	component = p_component
-	$HBox/LineEdit.text = component.name
-	
-	component.name_changed.connect(_on_component_name_changed)
+	Utils.disconnect_signals(_component_signal_connections, _component)
+	_component = p_component
+	$HBox/LineEdit.text = _component.name
+	Utils.connect_signals(_component_signal_connections, _component)
 
 
 ## Takes focus
@@ -36,12 +36,7 @@ func focus() -> void:
 
 ## Sets the name
 func _set_name() -> void:
-	if is_instance_valid(component):
-		component.set_name($HBox/LineEdit.text)
-	
-	if auto_hide:
-		hide()
-	
+	_component.set_name($HBox/LineEdit.text)
 	component_renamed.emit($HBox/LineEdit.text)
 
 
@@ -58,6 +53,4 @@ func _on_confirm_pressed() -> void: _set_name()
 func _on_line_edit_text_submitted(new_text: String) -> void: _set_name()
 
 ## Called when the cancel button is pressed
-func _on_cancel_pressed() -> void: 
-	if auto_hide: hide()
-	canceled.emit()
+func _on_cancel_pressed() -> void: canceled.emit()

@@ -252,6 +252,7 @@ func _update_filter() -> void:
 			selected_items.erase(object)
 	
 	_update_selection_label()
+	_create_component.set_class_filter(filter_allow_list[0] if filter_allow_list else "")
 
  
 func _create_filter_class_button(class_name_string: String) -> Button:

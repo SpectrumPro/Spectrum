@@ -192,7 +192,7 @@ func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
 				just_removed_fixtures.append(fixture)
 	
 	if not p_no_signal and just_removed_fixtures:
-		outputs_removed.emit(just_removed_fixtures)
+		fixtures_removed.emit(just_removed_fixtures)
 		
 
 ## Returns all fixture on the given channel

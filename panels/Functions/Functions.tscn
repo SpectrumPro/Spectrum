@@ -52,7 +52,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_mvpr3")
-auto_hide = true
 
 [connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]

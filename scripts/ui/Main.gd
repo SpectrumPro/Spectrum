@@ -77,8 +77,8 @@ func _reload_quick_access() -> void:
 		var new_panel: UIPanel = config.panel.instantiate()
 		
 		new_panel.hide()
-		
 		get_tree().process_frame.connect(func ():
+			config.size = config.size if config.size != Vector2.ZERO else new_panel.get_combined_minimum_size()
 			new_panel.set_anchors_preset(Control.PRESET_CENTER)
 			new_panel.size = config.size
 			new_panel.position = (size / 2) - (config.size / 2)
