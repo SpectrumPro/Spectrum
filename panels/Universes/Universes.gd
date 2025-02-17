@@ -11,6 +11,9 @@ class_name UIUniverses extends UIPanel
 ## The RemoveOutput button
 @export var _remove_output: Button = null
 
+## The ComponentSettings 
+@export var _component_settings: ComponentSettings
+
 
 ## The current selected universe
 var _universe: Universe = null
@@ -74,9 +77,16 @@ func _on_remove_output_pressed() -> void:
 ## Called when an item is selected in the OutputList
 func _on_outputs_list_multi_selected(index: int, selected: bool) -> void:
 	_remove_output.disabled = not _output_list.is_anything_selected()
+	
+	if len(_output_list.get_selected_items()) == 1:
+		_component_settings.set_component(_output_map.right(index))
+	else:
+		_component_settings.set_component(null)
 
 
 ## Called when nothing is clicked in the OutputList
 func _on_outputs_list_empty_clicked(at_position: Vector2, mouse_button_index: int) -> void:
 	_remove_output.disabled = true
 	_output_list.deselect_all()
+	_component_settings.set_component(null)
+	

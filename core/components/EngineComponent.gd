@@ -49,9 +49,16 @@ var network_config: Dictionary = {
 var accessible_methods: Dictionary = {}
 
 
+## Settings for this component
+var _settings: Dictionary = {
+}
+
+
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	uuid = p_uuid
 	name = p_name
+	
+	register_setting("EngineComponent", "name", set_name, get_name, name_changed, "STRING", 0, "Name")
 	_component_ready()
 	
 	print_verbose("I am: ", name, " | ", uuid)
@@ -63,12 +70,19 @@ func _component_ready() -> void:
 
 
 ## Sets the name of this component
-func set_name(new_name) -> void: rpc("set_name", [new_name])
+func set_name(new_name) -> void: 
+	rpc("set_name", [new_name])
+
 
 ## Internal: Sets the name of this component
 func _set_name(p_name: String) -> void:
 	name = p_name
 	name_changed.emit(name)
+
+
+## Gets the name
+func get_name() -> String:
+	return name
 
 
 ## Sets the self class name
@@ -85,6 +99,32 @@ func rpc(p_method_name: String, p_args: Array = []) -> Promise:
 ## Registers a callback to a server signal
 func register_callback(p_signal_name: String, p_callback: Callable) -> void:
 	network_config.callbacks[p_signal_name] = p_callback
+
+
+## Registers a setting
+func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String) -> void:
+	_settings.get_or_add(p_classname, {})[p_key] = {
+			"setter": p_setter,
+			"getter": p_getter,
+			"signal": p_signal,
+			"data_type": p_type,
+			"visual_line": p_visual_line,
+			"visual_name": p_visual_name
+	}
+
+
+## Registers a custom setting panel
+func register_custom_panel(p_classname: String, p_key: String, p_entry_point: String, p_custom_panel: PackedScene) -> void:
+	_settings.get_or_add(p_classname, {})[p_key] = {
+			"data_type": Utils.TYPE_CUSTOM,
+			"entry_point": p_entry_point,
+			"custom_panel": p_custom_panel
+	}
+
+
+## Gets the settings for the given class
+func get_settings(p_classname: String) -> Dictionary:
+	return _settings.get(p_classname, {}).duplicate()
 
 
 ## Adds a method that can be safley callled by client controls
