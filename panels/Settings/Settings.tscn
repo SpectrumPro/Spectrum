@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://d2mjxku8bnm0o"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_b83wp"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_2luji"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_2luji"]
 [ext_resource type="Script" path="res://panels/Settings/Settings.gd" id="2_lbevi"]
 [ext_resource type="PackedScene" uid="uid://cbgxp3ghx1agd" path="res://components/KeyPad/KeyPad.tscn" id="3_ghmpc"]
 

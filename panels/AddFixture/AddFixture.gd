@@ -61,7 +61,7 @@ var _mode: String = ""
 func _ready() -> void:
 	set_edit_mode_disabled(true)
 	
-	FixtureLibrary.manifests_loaded.connect(_reload_fixtures)
+	FixtureLibrary.manifests_found.connect(_reload_fixtures)
 	if FixtureLibrary.is_loaded():
 		_reload_fixtures()
 
@@ -71,7 +71,7 @@ func _reload_fixtures() -> void:
 	manufacturers_list.clear()
 	fixture_list.clear()
 	
-	loaded_manifests = FixtureLibrary.get_sorted_fixture_manifests()
+	loaded_manifests = FixtureLibrary.get_sorted_manifest_info()
 	
 	for manufacturer: String in loaded_manifests:
 		manufacturers_list.add_item(manufacturer)
@@ -105,7 +105,7 @@ func _switch_to_fixture(manufacturer: String, fixture: String) -> void:
 			name_input.text = fixture
 			
 			fixture_info_modes.clear()
-			for mode: String in loaded_manifests[manufacturer][fixture].modes.keys():
+			for mode: String in (loaded_manifests[manufacturer][fixture] as FixtureManifest).get_modes():
 				fixture_info_modes.add_item(mode)
 			
 			fixture_info_modes.select(0)

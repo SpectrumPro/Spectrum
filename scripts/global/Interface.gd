@@ -54,7 +54,6 @@ var panels: Dictionary = {
 	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
 	"Pad": load("res://panels/Pad/Pad.tscn"),
-	"NewProgrammer": load("res://panels/NewProgrammer/NewProgrammer.tscn"),
 	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
 	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
 	"Universes": load("res://panels/Universes/Universes.tscn"),
@@ -66,7 +65,7 @@ var panels: Dictionary = {
 var sorted_panels: Dictionary = {
 	"Playbacks": ["NewCuePlayback", "CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
 	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable"],
-	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "NewProgrammer"],
+	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer"],
 	"Visualization": ["VirtualFixtures"],
 	"Widgets": ["Clock", "ColorBlock", "Image"],
 }
@@ -154,6 +153,12 @@ var _dialog_box_container: DialogBoxContainer
 ## The container for cusoem popups
 var _custom_popup_container: Control
 
+## All active panel popups
+var _active_panel_popups: Dictionary = {}
+
+## The StyleBox for popups
+var _panel_stylebox: StyleBoxFlat = load("res://assets/styles/SolidPanelPopup.tres")
+
 
 func _ready() -> void:
 	OS.set_low_processor_usage_mode(true)
@@ -162,7 +167,8 @@ func _ready() -> void:
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
 	
 	ComponentDB.request_class_callback("Fixture", func (added: Array, removed: Array):
-		Values.remove_from_selection_value("selected_fixtures", removed)
+		if removed:
+			Values.remove_from_selection_value("selected_fixtures", removed)
 	)
 	
 	Core.resetting.connect(_on_engine_resetting)
@@ -221,6 +227,7 @@ func _set_up_object_picker() -> void:
 	
 	_object_picker.set_anchors_preset(Control.PRESET_CENTER)
 	_object_picker.custom_minimum_size = Vector2(820, 430)
+	_object_picker.add_theme_stylebox_override("panel", _panel_stylebox)
 	
 	_object_picker.selection_canceled.connect(func () -> void:
 		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
@@ -237,6 +244,7 @@ func _set_up_panel_picker() -> void:
 	
 	_panel_picker.set_anchors_preset(Control.PRESET_CENTER)
 	_panel_picker.custom_minimum_size = Vector2(820, 630)
+	_panel_picker.add_theme_stylebox_override("panel", _panel_stylebox)
 	
 	_panel_picker.panel_chosen.connect(func (panel: PackedScene):
 		_panel_picker_promise.resolve([panel])
@@ -253,6 +261,7 @@ func _set_up_create_component() -> void:
 	
 	_create_component_popup.set_anchors_preset(Control.PRESET_CENTER)
 	_create_component_popup.custom_minimum_size = Vector2(820, 630)
+	_create_component_popup.add_theme_stylebox_override("panel", _panel_stylebox)
 	
 	_create_component_popup.component_created.connect(func (component: EngineComponent):
 		_create_component_promise.resolve([component])
@@ -272,8 +281,9 @@ func _set_up_name_popup() -> void:
 	_name_popup = components.ComponentNamePopup.instantiate()
 	_name_popup.set_anchors_preset(Control.PRESET_CENTER)
 	
-	_name_popup.component_renamed.connect(func (arg): hide_custom_popup(_name_popup))
-	_name_popup.canceled.connect(hide_custom_popup.bind(_name_popup))
+	_name_popup.confirmed.connect(func (arg): hide_custom_popup(_name_popup))
+	_name_popup.rejected.connect(hide_custom_popup.bind(_name_popup))
+	_name_popup.add_theme_stylebox_override("panel", _panel_stylebox)
 	
 	add_custom_popup(_name_popup)
 
@@ -338,23 +348,43 @@ func show_panel_picker() -> Promise:
 
 
 ## Shows a regular confirmation dialog
-func show_confirmation_dialog(title: String) -> ConfirmationBox:
-	return _dialog_box_container.add_confirmation_dialog(title)
+func show_confirmation_dialog(title: String, source: Variant = null) -> ConfirmationBox:
+	
+	return _dialog_box_container.add_confirmation_dialog(title, source)
 
 
 ## Shows a regular confirmation dialog
-func show_info_dialog(title: String) -> ConfirmationBox:
-	return _dialog_box_container.add_info_dialog(title)
+func show_info_dialog(title: String, source: Variant = null) -> ConfirmationBox:
+	return _dialog_box_container.add_info_dialog(title, source)
 
 
 ## Shows a delete confirmation dialog
-func show_delete_confirmation(title: String = "") -> ConfirmationBox:
-	return _dialog_box_container.add_delete_confirmation(title)
+func show_delete_confirmation(title: String = "", source: Variant = null) -> ConfirmationBox:
+	return _dialog_box_container.add_delete_confirmation(title, source)
 
 
 ## Shows a rename dialog
-func show_name_dialog(title: String = "", default_text: String = "") -> NameDialogBox:
-	return _dialog_box_container.add_name_dialog_box(title, default_text)
+func show_name_dialog(title: String = "", default_text: String = "", source: Variant = null) -> NameDialogBox:
+	return _dialog_box_container.add_name_dialog_box(title, default_text, source)
+
+
+## Shows a panel popup, source is the script who triggerd the popup to avoid it showing twice
+func create_panel_popup(panel: String, source: Variant = null) -> UIPanel:
+	if source and panel in _active_panel_popups:
+		return
+	
+	
+	var new_panel: UIPanel = panels[panel].instantiate()
+	add_custom_popup(new_panel)
+	show_custom_popup(new_panel)
+	new_panel.close_request.connect(func ():
+		hide_custom_popup(new_panel)
+		_active_panel_popups.erase(source)
+		new_panel.queue_free()
+	)
+	
+	_active_panel_popups[source] = new_panel
+	return new_panel
 
 
 ## Adds a node as a child to the root. Allowing to create popups
@@ -366,6 +396,7 @@ func add_custom_popup(popup: Control) -> void:
 		if popup is UIPanel:
 			popup.close_request.connect(hide_custom_popup.bind(popup))
 			popup.set_display_mode(UIPanel.DisplayMode.Popup)
+			popup.add_theme_stylebox_override("panel", _panel_stylebox)
 		
 		popup.hide()
 		_custom_popup_container.add_child.call_deferred(popup)

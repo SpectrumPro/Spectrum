@@ -15,15 +15,26 @@ signal clicked()
 signal released()
 
 
-## The fixture linked to this virtual fixture
-var fixture: Fixture : set = set_fixture
+## The position of this virtual fixture not effected by snapping
+@onready var _no_snap_pos: Vector2 = position
 
+
+## Color of this VF when it the fixture is selected
 const fixture_selected_color: Color = Color.ROYAL_BLUE
+
+## Color of this VF when self is selected
 const self_selected_color: Color = Color.WHITE
 
 
-## The position of this virtual fixture not effected by snapping
-@onready var _no_snap_pos: Vector2 = position
+## The fixture linked to this virtual fixture
+var _fixture: Fixture = null
+
+## Signals to connect to the fixture
+var _fixture_signal_connections: Dictionary = {
+	"override_changed": _on_override_value_changed,
+	"override_eraced": _on_override_value_erased,
+	"all_override_removed": _on_override_value_erased,
+}
 
 
 ## Sets the BG color of this virtual fixture
@@ -85,44 +96,28 @@ func _blend_color(blend_target: Color, base_color: Color, darken_amount: int) ->
 
 ## Sets the fixture linked to this virtual fixture
 func set_fixture(control_fixture: Fixture) -> void:
-	## Sets the fixture this virtual fixture is atached to
+	Utils.disconnect_signals(_fixture_signal_connections, _fixture)
+	_fixture = control_fixture
+	Utils.connect_signals(_fixture_signal_connections, _fixture)
 	
-	if is_instance_valid(fixture):
-		fixture.color_changed.disconnect(render_color)
-		fixture.white_intensity_changed.disconnect(render_color)
-		fixture.amber_intensity_changed.disconnect(render_color)
-		fixture.uv_intensity_changed.disconnect(render_color)
-		fixture.dimmer_changed.disconnect(render_color)
-		fixture.delete_request.disconnect(self.delete)
-		fixture.override_value_changed.disconnect(_on_override_value_changed)
-		fixture.override_value_removed.disconnect(_on_override_value_removed)
-	
-	fixture = control_fixture
-	
-	if is_instance_valid(fixture):
-		fixture.color_changed.connect(render_color)
-		fixture.white_intensity_changed.connect(render_color)
-		fixture.amber_intensity_changed.connect(render_color)
-		fixture.uv_intensity_changed.connect(render_color)
-		fixture.dimmer_changed.connect(render_color)
-		fixture.override_value_changed.connect(_on_override_value_changed)
-		fixture.override_value_removed.connect(_on_override_value_removed)
-	
-		render_color()
-		if fixture.get_all_override_values():
-			$Override.show()
+	if _fixture.has_overrides():
+		$Override.show()
+
+
+## Gets the fixture linked to this virtual fixture
+func get_fixture() -> Fixture:
+	return _fixture
 
 
 ## Called when a override value is changed on a fixture
-func _on_override_value_changed(arg1=null, arg2=null) -> void: 
+func _on_override_value_changed(parameter: String, value: Variant, zone: String) -> void: 
 	$Override.show()
 
 
 ## Called when an override value is removed from the fixture
-func _on_override_value_removed(arg1=null) -> void:
-	if not fixture.get_all_override_values():
+func _on_override_value_erased(parameter: String = "", zone: String = "") -> void:
+	if not _fixture.has_overrides():
 		$Override.hide()
-	
 
 
 func _on_gui_input(event: InputEvent) -> void:

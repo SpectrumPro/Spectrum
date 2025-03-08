@@ -150,7 +150,7 @@ func _add_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
 
 	for fixture: Variant in p_fixtures:
 		if fixture is DMXFixture:
-			if _add_fixture(fixture):
+			if _add_fixture(fixture, -1, true):
 				just_added_fixtures.append(fixture)
 	
 	if not p_no_signal and just_added_fixtures:
@@ -206,6 +206,11 @@ func get_fixture_by_channel(p_channel: int) -> Array[DMXFixture]:
 ## Gets all the outputs in this universe
 func get_outputs() -> Dictionary:
 	return _outputs.duplicate()
+
+
+## Gets all the fixtures in this universe
+func get_fixtures() -> Dictionary:
+	return _fixtures.duplicate()
 
 
 ## Sets a manual dmx channel to the set value

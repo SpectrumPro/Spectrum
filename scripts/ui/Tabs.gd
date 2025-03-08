@@ -67,3 +67,9 @@ func set_tab_title(idx: int, title: String) -> void:
 ## Returns the current tab id
 func get_current_tab() -> int:
 	return _tab_bar.current_tab
+
+
+## Removes all tabs
+func clear(free: bool = true) -> void:
+	while _tab_bar.tab_count:
+		remove_tab(0)

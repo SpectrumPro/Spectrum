@@ -33,9 +33,9 @@ func set_mode(mode: DisplayMode) -> void:
 
 ## Called when a rejected button is pressed, ie cancel or go back
 func _on_confirmed_button_pressed() -> void:
-	confirmed.emit()
+	_promise.resolve()
 
 
 ## Called when a rejected button is pressed, ie cancel or go back
 func _on_rejected_button_pressed() -> void:
-	rejected.emit()
+	_promise.reject()

@@ -12,16 +12,50 @@ signal channel_changed(channel: int)
 ## The DMX channel of this fixture
 var _channel: int = 0
 
+## The mode of this fixture
+var _mode: String = ""
+
+## Current override values of this fixture, post precedence calculation
+## { "zone": { "parameter": value } }## 
+var _current_override: Dictionary = {}
+
+## The FixtureManifest for this fixture
+var _manifest: FixtureManifest = null
+
 
 func _component_ready() -> void:
 	_set_self_class("DMXFixture")
 	
 	register_callback("on_channel_changed", _set_channel)
+	register_setting("DMXFixture", "channel", set_channel, get_channel, channel_changed, Utils.TYPE_INT, 0, "Channel", 1, 512)
 
 
-## Gets the channel
-func get_channel() -> int:
-	return _channel
+## Internal: Sets a parameter override to a float value
+func _set_override(parameter: String, value: float, zone: String = "root") -> void:
+	var split: PackedStringArray = parameter.split(".", true, 1)
+	if len(split) == 2:
+		var logical: String = split[0]
+		
+		_current_override.get_or_add(zone, {})[logical] = value
+		override_changed.emit(parameter, value, zone)
+
+
+#Internal: Erases the parameter override 
+func _erase_override(parameter: String, zone: String = "root") -> void:
+	var split: PackedStringArray = parameter.split(".", true, 1)
+	if len(split) == 2:
+		var logical: String = split[0]
+		
+		if _current_override.get_or_add(zone, {}).erase(logical) and not _current_override[zone]:
+			_current_override.erase(zone)
+		
+		override_erased.emit(parameter, zone)
+
+
+## Internal: Erases all overrides
+func _erase_all_overrides() -> void:
+	_current_override.clear()
+	all_override_removed.emit()
 
 
 ## Sets the channel
@@ -35,13 +69,56 @@ func _set_channel(p_channel: int) -> void:
 	channel_changed.emit(_channel)
 
 
+## Gets the channel
+func get_channel() -> int:
+	return _channel
+
+
+## Gets the FixtureManifest
+func get_manifest() -> FixtureManifest:
+	return _manifest
+
+
+## Sets the FixtureManifest
+func _set_manifest(p_manifest: FixtureManifest, p_mode: String) -> void:
+	_mode = p_mode
+	_manifest = p_manifest
+
+
+## Gets all the override values
+func get_all_override_values() -> Dictionary:
+	return _current_override.duplicate(true)
+
+
+## Checks if this DMXFixture has any overrides
+func has_overrides() -> bool:
+	return _current_override != {}
+
+
+## Gets all the parameters and there category from a zone
+func get_parameter_categories(p_zone: String) -> Dictionary:
+	return _manifest.get_categorys(_mode, p_zone)
+
+
+## Gets all the parameter functions
+func get_parameter_functions(p_zone: String, p_parameter: String) -> Array:
+	return _manifest.get_parameter_functions(_mode, p_zone, p_parameter)
+
+
 ## Saves this DMXFixture to a dictonary
-func _on_serialize_request() -> Dictionary:
+func _serialize_request() -> Dictionary:
 	return {
 		 "channel": _channel
 	}
 
 
 ## Loads this DMXFixture from a dictonary
-func _on_load_request(p_serialized_data: Dictionary) -> void:
-	_set_channel(p_serialized_data.get("channel"))
+func _load_request(p_serialized_data: Dictionary) -> void:
+	_set_channel(type_convert(p_serialized_data.get("channel"), TYPE_INT))
+	
+	_mode = type_convert(p_serialized_data.get("mode", ""), TYPE_STRING)
+	var manifest_uuid: String = type_convert(p_serialized_data.get("manifest_uuid"), TYPE_STRING)
+	if manifest_uuid:
+		FixtureLibrary.request_manifest(manifest_uuid).then(func (manifest: FixtureManifest):
+			_set_manifest(manifest, _mode)
+		)

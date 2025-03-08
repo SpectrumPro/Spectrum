@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://bjlpnlprqr7df"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_uwoit"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_jb5xa"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_jb5xa"]
 [ext_resource type="Script" path="res://panels/DataContainerTable/DataContainerTable.gd" id="3_qwq6e"]
-[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/PanelMenuBar.tres" id="4_ei08n"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_ei08n"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="13_r0ed3"]
 [ext_resource type="PackedScene" uid="uid://dikufbor3ym75" path="res://components/Table/Table.tscn" id="14_5ja64"]
 

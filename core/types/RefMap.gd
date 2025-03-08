@@ -42,5 +42,21 @@ func erase_right(key: Variant) -> void:
 	_right.erase(key)
 
 
+## Returns all left keys
+func get_left() -> Array:
+	return _left.keys()
+
+
+## Returns all the right keys
+func get_right() -> Array:
+	return _right.keys()
+
+
+## Clears the RefMap
+func clear() -> void:
+	_left.clear()
+	_right.clear()
+
+
 func _to_string() -> String:
 	return str(_left)

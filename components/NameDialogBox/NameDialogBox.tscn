@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://pcdrh1vnpld0"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_myh58"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_vystf"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_vystf"]
 [ext_resource type="Script" path="res://components/NameDialogBox/NameDialogBox.gd" id="3_s8ogl"]
 
 [node name="NameDialogBox" type="PanelContainer" node_paths=PackedStringArray("_line_edit", "_label")]

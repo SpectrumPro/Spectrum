@@ -2,10 +2,10 @@
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_3gh0l"]
 [ext_resource type="Script" path="res://components/CreateComponent/CreateComponent.gd" id="1_kb7p0"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_wk6a5"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_wk6a5"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="3_o6iqq"]
 [ext_resource type="Texture2D" uid="uid://b3hmh5jlggqxa" path="res://assets/icons/cross.svg" id="4_4f16f"]
-[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/PanelMenuBar.tres" id="4_bb7dp"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_bb7dp"]
 
 [node name="CreateComponent" type="PanelContainer" node_paths=PackedStringArray("_class_tree", "_create_button", "_selection_label")]
 anchors_preset = 15

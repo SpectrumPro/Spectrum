@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfk7wccmsndfr"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_7me6c"]
+[ext_resource type="StyleBox" uid="uid://bxwylw4uk8cyk" path="res://assets/styles/ClassSettingsBG.tres" id="2_56yd5"]
+[ext_resource type="Script" path="res://panels/Programmer/ParameterController/ParameterController.gd" id="3_437gf"]
+
+[node name="ParameterController" type="PanelContainer" node_paths=PackedStringArray("_function_list", "_slider", "_name_label")]
+offset_right = 318.0
+offset_bottom = 374.0
+theme = ExtResource("1_7me6c")
+theme_override_styles/panel = ExtResource("2_56yd5")
+script = ExtResource("3_437gf")
+_function_list = NodePath("VBoxContainer/OptionButton")
+_slider = NodePath("VBoxContainer/VSlider")
+_name_label = NodePath("VBoxContainer/HBoxContainer/NameLabel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Parameter Name"
+text_overrun_behavior = 3
+
+[node name="VSlider" type="VSlider" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 3
+max_value = 1.0
+step = 0.001
+tick_count = 20
+ticks_on_borders = true
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer"]
+layout_mode = 2
+
+[connection signal="value_changed" from="VBoxContainer/VSlider" to="." method="_on_v_slider_value_changed"]

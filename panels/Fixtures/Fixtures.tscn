@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://d12eb0smjpwuk"]
 
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_8onam"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="1_8onam"]
 [ext_resource type="Script" path="res://panels/Fixtures/Fixtures.gd" id="1_xjo7n"]
 [ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="2_o0s47"]
 

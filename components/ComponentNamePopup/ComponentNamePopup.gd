@@ -1,15 +1,8 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name NamePickerComponent extends PanelContainer
+class_name NamePickerComponent extends DialogBox
 ## Simple ui component to change the name of an EngineComponent
-
-
-## Emitted when the component is renamed
-signal component_renamed(new_name: String)
-
-## Emitted when the cancel button is pressed
-signal canceled()
 
 
 ## The EngineComponent
@@ -37,7 +30,7 @@ func focus() -> void:
 ## Sets the name
 func _set_name() -> void:
 	_component.set_name($HBox/LineEdit.text)
-	component_renamed.emit($HBox/LineEdit.text)
+	_promise.resolve([$HBox/LineEdit.text])
 
 
 ## Called when the component's name changes
@@ -53,4 +46,5 @@ func _on_confirm_pressed() -> void: _set_name()
 func _on_line_edit_text_submitted(new_text: String) -> void: _set_name()
 
 ## Called when the cancel button is pressed
-func _on_cancel_pressed() -> void: canceled.emit()
+func _on_cancel_pressed() -> void: 
+	_promise.reject()

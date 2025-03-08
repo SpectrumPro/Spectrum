@@ -34,6 +34,7 @@ var _global_class_tree: Dictionary = {
 		},
 		"EngineComponent": EngineComponent,
 		"FixtureGroupItem": FixtureGroupItem,
+		"FixtureManifest": FixtureManifest,
 		"Universe": Universe,
 	}
 }
@@ -64,6 +65,7 @@ var _hidden_classes: Array = [
 	"FixtureGroupItem",
 	"DataContainer",
 	"DataPaletteItem",
+	"FixtureManifest"
 ]
 
 

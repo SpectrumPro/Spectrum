@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://panels/CueListTable/CueListTable.gd" id="1_2ygo6"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_yvabf"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_82k82"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_82k82"]
 [ext_resource type="PackedScene" uid="uid://dikufbor3ym75" path="res://components/Table/Table.tscn" id="2_278a8"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="4_2rmvq"]
-[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/PanelMenuBar.tres" id="4_3pa46"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_3pa46"]
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/CueList.svg" id="4_cgprk"]
 [ext_resource type="Script" path="res://panels/CueListTable/CreateConfirmationBox.gd" id="4_s5qbg"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="4_vhkcs"]

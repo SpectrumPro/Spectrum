@@ -2,9 +2,9 @@
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_804im"]
 [ext_resource type="Script" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_hysiy"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_hysiy"]
 [ext_resource type="Texture2D" uid="uid://chva73v2q1246" path="res://assets/icons/Bug.svg" id="3_2fxag"]
-[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/PanelMenuBar.tres" id="4_lse07"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_lse07"]
 [ext_resource type="Texture2D" uid="uid://dlikb8or3xepr" path="res://assets/icons/Reset.svg" id="4_p3gkg"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="5_ktb1m"]
 [ext_resource type="Texture2D" uid="uid://bjpa56jg5lki7" path="res://assets/icons/Skull.svg" id="6_hgh5s"]

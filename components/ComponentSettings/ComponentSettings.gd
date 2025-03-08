@@ -9,12 +9,17 @@ class_name ComponentSettings extends PanelContainer
 @export var _settings_module_container: VBoxContainer
 
 
+## The current component
+var _component: EngineComponent = null
+
+
 ## Sets the component
 func set_component(component: EngineComponent) -> void:
 	for old_module: ClassSettingsModule in _settings_module_container.get_children():
 		old_module.queue_free()
 		_settings_module_container.remove_child(old_module)
 	
+	_component = component
 	if not is_instance_valid(component):
 		return
 	
@@ -22,15 +27,23 @@ func set_component(component: EngineComponent) -> void:
 		var new_module: ClassSettingsModule = load("res://components/ComponentSettings/ClassSettingsModule/ClassSettingsModule.tscn").instantiate()
 		new_module.set_title(classname)
 		
-		for setting: Dictionary in component.get_settings(classname).values():
-			if setting.data_type == Utils.TYPE_CUSTOM:
-				var panel: Control = setting.custom_panel.instantiate()
-				
-				if panel.has_method(setting.entry_point):
-					panel.get(setting.entry_point).call(component)
-				
-				new_module.show_custom(panel)
-			else:
-				new_module.show_setting(setting.setter, setting.getter, setting.signal, setting.data_type, setting.visual_line, setting.visual_name)
-		
+		var settings: Array = component.get_settings(classname).values()
+		if settings:
+			for setting: Dictionary in settings:
+				if setting.data_type == Utils.TYPE_CUSTOM:
+					var panel: Control = setting.custom_panel.instantiate()
+					
+					if panel.has_method(setting.entry_point):
+						panel.get(setting.entry_point).call(component)
+					
+					new_module.show_custom(panel)
+				else:
+					new_module.show_setting(setting.setter, setting.getter, setting.signal, setting.data_type, setting.visual_line, setting.visual_name, setting.min, setting.max)
+		else:
+			new_module.set_disable(true)
 		_settings_module_container.add_child(new_module)
+
+
+## Gets the component
+func get_component() -> EngineComponent:
+	return _component

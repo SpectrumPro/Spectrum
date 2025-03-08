@@ -2,7 +2,7 @@
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
 extends Node
-## Script for holding shared values, used by mutiple ui panels in the program, also supports network shaired values [br]
+## Script for holding shared values, used by mutiple ui panels in the program, also supports network shaired values
 ## Static Values: can be used to store any object / variant
 ## Selection Values: Used to store lists, mainly used for storing selections
 
@@ -69,34 +69,45 @@ func disconnect_from_selection_value(value_name: String, callback: Callable):
 
 
 ## Set a selection value
-func set_selection_value(value_name: String, value: Array): 
+func set_selection_value(value_name: String, value: Array, no_signal: bool = false): 
 	if not has_user_signal(value_name + "_selection_value_callback"):
 		add_user_signal(value_name + "_selection_value_callback")
 	
 	#if selection_values.get(value_name, null) != value:
 	selection_values[value_name] = value
-	emit_signal(value_name + "_selection_value_callback", selection_values[value_name])
+	
+	if not no_signal:
+		emit_signal(value_name + "_selection_value_callback", selection_values[value_name])
+
+
+## Emits a selection value signal
+func emit_selection_value(value_name: String) -> void:
+	if value_name in selection_values:
+		emit_signal(value_name + "_selection_value_callback", selection_values[value_name])
 
 
 ## Add an array of items to a selection value
-func add_to_selection_value(value_name: String, array_to_add: Array):
+func add_to_selection_value(value_name: String, array_to_add: Array, no_signal: bool = false):
 	var new_array: Array = selection_values.get(value_name, [])
 	
 	for item: Variant in array_to_add:
 		if item not in new_array:
 			new_array.append(item)
 	
-	set_selection_value(value_name, new_array)
+	if not no_signal:
+		set_selection_value(value_name, new_array)
 
 
 ## Removes an array of items to a selection value
-func remove_from_selection_value(value_name: String, array_to_remove: Array):
+func remove_from_selection_value(value_name: String, array_to_remove: Array, no_signal: bool = false):
 	var new_array: Array = selection_values.get(value_name, []).duplicate()
 	
 	for item: Variant in array_to_remove:
 		new_array.erase(item)
 	
-	set_selection_value(value_name, new_array)
+	if not no_signal:
+		set_selection_value(value_name, new_array)
+
 
 ## Get a selection value, returnes the value, otherwise default
 func get_selection_value(value_name: String, default: Variant = []) -> Variant:

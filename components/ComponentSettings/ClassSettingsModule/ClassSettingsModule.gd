@@ -22,6 +22,12 @@ class_name ClassSettingsModule extends PanelContainer
 var _lines: Dictionary = {}
 
 
+## Disables this settings module
+func set_disable(state: bool) -> void:
+	_on_expand_hide_toggled(state)
+	_expand_hide_button.disabled = state
+
+
 ## Sets the title
 func set_title(title: String) -> void:
 	_title.text = title
@@ -33,7 +39,7 @@ func show_custom(panel: Control) -> void:
 
 
 ## Shows a setting
-func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: String, line_number: int, p_name: String) -> void:
+func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: String, line_number: int, p_name: String, p_min: Variant = null, p_max: Variant = null) -> void:
 	if not _lines.has(line_number):
 		var new_line: HBoxContainer = HBoxContainer.new()
 		_lines[line_number] = new_line
@@ -67,9 +73,9 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: St
 		
 		Utils.TYPE_INT:
 			var spin_box: SpinBox = SpinBox.new()
+			spin_box.min_value = p_min if p_min != null else -(1 << 32)
+			spin_box.max_value = p_max if p_max != null else 1 << 32
 			spin_box.set_value_no_signal(getter.call())
-			spin_box.max_value = 1 << 32
-			spin_box.min_value = -(1 << 32)
 			
 			spin_box.value_changed.connect(setter)
 			p_signal.connect(spin_box.set_value_no_signal)
@@ -106,4 +112,4 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: St
 ## Called when the ExpandHide button is toggled
 func _on_expand_hide_toggled(toggled_on: bool) -> void:
 	_settings_container.visible = not toggled_on
-	_expand_hide_button.icon = preload("res://assets/icons/UnfoldLess.svg") if toggled_on else preload("res://assets/icons/UnfoldMore.svg") 
+	_expand_hide_button.icon = preload("res://assets/icons/UnfoldMore.svg") if toggled_on else preload("res://assets/icons/UnfoldLess.svg") 

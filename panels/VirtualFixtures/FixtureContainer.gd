@@ -242,11 +242,11 @@ func _on_virtual_fixture_clicked(vf: NewVirtualFixture) -> void:
 			_reset_self_selected(false)
 		_set_self_selected(vf, true)
 	
-	elif not _edit_mode and vf.fixture not in Values.get_selection_value("selected_fixtures"):
+	elif not _edit_mode and vf.get_fixture() not in Values.get_selection_value("selected_fixtures"):
 		if Input.is_key_pressed(KEY_SHIFT):
-			Values.add_to_selection_value("selected_fixtures", [vf.fixture])
+			Values.add_to_selection_value("selected_fixtures", [vf.get_fixture()])
 		else:
-			Values.set_selection_value("selected_fixtures", [vf.fixture])
+			Values.set_selection_value("selected_fixtures", [vf.get_fixture()])
 #endregion
 
 
@@ -273,7 +273,7 @@ func _get_v2_position(fixture: Fixture) -> Vector2:
 ## Gets the Vector3 position of a fixture, from the Vector2 position of a Virtual Fixture
 func _get_v3_position(vf: NewVirtualFixture) -> Vector3:
 	var pos2: Vector2 = vf.position
-	return _get_v3_position_from_v2(pos2, fixture_group.get_group_item(vf.fixture).get_position())
+	return _get_v3_position_from_v2(pos2, fixture_group.get_group_item(vf.get_fixture()).get_position())
 
 
 ## Gets the Vector3 position of a fixture, from from a Vector2
@@ -288,7 +288,7 @@ func _get_v3_position_from_v2(pos2: Vector2, base_pos3: Vector3 = Vector3.ZERO) 
 ## Updates the positions of fixtures in the FixtureGroup
 func _update_fixture_group_positions() -> void:
 	for vf: NewVirtualFixture in _just_moved_virtual_fixtures:
-		fixture_group.get_group_item(vf.fixture).set_position(_get_v3_position(vf))
+		fixture_group.get_group_item(vf.get_fixture()).set_position(_get_v3_position(vf))
 	
 	_just_moved_virtual_fixtures = []
 
@@ -374,21 +374,39 @@ func _update_selection_box() -> void:
 	_selection_rect.position = Vector2(x, y)
 	_selection_rect.size = Vector2(w, h)
 	
+	var selection_changed: bool = false
 	
 	for fixture: Fixture in _virtual_fixtures:
 		var vf: NewVirtualFixture = _virtual_fixtures[fixture]
-		if _selection_rect.intersection(Rect2(vf.position, vf.size)):
-			_set_self_selected(vf, true) if _edit_mode else Values.add_to_selection_value("selected_fixtures", [fixture])
-			
+		var just_selected: bool = _selection_rect.intersection(Rect2(vf.position, vf.size)).size != Vector2.ZERO
+		var current_selected: Array = _selected_virtual_fixtures if _edit_mode else Values.get_selection_value("selected_fixtures")
+		
+		if _edit_mode:
+			if just_selected and vf in current_selected:
+				_set_self_selected(vf, true) 
+				
+			elif not just_selected and vf in current_selected and not Input.is_key_pressed(KEY_SHIFT):
+				_set_self_selected(vf, false)
+		
 		else:
-			_set_self_selected(vf, false) if _edit_mode else Values.remove_from_selection_value("selected_fixtures", [fixture])
+			if just_selected and fixture not in current_selected:
+				Values.add_to_selection_value("selected_fixtures", [fixture], false)
+				selection_changed = true
+				
+			elif not just_selected and fixture in current_selected and not Input.is_key_pressed(KEY_SHIFT):
+				Values.remove_from_selection_value("selected_fixtures", [fixture], false)
+				selection_changed = true
+	
+	if selection_changed:
+		print("Selected")
+		Values.emit_selection_value("selected_fixtures")
 #endregion
 
 
 #region UI Callbacks
 ## Called when the add fixtures button is pressed
 func _on_add_fixtures_pressed() -> void: 
-	Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, ["Fixture"])
+	Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, ["DMXFixture"])
 
 
 ## Called when fixtures are selected in the object picker to be added
@@ -434,8 +452,11 @@ func _on_gui_input(event: InputEvent) -> void:
 					
 					_handle_mouse_up()
 					
-				else:
-					_reset_self_selected(false) if _edit_mode else Values.set_selection_value("selected_fixtures", [])
+				elif not Input.is_key_pressed(KEY_SHIFT):
+					if _edit_mode and _selected_virtual_fixtures:
+						_reset_self_selected(false)
+					elif Values.get_selection_value("selected_fixtures"):
+						Values.set_selection_value("selected_fixtures", [])
 				
 			MOUSE_BUTTON_RIGHT:
 				if event.is_released() and _edit_mode:

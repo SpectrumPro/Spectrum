@@ -102,14 +102,16 @@ func register_callback(p_signal_name: String, p_callback: Callable) -> void:
 
 
 ## Registers a setting
-func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String) -> void:
+func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null) -> void:
 	_settings.get_or_add(p_classname, {})[p_key] = {
 			"setter": p_setter,
 			"getter": p_getter,
 			"signal": p_signal,
 			"data_type": p_type,
 			"visual_line": p_visual_line,
-			"visual_name": p_visual_name
+			"visual_name": p_visual_name,
+			"min": p_min,
+			"max": p_max
 	}
 
 
