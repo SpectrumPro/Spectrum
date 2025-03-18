@@ -32,7 +32,7 @@ var _fixture: Fixture = null
 ## Signals to connect to the fixture
 var _fixture_signal_connections: Dictionary = {
 	"override_changed": _on_override_value_changed,
-	"override_eraced": _on_override_value_erased,
+	"override_erased": _on_override_value_erased,
 	"all_override_removed": _on_override_value_erased,
 }
 
@@ -102,6 +102,8 @@ func set_fixture(control_fixture: Fixture) -> void:
 	
 	if _fixture.has_overrides():
 		$Override.show()
+	
+	$UUID.text = control_fixture.uuid
 
 
 ## Gets the fixture linked to this virtual fixture
@@ -110,7 +112,7 @@ func get_fixture() -> Fixture:
 
 
 ## Called when a override value is changed on a fixture
-func _on_override_value_changed(parameter: String, value: Variant, zone: String) -> void: 
+func _on_override_value_changed(parameter: String, function: String, value: Variant, zone: String) -> void: 
 	$Override.show()
 
 

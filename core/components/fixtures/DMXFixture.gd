@@ -15,9 +15,9 @@ var _channel: int = 0
 ## The mode of this fixture
 var _mode: String = ""
 
-## Current override values of this fixture, post precedence calculation
-## { "zone": { "parameter": value } }## 
-var _current_override: Dictionary = {}
+## All the input value overrides as raw values
+## { "zone": { "parameter": { "value": float, "function": String } } }
+var _raw_override_layers: Dictionary[String, Dictionary] = {}
 
 ## The FixtureManifest for this fixture
 var _manifest: FixtureManifest = null
@@ -31,30 +31,22 @@ func _component_ready() -> void:
 
 
 ## Internal: Sets a parameter override to a float value
-func _set_override(parameter: String, value: float, zone: String = "root") -> void:
-	var split: PackedStringArray = parameter.split(".", true, 1)
-	if len(split) == 2:
-		var logical: String = split[0]
-		
-		_current_override.get_or_add(zone, {})[logical] = value
-		override_changed.emit(parameter, value, zone)
+func _set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> void:
+	_raw_override_layers.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
+	override_changed.emit(p_parameter, p_function, p_value, p_zone)
 
 
-#Internal: Erases the parameter override 
-func _erase_override(parameter: String, zone: String = "root") -> void:
-	var split: PackedStringArray = parameter.split(".", true, 1)
-	if len(split) == 2:
-		var logical: String = split[0]
+## Internal: Erases the parameter override 
+func _erase_override(p_parameter: String, p_zone: String = "root") -> void:
+	if _raw_override_layers.get_or_add(p_zone, {}).erase(p_parameter) and not _raw_override_layers[p_zone]:
+		_raw_override_layers.erase(p_zone)
 		
-		if _current_override.get_or_add(zone, {}).erase(logical) and not _current_override[zone]:
-			_current_override.erase(zone)
-		
-		override_erased.emit(parameter, zone)
+	override_erased.emit(p_parameter, p_zone)
 
 
 ## Internal: Erases all overrides
 func _erase_all_overrides() -> void:
-	_current_override.clear()
+	_raw_override_layers.clear()
 	all_override_removed.emit()
 
 
@@ -87,12 +79,17 @@ func _set_manifest(p_manifest: FixtureManifest, p_mode: String) -> void:
 
 ## Gets all the override values
 func get_all_override_values() -> Dictionary:
-	return _current_override.duplicate(true)
+	return _raw_override_layers.duplicate(true)
 
 
 ## Checks if this DMXFixture has any overrides
 func has_overrides() -> bool:
-	return _current_override != {}
+	return _raw_override_layers != {}
+
+
+## Gets all the zones
+func get_zones() -> Array[String]:
+	return _manifest.get_zones(_mode)
 
 
 ## Gets all the parameters and there category from a zone
@@ -103,6 +100,11 @@ func get_parameter_categories(p_zone: String) -> Dictionary:
 ## Gets all the parameter functions
 func get_parameter_functions(p_zone: String, p_parameter: String) -> Array:
 	return _manifest.get_parameter_functions(_mode, p_zone, p_parameter)
+
+
+## Checks if this DMXFixture has a function that can fade
+func function_can_fade(p_zone: String, p_parameter: String, p_function: String) -> bool:
+	return _manifest.function_can_fade(_mode, p_zone, p_parameter, p_function)
 
 
 ## Saves this DMXFixture to a dictonary
@@ -122,3 +124,5 @@ func _load_request(p_serialized_data: Dictionary) -> void:
 		FixtureLibrary.request_manifest(manifest_uuid).then(func (manifest: FixtureManifest):
 			_set_manifest(manifest, _mode)
 		)
+	
+	_raw_override_layers = Dictionary(type_convert(p_serialized_data.get("raw_override_layers", {}), TYPE_DICTIONARY), TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)

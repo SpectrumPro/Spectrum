@@ -6,13 +6,13 @@ class_name Fixture extends EngineComponent
 
 
 ## Emitted when parameters are changed
-signal parameter_changed(parameter: String, value: Variant, zone: String)
+signal parameter_changed(parameter: String, function: String, value: Variant, zone: String)
 
 ## Emitted when a parameter is erased
 signal parameter_erased(parameter: String, zone: String)
 
 ## Emited when a parameter override is changed or added
-signal override_changed(parameter: String, value: Variant, zone: String)
+signal override_changed(parameter: String, function: String, value: Variant, zone: String)
 
 ## Emitted when a parameter override is removed
 signal override_erased(parameter: String, zone: String)
@@ -35,42 +35,42 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 
 
 ## Sets a parameter to a float value
-func set_parameter(parameter: String, value: float, layer_id: String, zone: String = "root") -> Promise:
-	return rpc("set_parameter", [parameter, value, layer_id, zone])
+func set_parameter(p_parameter: String, p_function: String, p_value: float, p_layer_id: String, p_zone: String = "root") -> Promise:
+	return rpc("set_parameter", [p_parameter, p_function, p_value, p_layer_id, p_zone])
 
 
 ## Internal: Sets a parameter to a float value
-func _set_parameter(parameter: String, value: float, layer_id: String, zone: String = "root") -> void:
+func _set_parameter(p_parameter: String, p_value: float, p_layer_id: String, p_zone: String = "root") -> void:
 	return 
 
 
 ## Erases the parameter on the given layer
-func erase_parameter(parameter: String, layer_id: String, zone: String = "root") -> Promise:
-	return rpc("erase_parameter", [parameter, layer_id, zone])
+func erase_parameter(p_parameter: String, p_layer_id: String, p_zone: String = "root") -> Promise:
+	return rpc("erase_parameter", [p_parameter, p_layer_id, p_zone])
 
 
 ## Internal: Erases the parameter on the given layer
-func _erase_parameter(parameter: String, layer_id: String, zone: String = "root") -> void:
+func _erase_parameter(p_parameter: String, p_layer_id: String, p_zone: String = "root") -> void:
 	return 
 
 
 ## Sets a parameter override to a float value
-func set_override(parameter: String, value: float, zone: String = "root") -> Promise:
-	return rpc("set_override", [parameter, value, zone])
+func set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> Promise:
+	return rpc("set_override", [p_parameter, p_function, p_value, p_zone])
 
 
 ## Internal: Sets a parameter override to a float value
-func _set_override(parameter: String, value: float, zone: String = "root") -> void:
+func _set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> void:
 	return
 
 
 ## Erases the parameter override 
-func erase_override(parameter: String, zone: String = "root") -> Promise:
-	return rpc("erase_override", [parameter, zone])
+func erase_override(p_parameter: String, p_zone: String = "root") -> Promise:
+	return rpc("erase_override", [p_parameter, p_zone])
 
 
 ## Internal: Erases the parameter override 
-func _erase_override(parameter: String, zone: String = "root") -> void:
+func _erase_override(p_parameter: String, p_zone: String = "root") -> void:
 	return
 
 
@@ -94,6 +94,11 @@ func has_overrides() -> bool:
 	return false
 
 
+## Gets all the zones
+func get_zones() -> Array[String]:
+	return []
+
+
 ## Gets all the parameters and there category from a zone
 func get_parameter_categories(p_zone: String) -> Dictionary:
 	return {}
@@ -102,3 +107,8 @@ func get_parameter_categories(p_zone: String) -> Dictionary:
 ## Gets all the parameter functions
 func get_parameter_functions(p_zone: String, p_parameter: String) -> Array:
 	return []
+
+
+## Checks if this Fixture has a function that can fade
+func function_can_fade(p_zone: String, p_parameter: String, p_function: String) -> bool:
+	return false

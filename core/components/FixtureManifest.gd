@@ -58,7 +58,7 @@ func create_zone(p_mode: String, p_zone: String) -> bool:
 
 
 ## Creates a parameter in the given mode and zone
-func add_parameter(p_mode: String, p_zone: String, p_parameter: String, p_channels: Array[int], p_categorys: String = "Control") -> bool:
+func add_parameter(p_mode: String, p_zone: String, p_parameter: String, p_channels: Array[int], p_category: String = "") -> bool:
 	if not _modes.has(p_mode) or not _modes[p_mode].zones.has(p_zone):
 		return false
 	
@@ -67,13 +67,36 @@ func add_parameter(p_mode: String, p_zone: String, p_parameter: String, p_channe
 		"offsets": p_channels.duplicate(),
 		"functions": {}
 	}
-	_categorys.get_or_add(p_mode, {}).get_or_add(p_zone, {})[p_parameter] = p_categorys
+	
+	_categorys.get_or_add(p_mode, {}).get_or_add(p_zone, {})[p_parameter] = p_category
 
 	return true
 
 
+## Duplicates a parameter to another zone
+func duplicate_parameter(p_mode: String, p_parameter: String, p_from_zone: String, p_to_zone: String, p_channels: Array[int]) -> bool:
+	if not _modes.has(p_mode) or not _modes[p_mode].zones.has(p_from_zone):
+		return false
+
+	var new_parameter: Dictionary = _modes[p_mode].zones[p_from_zone][p_parameter].duplicate(true)
+	create_zone(p_mode, p_to_zone)
+
+	new_parameter.offsets = p_channels
+	_modes[p_mode].zones[p_to_zone][p_parameter] = new_parameter
+
+	return true
+
+
+## Removes a parameter
+func remove_parameter(p_mode: String, p_zone: String, p_parameter: String) -> bool:
+	if not _modes.has(p_mode) or not _modes[p_mode].zones.has(p_zone):
+		return false
+	
+	return _modes[p_mode].zones[p_zone].erase(p_parameter)
+
+
 ## Adds a funtion to the given parameter
-func add_parameter_function(p_mode: String, p_zone: String, p_parameter: String, p_function: String, p_name: String, p_default: int, p_range: Array[int]) -> bool:
+func add_parameter_function(p_mode: String, p_zone: String, p_parameter: String, p_function: String, p_name: String, p_default: int, p_range: Array[int], p_can_fade: bool) -> bool:
 	if not _modes.has(p_mode) or not _modes[p_mode].zones.has(p_zone) or not _modes[p_mode].zones[p_zone].has(p_parameter):
 		return false
 	
@@ -81,6 +104,7 @@ func add_parameter_function(p_mode: String, p_zone: String, p_parameter: String,
 		"attribute": p_function,
 		"name": p_name,
 		"default": p_default,
+		"can_fade": p_can_fade,
 		"dmx_range": p_range.duplicate(),
 		"sets": []
 	}
@@ -126,14 +150,24 @@ func has_function(p_mode: String, p_zone: String, p_parameter: String, p_functio
 	return _modes.get(p_mode, {}).get("zones", {}).get(p_zone, {}).get(p_parameter, {}).get("functions", {}).has(p_function)
 
 
+## Checks if this FixtureManifest has a function that can fade
+func function_can_fade(p_mode: String, p_zone: String, p_parameter: String, p_function: String) -> bool:
+	return _modes.get(p_mode, {}).get("zones", {}).get(p_zone, {}).get(p_parameter, {}).get("functions", {}).get(p_function, {}).get("can_fade", false)
+
+
 ## Returns the given mode
 func get_mode(p_mode: String) -> Dictionary:
 	return _modes.get(p_mode, {}).duplicate(true)
 
 
 ## Returns all the modes in this manifest
-func get_modes() -> Array:
-	return _modes.keys()
+func get_modes() -> Array[String]:
+	return Array(_modes.keys(), TYPE_STRING, "", null)
+
+
+## Returns all zones in this manifest
+func get_zones(p_mode) -> Array[String]:
+	return Array(_modes[p_mode].zones.keys(), TYPE_STRING, "", null)
 
 
 ## Gets all the categorys in a mode and zone
@@ -147,7 +181,6 @@ func get_parameter_functions(p_mode: String, p_zone: String, p_parameter: String
 		return []
 	
 	return _modes[p_mode].zones[p_zone][p_parameter].functions.keys()
-
 
 ## Overide this function to serialize your object
 func _serialize_request() -> Dictionary:

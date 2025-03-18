@@ -144,12 +144,12 @@ func _on_cue_number_changed(new_number: float, cue: Cue) -> void:
 
 ## Called when the confirm button is pressed in the add cue menu
 func _on_add_cue_confirmed() -> void:
-	var save_mode: Programmer.SAVE_MODE
+	var save_mode: Programmer.SaveMode
 	
 	match $CreateConfirmationBox.button_group.get_pressed_button().name:
-		"ModifiedChannels": 	save_mode = Programmer.SAVE_MODE.MODIFIED
-		"AllChannels": 			save_mode = Programmer.SAVE_MODE.ALL
-		"AllNoneZero":			save_mode = Programmer.SAVE_MODE.ALL_NONE_ZERO
+		"ModifiedChannels": 	save_mode = Programmer.SaveMode.MODIFIED
+		"AllChannels": 			save_mode = Programmer.SaveMode.ALL
+		"AllNoneZero":			save_mode = Programmer.SaveMode.ALL_NONE_ZERO
 	
 	Client.send_command("programmer", "save_to_new_cue", [
 		Values.get_selection_value("selected_fixtures"),

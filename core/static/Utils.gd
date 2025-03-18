@@ -162,6 +162,40 @@ static func sum_array(array: Array) -> Variant:
 	return sum
 
 
+## Sorts all the text in an array
+static func sort_text(arr: Array) -> Array:
+	arr.sort_custom(func(a, b): return a.naturalnocasecmp_to(b) < 0)
+	return arr
+
+
+## Sorts all the text in an array, with numbers
+static func sort_text_and_numbers(arr: Array) -> Array:
+	arr.sort_custom(func(a, b): return _split_sort_key(a) < _split_sort_key(b))
+	return arr
+
+
+## Helper function for sort_text_and_numbers
+static func _split_sort_key(s: String) -> Array:
+	var regex = RegEx.new()
+	regex.compile(r"\d+|\D+")
+	
+	var parts = []
+	for match in regex.search_all(s):
+		var sub = match.get_string()
+		parts.append(int(sub) if sub.is_valid_int() else sub)
+	
+	return parts
+
+
+## Moves an item to the start of an array
+static func array_move_to_start(arr: Array, item) -> Array:
+	var i = arr.find(item)
+	if i > 0:  # Ensures "root" is found and isn't already at index 0
+		arr.remove_at(i)
+		arr.insert(0, item)
+	return arr
+
+
 ## Connects all the callables to the signals in the dictionary. Stored as {"SignalName": Callable}
 static func connect_signals(signals: Dictionary, object: Object) -> void:
 	if is_instance_valid(object):

@@ -46,7 +46,7 @@ var EngineConfig = {
 		},
 		{
 			"object": (Programmer),
-			"name": "programmer"
+			"name": "Programmer"
 		},
 		{
 			"object": (FixtureLibrary),

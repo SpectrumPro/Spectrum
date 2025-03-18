@@ -18,6 +18,16 @@ func map(left: Variant, right: Variant) -> void:
 	_right[right] = left
 
 
+## Creates a new RefMap from a Dictionary
+static func from(dictionary: Dictionary) -> RefMap:
+	var map: RefMap = RefMap.new()
+	
+	for key: Variant in dictionary:
+		map.map(key, dictionary[key])
+		
+	return map
+
+
 ## Gets an item from the map using the left key
 func left(key: Variant) -> Variant:
 	return _left.get(key, null)
