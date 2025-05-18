@@ -310,6 +310,7 @@ update_on_text_changed = true
 [connection signal="value_changed" from="TitleBar/HBoxContainer/GridControls/HBoxContainer/GridSize" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_grid_size_value_changed"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/PanelContainer/HBoxContainer/AddFixtures" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_add_fixtures_pressed"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/PanelContainer/HBoxContainer/Import" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_import_pressed"]
+[connection signal="pressed" from="TitleBar/HBoxContainer/PanelContainer/HBoxContainer/RemoveFixtures" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_remove_fixtures_pressed"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/AlignControls/HBoxContainer/HorizontalAlign" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_horizontal_align_pressed"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/AlignControls/HBoxContainer/VerticalAlign" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_vertical_align_pressed"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/AlignControls/HBoxContainer/GridAlign" to="." method="_on_grid_align_pressed"]

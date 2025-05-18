@@ -69,6 +69,12 @@ func set_zone(zone: String) -> void:
 	_zone = zone
 	_zone_label.text = zone
 
+
+## Gets the zone
+func get_zone() -> String:
+	return _zone
+
+
 ## Sets the state of the override background
 func set_override_bg(state: bool) -> void:
 	if state:

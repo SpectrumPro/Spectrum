@@ -72,7 +72,7 @@ func set_fixture_group(p_fixture_group: FixtureGroup) -> void:
 	
 	if fixture_group:
 		fixture_group.fixtures_added.disconnect(_on_fixture_group_fixtures_added)
-		#fixture_group.fixtrues_removed.disconnect()
+		fixture_group.fixtures_removed.disconnect(_on_fixture_group_fixtures_removed)
 		
 		for group_item: FixtureGroupItem in _group_item_signal_connections:
 			var connections: Dictionary = _group_item_signal_connections[group_item]
@@ -86,7 +86,7 @@ func set_fixture_group(p_fixture_group: FixtureGroup) -> void:
 	if fixture_group:
 		_virtual_fixtures_root.set_edit_mode_disabled(false)
 		fixture_group.fixtures_added.connect(_on_fixture_group_fixtures_added)
-		#fixture_group.fixtrues_removed.connect()
+		fixture_group.fixtures_removed.connect(_on_fixture_group_fixtures_removed)
 		
 		for group_item: FixtureGroupItem in _group_item_signal_connections:
 			var connections: Dictionary = _group_item_signal_connections[group_item]
@@ -150,6 +150,20 @@ func _add_fixtures(fixtures: Array) -> void:
 		last_pos += _fixture_spacing
 
 
+## Removes a fixture
+func remove_fixture(fixture: Fixture) -> void:
+	if fixture not in _virtual_fixtures:
+		return
+	
+	var vf: Node = _virtual_fixtures[fixture]
+	
+	_set_self_selected(vf, false)
+	_set_fixture_selected(fixture, false)
+	_virtual_fixtures.erase(fixture)
+	
+	vf.queue_free()
+
+
 ## Sets edit mode state
 func set_edit_mode(p_edit_mode: bool) -> void:
 	_edit_mode = p_edit_mode
@@ -206,6 +220,12 @@ func _on_selected_fixtures_changed(new_selected_fixtures: Array) -> void:
 func _on_fixture_group_fixtures_added(group_items: Array) -> void:
 	for group_item: FixtureGroupItem in group_items:
 		add_fixture(group_item.get_fixture(), false, _get_v2_position(group_item.get_fixture()), true)
+
+
+## Called when fixtures are removed from the fixture group
+func _on_fixture_group_fixtures_removed(fixtures: Array) -> void:
+	for fixture: Fixture in fixtures:
+		remove_fixture(fixture)
 
 
 ## Called when any of the fixtures change position
@@ -406,7 +426,17 @@ func _update_selection_box() -> void:
 #region UI Callbacks
 ## Called when the add fixtures button is pressed
 func _on_add_fixtures_pressed() -> void: 
-	Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, ["DMXFixture"])
+	Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, "DMXFixture")
+
+
+## Called when the remove fixtures button is pressed
+func _on_remove_fixtures_pressed() -> void:
+	var fixtures: Array[Fixture]
+	
+	for vf: NewVirtualFixture in _selected_virtual_fixtures:
+		fixtures.append(vf.get_fixture())
+	
+	fixture_group.remove_fixtures(fixtures)
 
 
 ## Called when fixtures are selected in the object picker to be added
@@ -460,7 +490,7 @@ func _on_gui_input(event: InputEvent) -> void:
 				
 			MOUSE_BUTTON_RIGHT:
 				if event.is_released() and _edit_mode:
-					Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, ["Fixture"])
+					Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, "Fixture")
 
 
 ## Called when the align button is pressed
@@ -506,5 +536,5 @@ func _on_fixture_group_name_pressed() -> void:
 	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (objects: Array):
 		if objects[0] is FixtureGroup:
 			set_fixture_group(objects[0])
-	, ["FixtureGroup"])
+	, "FixtureGroup")
 #endregion

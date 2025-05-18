@@ -43,9 +43,9 @@ var selected_items: Array[EngineComponent] = []
 ## Allow and deny lists for the filt er
 ## Everything in the allow list will be shown, and anything not will be hidden. You will need to set this var directley, or use the add / remove methods
 ## Modifying it using .append, or .erase will not work.
-var filter_allow_list: Array = [] : 
+var filter: String = "" : 
 	set(value):
-		filter_allow_list = value
+		filter = value
 		_update_filter()
 
 
@@ -89,7 +89,7 @@ func _ready() -> void:
 
 ## Resets the tree and root node
 func _reset() -> void:
-	filter_allow_list = []
+	filter = ""
 	selected_items = []
 	tree_items = {}
 	
@@ -123,18 +123,6 @@ func set_user_filtering(p_user_filtering: bool) -> void:
 	user_filtering = p_user_filtering
 	for button: Button in _filter_buttons.values():
 		button.disabled = not user_filtering
-
-
-## Adds an item to the filter
-func add_to_filter(class_name_string: String) -> void:
-	filter_allow_list.append(class_name_string)
-	_update_filter()
-
-
-## Removes and item from the filter
-func remove_from_filter(class_name_string: String) -> void:
-	filter_allow_list.erase(class_name_string)
-	_update_filter()
 
 
 ## Adds a component to the tree
@@ -238,21 +226,19 @@ func _update_selection_label() -> void:
 ## Updates the filter, to show and hide classes
 func _update_filter() -> void:
 	for class_name_string: String in tree_items:
-		var is_filtred_for: bool = not class_name_string in filter_allow_list and filter_allow_list
+		var is_filtred_for: bool = not ClassList.does_class_inherit(class_name_string, filter) and filter
+		print(ClassList.does_class_inherit(class_name_string, filter))
 		(tree_items[class_name_string].parent as TreeItem).visible = not is_filtred_for
 		
 		if class_name_string in _filter_buttons:
-			(_filter_buttons[class_name_string] as Button).set_pressed_no_signal(class_name_string in filter_allow_list)
+			(_filter_buttons[class_name_string] as Button).set_pressed_no_signal(class_name_string == filter)
 		else:
 			_filter_buttons[class_name_string] = _create_filter_class_button(class_name_string)
 			_filter_container.add_child(_filter_buttons[class_name_string])
 	
-	for object: EngineComponent in selected_items.duplicate():
-		if not object.self_class_name in filter_allow_list:
-			selected_items.erase(object)
-	
+	selected_items = []
 	_update_selection_label()
-	_create_component.set_class_filter(filter_allow_list[0] if filter_allow_list else "")
+	_create_component.set_class_filter(filter)
 
  
 func _create_filter_class_button(class_name_string: String) -> Button:
@@ -267,13 +253,10 @@ func _create_filter_class_button(class_name_string: String) -> Button:
 	filter_button.tooltip_text = "Filter for: " + tool_tip_name
 	
 	filter_button.toggled.connect(func (state: bool) -> void:
-		if state:
-			add_to_filter(class_name_string)
-		else:
-			remove_from_filter(class_name_string)
+		filter = class_name_string
 	)
 	
-	filter_button.set_pressed_no_signal(class_name_string in filter_allow_list)
+	filter_button.set_pressed_no_signal(class_name_string == class_name_string)
 	filter_button.disabled = not user_filtering
 	
 	return filter_button

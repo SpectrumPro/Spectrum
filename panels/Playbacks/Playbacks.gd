@@ -18,6 +18,7 @@ class_name UIPlaybacks extends UIPanel
 @export var auto_add_new_scenes: bool = false
 
 
+
 ## Auto setups a Playback row
 func _auto_setup_for(playback_row: PlaybackRowComponent) -> void:
 	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func(objects: Array[EngineComponent]) -> void:

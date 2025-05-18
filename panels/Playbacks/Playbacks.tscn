@@ -1,15 +1,17 @@
-[gd_scene load_steps=9 format=3 uid="uid://baortk0rwrhup"]
+[gd_scene load_steps=11 format=3 uid="uid://baortk0rwrhup"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_8dmeu"]
 [ext_resource type="Script" uid="uid://bmu8b4eaoouxa" path="res://panels/Playbacks/Playbacks.gd" id="1_io88g"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_psu7s"]
 [ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/SolidPanelPopup.tres" id="4_ms2qx"]
+[ext_resource type="Script" uid="uid://ddmvdgltiqbu0" path="res://panels/Playbacks/Settings.gd" id="5_ad7jd"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="5_kxarm"]
+[ext_resource type="Script" uid="uid://d2x7q4j2yccyv" path="res://panels/Playbacks/CloseSettings.gd" id="7_ad7jd"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="8_5f7rw"]
 [ext_resource type="PackedScene" uid="uid://dhim1qpe23x0i" path="res://components/TriggerButtonSettings/TriggerButtonSettings.tscn" id="8_14mkr"]
 [ext_resource type="PackedScene" uid="uid://brq6gv04pu72i" path="res://components/TriggerSliderSettings/TriggerSliderSettings.tscn" id="10_ni381"]
 
-[node name="Playbacks" type="PanelContainer" node_paths=PackedStringArray("_add_row_button", "_dummy_container", "_scroll_container", "_trigger_button_settings", "_trigger_slider_settings")]
+[node name="Playbacks" type="PanelContainer" node_paths=PackedStringArray("_add_row_button", "_dummy_container", "_scroll_container", "_trigger_button_settings", "_trigger_slider_settings", "settings_node")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -25,16 +27,20 @@ _dummy_container = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContain
 _scroll_container = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer")
 _trigger_button_settings = NodePath("Settings/VBoxContainer/HSplitContainer/TriggerButtonSettings")
 _trigger_slider_settings = NodePath("Settings/VBoxContainer/HSplitContainer/TriggerSliderSettings")
+settings_node = NodePath("Settings")
 
 [node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Settings" type="PanelContainer" parent="."]
-visible = false
+[node name="Settings" type="PanelContainer" parent="." node_paths=PackedStringArray("close_settings")]
 custom_minimum_size = Vector2(0, 570)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme = ExtResource("1_8dmeu")
 theme_override_styles/panel = ExtResource("4_ms2qx")
+script = ExtResource("5_ad7jd")
+close_settings = NodePath("VBoxContainer/PanelContainer/HBoxContainer/CloseSettings")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
 layout_mode = 2
@@ -55,6 +61,7 @@ text = "Click on a control to edit settings"
 layout_mode = 2
 size_flags_horizontal = 10
 icon = ExtResource("5_kxarm")
+script = ExtResource("7_ad7jd")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="Settings/VBoxContainer"]
 layout_mode = 2
@@ -88,4 +95,5 @@ visible = false
 layout_mode = 2
 
 [connection signal="pressed" from="Settings/VBoxContainer/PanelContainer/HBoxContainer/CloseSettings" to="." method="_on_close_settings_pressed"]
+[connection signal="pressed" from="Settings/VBoxContainer/PanelContainer/HBoxContainer/CloseSettings" to="Settings" method="_on_close_settings_pressed"]
 [connection signal="pressed" from="Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer/AddRow" to="." method="_on_add_row_pressed"]

@@ -66,6 +66,9 @@ var _fixtures: Array[Fixture]
 ## The current selected fixture zone
 var _current_zone: String = ""
 
+## All the zones in the current selected fixtures
+var _selected_fixture_zones: Array[String] = []
+
 ## RandomMode for random values
 var _random_mode: Programmer.RandomMode = Programmer.RandomMode.All
 
@@ -97,9 +100,12 @@ func _update_categorys(new_fixtures: Array) -> void:
 	var controlers_to_hide: Array[ParameterController] = _visible_parameter_controllers.duplicate()
 	var tabs_to_disable: Array[String] = _tab_buttons.keys()
 	var new_visible_controllers: Array[ParameterController] = []
+	var zone_select_index: int = 1
+	var zone_to_select: int = 0
 	
 	_current_values.clear()
 	zone_select.clear()
+	_selected_fixture_zones = []
 	
 	zone_select.add_item("All", 0)
 	zone_select.add_separator()
@@ -108,11 +114,21 @@ func _update_categorys(new_fixtures: Array) -> void:
 	for fixture: Fixture in new_fixtures:
 		var zones: Array[String] = fixture.get_zones()
 		
+		if _current_zone not in zones:
+			_current_zone = ""
+		
 		Utils.sort_text_and_numbers(zones)
 		Utils.array_move_to_start(zones, "root")
 		
 		for zone: String in zones:
-			zone_select.add_item(zone)
+			if zone not in _selected_fixture_zones:
+				zone_select.add_item(zone, zone_select_index)
+				_selected_fixture_zones.append(zone)
+			
+			if zone == _current_zone:
+				zone_to_select = zone_select_index
+			
+			zone_select_index += 1
 		
 			var categories: Dictionary = fixture.get_parameter_categories(zone)
 			var current_values: Dictionary = fixture.get_all_override_values()
@@ -130,7 +146,7 @@ func _update_categorys(new_fixtures: Array) -> void:
 					tabs_to_disable.erase(controller.category)
 					_button_map.left(controller.category).disabled = false
 					
-					if controller.category == _current_tab and (zone == _current_zone or _current_zone == ""):
+					if controller.category == _current_tab:
 						controller.show()
 					
 					if controller not in new_visible_controllers:
@@ -189,6 +205,25 @@ func _update_categorys(new_fixtures: Array) -> void:
 	
 	_visible_parameter_controllers = new_visible_controllers
 	_fixtures.assign(new_fixtures)
+	
+	if zone_to_select == 0:
+		_current_zone = ""
+	
+	zone_select.select(zone_to_select)
+	_update_zone_filter()
+
+
+## Shows or hides ParameterControllers based on the current zone filter
+func _update_zone_filter() -> void:
+	for controller: ParameterController in _visible_parameter_controllers:
+		if controller.category != _current_tab:
+			continue
+		
+		if controller.get_zone() == _current_zone or _current_zone == "":
+			controller.show()
+		
+		elif controller.get_zone() != _current_zone:
+			controller.hide()
 
 
 ## Clears the override BG on all of the ParameterControllers and tab buttons
@@ -239,6 +274,8 @@ func _on_tab_button_pressed(button: Button) -> void:
 	for controller: ParameterController in _controller_categories.get(_current_tab, []):
 		if controller in _visible_parameter_controllers:
 			controller.show()
+	
+	_update_zone_filter()
 
 
 ## Called when a value is changed in a controller
@@ -281,10 +318,12 @@ func _on_zone_select_item_selected(index: int) -> void:
 	_current_zone = zone_select.get_item_text(index)
 	if _current_zone == "All":
 		_current_zone = ""
+	
+	_update_zone_filter()
 
 
 ## Called when the SaveToScene button is pressed
 func _on_save_to_scene_pressed() -> void:
-	Programmer.save_to_scene(_fixtures).then(func (scene: Scene):
+	Programmer.save_to_new_scene(_fixtures).then(func (scene: Scene):
 		Interface.show_name_prompt(scene)
 	)

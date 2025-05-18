@@ -1,10 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://cedqo06n6en8u"]
+[gd_scene load_steps=10 format=3 uid="uid://cedqo06n6en8u"]
 
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="1_es5ky"]
-[ext_resource type="Script" path="res://panels/Functions/Functions.gd" id="2_bfwkh"]
+[ext_resource type="Script" uid="uid://byqpqgm3d03aq" path="res://panels/Functions/Functions.gd" id="2_bfwkh"]
 [ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="3_knoqd"]
 [ext_resource type="PackedScene" uid="uid://b0wxeveie0uk8" path="res://components/CreateComponent/CreateComponent.tscn" id="4_ifan4"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_vxby2"]
+[ext_resource type="Texture2D" uid="uid://db0vd5iwegdsu" path="res://assets/icons/Functions.svg" id="5_fsh4n"]
 [ext_resource type="PackedScene" uid="uid://dkdq40xavnqdl" path="res://components/ComponentNamePopup/ComponentNamePopup.tscn" id="5_yy71q"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="6_rou2v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvpr3"]
 content_margin_left = 5.0
@@ -22,7 +25,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="Functions" type="PanelContainer"]
+[node name="Functions" type="PanelContainer" node_paths=PackedStringArray("edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,14 +33,33 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_es5ky")
 script = ExtResource("2_bfwkh")
+edit_controls = NodePath("ItemListView/ToolBarContainer/HBoxContainer/EditControls")
 
 [node name="ItemListView" parent="." instance=ExtResource("3_knoqd")]
 layout_mode = 2
 show_select = false
 show_invert = false
-show_take = false
+
+[node name="ToolBarContainer" parent="ItemListView" index="0"]
+theme_override_styles/panel = ExtResource("4_vxby2")
+
+[node name="Button" type="Button" parent="ItemListView/ToolBarContainer/HBoxContainer" index="0"]
+layout_mode = 2
+text = "Functions"
+icon = ExtResource("5_fsh4n")
+flat = true
+
+[node name="SelectControls" parent="ItemListView/ToolBarContainer/HBoxContainer" index="2"]
+visible = false
+
+[node name="SelectInvert" parent="ItemListView/ToolBarContainer/HBoxContainer/SelectControls/HBoxContainer" index="2"]
+visible = false
+
+[node name="EditControls" parent="ItemListView/ToolBarContainer/HBoxContainer" index="3" instance=ExtResource("6_rou2v")]
+layout_mode = 2
+size_flags_horizontal = 10
 show_edit = false
-show_separators = false
+show_settings = false
 
 [node name="CreateFunction" parent="." instance=ExtResource("4_ifan4")]
 visible = false
@@ -57,3 +79,5 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_mvpr3")
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]
 [connection signal="edit_requested" from="ItemListView" to="." method="_on_item_list_view_edit_requested"]
 [connection signal="selection_changed" from="ItemListView" to="." method="_on_item_list_view_selection_changed"]
+
+[editable path="ItemListView"]

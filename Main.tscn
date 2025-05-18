@@ -1,11 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://7f5erpa1ts1n"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_lygr6"]
-[ext_resource type="Script" path="res://scripts/ui/Main.gd" id="2_2mnc0"]
+[ext_resource type="Script" uid="uid://c3blb4c6exhxl" path="res://scripts/ui/Main.gd" id="2_2mnc0"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="3_7gl8s"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="7_4ai6i"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="9_l0dk1"]
-[ext_resource type="Script" path="res://scripts/ui/Tabs.gd" id="11_g0pp1"]
+[ext_resource type="Script" uid="uid://rcg26r86qsdg" path="res://scripts/ui/Tabs.gd" id="11_g0pp1"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="14_jv1kq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8efsq"]

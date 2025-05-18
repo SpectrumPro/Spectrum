@@ -96,7 +96,7 @@ func remove_parameter(p_mode: String, p_zone: String, p_parameter: String) -> bo
 
 
 ## Adds a funtion to the given parameter
-func add_parameter_function(p_mode: String, p_zone: String, p_parameter: String, p_function: String, p_name: String, p_default: int, p_range: Array[int], p_can_fade: bool) -> bool:
+func add_parameter_function(p_mode: String, p_zone: String, p_parameter: String, p_function: String, p_name: String, p_default: int, p_range: Array[int], p_can_fade: bool, p_vdim_effected: bool) -> bool:
 	if not _modes.has(p_mode) or not _modes[p_mode].zones.has(p_zone) or not _modes[p_mode].zones[p_zone].has(p_parameter):
 		return false
 	
@@ -105,6 +105,7 @@ func add_parameter_function(p_mode: String, p_zone: String, p_parameter: String,
 		"name": p_name,
 		"default": p_default,
 		"can_fade": p_can_fade,
+		"vdim_effected": p_vdim_effected,
 		"dmx_range": p_range.duplicate(),
 		"sets": []
 	}
@@ -153,6 +154,11 @@ func has_function(p_mode: String, p_zone: String, p_parameter: String, p_functio
 ## Checks if this FixtureManifest has a function that can fade
 func function_can_fade(p_mode: String, p_zone: String, p_parameter: String, p_function: String) -> bool:
 	return _modes.get(p_mode, {}).get("zones", {}).get(p_zone, {}).get(p_parameter, {}).get("functions", {}).get(p_function, {}).get("can_fade", false)
+
+
+## Checks if this FixtureManifest has a function that can vdim
+func function_can_vdim(p_mode: String, p_zone: String, p_parameter: String, p_function: String) -> bool:
+	return _modes.get(p_mode, {}).get("zones", {}).get(p_zone, {}).get(p_parameter, {}).get("functions", {}).get(p_function, {}).get("vdim_effected", false)
 
 
 ## Returns the given mode

@@ -8,6 +8,12 @@ class_name UICuePlayback extends UIPanel
 ## The VBoxContainer that hold all the cues
 @onready var _cue_container: VBoxContainer = $VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer
 
+## The object picker button
+@export var _object_picker_button: ObjectPickerButton
+
+## The IntensityButton
+@export var _intensity_button: IntensityButton
+
 
 ## The cue list
 var _cue_list: CueList = null
@@ -18,20 +24,18 @@ var _cues: Dictionary = {}
 ## The uuid of the cuelist used when this panel was saved
 var _previous_uuid: String = ""
 
+var _signal_connections: Dictionary = {
+	"cues_added": _reload_cues
+}
 
 ## Sets the cuelist to control
 func set_cue_list(cue_list: CueList) -> void:
-	if _previous_uuid: ComponentDB.remove_request.call_deferred(_previous_uuid, _on_cue_list_object_found)
-	if _cue_list: 
-		_cue_list.cues_added.disconnect(_reload_cues)
-		
-	
+	Utils.disconnect_signals(_signal_connections, _cue_list)
 	_cue_list = cue_list
-	_cue_list.cues_added.connect(_reload_cues)
+	Utils.connect_signals(_signal_connections, _cue_list)
 	
 	_reload_cues()
-	$VBoxContainer/PanelContainer2/HBoxContainer/CueName.text = cue_list.name
-	$VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton.set_function(cue_list)
+	_intensity_button.set_function(cue_list)
 
 
 ## Reloads the list of cues
@@ -49,17 +53,6 @@ func _reload_cues(arg1=null) -> void:
 			_cues[cue.uuid] = new_cue_item
 			_cue_container.add_child(new_cue_item)
 			new_cue_item.set_cue(cue, _cue_list)
-
-
-## Called when the cue name button is pressed
-func _on_cue_name_pressed() -> void:
-	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (items: Array[EngineComponent]) -> void:
-		set_cue_list(items[0])
-	, ["CueList"])
-
-
-## Called when ComponentDB finds the cuelist
-func _on_cue_list_object_found(object: EngineComponent) -> void: if object is CueList: set_cue_list(object)
 
 
 #region Ui Callbacks
@@ -80,6 +73,5 @@ func _save() -> Dictionary:
 
 ## Loads this from a dict
 func _load(saved_data: Dictionary) -> void:
-	if "uuid" in saved_data:
-		_previous_uuid = saved_data.uuid
-		ComponentDB.request_component(saved_data.uuid, _on_cue_list_object_found)
+	if saved_data.get("uuid") is String:
+		_object_picker_button.look_for(saved_data.uuid)

@@ -6,13 +6,13 @@ class_name CueListTable extends UIPanel
 
 
 ## The main table node
-@export var table: Table = null
+@export var table: Table
 
 ## The name button
-@export var _name_button: Button = null
+@export var object_picker_button: ObjectPickerButton
 
 ## The IntensityButton
-@export var _intensity_button: IntensityButton = null
+@export var _intensity_button: IntensityButton
 
 ## List of buttons to disable on cue deselect
 @export var _disable_on_deselect: Array[Button]
@@ -20,9 +20,6 @@ class_name CueListTable extends UIPanel
 
 ## The cuelist 
 var _cue_list: CueList = null
-
-## The uuid of the cuelist used when this panel was saved
-var _previous_uuid: String = ""
 
 ## Stores all cues and there respective RowHeadder
 var _cues: Dictionary = {}
@@ -41,7 +38,6 @@ var _data_keys: Array = [
 var _cue_list_connections: Dictionary = {
 	"cues_added": _on_cue_list_cues_added,
 	"cues_removed": _on_cue_list_cues_removed,
-	"name_changed": _on_cue_list_on_name_changed,
 }
 
 var _cue_connections: Dictionary = {
@@ -61,13 +57,10 @@ func _ready() -> void:
 
 ## Sets the cue list
 func set_cue_list(cue_list: CueList) -> void:
-	if _previous_uuid: ComponentDB.remove_request.call_deferred(_previous_uuid, _on_cue_list_object_found)
-	
 	Utils.disconnect_signals(_cue_list_connections, _cue_list)
 	_cue_list = cue_list
 	Utils.connect_signals(_cue_list_connections, _cue_list)
 	
-	_name_button.text = cue_list.name
 	_intensity_button.set_function(_cue_list)
 	_reload_table()
 
@@ -132,11 +125,6 @@ func _on_cue_list_cues_removed(cues: Array) -> void:
 		table.remove_row(_cues[cue].index)
 
 
-## Called when the name of the cuelist changes
-func _on_cue_list_on_name_changed(new_name: String) -> void:
-	_name_button.text = new_name
-
-
 ## Called when a cue number changes
 func _on_cue_number_changed(new_number: float, cue: Cue) -> void:
 	table.move_row(_cues[cue].index, _cue_list.get_cue_index(cue))
@@ -158,10 +146,6 @@ func _on_add_cue_confirmed() -> void:
 	])
 
 
-## Called when ComponentDB finds the cuelist
-func _on_cue_list_object_found(object: EngineComponent) -> void: if object is CueList: set_cue_list(object)
-
-
 ## Saves this into a dict
 func _save() -> Dictionary:
 	if _cue_list: return { "uuid": _cue_list.uuid }
@@ -171,8 +155,7 @@ func _save() -> Dictionary:
 ## Loads this from a dict
 func _load(saved_data: Dictionary) -> void:
 	if "uuid" in saved_data:
-		_previous_uuid = saved_data.uuid
-		ComponentDB.request_component(saved_data.uuid, _on_cue_list_object_found)
+		object_picker_button.look_for(saved_data.uuid)
 
 
 ## Called when the CueName button is pressed
@@ -181,7 +164,7 @@ func _on_cue_name_pressed() -> void:
 		ObjectPicker.SelectMode.Single, 
 		func (objects: Array): 
 			if objects[0] is CueList: set_cue_list(objects[0]), 
-		["CueList"]
+		"CueList"
 	)
 
 

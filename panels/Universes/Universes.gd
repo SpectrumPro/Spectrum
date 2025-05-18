@@ -23,6 +23,9 @@ class_name UIUniverses extends UIPanel
 ## The ComponentSettings for Fixtures 
 @export var _fixture_settings: ComponentSettings = null
 
+## The ObjectPickerButton for this UIUniverses panel
+@export var _object_picker_button: ObjectPickerButton = null
+
 
 ## The current selected universe
 var _universe: Universe = null
@@ -225,3 +228,20 @@ func _on_fixture_tree_nothing_selected() -> void:
 	_remove_fixture.disabled = true
 	_fixture_tree.deselect_all()
 	_fixture_settings.set_component(null)
+
+
+## Saves this UIUniverses panel to a dictonary
+func _save() -> Dictionary: 
+	if _universe:
+		return {
+			"uuid": _universe.uuid
+		}
+		
+	else:
+		return {}
+
+
+## Loads this UIUniverses from a dictonary
+func _load(saved_data: Dictionary) -> void: 
+	if saved_data.get("uuid") is String:
+		_object_picker_button.look_for(saved_data.uuid)

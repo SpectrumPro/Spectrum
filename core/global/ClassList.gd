@@ -165,6 +165,11 @@ func is_class_custom(classname: String) -> bool:
 	return _custom_classes.has(classname)
 
 
+## Checks if a class inherits from another class
+func does_class_inherit(base_class: String, inheritance: String) -> bool:
+	return _inheritance_trees[base_class].has(inheritance)
+
+
 ## Attempts to fetch custom classes from the server
 func _load_server_custom_classes() -> void:
 	_custom_classes.clear()

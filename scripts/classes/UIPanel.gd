@@ -22,7 +22,7 @@ signal close_request()
 @export var edit_controls: UIPanelEditControls = null : set = set_edit_controls
 
 ## The panel's settings node
-@export var settings_node: Control = null : set = set_settings_node
+@export var settings_node: Control = null
 
 ## All the nodes whos visibility should be toggled with edit mode
 @export var edit_mode_nodes: Array[Control] = []
@@ -41,15 +41,15 @@ var _edit_mode_disabled: bool = false
 ## Display mode for this panel
 var _display_mode: DisplayMode = DisplayMode.Panel
 
-## The current settigns node, if any
-var _settings_node: Control = null
-
 ## Mouse warp distance
 var _mouse_warp: Vector2
 
 
 func _init() -> void:
 	set_edit_mode.call_deferred(false)
+	
+	await ready
+	set_settings_node(settings_node)
 
 
 ## Sets the move and resize handle
@@ -75,16 +75,16 @@ func set_edit_controls(node: UIPanelEditControls) -> void:
 
 ## Sets the settings node
 func set_settings_node(node: Control) -> void:
-	if is_instance_valid(_settings_node):
-		Interface.remove_custom_popup(_settings_node)
-		_settings_node = null
+	if is_instance_valid(settings_node):
+		Interface.remove_custom_popup(settings_node)
+		settings_node = null
 	
 	if is_instance_valid(node):
-		_settings_node = node
-		_settings_node.get_parent_control().remove_child(_settings_node)
-		_settings_node.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+		settings_node = node
+		settings_node.get_parent_control().remove_child(settings_node)
+		settings_node.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
 		
-		Interface.add_custom_popup(_settings_node)
+		Interface.add_custom_popup(settings_node)
 		
 		if is_instance_valid(edit_controls):
 			edit_controls.settings_button.disabled = false
@@ -121,13 +121,13 @@ func _edit_mode_toggled(state: bool) -> void:
 
 ## Shows or hides the panels settings
 func set_show_settings(show_settings: bool) -> void:
-	if not is_instance_valid(_settings_node):
+	if not is_instance_valid(settings_node):
 		return
 	
 	if show_settings:
-		Interface.show_custom_popup(_settings_node)
+		Interface.show_custom_popup(settings_node)
 	else:
-		Interface.hide_custom_popup(_settings_node)
+		Interface.hide_custom_popup(settings_node)
 
 
 ## Disables or enabled edit mode

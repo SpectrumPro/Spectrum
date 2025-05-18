@@ -9,10 +9,9 @@ class_name UIFunctions extends UIPanel
 @onready var item_list_view: ItemListView = $ItemListView
 
 
+## Connect to function signals
 func _ready() -> void:
-	## Connect to function signals
 	ComponentDB.request_class_callback("Function", _update_list)
-	
 	_update_list(ComponentDB.get_components_by_classname("Function"))
 
 

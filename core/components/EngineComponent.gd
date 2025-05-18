@@ -132,7 +132,7 @@ func get_settings(p_classname: String) -> Dictionary:
 ## Adds a method that can be safley callled by client controls
 func add_accessible_method(p_name: String, p_types: Array[int], p_set_method: Callable, p_get_method: Callable = Callable(), p_changed_signal: Signal = Signal(), p_arg_description: Array[String] = []) -> void:
 	accessible_methods.merge({
-		name: {
+		p_name: {
 			"set": p_set_method,
 			"get": p_get_method,
 			"signal": p_changed_signal,
@@ -178,9 +178,9 @@ func local_delete() -> void:
 	_delete_request()
 	
 	delete_requested.emit()
+	ComponentDB.deregister_component(self)
 	
 	print(uuid, " Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
-	ComponentDB.deregister_component(self)
 
 ## Overide this function to handle delete requests
 func _delete_request() -> void: return

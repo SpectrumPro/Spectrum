@@ -62,6 +62,16 @@ func get_right() -> Array:
 	return _right.keys()
 
 
+## Checks if the left side has a variant
+func has_left(variant: Variant) -> bool:
+	return _left.has(variant)
+
+
+## Checks if the left side has a variant
+func has_right(variant: Variant) -> bool:
+	return _right.has(variant)
+
+
 ## Clears the RefMap
 func clear() -> void:
 	_left.clear()

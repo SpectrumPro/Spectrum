@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dikufbor3ym75"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_e3llf"]
-[ext_resource type="Script" path="res://components/Table/Table.gd" id="2_qeror"]
+[ext_resource type="Script" uid="uid://dxr8buk1bmdqi" path="res://components/Table/Table.gd" id="2_qeror"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="3_appd7"]
 
 [node name="Table" type="PanelContainer"]

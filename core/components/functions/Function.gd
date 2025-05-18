@@ -27,7 +27,9 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 
 
 ## Sets the intensity of this function, from 0.0 to 1.0
-func set_intensity(p_intensity: float) -> void: rpc("set_intensity", [p_intensity])
+func set_intensity(p_intensity: float) -> Promise: 
+	return rpc("set_intensity", [p_intensity])
+
 
 ## Internal: Sets the intensity
 func _set_intensity(p_intensity: float) -> void:

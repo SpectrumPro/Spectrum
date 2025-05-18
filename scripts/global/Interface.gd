@@ -39,10 +39,10 @@ var panels: Dictionary = {
 	"ColorPalette": load("res://panels/ColorPalette/ColorPalette.tscn"),
 	"ColorBlock": load("res://panels/ColorBlock/ColorBlock.tscn"),
 	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
-	"NewCuePlayback": load("res://panels/NewCuePlayback/NewCuePlayback.tscn"),
 	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
 	"CueListTable": load("res://panels/CueListTable/CueListTable.tscn"),
 	"DataContainerTable": load("res://panels/DataContainerTable/DataContainerTable.tscn"),
+	"DataEditor": load("res://panels/DataEditor/DataEditor.tscn"),
 	"Clock": load('res://panels/Clock/Clock.tscn'),
 	"Debug": load("res://panels/Debug/Debug.tscn"),
 	"Desk": load("res://panels/Desk/Desk.tscn"),
@@ -50,6 +50,7 @@ var panels: Dictionary = {
 	"Functions": load("res://panels/Functions/Functions.tscn"),
 	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
 	"Image": load("res://panels/Image/Image.tscn"),
+	"NewCuePlayback": load("res://panels/NewCuePlayback/NewCuePlayback.tscn"),
 	"Settings": load("res://panels/Settings/Settings.tscn"),
 	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
@@ -64,7 +65,7 @@ var panels: Dictionary = {
 ## Panels sorted into categories
 var sorted_panels: Dictionary = {
 	"Playbacks": ["NewCuePlayback", "CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
-	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable"],
+	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable", "DataEditor"],
 	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer"],
 	"Visualization": ["VirtualFixtures"],
 	"Widgets": ["Clock", "ColorBlock", "Image"],
@@ -305,9 +306,9 @@ func _try_auto_load() -> void:
 
 
 ## Shows the object picker
-func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable, filter: Array[String] = []) -> void:
-	_object_picker.filter_allow_list = filter
-	_object_picker.set_user_filtering(filter == [])
+func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable, filter: String = "") -> void:
+	_object_picker.filter = filter
+	_object_picker.set_user_filtering(filter == "")
 	_object_picker.set_select_mode(select_mode)
 	
 	if _object_picker_selected_signal_connection.is_valid():
@@ -337,6 +338,7 @@ func show_create_component(mode: CreateComponent.Mode, class_filter: String) -> 
 ## Shows the ComponentNamePopup
 func show_name_prompt(for_component: EngineComponent) -> void:
 	_name_popup.set_component(for_component)
+	_name_popup.focus()
 	show_custom_popup(_name_popup)
 
 

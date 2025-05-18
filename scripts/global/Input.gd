@@ -52,6 +52,7 @@ var midi_controler_mappings: Dictionary = {
 func _ready() -> void:
 	OS.open_midi_inputs()
 
+
 ## Called for every InputEvent
 func _input(event: InputEvent) -> void:
 	if event is InputEventMIDI: 
@@ -62,6 +63,9 @@ func _input(event: InputEvent) -> void:
 	
 	if Input.is_action_just_pressed("clear_programmer"): 
 		Programmer.clear()
+	
+	if Input.is_action_just_pressed("store_mode"):
+		Programmer.exit_store_mode() if Programmer.get_store_mode() else Programmer.enter_store_mode()
 
 
 ## Handles Midi input events

@@ -3,17 +3,17 @@
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_urntw"]
 [ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="2_54htk"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_bv5e1"]
-[ext_resource type="Script" path="res://panels/Universes/Universes.gd" id="2_dy1nn"]
+[ext_resource type="Script" uid="uid://c3si4amaf881t" path="res://panels/Universes/Universes.gd" id="2_dy1nn"]
 [ext_resource type="Texture2D" uid="uid://dpj5ee27m3m18" path="res://assets/icons/DMXOutput.svg" id="3_0qlid"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="4_5nceh"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_k0mnb"]
-[ext_resource type="Script" path="res://scripts/ui/Tabs.gd" id="6_u05u1"]
-[ext_resource type="Script" path="res://scripts/ui/TabBarFix.gd" id="7_6his8"]
+[ext_resource type="Script" uid="uid://rcg26r86qsdg" path="res://scripts/ui/Tabs.gd" id="6_u05u1"]
+[ext_resource type="Script" uid="uid://wy5b8gcb8nat" path="res://scripts/ui/TabBarFix.gd" id="7_6his8"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="9_b76bq"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="10_5cuqi"]
 [ext_resource type="PackedScene" uid="uid://dwtaoj1uy0dok" path="res://components/ComponentSettings/ComponentSettings.tscn" id="13_fvfxy"]
 
-[node name="Universes" type="PanelContainer" node_paths=PackedStringArray("_output_list", "_fixture_tree", "_remove_output", "_remove_fixture", "_output_settings", "_fixture_settings", "edit_controls")]
+[node name="Universes" type="PanelContainer" node_paths=PackedStringArray("_output_list", "_fixture_tree", "_remove_output", "_remove_fixture", "_output_settings", "_fixture_settings", "_object_picker_button", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,6 +30,7 @@ _remove_output = NodePath("VBoxContainer/CustomTabContainer/Outputs/HSplitContai
 _remove_fixture = NodePath("VBoxContainer/CustomTabContainer/Fixtures/HSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/RemoveFixture")
 _output_settings = NodePath("VBoxContainer/CustomTabContainer/Outputs/HSplitContainer/OutputSettings")
 _fixture_settings = NodePath("VBoxContainer/CustomTabContainer/Fixtures/HSplitContainer/FixtureSettings")
+_object_picker_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ObjectPickerButton")
 edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -51,7 +52,7 @@ icon = ExtResource("3_0qlid")
 flat = true
 alignment = 0
 text_overrun_behavior = 0
-filter = Array[String](["Universe"])
+filter = "Universe"
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(256, 0)

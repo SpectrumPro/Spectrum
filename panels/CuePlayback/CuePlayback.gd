@@ -607,7 +607,7 @@ func _ensure_cue_visible(number: float) -> void:
 
 
 func _on_change_cue_list_pressed() -> void:
-	Interface.show_object_picker(ObjectPicker.SelectMode.Single, _object_picker_callback, ["CueList"])
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, _object_picker_callback, "CueList")
 
 
 func _object_picker_callback(object_array: Array[EngineComponent]) -> void:

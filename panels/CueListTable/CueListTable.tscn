@@ -1,14 +1,15 @@
-[gd_scene load_steps=20 format=3 uid="uid://dkq5va4u70tau"]
+[gd_scene load_steps=21 format=3 uid="uid://dkq5va4u70tau"]
 
-[ext_resource type="Script" path="res://panels/CueListTable/CueListTable.gd" id="1_2ygo6"]
+[ext_resource type="Script" uid="uid://byj0s17am1fhr" path="res://panels/CueListTable/CueListTable.gd" id="1_2ygo6"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_yvabf"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_82k82"]
 [ext_resource type="PackedScene" uid="uid://dikufbor3ym75" path="res://components/Table/Table.tscn" id="2_278a8"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="4_2rmvq"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_3pa46"]
 [ext_resource type="Texture2D" uid="uid://dnfqijjcnit7c" path="res://assets/icons/CueList.svg" id="4_cgprk"]
-[ext_resource type="Script" path="res://panels/CueListTable/CreateConfirmationBox.gd" id="4_s5qbg"]
+[ext_resource type="Script" uid="uid://vn857agkt8ss" path="res://panels/CueListTable/CreateConfirmationBox.gd" id="4_s5qbg"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="4_vhkcs"]
+[ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="5_q8ytm"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="5_vj1hr"]
 [ext_resource type="Texture2D" uid="uid://dghhvu27mcp3u" path="res://assets/icons/PlayPause.svg" id="6_cyfiq"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="7_mprr3"]
@@ -38,7 +39,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="LabelSettings" id="LabelSettings_v82q1"]
 font = ExtResource("4_vhkcs")
 
-[node name="CueListTable" type="PanelContainer" node_paths=PackedStringArray("table", "_name_button", "_intensity_button", "_disable_on_deselect", "edit_controls")]
+[node name="CueListTable" type="PanelContainer" node_paths=PackedStringArray("table", "object_picker_button", "_intensity_button", "_disable_on_deselect", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -50,7 +51,7 @@ theme = ExtResource("1_yvabf")
 theme_override_styles/panel = ExtResource("2_82k82")
 script = ExtResource("1_2ygo6")
 table = NodePath("VBoxContainer/Table")
-_name_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CueName")
+object_picker_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ObjectPickerButton")
 _intensity_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton")
 _disable_on_deselect = [NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/CueSeekControls/HBoxContainer/Go"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/CueEditControls/HBoxContainer/Delete")]
 edit_controls = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/EditControls")
@@ -69,12 +70,13 @@ theme_override_styles/panel = ExtResource("4_3pa46")
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2"]
 layout_mode = 2
 
-[node name="CueName" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
+[node name="ObjectPickerButton" parent="VBoxContainer/PanelContainer2/HBoxContainer" instance=ExtResource("5_q8ytm")]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "Empty Table"
+text = "CueList"
 icon = ExtResource("4_cgprk")
 flat = true
+filter = "CueList"
+enable_store_mode = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
@@ -231,7 +233,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "Cancel"
 
-[connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/CueName" to="." method="_on_cue_name_pressed"]
+[connection signal="object_selected" from="VBoxContainer/PanelContainer2/HBoxContainer/ObjectPickerButton" to="." method="set_cue_list"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/CueEditControls/HBoxContainer/Add" to="." method="_on_add_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/CueEditControls/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/ScrollContainer/HBoxContainer/CueSeekControls/HBoxContainer/Previous" to="." method="_on_previous_pressed"]

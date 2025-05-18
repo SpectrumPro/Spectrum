@@ -9,8 +9,7 @@ class_name FixtureGroup extends Function
 signal fixtures_added(fixtures: Array[FixtureGroupItem])
 
 ## Emitted when fixtures are removed from this FixtureGroup
-signal fixtrues_removed(fixtures: Array[Fixture])
-
+signal fixtures_removed(fixtures: Array[Fixture])
 
 
 ## Stores all the fixtures and there positions. Stored as {Fixture: FixtureGroupItem}
@@ -22,7 +21,7 @@ func _component_ready() -> void:
 	_set_self_class("FixtureGroup")
 	
 	register_callback("on_fixtures_added", _add_group_items)
-	register_callback("on_fixtrues_removed", _remove_fixtures)
+	register_callback("on_fixtures_removed", _remove_fixtures)
 
 
 ## Gets a FixtureGroupItem
@@ -61,6 +60,7 @@ func _add_group_item(group_item: FixtureGroupItem, no_signal: bool = false) -> b
 	
 	_fixtures[group_item.get_fixture()] = group_item
 	
+	group_item.get_fixture().delete_requested.connect(_remove_fixture.bind(group_item.get_fixture()), CONNECT_ONE_SHOT)
 	Client.add_networked_object(group_item.uuid, group_item, group_item.delete_requested)
 	
 	if not no_signal:
@@ -90,12 +90,13 @@ func remove_fixture(fixture: Fixture) -> void: rpc("remove_fixture", [fixture])
 
 ## Internal: Removes a fixture from this group, returns false if this fixture is not in this group
 func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
+	print(fixture)
 	if not _fixtures.has(fixture): return false
 	
 	_fixtures.erase(fixture)
 	
 	if not no_signal:
-		fixtrues_removed.emit([fixture])
+		fixtures_removed.emit([fixture])
 	
 	return true
 
@@ -113,7 +114,7 @@ func _remove_fixtures(fixtures: Array) -> void:
 				just_removed_fixtures.append(fixture)
 	
 	if just_removed_fixtures:
-		fixtrues_removed.emit(just_removed_fixtures)
+		fixtures_removed.emit(just_removed_fixtures)
 
 
 func _delete_request() -> void:

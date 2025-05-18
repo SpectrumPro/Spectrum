@@ -38,7 +38,7 @@ var _quick_access_config: Array = [
 	{
 		"panel": Interface.panels.Functions,
 		"icon": load("res://assets/icons/Functions.svg"),
-		"size": Vector2.ZERO
+		"size": Vector2(800, 500)
 	},
 	{
 		"panel": Interface.panels.Settings,
@@ -56,6 +56,7 @@ var _quick_access_config: Array = [
 func _ready() -> void:
 	Client.connection_closed.connect(_on_connection_closed)
 	_reload_quick_access()
+
 
 
 ## Called when there is an unexpected disconnect from the server

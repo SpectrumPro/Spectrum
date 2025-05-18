@@ -12,9 +12,6 @@ signal edit_requested(items: Array)
 ## Emitted when the delete button is pressed, while items are selected
 signal delete_requested(items: Array)
 
-## Emitted when the take button is presses, while items are selected
-signal take_requested(items: Array)
-
 ## Emitted whent the add button is press
 signal add_requested()
 
@@ -26,10 +23,8 @@ signal selection_changed(items: Array)
 @export var show_new: bool = true : set = set_show_new ## Show the Add button
 @export var show_select: bool = true : set = set_show_select ## Show the selection all and none buttons
 @export var show_invert: bool = true : set = set_show_invert ## Shows the selection inver button
-@export var show_take: bool = true : set = set_show_take ## Shows the take button
 @export var show_edit: bool = true : set = set_show_edit ## Shows the edit button
 @export var show_delete: bool = true : set = set_show_delete ## Shows the delete button
-@export var show_separators: bool = true : set = set_show_separators ## Shows the separators in the tool bar
 
 @export var buttons_enabled: bool = true : set = set_buttons_enabled ## Shows or hides all the button in the ui
 @export var allow_multi_select: bool = true ## If the user should be able to select mutiple items at once
@@ -51,12 +46,10 @@ var object_refs: Dictionary
 
 
 func _ready() -> void:
-	set_show_separators(show_separators)
 	set_show_tool_bar(show_tool_bar)
 	set_show_new(show_new)
 	set_show_select(show_select)
 	set_show_invert(show_invert)
-	set_show_take(show_take)
 	set_show_edit(show_edit)
 	set_show_delete(show_delete)
 	
@@ -319,11 +312,6 @@ func _on_select_invert_pressed() -> void:
 		selection_changed.emit(all_items)
 
 
-func _on_take_selection_pressed() -> void:
-	if currently_selected_items:
-		take_requested.emit(currently_selected_items)
-
-
 func _on_edit_pressed() -> void:
 	edit_requested.emit(currently_selected_items)
 
@@ -355,44 +343,30 @@ func set_show_tool_bar(is_visible) -> void:
 func set_show_edit(is_visible) -> void:
 	show_edit = is_visible
 	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/Edit.visible = is_visible
+		$ToolBarContainer/HBoxContainer/ComponentControls/HBoxContainer/Edit.visible = is_visible
 
 
 func set_show_delete(is_visible) -> void:
 	show_delete = is_visible
 	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/Delete.visible = is_visible
+		$ToolBarContainer/HBoxContainer/ComponentControls/HBoxContainer/Delete.visible = is_visible
 
 
 func set_show_select(is_visible) -> void:
 	show_select = is_visible
 	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/SelectAll.visible = is_visible
-		$ToolBarContainer/HBoxContainer/SelectNone.visible = is_visible
+		$ToolBarContainer/HBoxContainer/SelectControls.visible = is_visible
 
 
 func set_show_invert(is_visible) -> void:
 	show_invert = is_visible
 	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/SelectInvert.visible = is_visible
+		$ToolBarContainer/HBoxContainer/SelectControls/HBoxContainer/SelectInvert.visible = is_visible
 
 
 func set_show_new(is_visible) -> void:
 	show_new = is_visible
 	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/New.visible = is_visible
-		$ToolBarContainer/HBoxContainer/VSeparator1.visible = is_visible
+		$ToolBarContainer/HBoxContainer/ComponentControls/HBoxContainer/New.visible = is_visible
 
-
-func set_show_take(is_visible) -> void:
-	show_take = is_visible
-	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/TakeSelection.visible = is_visible
-
-
-func set_show_separators(is_visible) -> void:
-	show_separators = is_visible
-	if is_node_ready():
-		$ToolBarContainer/HBoxContainer/VSeparator1.visible = is_visible
-		$ToolBarContainer/HBoxContainer/VSeparator2.visible = is_visible
 #endregion

@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://d00fmrh7nbaua"]
+
+[ext_resource type="PackedScene" uid="uid://bsxgp5g0jmyke" path="res://panels/Desk/Desk.tscn" id="1_mfxly"]
+[ext_resource type="Script" uid="uid://5twbcqrk7as1" path="res://StatusBar.gd" id="2_pj23w"]
+[ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="3_pj23w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pj23w"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.140447, 0.140447, 0.140447, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="UIv3" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pj23w")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Desk" parent="VBoxContainer" instance=ExtResource("1_mfxly")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatusBar" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_version_label", "_quick_access_container")]
+layout_mode = 2
+script = ExtResource("2_pj23w")
+_version_label = NodePath("HBoxContainer/VersionLabel")
+_quick_access_container = NodePath("HBoxContainer/QuickAccessContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/StatusBar"]
+layout_mode = 2
+
+[node name="QuickAccessContainer" type="HBoxContainer" parent="VBoxContainer/StatusBar/HBoxContainer"]
+layout_mode = 2
+
+[node name="VersionLabel" type="Label" parent="VBoxContainer/StatusBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "dasdasd"
+label_settings = ExtResource("3_pj23w")

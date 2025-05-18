@@ -90,7 +90,6 @@ func _remove_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool:
 	if not p_output in _outputs.values():
 		return false
 	
-	ComponentDB.deregister_component(p_output)
 	_outputs.erase(p_output.uuid)
 
 	if not p_no_signal:
@@ -170,9 +169,7 @@ func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false) -> bool:
 	
 	if not _fixture_channels[p_fixture.get_channel()]:
 		_fixture_channels.erase(p_fixture.get_channel())
-	
-	ComponentDB.deregister_component(p_fixture)
-	
+		
 	if not p_no_signal:
 		fixtures_removed.emit([p_fixture])
 	
