@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://daxklqm8l01pf"]
 
-[ext_resource type="Script" path="res://components/AddShortcutButton/AddShortcutButton.gd" id="1_5cpok"]
+[ext_resource type="Script" uid="uid://cdcf3dc6a5klk" path="res://components/AddShortcutButton/AddShortcutButton.gd" id="1_5cpok"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_g33n6"]
 
 [node name="AddShortcutButton" type="PanelContainer"]

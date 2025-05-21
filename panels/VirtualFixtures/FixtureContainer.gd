@@ -326,7 +326,8 @@ func _handle_mouse_up() -> void:
 
 ## Sets the selected state on a fixture's virtual fixtures
 func _set_fixture_selected(fixture: Fixture, state: bool) -> void:
-	_virtual_fixtures[fixture].set_fixture_selected(state)
+	if _virtual_fixtures.has(fixture):
+		_virtual_fixtures[fixture].set_fixture_selected(state)
 
 
 ## Sets all Virtual Fixture's self selected state to false

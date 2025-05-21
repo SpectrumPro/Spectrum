@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="4_5nceh"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_k0mnb"]
 [ext_resource type="Script" uid="uid://rcg26r86qsdg" path="res://scripts/ui/Tabs.gd" id="6_u05u1"]
-[ext_resource type="Script" uid="uid://wy5b8gcb8nat" path="res://scripts/ui/TabBarFix.gd" id="7_6his8"]
+[ext_resource type="Script" uid="uid://cd8jj6h3jj0ah" path="res://scripts/ui/TabBarFix.gd" id="7_6his8"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="9_b76bq"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="10_5cuqi"]
 [ext_resource type="PackedScene" uid="uid://dwtaoj1uy0dok" path="res://components/ComponentSettings/ComponentSettings.tscn" id="13_fvfxy"]

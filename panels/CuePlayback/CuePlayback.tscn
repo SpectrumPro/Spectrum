@@ -1,7 +1,7 @@
 [gd_scene load_steps=28 format=3 uid="uid://duww8qljyqvxk"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kkl7c"]
-[ext_resource type="Script" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
+[ext_resource type="Script" uid="uid://cn6m5i63dvch6" path="res://panels/CuePlayback/CuePlayback.gd" id="2_0mtdo"]
 [ext_resource type="Texture2D" uid="uid://c1cl6qetwg8st" path="res://assets/icons/Arrow_back.svg" id="2_bvwur"]
 [ext_resource type="Texture2D" uid="uid://kkblmodueva1" path="res://assets/icons/Arrow_foward.svg" id="3_07mes"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="3_ifhov"]
@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://bw77ixp24syp2" path="res://assets/icons/Timecode.svg" id="9_jkvxf"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="9_qen5l"]
 [ext_resource type="Texture2D" uid="uid://c7irg7odho4pk" path="res://assets/icons/Target.svg" id="10_to1ac"]
-[ext_resource type="Script" path="res://panels/CuePlayback/Triggers.gd" id="11_8p1rl"]
+[ext_resource type="Script" uid="uid://b0fn5cq4ldoji" path="res://panels/CuePlayback/Triggers.gd" id="11_8p1rl"]
 [ext_resource type="PackedScene" uid="uid://daxklqm8l01pf" path="res://components/AddShortcutButton/AddShortcutButton.tscn" id="12_6gcgo"]
 [ext_resource type="Texture2D" uid="uid://dghhvu27mcp3u" path="res://assets/icons/PlayPause.svg" id="15_3dwbb"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="20_mrsrb"]

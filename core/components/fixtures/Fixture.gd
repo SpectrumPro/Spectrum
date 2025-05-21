@@ -40,7 +40,7 @@ func set_parameter(p_parameter: String, p_function: String, p_value: float, p_la
 
 
 ## Internal: Sets a parameter to a float value
-func _set_parameter(p_parameter: String, p_value: float, p_layer_id: String, p_zone: String = "root") -> void:
+func _set_parameter(p_parameter: String, p_function: String, p_value: Variant, p_zone: String) -> void:
 	return 
 
 
@@ -50,7 +50,7 @@ func erase_parameter(p_parameter: String, p_layer_id: String, p_zone: String = "
 
 
 ## Internal: Erases the parameter on the given layer
-func _erase_parameter(p_parameter: String, p_layer_id: String, p_zone: String = "root") -> void:
+func _erase_parameter(p_parameter: String, p_zone: String) -> void:
 	return 
 
 
@@ -89,8 +89,18 @@ func get_all_override_values() -> Dictionary:
 	return {}
 
 
+## Gets all the override values
+func get_all_parameter_values() -> Dictionary:
+	return {}
+
+
 ## Checks if this Fixture has any overrides
 func has_overrides() -> bool:
+	return false
+
+
+## Checks if this fixture has a parameter
+func has_parameter(p_zone: String, p_parameter: String, p_function: String = "") -> bool:
 	return false
 
 

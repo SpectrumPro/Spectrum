@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://dqatkkghk5b2q"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_804im"]
-[ext_resource type="Script" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
+[ext_resource type="Script" uid="uid://cysfum4oxr3mj" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_hysiy"]
 [ext_resource type="Texture2D" uid="uid://chva73v2q1246" path="res://assets/icons/Bug.svg" id="3_2fxag"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_lse07"]
@@ -77,15 +77,15 @@ tooltip_text = "CRASH THE SERVER"
 theme_override_colors/font_disabled_color = Color(0.713726, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_hover_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_hover_pressed_color = Color(1, 0, 0, 1)
 theme_override_colors/icon_disabled_color = Color(0.713726, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = SubResource("SystemFont_fhcgp")
 text = "CRASH SERVER"
 icon = ExtResource("6_hgh5s")

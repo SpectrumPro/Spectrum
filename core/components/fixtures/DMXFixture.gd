@@ -15,6 +15,10 @@ var _channel: int = 0
 ## The mode of this fixture
 var _mode: String = ""
 
+## All the input value layers as raw values
+## { "zone": { "parameter": { "value": float, "function": String } } }
+var _raw_layers: Dictionary[String, Dictionary] = {}
+
 ## All the input value overrides as raw values
 ## { "zone": { "parameter": { "value": float, "function": String } } }
 var _raw_override_layers: Dictionary[String, Dictionary] = {}
@@ -30,10 +34,22 @@ func _component_ready() -> void:
 	register_setting("DMXFixture", "channel", set_channel, get_channel, channel_changed, Utils.TYPE_INT, 0, "Channel", 1, 512)
 
 
+## Internal: Sets a parameter to a float value
+func _set_parameter(p_parameter: String, p_function: String, p_value: Variant, p_zone: String) -> void:
+	_raw_layers.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
+
+
+## Internal: Erases the parameter on the given layer
+func _erase_parameter(p_parameter: String, p_zone: String) -> void:
+	_raw_layers.get_or_add(p_zone, {}).erace(p_parameter)
+
+
 ## Internal: Sets a parameter override to a float value
 func _set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> void:
 	_raw_override_layers.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
 	override_changed.emit(p_parameter, p_function, p_value, p_zone)
+	
+	print(p_function, ": ", p_value)
 
 
 ## Internal: Erases the parameter override 
@@ -82,9 +98,22 @@ func get_all_override_values() -> Dictionary:
 	return _raw_override_layers.duplicate(true)
 
 
+## Gets all the override values
+func get_all_parameter_values() -> Dictionary:
+	return _raw_layers.duplicate(true)
+
+
 ## Checks if this DMXFixture has any overrides
 func has_overrides() -> bool:
 	return _raw_override_layers != {}
+
+
+## Checks if this fixture has a parameter
+func has_parameter(p_zone: String, p_parameter: String, p_function: String = "") -> bool:
+	if p_function:
+		return _manifest.has_function(_mode, p_zone, p_parameter, p_function)
+	else:
+		return _manifest.has_parameter(_mode, p_zone, p_parameter)
 
 
 ## Gets all the zones

@@ -30,6 +30,9 @@ signal selection_changed(items: Array)
 @export var allow_multi_select: bool = true ## If the user should be able to select mutiple items at once
 @export var sort_alphabetically: bool = true
 
+## Parameter to use when sorting
+@export var sort_parameter: String = "name"
+
 @onready var item_container: VBoxContainer = self.get_node("PanelContainer2/ScrollContainer/ItemContainer")
 
 ## All the currently selected items
@@ -108,12 +111,18 @@ func add_item(item: Variant, chips: Array = [], name_method: String = "", name_c
 
 
 ## Sorts all the items in this list by alphabetical order
-func sort() -> void:
+func sort(parameter: String = sort_parameter) -> void:
 	var sorted_list_item_nodes: Array = object_refs.keys()
 	sorted_list_item_nodes.sort_custom(func(a, b): 
-		var a_name = object_refs[a].name if _is_valid_object(object_refs[a]) else str(object_refs[a])
-		var b_name = object_refs[b].name if _is_valid_object(object_refs[b]) else str(object_refs[b])
-		return a_name.naturalnocasecmp_to(b_name) < 0
+		var a_param = object_refs[a].get(parameter) if _is_valid_object(object_refs[a]) else str(object_refs[a])
+		var b_param = object_refs[b].get(parameter) if _is_valid_object(object_refs[b]) else str(object_refs[b])
+		
+		if typeof(a_param) == typeof(b_param):
+			match typeof(a_param):
+				TYPE_INT, TYPE_FLOAT:
+					return a_param < b_param
+		
+		return a_param.naturalnocasecmp_to(b_param) < 0
 	)
 	
 	for list_item: ListItem in sorted_list_item_nodes:
