@@ -108,6 +108,7 @@ script = ExtResource("3_7v2kg")
 _virtual_fixtures_root = NodePath("../../../..")
 
 [node name="Grid" type="ColorRect" parent="Table/RealScroll/ScrollSize/FixtureContainer"]
+visible = false
 material = SubResource("ShaderMaterial_10tdw")
 layout_mode = 1
 anchors_preset = 15
@@ -149,7 +150,6 @@ icon = ExtResource("6_n07cw")
 flat = true
 
 [node name="Zoom Controls" type="PanelContainer" parent="TitleBar/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
@@ -304,8 +304,8 @@ update_on_text_changed = true
 [connection signal="gui_input" from="Table/RealScroll/ScrollSize/FixtureContainer" to="." method="_on_fixture_container_gui_input"]
 [connection signal="gui_input" from="Table/RealScroll/ScrollSize/FixtureContainer" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_gui_input"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/FixtureGroupName" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_fixture_group_name_pressed"]
-[connection signal="pressed" from="TitleBar/HBoxContainer/Zoom Controls/HBoxContainer/ZoomIn" to="." method="_on_zoom_in_pressed"]
-[connection signal="pressed" from="TitleBar/HBoxContainer/Zoom Controls/HBoxContainer/ZoomOut" to="." method="_on_zoom_out_pressed"]
+[connection signal="pressed" from="TitleBar/HBoxContainer/Zoom Controls/HBoxContainer/ZoomIn" to="." method="_zoom_in"]
+[connection signal="pressed" from="TitleBar/HBoxContainer/Zoom Controls/HBoxContainer/ZoomOut" to="." method="_zoom_out"]
 [connection signal="toggled" from="TitleBar/HBoxContainer/GridControls/HBoxContainer/ShowGrid" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_show_grid_toggled"]
 [connection signal="value_changed" from="TitleBar/HBoxContainer/GridControls/HBoxContainer/GridSize" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_grid_size_value_changed"]
 [connection signal="pressed" from="TitleBar/HBoxContainer/PanelContainer/HBoxContainer/AddFixtures" to="Table/RealScroll/ScrollSize/FixtureContainer" method="_on_add_fixtures_pressed"]

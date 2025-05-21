@@ -36,7 +36,7 @@ var _fixture_signal_connections: Dictionary = {
 	"override_erased": _on_override_value_erased,
 	"all_override_removed": _on_override_value_erased,
 	"parameter_changed": _on_parameter_changed,
-	"parameter_eraced": _on_parameter_eraced,
+	"parameter_erased": _on_parameter_eraced,
 }
 
 
@@ -49,6 +49,7 @@ func set_fixture(control_fixture: Fixture) -> void:
 	if _fixture.has_overrides():
 		$Override.show()
 	
+	render_color()
 	$UUID.text = control_fixture.uuid
 
 
@@ -75,14 +76,38 @@ func render_color():
 		base_color.b = parameters["ColorAdd_B"].value
 	
 	
-	if _fixture.has_parameter("root", "Dimmer") and "Dimmer" in parameters:
-		base_color = base_color * parameters["Dimmer"].value
+	if _fixture.has_parameter("root", "ColorAdd_W") and "ColorAdd_W" in parameters:
+		base_color = Utils.blend_color_additive(base_color, Color.WHITE * parameters["ColorAdd_W"].value)
+	
+	if _fixture.has_parameter("root", "ColorAdd_RY") and "ColorAdd_RY" in parameters:
+		base_color = Utils.blend_color_additive(base_color, Color.ORANGE * parameters["ColorAdd_RY"].value)
+	
+	if _fixture.has_parameter("root", "ColorAdd_UV") and "ColorAdd_UV" in parameters:
+		base_color = Utils.blend_color_additive(base_color, Color.BLUE_VIOLET * parameters["ColorAdd_UV"].value)
+	
+	
+	if _fixture.has_parameter("root", "ColorSub_C") and "ColorSub_C" in parameters:
+		base_color.r -= parameters["ColorSub_C"].value
+	
+	if _fixture.has_parameter("root", "ColorSub_M") and "ColorSub_M" in parameters:
+		base_color.g -= parameters["ColorSub_M"].value
+	
+	if _fixture.has_parameter("root", "ColorSub_Y") and "ColorSub_Y" in parameters:
+		base_color.b -= parameters["ColorSub_Y"].value
+	
+	
+	if _fixture.has_parameter("root", "Dimmer"):
+		if "Dimmer" in parameters:
+			base_color = base_color * parameters["Dimmer"].value
+		else:
+			base_color = Color.BLACK
 	
 	set_color(base_color)
 
 
 ## Sets the base color
 func set_color(color: Color) -> void:
+	color.a = 1
 	$Color.modulate = color
 
 

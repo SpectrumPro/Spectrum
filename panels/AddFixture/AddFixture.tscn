@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://c3lrdtiw05qft"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_460tm"]
-[ext_resource type="Script" path="res://panels/AddFixture/AddFixture.gd" id="2_q8wav"]
+[ext_resource type="Script" uid="uid://3asbuxb8omw8" path="res://panels/AddFixture/AddFixture.gd" id="2_q8wav"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_v2e7d"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="3_oo2yy"]
 [ext_resource type="Texture2D" uid="uid://dpncjre34kf25" path="res://assets/icons/Storage.svg" id="4_7nytk"]
@@ -146,7 +146,7 @@ layout_mode = 2
 size_flags_horizontal = 10
 text = "Select Universe"
 icon = ExtResource("8_85xv7")
-filter = Array[String](["Universe"])
+filter = "Universe"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/PanelContainer/FixtureInfomation/FixtureInfomation/PanelContainer2/VBoxContainer2"]
 layout_mode = 2

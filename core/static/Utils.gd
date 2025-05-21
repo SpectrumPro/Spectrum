@@ -129,6 +129,16 @@ static func get_htp_color(color_1: Color, color_2: Color) -> Color:
 	return result_color
 
 
+## Blends two colors
+static func blend_color_additive(color_a: Color, color_b: Color) -> Color:
+	return Color(
+		clamp(color_a.r + color_b.r, 0.0, 1.0),
+		clamp(color_a.g + color_b.g, 0.0, 1.0),
+		clamp(color_a.b + color_b.b, 0.0, 1.0),
+		clamp(color_a.a + color_b.a, 0.0, 1.0)
+	)
+
+
 ## Gets the most common variant in an array
 static func get_most_common_value(arr: Array) -> Variant:
 	var count_dict := {}

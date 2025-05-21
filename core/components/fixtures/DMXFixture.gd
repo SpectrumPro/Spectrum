@@ -37,19 +37,20 @@ func _component_ready() -> void:
 ## Internal: Sets a parameter to a float value
 func _set_parameter(p_parameter: String, p_function: String, p_value: Variant, p_zone: String) -> void:
 	_raw_layers.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
+	parameter_changed.emit(p_parameter, p_function, p_value, p_zone)
 
 
 ## Internal: Erases the parameter on the given layer
 func _erase_parameter(p_parameter: String, p_zone: String) -> void:
 	_raw_layers.get_or_add(p_zone, {}).erace(p_parameter)
+	parameter_erased.emit(p_parameter, p_zone)
+	
 
 
 ## Internal: Sets a parameter override to a float value
 func _set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> void:
 	_raw_override_layers.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
 	override_changed.emit(p_parameter, p_function, p_value, p_zone)
-	
-	print(p_function, ": ", p_value)
 
 
 ## Internal: Erases the parameter override 
