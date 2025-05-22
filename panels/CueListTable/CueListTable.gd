@@ -38,6 +38,7 @@ var _data_keys: Array = [
 var _cue_list_connections: Dictionary = {
 	"cues_added": _on_cue_list_cues_added,
 	"cues_removed": _on_cue_list_cues_removed,
+	"delete_request": _on_cue_list_deleted
 }
 
 var _cue_connections: Dictionary = {
@@ -123,6 +124,11 @@ func _on_cue_list_cues_added(cues: Array) -> void:
 func _on_cue_list_cues_removed(cues: Array) -> void:
 	for cue: Cue in cues:
 		table.remove_row(_cues[cue].index)
+
+
+## Called when the cuelist is deleted
+func _on_cue_list_deleted() -> void:
+	set_cue_list(null)
 
 
 ## Called when a cue number changes

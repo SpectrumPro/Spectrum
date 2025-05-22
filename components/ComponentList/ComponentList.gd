@@ -71,14 +71,14 @@ func _component_callback(added: Array, removed: Array):
 		
 		parent.remove_child(component_item)
 		
-		while parent.get_parent():
-			if not parent.get_children():
-				parent.get_parent().remove_child(parent)
-				parent = parent.get_parent()
+		while parent:
+			var grandparent := parent.get_parent()
+			if not parent.get_children() and grandparent:
+				grandparent.remove_child(parent)
+				parent = grandparent
 			else:
 				break
-		
-		
+
 
 ## Called when an item is selected in the tree
 func _on_component_tree_item_selected() -> void:

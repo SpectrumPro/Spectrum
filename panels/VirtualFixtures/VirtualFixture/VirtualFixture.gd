@@ -50,7 +50,11 @@ func set_fixture(control_fixture: Fixture) -> void:
 	if _fixture.has_overrides():
 		$Override.show()
 	
-	render_color()
+	if _fixture is DMXFixture and not _fixture.get_manifest():
+		pass
+	else:
+		render_color()
+	
 	$UUID.text = control_fixture.uuid
 
 
@@ -103,9 +107,6 @@ func render_color():
 		else:
 			base_color = Color.BLACK
 	
-	if _fixture is DMXFixture and not _fixture.get_manifest():
-			base_color = Color.BLACK
-		
 	
 	set_color(base_color)
 

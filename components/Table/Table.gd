@@ -162,7 +162,7 @@ func create_rows(rows: Array[String]) -> Array[RowHeadder]:
 func remove_row(row_index: int) -> void:
 	if not row_index in _row_items: return
 	
-	if _selected_row.index == row_index:
+	if _selected_row and _selected_row.index == row_index:
 		deselect_all()
 	
 	var row_header: RowHeadder = _row_items[row_index].headder
