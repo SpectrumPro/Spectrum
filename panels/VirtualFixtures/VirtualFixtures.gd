@@ -108,7 +108,10 @@ func _on_grid_align_pressed() -> void:
 func _save() -> Dictionary:
 	if fixture_container.fixture_group:
 		return {
-			"fixture_group": fixture_container.fixture_group.uuid
+			"fixture_group": fixture_container.fixture_group.uuid,
+			"scroll_h": real_scroll.scroll_horizontal,
+			"scroll_v": real_scroll.scroll_vertical,
+			"zoom": fixture_container.scale.x
 		}
 	else:
 		return {}
@@ -121,6 +124,15 @@ func _load(saved_data) -> void:
 			if fixture_group is FixtureGroup:
 				fixture_container.set_fixture_group(fixture_group)
 		)
+	
+	real_scroll.scroll_horizontal = type_convert(saved_data.get("scroll_h"), TYPE_INT)
+	real_scroll.scroll_vertical = type_convert(saved_data.get("scroll_v"), TYPE_INT)
+	
+	fixture_container.scale = Vector2(
+		type_convert(saved_data.get("zoom"), TYPE_FLOAT),
+		type_convert(saved_data.get("zoom"), TYPE_FLOAT)
+	)
+
 
 
 func _on_table_gui_input(event: InputEvent) -> void:

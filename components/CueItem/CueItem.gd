@@ -33,6 +33,10 @@ var _current_tween: Tween = null
 	"PreWait": $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer4/HBoxContainer/PreWait,
 }
 
+
+func _ready() -> void:
+	Programmer.store_mode_changed.connect(_on_store_mode_changed)
+
 ## Sets the cue represented by this CueItem
 func set_cue(cue: Cue, cue_list: CueList) -> void:
 	if _cue_list: _cue_list.cue_changed.disconnect(_on_cue_number_changed)
@@ -110,6 +114,11 @@ func set_trigger_mode(trigger_mode: int) -> void:
 		Cue.TRIGGER_MODE.WITH_LAST: $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/WithLast.show()
 
 
+## Called when store mode is changed
+func _on_store_mode_changed(store_mode: bool, class_hint: String) -> void:
+	$StoreMode.visible = store_mode
+
+
 ## Called when an input event is decected in the panel
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -121,3 +130,6 @@ func _on_gui_input(event: InputEvent) -> void:
 			
 		else:
 			clicked.emit()
+			
+			if Programmer.get_store_mode():
+				Programmer.resolve_store_mode(_cue)

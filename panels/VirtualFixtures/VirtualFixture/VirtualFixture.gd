@@ -37,6 +37,7 @@ var _fixture_signal_connections: Dictionary = {
 	"all_override_removed": _on_override_value_erased,
 	"parameter_changed": _on_parameter_changed,
 	"parameter_erased": _on_parameter_eraced,
+	"manifest_changed": _on_dmx_fixture_manifest_changed
 }
 
 
@@ -102,6 +103,10 @@ func render_color():
 		else:
 			base_color = Color.BLACK
 	
+	if _fixture is DMXFixture and not _fixture.get_manifest():
+			base_color = Color.BLACK
+		
+	
 	set_color(base_color)
 
 
@@ -150,6 +155,11 @@ func _on_override_value_erased(parameter: String = "", zone: String = "") -> voi
 	if not _fixture.has_overrides():
 		$Override.hide()
 	
+	render_color()
+
+
+## Called when the manifest is changed on a DMXFixture
+func _on_dmx_fixture_manifest_changed(manifest: FixtureManifest):
 	render_color()
 
 

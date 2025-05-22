@@ -25,7 +25,8 @@ var _cues: Dictionary = {}
 var _previous_uuid: String = ""
 
 var _signal_connections: Dictionary = {
-	"cues_added": _reload_cues
+	"cues_added": _reload_cues,
+	"cues_removed": _reload_cues
 }
 
 ## Sets the cuelist to control

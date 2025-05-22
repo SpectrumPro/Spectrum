@@ -150,7 +150,7 @@ func make_dummy_of(master_trigger: TriggerButton) -> void:
 
 ## Adds an input event as a shortcut
 func add_shortcut(event: InputEvent) -> void:
-	shortcut.events.append(event)
+	shortcut.events = [event]
 	shortcut_added.emit(event)
 
 
@@ -168,6 +168,13 @@ func _on_button_down() -> void:
 func _on_button_up() -> void:
 	if is_instance_valid(_button_up_trigger):
 		_button_up_trigger.call_method()
+
+
+## Called when the button is pressed
+func _on_pressed() -> void:
+	_on_button_down()
+	await get_tree().create_timer(0.01).timeout
+	_on_button_up()
 
 
 ## Called when this button is toggled in toggle mode, will call the corresponding _on_button_* method

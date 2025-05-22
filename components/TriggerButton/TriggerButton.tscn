@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://c2c3t6jriymr6"]
 
-[ext_resource type="Script" path="res://components/TriggerButton/TriggerButton.gd" id="1_3rl6v"]
+[ext_resource type="Script" uid="uid://cdy72t0e4kh8p" path="res://components/TriggerButton/TriggerButton.gd" id="1_3rl6v"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_v6l20"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rpw8u"]
@@ -73,4 +73,5 @@ text_overrun_behavior = 3
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
 [connection signal="button_up" from="." to="." method="_on_button_up"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]
 [connection signal="resized" from="." to="." method="_on_resized"]

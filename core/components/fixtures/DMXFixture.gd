@@ -8,6 +8,9 @@ class_name DMXFixture extends Fixture
 ## Emitted when the channel is changed
 signal channel_changed(channel: int)
 
+## Emitted when the manifest is changed
+signal manifest_changed(manifest: FixtureManifest)
+
 
 ## The DMX channel of this fixture
 var _channel: int = 0
@@ -92,6 +95,8 @@ func get_manifest() -> FixtureManifest:
 func _set_manifest(p_manifest: FixtureManifest, p_mode: String) -> void:
 	_mode = p_mode
 	_manifest = p_manifest
+	
+	manifest_changed.emit(_manifest)
 
 
 ## Gets all the override values

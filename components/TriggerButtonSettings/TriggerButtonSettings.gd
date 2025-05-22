@@ -141,4 +141,7 @@ func _on_component_method_picker_method_confired(method_trigger: MethodTrigger) 
 ## Called when a shortcut is added
 func _on_add_shortcut_button_shortcut_changed(input_event: InputEvent) -> void:
 	if trigger_button:
+		input_event.device = -1
+		#input_event.physical_keycode = 0
+		#input_event.key_label = 0
 		trigger_button.add_shortcut(input_event)
