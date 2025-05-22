@@ -39,7 +39,6 @@ edit_controls = NodePath("ItemListView/ToolBarContainer/HBoxContainer/EditContro
 layout_mode = 2
 show_select = false
 show_invert = false
-sort_parameter = null
 
 [node name="ToolBarContainer" parent="ItemListView" index="0"]
 theme_override_styles/panel = ExtResource("4_vxby2")

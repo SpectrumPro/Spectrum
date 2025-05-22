@@ -111,6 +111,9 @@ func has_overrides() -> bool:
 
 ## Checks if this fixture has a parameter
 func has_parameter(p_zone: String, p_parameter: String, p_function: String = "") -> bool:
+	if not _manifest:
+		return false
+	
 	if p_function:
 		return _manifest.has_function(_mode, p_zone, p_parameter, p_function)
 	else:
