@@ -17,6 +17,9 @@ signal border_color_changed(border_color: Color)
 ## Emitted when the border width is changed
 signal border_width_changed(border_width: int)
 
+## Emitted whem an InputEvent shortcut is added
+signal shortcut_added(event: InputEvent)
+
 
 ## Button Mode
 enum Mode {Normal, Toggle}
@@ -29,6 +32,9 @@ var _percentage: float = 0
 ## The style box used for themeing this button
 var _style_box: StyleBoxFlat = null
 
+## If this is a dummy button
+var _is_dummy: bool = false
+
 
 ## Config for the button up action
 var _button_up_trigger: MethodTrigger = MethodTrigger.new()
@@ -40,6 +46,8 @@ var _button_down_trigger: MethodTrigger = MethodTrigger.new()
 func _ready() -> void:
 	_style_box = $Style.get_theme_stylebox("panel").duplicate()
 	$Style.add_theme_stylebox_override("panel", _style_box)
+	
+	shortcut = Shortcut.new()
 
 
 ## Sets the text of this button, 
@@ -137,6 +145,13 @@ func make_dummy_of(master_trigger: TriggerButton) -> void:
 	master_trigger.bg_color_changed.connect(set_bg_color)
 	master_trigger.border_color_changed.connect(set_border_color)
 	master_trigger.border_width_changed.connect(set_border_width)
+	master_trigger.shortcut_added.connect(add_shortcut)
+
+
+## Adds an input event as a shortcut
+func add_shortcut(event: InputEvent) -> void:
+	shortcut.events.append(event)
+	shortcut_added.emit(event)
 
 
 ## Used to update the position of the value background when we are resized
@@ -174,6 +189,7 @@ func serialize() -> Dictionary:
 		"border_color": var_to_str(get_border_color()),
 		"border_width": get_border_width(),
 		"visible": visible,
+		"shortcut": var_to_str(shortcut)
 	}
 
 
@@ -200,3 +216,5 @@ func deserialize(serialized_data: Dictionary) -> void:
 	
 	set_label_text(serialized_data.get("label", ""))
 	visible = serialized_data.get("visible", true)
+	
+	shortcut = str_to_var(serialized_data.get("shortcut", ""))

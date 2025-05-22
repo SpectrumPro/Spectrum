@@ -21,6 +21,7 @@ const TYPE_STRING := "STRING"
 const TYPE_IP := "IP"
 const TYPE_BOOL := "BOOL"
 const TYPE_INT := "INT"
+const TYPE_FLOAT := "FLOAT"
 const TYPE_NULL := "NULL"
 const TYPE_CUSTOM := "CUSTOM"
 

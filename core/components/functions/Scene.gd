@@ -39,6 +39,9 @@ func _component_ready() -> void:
 	add_accessible_method("flash_release", [TYPE_FLOAT], flash_release, Callable(), Signal(), ["Fade Out Speed"])
 	add_accessible_method("flash", [TYPE_FLOAT, TYPE_FLOAT, TYPE_FLOAT], flash, Callable(), Signal(), ["Fade In Speed", "Fade Out Speed", "Hold Time"])
 	
+	register_setting("Scene", "fade_in", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, Utils.TYPE_FLOAT, 0, "Fade In Time", 0, INF)
+	register_setting("Scene", "fade_out", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, Utils.TYPE_FLOAT, 1, "Fade Out Time", 0, INF)
+	
 	register_callback("on_state_changed", _set_enabled)
 	register_callback("on_fade_in_speed_changed", _set_fade_in_speed)
 	register_callback("on_fade_out_speed_changed", _set_fade_out_speed)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dwtaoj1uy0dok"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_j3nmp"]
-[ext_resource type="Script" path="res://components/ComponentSettings/ComponentSettings.gd" id="2_pgf2d"]
+[ext_resource type="Script" uid="uid://cgjaih60p0eqb" path="res://components/ComponentSettings/ComponentSettings.gd" id="2_pgf2d"]
 
 [node name="ComponentSettings" type="PanelContainer" node_paths=PackedStringArray("_settings_module_container")]
 anchors_preset = 15

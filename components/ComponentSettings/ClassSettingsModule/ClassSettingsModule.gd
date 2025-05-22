@@ -81,6 +81,17 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: St
 			p_signal.connect(spin_box.set_value_no_signal)
 			control = spin_box
 		
+		Utils.TYPE_FLOAT:
+			var spin_box: SpinBox = SpinBox.new()
+			spin_box.min_value = p_min if p_min != null else -(1 << 32)
+			spin_box.max_value = p_max if p_max != null else 1 << 32
+			spin_box.step = 0.001
+			spin_box.set_value_no_signal(getter.call())
+			
+			spin_box.value_changed.connect(setter)
+			p_signal.connect(spin_box.set_value_no_signal)
+			control = spin_box
+		
 		Utils.TYPE_NULL:
 			if getter.is_null():
 				var button: Button = Button.new()

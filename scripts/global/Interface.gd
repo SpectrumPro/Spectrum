@@ -127,6 +127,10 @@ var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") 
 var ui_library_location: String = "user://UILibrary"
 
 
+## Confirmation prompt text for deleting a component
+const COMPONENT_DELETE_TEXT: String = "Are you sure you want to delete component: $name?"
+
+
 ## The main object picker
 var _object_picker: ObjectPicker
 
@@ -324,12 +328,15 @@ func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable
 
 
 ## Shows the create component popup
-func show_create_component(mode: CreateComponent.Mode, class_filter: String) -> Promise:
+func show_create_component(mode: CreateComponent.Mode, class_filter: String, auto_show_name_prompt: bool = false) -> Promise:
 	_create_component_promise.clear()
 	
 	_create_component_popup.deselect_all()
 	_create_component_popup.set_mode(mode)
 	_create_component_popup.set_class_filter(class_filter)
+	
+	if auto_show_name_prompt:
+		_create_component_promise.then(show_name_prompt)
 	
 	show_custom_popup(_create_component_popup)
 	return _create_component_promise
@@ -351,7 +358,6 @@ func show_panel_picker() -> Promise:
 
 ## Shows a regular confirmation dialog
 func show_confirmation_dialog(title: String, source: Variant = null) -> ConfirmationBox:
-	
 	return _dialog_box_container.add_confirmation_dialog(title, source)
 
 
@@ -363,6 +369,13 @@ func show_info_dialog(title: String, source: Variant = null) -> ConfirmationBox:
 ## Shows a delete confirmation dialog
 func show_delete_confirmation(title: String = "", source: Variant = null) -> ConfirmationBox:
 	return _dialog_box_container.add_delete_confirmation(title, source)
+
+
+## Shows a confirmation, and then deletes a component if the user accepts
+func confirm_and_delete_component(component: EngineComponent, source: Variant = null) -> ConfirmationBox:
+	return show_delete_confirmation(COMPONENT_DELETE_TEXT.replace("$name", component.get_name()), source).then(func ():
+		component.delete()
+	)
 
 
 ## Shows a rename dialog

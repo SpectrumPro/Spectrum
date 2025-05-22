@@ -33,10 +33,8 @@ settings_node = NodePath("Settings")
 layout_mode = 2
 
 [node name="Settings" type="PanelContainer" parent="." node_paths=PackedStringArray("close_settings")]
-custom_minimum_size = Vector2(0, 570)
+custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 theme = ExtResource("1_8dmeu")
 theme_override_styles/panel = ExtResource("4_ms2qx")
 script = ExtResource("5_ad7jd")
