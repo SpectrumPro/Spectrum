@@ -78,9 +78,6 @@ func _component_ready() -> void:
 func play() -> void: Client.send_command(uuid, "play")
 func is_playing() -> bool: return _autoplay
 
-## Pauses the CueList at the current state
-func pause() -> void: Client.send_command(uuid, "pause")
-
 ## Stopes the CueList, will fade out all running scnes, using fade_out_speed, otherwise will use the fade_out_speed of the current index
 func stop() -> void: Client.send_command(uuid, "stop")
 

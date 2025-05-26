@@ -12,13 +12,6 @@ class_name UIFunctions extends UIPanel
 @export var _component_list: ComponentList
 
 
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.is_pressed():
-		print(var_to_str(event))
-		print("Shortcut:", var_to_str($VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/Create.shortcut.events[0]))
-
-
 ## Called when the Create button is pressed
 func _on_create_pressed() -> void:
 	Interface.show_create_component(CreateComponent.Mode.Component, "Function", true)

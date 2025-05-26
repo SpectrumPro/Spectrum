@@ -167,7 +167,6 @@ func _sort_fixtures() -> void:
 	channels.reverse()
 	
 	for channel: int in channels:
-		print(channel)
 		for fixture: DMXFixture in _fixture_channels[channel]:
 			(_fixture_map.left(fixture) as TreeItem).move_before(previous)
 			previous = _fixture_map.left(fixture)

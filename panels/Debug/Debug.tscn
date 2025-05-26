@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://dqatkkghk5b2q"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_804im"]
-[ext_resource type="Script" uid="uid://cysfum4oxr3mj" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
+[ext_resource type="Script" uid="uid://bshfmstayckth" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_hysiy"]
 [ext_resource type="Texture2D" uid="uid://chva73v2q1246" path="res://assets/icons/Bug.svg" id="3_2fxag"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_lse07"]
@@ -135,6 +135,10 @@ text = "Get Component UUID"
 layout_mode = 2
 text = "Change Component Name"
 
+[node name="DumpFixtureData" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Dump Fxture Data"
+
 [node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -222,4 +226,5 @@ text = "Send"
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetComponentUUID" to="." method="_on_get_component_uuid_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ChangeName" to="." method="_on_change_name_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/DumpFixtureData" to="." method="_on_dump_fixture_data_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessageToServer" to="." method="_on_send_message_to_server_pressed"]

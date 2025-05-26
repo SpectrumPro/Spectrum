@@ -71,6 +71,16 @@ func _on_change_name_pressed() -> void:
 	)
 
 
+## Dumps fixture data
+func _on_dump_fixture_data_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (fixtures: Array):
+		Client.send_command("debug", "dump_fixture_data", [fixtures[0]]).then(func (path: String):
+			OS.shell_open(path)
+			set_output(path)
+		)
+	, "Fixture")
+
+
 func _on_send_message_to_server_pressed() -> void:
 	var args: Variant = str_to_var(message_args.text)
 	

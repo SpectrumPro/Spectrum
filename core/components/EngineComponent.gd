@@ -171,7 +171,9 @@ func get_all_user_meta() -> Dictionary:
 
 
 ## Always call this function when you want to delete this component. 
-func delete() -> void: rpc("delete")
+func delete() -> void: 
+	
+	rpc("delete")
 
 ## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
 func local_delete() -> void:
@@ -181,6 +183,7 @@ func local_delete() -> void:
 	ComponentDB.deregister_component(self)
 	
 	print(uuid, " Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
+
 
 ## Overide this function to handle delete requests
 func _delete_request() -> void: return

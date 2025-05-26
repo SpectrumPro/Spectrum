@@ -2,7 +2,7 @@
 
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="1_es5ky"]
 [ext_resource type="Script" uid="uid://byqpqgm3d03aq" path="res://panels/Functions/Functions.gd" id="2_bfwkh"]
-[ext_resource type="PackedScene" path="res://components/PanelMenuBar.tscn" id="3_rou2v"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://components/PanelMenuBar.tscn" id="3_rou2v"]
 [ext_resource type="PackedScene" uid="uid://c4vlxpk3ywg42" path="res://components/ComponentList/ComponentList.tscn" id="4_bosbs"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="5_7afv4"]
 [ext_resource type="PackedScene" uid="uid://dwtaoj1uy0dok" path="res://components/ComponentSettings/ComponentSettings.tscn" id="5_re3nl"]
@@ -38,6 +38,7 @@ layout_mode = 2
 [node name="HBoxContainer" type="HSplitContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+split_offset = -2190
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -56,6 +57,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Create" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 shortcut = SubResource("Shortcut_fsh4n")
@@ -63,6 +65,7 @@ text = "Create"
 icon = ExtResource("5_7afv4")
 
 [node name="Delete" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true

@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name FixtureGroup extends Function
+class_name FixtureGroup extends EngineComponent
 ## Stores a group of fixtures, using FixtureGroupItem
 
 

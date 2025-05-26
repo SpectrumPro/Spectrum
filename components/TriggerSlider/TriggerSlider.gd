@@ -66,6 +66,7 @@ func _on_feedback_signal_emitted(p_value: Variant) -> void:
 
 ## Called when the value is changed
 func _on_value_changed(value: float) -> void:
+	print(_trigger_config.callable)
 	if _trigger_config.callable.is_valid():
 		_trigger_config.callable.call(value)
 
