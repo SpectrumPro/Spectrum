@@ -86,7 +86,7 @@ func _add_outputs(p_outputs: Array, p_no_signal: bool = false) -> void:
 func remove_output(p_output: DMXOutput) -> Promise: return rpc("remove_output", [p_output])
 
 ## Internal: Removes a output from this universe
-func _remove_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool: 
+func _remove_output(p_output: DMXOutput, p_no_signal: bool = false, p_delete: bool = false) -> bool: 
 	if not p_output in _outputs.values():
 		return false
 	
@@ -95,6 +95,9 @@ func _remove_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool:
 	if not p_no_signal:
 		outputs_removed.emit([p_output])
 	
+	if p_delete:
+		p_output.local_delete()
+	
 	return true
 
 
@@ -102,12 +105,12 @@ func _remove_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool:
 func remove_outputs(p_outputs: Array) -> Promise: return rpc("remove_outputs", [p_outputs])
 
 ## Internal: Removes mutiple outputs from this universe
-func _remove_outputs(p_outputs: Array, p_no_signal: bool = false) -> void:
+func _remove_outputs(p_outputs: Array, p_no_signal: bool = false, p_delete: bool = false) -> void:
 	var just_removed_outputs: Array[DMXOutput] = []
 
 	for output: Variant in p_outputs:
 		if output is DMXOutput:
-			if _remove_output(output, true):
+			if _remove_output(output, true, p_delete):
 				just_removed_outputs.append(output)
 	
 	if not p_no_signal and just_removed_outputs:
@@ -160,7 +163,7 @@ func _add_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
 func remove_fixture(p_fixture: DMXFixture) -> Promise: return rpc("remove_fixture", [p_fixture])
 
 ## Internal: Removes a fixture from this universe
-func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false) -> bool:
+func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false, p_delete: bool = false) -> bool:
 	if not p_fixture in _fixtures.values():
 		return false
 	
@@ -173,6 +176,9 @@ func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false) -> bool:
 	if not p_no_signal:
 		fixtures_removed.emit([p_fixture])
 	
+	if p_delete:
+		p_fixture.local_delete()
+	
 	return true
 
 
@@ -180,12 +186,12 @@ func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false) -> bool:
 func remove_fixtures(p_fixtures: Array) -> Promise: return rpc("remove_fixtures", [p_fixtures])
 
 ## Internal: Removes mutiple fixtures from this universe
-func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
+func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false, p_delete: bool = false) -> void:
 	var just_removed_fixtures: Array[DMXFixture] = []
 	
 	for fixture: Variant in p_fixtures:
 		if fixture is DMXFixture:
-			if _remove_fixture(fixture, true):
+			if _remove_fixture(fixture, true, p_delete):
 				just_removed_fixtures.append(fixture)
 	
 	if not p_no_signal and just_removed_fixtures:
@@ -242,8 +248,8 @@ func _serialize_request() -> Dictionary:
 
 ## Called when this universe is to be deleted, see [method EngineComponent.delete]
 func _delete_request():
-	_remove_outputs(_outputs.values())
-	_remove_fixtures(_fixtures.values())
+	_remove_outputs(_outputs.values(), false, true)
+	_remove_fixtures(_fixtures.values(), false, true)
 
 
 ## Loads this universe from a serialised universe

@@ -169,7 +169,7 @@ func _reset():
 	for object_class_name: String in EngineConfig.root_classes:
 		for component: EngineComponent in ComponentDB.get_components_by_classname(object_class_name):
 			component.local_delete()
-
+			
 
 ## Creates and adds a new component using the classname to get the type, will return null if the class is not found
 func create_component(classname: String, name: String = "") -> Promise: 

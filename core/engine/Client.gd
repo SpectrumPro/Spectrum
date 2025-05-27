@@ -145,6 +145,11 @@ func add_networked_object(object_name: String, object: Object, delete_signal: Si
 			remove_networked_object(object_name)
 		, CONNECT_ONE_SHOT)
 	
+	if object is EngineComponent:
+		object.delete_requested.connect(func ():
+			remove_networked_object(object_name)
+		, CONNECT_ONE_SHOT)
+	
 	# Loop through each function on the object that is being added, and create a dictionary containing the avaibal function, and their args
 	for index: int in range(len(method_list)):
 		

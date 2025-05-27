@@ -61,7 +61,7 @@ func _add_group_item(group_item: FixtureGroupItem, no_signal: bool = false) -> b
 	_fixtures[group_item.get_fixture()] = group_item
 	
 	group_item.get_fixture().delete_requested.connect(_remove_fixture.bind(group_item.get_fixture()), CONNECT_ONE_SHOT)
-	Client.add_networked_object(group_item.uuid, group_item, group_item.delete_requested)
+	ComponentDB.register_component(group_item)
 	
 	if not no_signal:
 		fixtures_added.emit([group_item])
@@ -119,7 +119,6 @@ func _remove_fixtures(fixtures: Array) -> void:
 
 func _delete_request() -> void:
 	for group_item: FixtureGroupItem in _fixtures.values():
-		Client.remove_networked_object(group_item.uuid)
 		group_item.local_delete()
 
 
