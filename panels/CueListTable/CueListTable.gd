@@ -72,8 +72,8 @@ func _reload_table() -> void:
 	table.clear_rows()
 	
 	if _cue_list:
-		for cue_number: float in _cue_list.get_index_list():
-			_add_cue_row(_cue_list.get_cue(cue_number))
+		for cue: Cue in _cue_list.get_cues():
+			_add_cue_row(cue)
 
 
 ## Creats the colums
@@ -184,7 +184,8 @@ func _get_cue_number() -> float:
 
 
 func _on_go_pressed() -> void:
-	_cue_list.seek_to(_get_cue_number())
+	#_cue_list.seek_to(_get_cue_number())
+	pass
 
 func _on_previous_pressed() -> void: if _cue_list: _cue_list.go_previous()
 func _on_next_pressed() -> void: if _cue_list: _cue_list.go_next()

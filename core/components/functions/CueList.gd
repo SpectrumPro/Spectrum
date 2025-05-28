@@ -1,250 +1,276 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
 class_name CueList extends Function
-## Stores a list of Cues, that are enabled and disabled in order one after another
+## A list of cues
 
 
-## Emitted when the current cue is changed
-signal cue_changed(cue_number: float)
+## Emitted when the active cue is changed
+signal active_cue_changed(cue: Cue)
 
-## Emitted when this CueList starts playing
-signal played(index: float)
+## Emitted when a cues crossfade is finished
+signal cue_crossfade_finished(cue: Cue)
 
-## Emitted when this CueList is paused
-signal paused(index: float)
+## Emitted when the global fade state is changed
+signal global_fade_state_changed(use_global_fade: bool)
 
-## Emitted when a cue is moved in this list
-signal cue_moved(scene: Scene, to: float)
+## Emitted when the global pre_wait state is changed
+signal global_pre_wait_state_changed(use_global_pre_wait: bool)
+
+## Emitted when the global fade is changed
+signal global_fade_changed(global_fade: float)
+
+## Emitted when the global pre_wait is changed
+signal global_pre_wait_changed(global_pre_wait: float)
 
 ## Emitted when a cue is added to this CueList
 signal cues_added(cues: Array)
 
-## Emitted when a cue is removed form this CueList
+## Emitted when a cue is removed from this CueList
 signal cues_removed(cues: Array)
 
-## Emitted when cue numbers are changed, stored as {Cue:new_number, ...}
-signal cue_numbers_changed(new_numbers: Dictionary)
+## Emitted when a cue's position has changed
+signal cue_order_changed(cue: Cue, position: int)
 
-## Emitted when the mode is changed
-signal mode_changed(mode: MODE)
+## Emitted when the loop mode is changed
+signal loop_mode_changed(loop_mode: LoopMode)
 
 
-## The current cue
-var _current_cue: Cue = null
+## Loop mode, Reset: Reset all track and go to a default state, Track: Track changes while looping the cue list
+enum LoopMode {RESET, TRACK}
 
-## The current mode of this cuelist. When in loop mode the cuelist will not reset fixtures to 0-value when looping back to the start
-enum MODE {NORMAL, LOOP}
-var _mode: int = MODE.NORMAL
 
-## Stores all the cues, theese are stored unordored
-var _cues: Dictionary = {}
+## All the cues in the list
+var _cues: Array[Cue]
 
-## Stores an ordored list of all the cue indexes
-var _index_list: Array = []
+## Global fade state
+var _use_global_fade: bool = false
 
-## Is this cue autoplaying
-var _autoplay: bool = false
+## Global pre wait state
+var _use_global_pre_wait: bool = false
+
+## Global fade time
+var _global_fade: float = 1
+
+## Global pre wait
+var _global_pre_wait: float = 1
 
 
 func _component_ready() -> void:
+	_set_name("CueList")
 	_set_self_class("CueList")
-	
-	add_accessible_method("play", [TYPE_NIL], play, is_playing, played)
-	add_accessible_method("pause", [TYPE_NIL], pause, is_playing, paused)
-	add_accessible_method("stop", [TYPE_NIL], stop, get_current_cue_number, cue_changed)
-	
-	add_accessible_method("go_next", [TYPE_NIL], go_next)
-	add_accessible_method("go_previous", [TYPE_NIL], go_previous)
-	
-	add_accessible_method("seek_to", [TYPE_FLOAT], seek_to, get_current_cue_number, cue_changed, ["Cue Number"])
-	
-	add_accessible_method("set_mode", [TYPE_INT], set_mode, get_mode, mode_changed, ["Loop Mode, 0: Normal, 1: Loop"])
-	add_accessible_method("global_fade_time", [TYPE_FLOAT], set_global_fade_time, Callable(), Signal(), ["Fade Time"])
-	add_accessible_method("global_pre_wait", [TYPE_FLOAT], set_global_pre_wait, Callable(), Signal(), ["Fade Time"])
-	
-	register_callback("on_cue_changed", _seek_to)
-	register_callback("on_played", _play)
-	register_callback("on_paused", _pause)
-	register_callback("on_stopped", _stop)
+
+	#register_callback("active_cue_changed", _on_active_cue_changed)
+	#register_callback("cue_crossfade_finished", _on_cue_crossfade_finished)
+	register_callback("on_global_fade_state_changed", _set_global_fade_state)
+	register_callback("on_global_pre_wait_state_changed", set_global_pre_wait_state)
+	register_callback("on_global_fade_changed", _set_global_fade_speed)
+	register_callback("on_global_pre_wait_changed", _set_global_pre_wait_speed)
 	register_callback("on_cues_added", _add_cues)
 	register_callback("on_cues_removed", _remove_cues)
-	register_callback("on_cue_numbers_changed", _change_cue_numbers)
-	register_callback("on_mode_changed", _change_mode)
+	#register_callback("cue_order_changed", _on_cue_order_changed)
+	#register_callback("on_loop_mode_changed")
+
+
+## Server: Adds a cue to the list
+func add_cue(cue: Cue) -> Promise:
+	return rpc("add_cue", [cue])
+
+
+## Server: Removes a cue from the list
+func remove_cue(cue: Cue) -> Promise:
+	return rpc("remove_cue", [cue])
+
+
+## Returns an ordored list of cues
+func get_cues() -> Array[Cue]:
+	return _cues.duplicate()
+
+
+## Server: Sets the position of a cue in the list
+func set_cue_position(cue: Cue, position: int) -> Promise:
+	return rpc("set_cue_position", [cue, position])
+
+
+## Server: Sets the global fade state
+func set_global_fade_state(use_global_fade: bool) -> Promise:
+	return rpc("set_global_fade_state", [use_global_fade])
+
+
+## Server: Sets the global pre wait state
+func set_global_pre_wait_state(use_global_pre_wait: bool) -> Promise:
+	return rpc("set_global_pre_wait_state", [use_global_pre_wait])
+
+
+## Server: Sets the global fade speed
+func set_global_fade_speed(global_fade_speed: float) -> Promise:
+	return rpc("set_global_fade_speed", [global_fade_speed])
+
+
+## Server: Sets the global pre wait speed
+func set_global_pre_wait_speed(global_pre_wait_speed: float) -> Promise:
+	return rpc("set_global_pre_wait_speed", [global_pre_wait_speed])
+
+
+## Gets the global fade state
+func get_global_fade_state() -> bool:
+	return _use_global_fade
+
+
+## Gets the global pre wait state
+func get_global_pre_wait_state() -> bool:
+	return _use_global_pre_wait
+
+
+## Gets the global fade speed
+func get_global_fade_speed() -> float:
+	return _global_fade
+
+
+## Gets the global pre wait speed
+func get_global_pre_wait_speed() -> float:
+	return _global_pre_wait
+
+
+## Server: Seeks to the next cue in the list
+func go_next() -> Promise:
+	return rpc("go_next", [])
+
+
+## Server: Seeks to the previous cue in the list
+func go_previous() -> Promise:
+	return rpc("go_previous", [])
+
+
+## Server: Seeks to a cue
+func seek_to(cue: Cue) -> Promise:
+	return rpc("seek_to", [cue])
 
 
 
-## Plays this CueList, starting at index, or from the current index
-func play() -> void: Client.send_command(uuid, "play")
-func is_playing() -> bool: return _autoplay
-
-## Stopes the CueList, will fade out all running scnes, using fade_out_speed, otherwise will use the fade_out_speed of the current index
-func stop() -> void: Client.send_command(uuid, "stop")
-
-## Advances to the next cue in the list
-func go_next() -> void: Client.send_command(uuid, "go_next")
-
-## Retuens to the previous cue in the list
-func go_previous() -> void: Client.send_command(uuid, "go_previous")
-
-## Skips to the cue provided in index
-func seek_to(cue_index: float) -> void: Client.send_command(uuid, "seek_to", [cue_index])
-func get_current_cue_number() -> float: return _current_cue.number if _current_cue else -1
-func get_current_cue() -> Cue: return _current_cue
-
-## Moves the cue at cue_number up. By swappign the number with the next cue in the list
-func move_cue_up(cue_number: float) -> void: Client.send_command(uuid, "move_cue_up", [cue_number])
-
-## Moves the cue at cue_number down. By swappign the number with the previous cue in the list
-func move_cue_down(cue_number: float) -> void: Client.send_command(uuid, "move_cue_down", [cue_number])
-
-## Changes the number of a cue
-func set_cue_number(new_number: float, cue: Cue) -> void: Client.send_command(uuid, "set_cue_number", [new_number, cue])
-
-## Duplicates a cue
-func duplicate_cue(cue_number: float) -> void: Client.send_command(uuid, "duplicate_cue", [cue_number])
-
-## Changes the current mode
-func set_mode(p_mode: MODE) -> void: Client.send_command(uuid, "set_mode", [p_mode])
-func get_mode() -> MODE: return _mode
-
-## Sets the fade time for all cues
-func set_global_fade_time(fade_time: float) -> void: Client.send_command(uuid, "set_global_fade_time", [fade_time])
-
-## Sets the pre wait time for all cues
-func set_global_pre_wait(pre_wait: float) -> void: Client.send_command(uuid, "set_global_pre_wait", [pre_wait])
-
-
-## Gets the index list
-func get_index_list() -> Array: 
-	return _index_list
-
-
-## Returns the index of a cue
-func get_cue_index(p_cue: Cue) -> int:
-	return _index_list.find(p_cue.number)
-
-
-## Gets a cue from a cue number
-func get_cue(p_cue_number: float) -> Cue:
-	return _cues.get(p_cue_number)
-
-
-## Internal: Seeks to a cue
-func _seek_to(p_cue_number: float) -> void:
-	if p_cue_number in _cues:
-		_current_cue = _cues[p_cue_number]
-	else:
-		_current_cue = null
+## Adds a cue to the list
+func _add_cue(p_cue: Cue, p_no_signal: bool = false) -> bool:
+	if p_cue in _cues:
+		return false
 	
-	cue_changed.emit(p_cue_number)
+	_cues.append(p_cue)
+	p_cue.delete_requested.connect(remove_cue.bind(p_cue))
+	Client.register_component(p_cue)
 
-
-## Internal: Plays this cuelist 
-func _play():
-	_autoplay = true
-	played.emit()
-
-
-## Internal: Pauses this cuelist
-func _pause():
-	_autoplay = false
-	paused.emit()
-
-
-## Internal: Stops this cuelist
-func _stop():
-	_autoplay = false
-	_current_cue = null
-	cue_changed.emit(-1)
-
-
-## Internal: Adds cues to this cuelist
-func _add_cues(p_cues: Array) -> void:
-	for cue in p_cues:
-		if cue is Cue:
-			_add_cue(cue, cue.number)
-
-
-## Adds a pre existing cue to this CueList
-## Returnes false if the cue already exists in this list, or if the index is already in use
-func _add_cue(cue: Cue, number: float = 0, no_signal: bool = false) -> bool:
-	_cues[number] = cue
-	_index_list.append(number)
-	_index_list.sort()
-	
-	ComponentDB.register_component(cue)
-	
-	if not no_signal:
-		cues_added.emit([cue])
+	if not p_no_signal:
+		cues_added.emit([p_cue])
 	
 	return true
 
 
-## Internal: Removes cues from this cuelist
-func _remove_cues(p_cues: Array) -> void:
-	var just_removed_cues: Array[Cue] = []
+## Adds mutiple cues
+func _add_cues(p_cues: Array) -> void:
+	var just_added_cues: Array[Cue]
+
+	for cue: Variant in p_cues:
+		if cue is Cue and _add_cue(cue, true):
+			just_added_cues.append(cue)
 	
-	for cue in p_cues:
-		if cue is Cue and cue.number in _cues: 
-			_index_list.erase(cue.number)
-			_cues.erase(cue.number)
-			
+	if just_added_cues:
+		cues_added.emit(just_added_cues)
+
+
+## Removes a cue from the list
+func _remove_cue(p_cue: Cue, p_no_signal: bool = false) -> bool:
+	if p_cue not in _cues:
+		return false
+	 
+	_cues.erase(p_cue)
+	Client.deregister_component(p_cue)
+
+	if not p_no_signal:
+		cues_removed.emit([p_cue])
+
+	return true
+
+## Removes mutiple cues
+func _remove_cues(p_cues: Array) -> void:
+	var just_removed_cues: Array[Cue]
+
+	for cue: Variant in p_cues:
+		if cue is Cue and _remove_cue(cue, true):
 			just_removed_cues.append(cue)
 	
 	if just_removed_cues:
 		cues_removed.emit(just_removed_cues)
 
 
-## INTERNAL: Called when cue numbers are changed on the server
-func _change_cue_numbers(new_numbers: Dictionary) -> void:
-	for new_number: float in new_numbers.keys():
-		var cue: Cue = new_numbers[new_number]
-		_index_list.erase(cue.number)
-		_cues.erase(cue.number)
-		
-	for new_number: float in new_numbers.keys():
-		var cue: Cue = new_numbers[new_number]
-		_index_list.append(new_number)
-		_index_list.sort()
-
-		_cues[new_number] = cue
-		cue.number = new_number
+## Internal: Sets the position of a cue in the list
+func _set_cue_position(cue: Cue, position: int) -> void:
+	if cue not in _cues:
+		return
 	
-	cue_numbers_changed.emit(new_numbers)
+	var old_index: int = _cues.find(cue)
+	_cues.insert(position, cue)
+	_cues.remove_at(old_index)
+
+	cue_order_changed.emit(cue, position)
 
 
-## Internal: Changes the mode
-func _change_mode(p_mode: MODE) -> void:
-	_mode = p_mode
-	mode_changed.emit(_mode)
+## Internal: Sets the global fade state
+func _set_global_fade_state(use_global_fade: bool) -> void:
+	if _use_global_fade == use_global_fade:
+		return
+	
+	_use_global_fade = use_global_fade
+	global_fade_state_changed.emit(_use_global_fade)
 
 
-## Loads this CueList from a dictionary
+## Internal: Sets the global pre wait state
+func _set_global_pre_wait_state(use_global_pre_wait: bool) -> void:
+	if _use_global_pre_wait == use_global_pre_wait:
+		return
+	
+	_use_global_pre_wait = use_global_pre_wait
+	global_pre_wait_state_changed.emit(_use_global_pre_wait)
+
+
+## Internal: Sets the global fade speed
+func _set_global_fade_speed(global_fade_speed: float) -> void:
+	if _global_fade == global_fade_speed:
+		return
+	
+	_global_fade = global_fade_speed
+	global_fade_changed.emit(_global_fade)
+
+
+## Internal: Sets the global pre wait speed
+func _set_global_pre_wait_speed(global_pre_wait_speed: float) -> void:
+	if _global_pre_wait == global_pre_wait_speed:
+		return
+	
+	_global_pre_wait = global_pre_wait_speed
+	global_pre_wait_changed.emit(_global_pre_wait)
+
+
+## Saves this cue list to a Dictionary
+func _serialize_request() -> Dictionary:
+	return {
+		"use_global_fade": _use_global_fade,
+		"use_global_pre_wait": _use_global_pre_wait,
+		"global_fade": _global_fade,
+		"global_pre_wait": _global_pre_wait,
+		"cues": Utils.seralise_component_array(_cues)
+	}
+
+
+## Loads this cue list from a Dictionary
 func _load_request(serialized_data: Dictionary) -> void:
-	_mode = int(serialized_data.get("mode", MODE.NORMAL))
-	
-	var just_added_cues: Array = []
-	
-	for cue_index: String in serialized_data.get("cues").keys():
-		var new_cue: Cue = Cue.new(serialized_data.cues[cue_index].uuid, serialized_data.cues[cue_index].name)
-		new_cue.load(serialized_data.cues[cue_index])
-		
-		if _add_cue(new_cue, float(cue_index), true):
-			just_added_cues.append(new_cue)
-	
-	if just_added_cues:
-		cues_added.emit(just_added_cues)
-	
-	var index: Variant = serialized_data.get("index")
-	if index is int and index != -1:
-		_seek_to(_index_list[serialized_data.get("index")])
-		
-	_intensity = serialized_data.get("intensity", 1)
-	intensity_changed.emit(_intensity)
+	_use_global_fade = type_convert(serialized_data.get("use_global_fade", _use_global_fade), TYPE_BOOL)
+	_use_global_pre_wait = type_convert(serialized_data.get("use_global_pre_wait", _use_global_pre_wait), TYPE_BOOL)
+	_global_fade = type_convert(serialized_data.get("global_fade", _global_fade), TYPE_FLOAT)
+	_global_pre_wait = type_convert(serialized_data.get("global_pre_wait", _global_pre_wait), TYPE_FLOAT)
+
+	_add_cues(Utils.deseralise_component_array(type_convert(serialized_data.get("cues", []), TYPE_ARRAY)))
 
 
 ## Called when this CueList is to be deleted
 func _delete_request() -> void:
-	for cue: Cue in _cues.values():
-		cue.local_delete()
+	for cue: Cue in _cues:
+		_remove_cue(cue, true)
+		cue.delete()

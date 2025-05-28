@@ -14,7 +14,7 @@
 font_names = PackedStringArray("Open Sans")
 font_weight = 925
 
-[node name="Debug" type="PanelContainer" node_paths=PackedStringArray("message_for", "message_method", "message_args", "edit_controls")]
+[node name="Debug" type="PanelContainer" node_paths=PackedStringArray("message_for", "message_method", "message_args", "local_remote_option", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,6 +28,7 @@ script = ExtResource("2_f46o2")
 message_for = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer/For")
 message_method = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer/Method")
 message_args = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer/Args")
+local_remote_option = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/LocalRemoteOption")
 edit_controls = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -139,6 +140,14 @@ text = "Change Component Name"
 layout_mode = 2
 text = "Dump Fxture Data"
 
+[node name="GetSerializedComponentRemote" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Get Serialized Component Remote"
+
+[node name="GetSerializedComponentLocal" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Get Serialized Component Local"
+
 [node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -212,7 +221,16 @@ text = "[]"
 placeholder_text = "Args: Array"
 expand_to_text_length = true
 
-[node name="SendMessageToServer" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+[node name="LocalRemoteOption" type="OptionButton" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Remote"
+popup/item_0/id = 0
+popup/item_1/text = "Local"
+popup/item_1/id = 1
+
+[node name="SendMessage" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Send"
@@ -227,4 +245,6 @@ text = "Send"
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetComponentUUID" to="." method="_on_get_component_uuid_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ChangeName" to="." method="_on_change_name_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/DumpFixtureData" to="." method="_on_dump_fixture_data_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessageToServer" to="." method="_on_send_message_to_server_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetSerializedComponentRemote" to="." method="_on_get_serialized_component_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetSerializedComponentLocal" to="." method="_on_get_serialized_component_local_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessage" to="." method="_on_send_message_to_server_pressed"]

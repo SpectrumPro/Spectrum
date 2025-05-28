@@ -39,7 +39,7 @@ func _ready() -> void:
 
 ## Sets the cue represented by this CueItem
 func set_cue(cue: Cue, cue_list: CueList) -> void:
-	if _cue_list: _cue_list.cue_changed.disconnect(_on_cue_number_changed)
+	if _cue_list: _cue_list.active_cue_changed.disconnect(_on_cue_number_changed)
 	if _cue:
 		_cue.name_changed.disconnect(set_cue_name)
 		_cue.number_changed.disconnect(set_number)
@@ -51,7 +51,7 @@ func set_cue(cue: Cue, cue_list: CueList) -> void:
 	_cue_list = cue_list
 	
 	if _cue and _cue_list:
-		_cue_list.cue_changed.connect(_on_cue_number_changed)
+		_cue_list.active_cue_changed.connect(_on_cue_number_changed)
 		
 		_cue.name_changed.connect(set_cue_name)
 		_cue.number_changed.connect(set_number)
@@ -126,7 +126,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		
 		if event.double_click: 
 			if _cue_list and _cue:
-				_cue_list.seek_to(_cue.number)
+				_cue_list.seek_to(_cue)
 			
 		else:
 			clicked.emit()

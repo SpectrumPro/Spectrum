@@ -253,3 +253,28 @@ static func disconnect_signals_with_bind(signals: Dictionary, object: Object) ->
 			
 			_signal.disconnect(bound_callable)
 			connections.erase(callable_name)
+
+
+## Seralizes an array of EngineComponents
+static func seralise_component_array(array: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary]
+
+	for component: Variant in array:
+		if component is EngineComponent:
+			result.append(component.serialize())
+
+	return result
+
+
+## Deseralizes an array of seralized EngineComponents
+static func deseralise_component_array(array: Array) -> Array[EngineComponent]:
+	var result: Array[EngineComponent]
+
+	for seralized_component: Variant in array:
+		if seralized_component is Dictionary and seralized_component.has("class_name"):
+			var component: EngineComponent = ClassList.get_class_script(seralized_component.class_name).new()
+
+			component.load(seralized_component)
+			result.append(component)
+
+	return result

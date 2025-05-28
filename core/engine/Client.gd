@@ -127,6 +127,16 @@ func send_command(object_id: String, method: String, args: Array = []) -> Promis
 	return promise
 
 
+## Registers a component as a network object
+func register_component(p_component: EngineComponent) -> void:
+	add_networked_object(p_component.uuid, p_component, p_component.delete_requested)
+
+
+## Deregisters a component as a network object
+func deregister_component(p_component) -> void:
+	remove_networked_object(p_component.uuid)
+
+
 ## Add a network object
 func add_networked_object(object_name: String, object: Object, delete_signal: Signal = Signal()) -> void:
 	

@@ -14,13 +14,16 @@ class_name UIDebug extends UIPanel
 ## Message method args
 @export var message_args: LineEdit
 
+## OptionButton for the local / remote option
+@export var local_remote_option: OptionButton
+
 
 ## Sets the text in the output
 func set_output(output: Variant) -> void:
 	var result: String = ""
 	
 	if output is Dictionary:
-		result = JSON.stringify(result, "\t")
+		result = JSON.stringify(output, "\t")
 	else:
 		result = str(output)
 	
@@ -81,17 +84,42 @@ func _on_dump_fixture_data_pressed() -> void:
 	, "Fixture")
 
 
+## Gets a Serialized Component
+func _on_get_serialized_component_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (components: Array):
+		Client.send_command(components[0].uuid, "serialize").then(func (data: Dictionary):
+			set_output(data)
+		)
+	, "")
+
+## Gets a Serialized Component, local
+func _on_get_serialized_component_local_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (components: Array):
+		set_output(components[0].serialize())
+	, "")
+
+
 func _on_send_message_to_server_pressed() -> void:
 	var args: Variant = str_to_var(message_args.text)
 	
 	if args is Array:
-		Client.send_command(
-			message_for.text,
-			message_method.text,
-			args
-		).then(func (result: Variant = null):
-			set_output(result)
-		)
+		if local_remote_option.get_selected_id():
+			var component: EngineComponent = ComponentDB.get_component(message_for.text)
+			
+			if component and component.has_method(message_method.text):
+				var method: Callable = component.get(message_method.text)
+				
+				if method.get_argument_count() == len(args):
+					set_output(method.callv(args))
+		
+		else:
+			Client.send_command(
+				message_for.text,
+				message_method.text,
+				args
+			).then(func (result: Variant = null):
+				set_output(result)
+			)
 
 
 ## Saves this panel into a dictonary

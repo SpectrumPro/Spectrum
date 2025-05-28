@@ -50,7 +50,6 @@ var panels: Dictionary = {
 	"Functions": load("res://panels/Functions/Functions.tscn"),
 	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
 	"Image": load("res://panels/Image/Image.tscn"),
-	"NewCuePlayback": load("res://panels/NewCuePlayback/NewCuePlayback.tscn"),
 	"Settings": load("res://panels/Settings/Settings.tscn"),
 	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
 	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
@@ -64,7 +63,7 @@ var panels: Dictionary = {
 
 ## Panels sorted into categories
 var sorted_panels: Dictionary = {
-	"Playbacks": ["NewCuePlayback", "CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
+	"Playbacks": ["CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
 	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable", "DataEditor"],
 	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer"],
 	"Visualization": ["VirtualFixtures"],
