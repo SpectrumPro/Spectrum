@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cd6jlfv6bfubw"]
+[gd_scene load_steps=15 format=3 uid="uid://owx4rxrtg50d"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_t3b7b"]
 [ext_resource type="Texture2D" uid="uid://cxtdx7cj44nk" path="res://assets/icons/Touch.svg" id="1_yeptw"]
@@ -52,7 +52,7 @@ bg_color = Color(0, 0.513726, 1, 1)
 corner_radius_top_left = 4
 corner_radius_bottom_left = 4
 
-[node name="CueItem" type="PanelContainer"]
+[node name="CueItem" type="PanelContainer" node_paths=PackedStringArray("_status_bar", "_name_label", "_qid_label", "_fade_time_label", "_pre_wait_label", "_trigger_mode_manual", "_trigger_mode_after_last", "_trigger_mode_with_last")]
 offset_right = 304.0
 offset_bottom = 100.0
 size_flags_horizontal = 3
@@ -60,6 +60,14 @@ mouse_filter = 1
 theme = ExtResource("1_t3b7b")
 theme_override_styles/panel = SubResource("StyleBoxFlat_lrd3y")
 script = ExtResource("2_aostn")
+_status_bar = NodePath("VBoxContainer/ProgressBar")
+_name_label = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/Name")
+_qid_label = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer2/HBoxContainer/CueNumber")
+_fade_time_label = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer3/HBoxContainer/FadeTime")
+_pre_wait_label = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer4/HBoxContainer/PreWait")
+_trigger_mode_manual = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/Manual")
+_trigger_mode_after_last = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/AfterLast")
+_trigger_mode_with_last = NodePath("VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/WithLast")
 
 [node name="StoreMode" type="Panel" parent="."]
 visible = false

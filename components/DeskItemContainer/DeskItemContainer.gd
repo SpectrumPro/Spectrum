@@ -106,7 +106,6 @@ func save() -> Dictionary:
 	
 	if _panel:
 		var script_name: String = _panel.get_script().resource_path.get_file()
-		print(script_name.substr(0, script_name.rfind(".")))
 		saved_data.merge({
 			"type": script_name.substr(0, script_name.rfind(".")),
 			"settings": _panel.save()

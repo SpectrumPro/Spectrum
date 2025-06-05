@@ -23,6 +23,12 @@ signal global_fade_changed(global_fade: float)
 ## Emitted when the global pre_wait is changed
 signal global_pre_wait_changed(global_pre_wait: float)
 
+## Emitted when the allow triggered looping state is changed
+signal triggered_looping_changed(allow_triggered_looping: bool)
+
+## Emitted when the loop mode is changed
+signal loop_mode_changed(loop_mode: LoopMode)
+
 ## Emitted when a cue is added to this CueList
 signal cues_added(cues: Array)
 
@@ -32,9 +38,6 @@ signal cues_removed(cues: Array)
 ## Emitted when a cue's position has changed
 signal cue_order_changed(cue: Cue, position: int)
 
-## Emitted when the loop mode is changed
-signal loop_mode_changed(loop_mode: LoopMode)
-
 
 ## Loop mode, Reset: Reset all track and go to a default state, Track: Track changes while looping the cue list
 enum LoopMode {RESET, TRACK}
@@ -42,6 +45,9 @@ enum LoopMode {RESET, TRACK}
 
 ## All the cues in the list
 var _cues: Array[Cue]
+
+## The current active cue
+var _active_cue: Cue
 
 ## Global fade state
 var _use_global_fade: bool = false
@@ -55,21 +61,36 @@ var _global_fade: float = 1
 ## Global pre wait
 var _global_pre_wait: float = 1
 
+## Current loop mode for the cue list
+var _loop_mode: LoopMode = LoopMode.RESET
+
+## Allow cues with trigger modes to loop back to the start when reaching the end.
+var _allow_triggered_looping: bool = false
+
 
 func _component_ready() -> void:
 	_set_name("CueList")
 	_set_self_class("CueList")
 
-	#register_callback("active_cue_changed", _on_active_cue_changed)
-	#register_callback("cue_crossfade_finished", _on_cue_crossfade_finished)
+	register_callback("on_active_cue_changed", _on_active_cue_changed)
 	register_callback("on_global_fade_state_changed", _set_global_fade_state)
 	register_callback("on_global_pre_wait_state_changed", set_global_pre_wait_state)
 	register_callback("on_global_fade_changed", _set_global_fade_speed)
 	register_callback("on_global_pre_wait_changed", _set_global_pre_wait_speed)
+	register_callback("on_triggered_looping_changed", _set_allow_triggered_looping)
+	register_callback("on_loop_mode_changed", _set_loop_mode)
 	register_callback("on_cues_added", _add_cues)
 	register_callback("on_cues_removed", _remove_cues)
-	#register_callback("cue_order_changed", _on_cue_order_changed)
-	#register_callback("on_loop_mode_changed")
+	register_callback("cue_order_changed", _set_cue_position)
+	
+	register_setting_bool("allow_triggered_looping", set_allow_triggered_looping, get_allow_triggered_looping, triggered_looping_changed)
+	register_setting_bool("use_global_fade", set_global_fade_state, get_global_fade_state, global_fade_state_changed)
+	register_setting_bool("use_global_pre_wait", set_global_pre_wait_state, get_global_pre_wait_state, global_pre_wait_state_changed)
+	
+	register_setting_float("global_fade", set_global_fade_speed, get_global_fade_speed, global_fade_changed, 0, INF)
+	register_setting_float("global_pre_wait", set_global_pre_wait_speed, get_global_pre_wait_speed, global_pre_wait_changed, 0, INF)
+	
+	register_setting_enum("loop_mode", set_loop_mode, get_loop_mode, loop_mode_changed, LoopMode)
 
 
 ## Server: Adds a cue to the list
@@ -85,6 +106,16 @@ func remove_cue(cue: Cue) -> Promise:
 ## Returns an ordored list of cues
 func get_cues() -> Array[Cue]:
 	return _cues.duplicate()
+
+
+## Sets whether triggered cues can loop back to the start
+func set_allow_triggered_looping(p_allow_triggered_looping: bool) -> Promise:
+	return rpc("set_allow_triggered_looping", [p_allow_triggered_looping])
+
+
+## Sets the loop mode
+func set_loop_mode(p_loop_mode: LoopMode) -> Promise:
+	return rpc("set_loop_mode", [p_loop_mode])
 
 
 ## Server: Sets the position of a cue in the list
@@ -110,6 +141,16 @@ func set_global_fade_speed(global_fade_speed: float) -> Promise:
 ## Server: Sets the global pre wait speed
 func set_global_pre_wait_speed(global_pre_wait_speed: float) -> Promise:
 	return rpc("set_global_pre_wait_speed", [global_pre_wait_speed])
+
+
+## Gets the current loop mode
+func get_loop_mode() -> LoopMode:
+	return _loop_mode
+
+
+## Gets whether triggered cues can loop back to the start
+func get_allow_triggered_looping() -> bool:
+	return _allow_triggered_looping
 
 
 ## Gets the global fade state
@@ -212,6 +253,24 @@ func _set_cue_position(cue: Cue, position: int) -> void:
 	cue_order_changed.emit(cue, position)
 
 
+## Internal: Sets whether triggered cues can loop back to the start
+func _set_allow_triggered_looping(p_allow_triggered_looping: bool) -> void:
+	if p_allow_triggered_looping == _allow_triggered_looping:
+		return
+
+	_allow_triggered_looping = p_allow_triggered_looping
+	triggered_looping_changed.emit(_allow_triggered_looping)
+
+
+## Internal Sets the loop mode
+func _set_loop_mode(p_loop_mode: LoopMode) -> void:
+	if _loop_mode == p_loop_mode:
+		return
+
+	_loop_mode = p_loop_mode
+	loop_mode_changed.emit(_loop_mode)
+
+
 ## Internal: Sets the global fade state
 func _set_global_fade_state(use_global_fade: bool) -> void:
 	if _use_global_fade == use_global_fade:
@@ -248,6 +307,12 @@ func _set_global_pre_wait_speed(global_pre_wait_speed: float) -> void:
 	global_pre_wait_changed.emit(_global_pre_wait)
 
 
+## Internal: Called when the active cue is changed on the server
+func _on_active_cue_changed(p_cue: Cue) -> void:
+	_active_cue = p_cue
+	active_cue_changed.emit(_active_cue)
+
+
 ## Saves this cue list to a Dictionary
 func _serialize_request() -> Dictionary:
 	return {
@@ -255,6 +320,8 @@ func _serialize_request() -> Dictionary:
 		"use_global_pre_wait": _use_global_pre_wait,
 		"global_fade": _global_fade,
 		"global_pre_wait": _global_pre_wait,
+		"allow_triggered_looping": _allow_triggered_looping,
+		"loop_mode": _loop_mode,
 		"cues": Utils.seralise_component_array(_cues)
 	}
 
@@ -265,6 +332,8 @@ func _load_request(serialized_data: Dictionary) -> void:
 	_use_global_pre_wait = type_convert(serialized_data.get("use_global_pre_wait", _use_global_pre_wait), TYPE_BOOL)
 	_global_fade = type_convert(serialized_data.get("global_fade", _global_fade), TYPE_FLOAT)
 	_global_pre_wait = type_convert(serialized_data.get("global_pre_wait", _global_pre_wait), TYPE_FLOAT)
+	_allow_triggered_looping = type_convert(serialized_data.get("allow_triggered_looping", _allow_triggered_looping), TYPE_BOOL)
+	_loop_mode = type_convert(serialized_data.get("loop_mode", _loop_mode), TYPE_INT)
 
 	_add_cues(Utils.deseralise_component_array(type_convert(serialized_data.get("cues", []), TYPE_ARRAY)))
 

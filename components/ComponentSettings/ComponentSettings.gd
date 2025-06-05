@@ -8,7 +8,6 @@ class_name ComponentSettings extends PanelContainer
 ## SettingsModuleContainer VBox
 @export var _settings_module_container: VBoxContainer
 
-
 ## The current component
 var _component: EngineComponent = null
 
@@ -30,17 +29,20 @@ func set_component(component: EngineComponent) -> void:
 		var settings: Array = component.get_settings(classname).values()
 		if settings:
 			for setting: Dictionary in settings:
-				if setting.data_type == Utils.TYPE_CUSTOM:
-					var panel: Control = setting.custom_panel.instantiate()
+				match setting.data_type:
+					Utils.TYPE_CUSTOM:
+						var panel: Control = setting.custom_panel.instantiate()
+						
+						if panel.has_method(setting.entry_point):
+							panel.get(setting.entry_point).call(component)
+						
+						new_module.show_custom(panel)
 					
-					if panel.has_method(setting.entry_point):
-						panel.get(setting.entry_point).call(component)
-					
-					new_module.show_custom(panel)
-				else:
-					new_module.show_setting(setting.setter, setting.getter, setting.signal, setting.data_type, setting.visual_line, setting.visual_name, setting.min, setting.max)
+					_:
+						new_module.show_setting(setting.setter, setting.getter, setting.signal, setting.data_type, setting.visual_line, setting.visual_name, setting.min, setting.max, setting.enum)
 		else:
 			new_module.set_disable(true)
+		
 		_settings_module_container.add_child(new_module)
 
 

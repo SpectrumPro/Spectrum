@@ -10,7 +10,28 @@ signal clicked()
 
 
 ## The status bar
-@onready var _status_bar: ProgressBar = $VBoxContainer/ProgressBar
+@export var _status_bar: ProgressBar
+
+## The Label node for the cue's name
+@export var _name_label: Label
+
+## The Label node for the cue's QID
+@export var _qid_label: Label
+
+## The Label node for the cue's fade time
+@export var _fade_time_label: Label
+
+## The Label node for the cue's pre wait time
+@export var _pre_wait_label: Label
+
+## Icon for Cue.TriggerMode.MANUAL
+@export var _trigger_mode_manual: TextureRect
+
+## Icon for Cue.TriggerMode.AFTER_LAST
+@export var _trigger_mode_after_last: TextureRect
+
+## Icon for Cue.TriggerMode.WITH_LAST
+@export var _trigger_mode_with_last: TextureRect
 
 
 ## The cue
@@ -25,42 +46,42 @@ var _is_enabled: bool = false
 ## The current animating tween
 var _current_tween: Tween = null
 
-## All the lables
-@onready var _labels: Dictionary = {
-	"Name": $VBoxContainer/HBoxContainer/VBoxContainer2/Name,
-	"CueNumber": $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer2/HBoxContainer/CueNumber,
-	"FadeTime": $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer3/HBoxContainer/FadeTime,
-	"PreWait": $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer4/HBoxContainer/PreWait,
+## Signals to connect to the Cue
+var _cue_signals: Dictionary[String, Callable] = {
+	"name_changed": set_cue_name,
+	"qid_changed": set_qid,
+	"fade_time_changed": set_fade_time,
+	"pre_wait_time_changed": set_pre_wait,
+	"trigger_mode_changed": set_trigger_mode
+}
+
+## Signals to connect to the CueList
+var _cue_list_signals: Dictionary[String, Callable] = {
+	"active_cue_changed": _on_active_cue_changed,
+	"transport_state_changed": _on_transport_state_changed,
+	"active_state_changed": _on_active_state_changed
 }
 
 
+## Connect store mode 
 func _ready() -> void:
 	Programmer.store_mode_changed.connect(_on_store_mode_changed)
 
+
 ## Sets the cue represented by this CueItem
 func set_cue(cue: Cue, cue_list: CueList) -> void:
-	if _cue_list: _cue_list.active_cue_changed.disconnect(_on_cue_number_changed)
-	if _cue:
-		_cue.name_changed.disconnect(set_cue_name)
-		_cue.number_changed.disconnect(set_number)
-		_cue.fade_time_changed.disconnect(set_fade_time)
-		_cue.pre_wait_time_changed.disconnect(set_pre_wait)
-		_cue.trigger_mode_changed.disconnect(set_trigger_mode)
+	Utils.disconnect_signals(_cue_signals, cue)
+	Utils.disconnect_signals(_cue_list_signals, cue_list)
 	
 	_cue = cue
 	_cue_list = cue_list
 	
+	Utils.connect_signals(_cue_signals, _cue)
+	Utils.connect_signals(_cue_list_signals, _cue_list)
+	
 	if _cue and _cue_list:
-		_cue_list.active_cue_changed.connect(_on_cue_number_changed)
-		
-		_cue.name_changed.connect(set_cue_name)
-		_cue.number_changed.connect(set_number)
-		_cue.fade_time_changed.connect(set_fade_time)
-		_cue.pre_wait_time_changed.connect(set_pre_wait)
-		_cue.trigger_mode_changed.connect(set_trigger_mode)
-		
-		set_cue_name(_cue.name)
-		set_number(_cue.number)
+		set_cue_name(_cue.get_name())
+		set_qid(_cue.get_qid())
 		set_fade_time(_cue.get_fade_time())
 		set_pre_wait(_cue.get_pre_wait())
 		set_trigger_mode(_cue.get_trigger_mode())
@@ -80,38 +101,72 @@ func set_status_bar(state: bool, time: float) -> void:
 		tween.finished.connect(func (): _is_enabled = false)
 
 
+## Functions for changing all the labels
+func set_cue_name(p_name: String) -> void: 
+	_name_label.text = p_name
+
+
+## Sets the QID label
+func set_qid(qid: String) -> void: 
+	_qid_label.text = qid
+
+
+## Sets the fade time label
+func set_fade_time(fade_time: float) -> void: 
+	_fade_time_label.text = str(fade_time)
+
+
+## Sets the pre wait label
+func set_pre_wait(pre_wait: float) -> void: 
+	_pre_wait_label.text = str(pre_wait)
+
+
+## Sets the trigger mode
+func set_trigger_mode(trigger_mode: Cue.TriggerMode) -> void:
+	_trigger_mode_manual.hide()
+	_trigger_mode_after_last.hide()
+	_trigger_mode_with_last.hide()
+	
+	match trigger_mode:
+		Cue.TriggerMode.MANUAL: 
+			_trigger_mode_manual.show()
+		
+		Cue.TriggerMode.AFTER_LAST: 
+			_trigger_mode_after_last.show()
+		
+		Cue.TriggerMode.WITH_LAST: 
+			_trigger_mode_with_last.show()
+
+
 ## Called when the CueList cue number changes
-func _on_cue_number_changed(cue_number: float) -> void:
-	if cue_number == _cue.number:
+func _on_active_cue_changed(cue: Cue) -> void:
+	if cue == _cue:
 		set_status_bar(true, _cue.get_fade_time())
 	
 	elif _is_enabled: 
 		var fade_time: float = 0
-		if _cue_list.get_cue(cue_number):
-			fade_time = _cue_list.get_cue(cue_number).get_fade_time()
-		else:
-			fade_time = _cue.get_fade_time()
+		fade_time = cue.get_fade_time()
 		
 		set_status_bar(false, fade_time)
 
 
-## Functions for changing all the labels
-func set_cue_name(p_name: String) -> void: _labels.Name.text = p_name
-func set_number(number: float) -> void: _labels.CueNumber.text = str(number)
-func set_fade_time(fade_time: float) -> void: _labels.FadeTime.text = str(fade_time)
-func set_pre_wait(pre_wait: float) -> void: _labels.PreWait.text = str(pre_wait)
-
-
-## Sets the trigger mode
-func set_trigger_mode(trigger_mode: int) -> void:
-	$VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/Manual.hide()
-	$VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/AfterLast.hide()
-	$VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/WithLast.hide()
+## Called when the CueList's transport state is changed
+func _on_transport_state_changed(transport_state: Function.TransportState) -> void:
+	if transport_state and _current_tween:
+		_current_tween.play()
 	
-	match trigger_mode:
-		Cue.TRIGGER_MODE.MANUAL: $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/Manual.show()
-		Cue.TRIGGER_MODE.AFTER_LAST: $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/AfterLast.show()
-		Cue.TRIGGER_MODE.WITH_LAST: $VBoxContainer/HBoxContainer/VBoxContainer2/HBoxContainer/PanelContainer/VBoxContainer/WithLast.show()
+	elif _current_tween:
+		_current_tween.pause()
+
+
+## Called when the CueList's active state is changed
+func _on_active_state_changed(active_state: Function.ActiveState) -> void:
+	if not active_state:
+		if _current_tween:
+			_current_tween.kill()
+		
+		_is_enabled = false
+		_status_bar.set_value_no_signal(0)
 
 
 ## Called when store mode is changed

@@ -90,7 +90,6 @@ func remove_fixture(fixture: Fixture) -> void: rpc("remove_fixture", [fixture])
 
 ## Internal: Removes a fixture from this group, returns false if this fixture is not in this group
 func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
-	print(fixture)
 	if not _fixtures.has(fixture): return false
 	
 	_fixtures.erase(fixture)

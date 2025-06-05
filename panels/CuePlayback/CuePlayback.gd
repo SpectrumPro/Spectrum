@@ -14,21 +14,23 @@ class_name UICuePlayback extends UIPanel
 ## The IntensityButton
 @export var _intensity_button: IntensityButton
 
+## All the buttons that need to be disabled / enabled when there is no cue list
+@export var _buttons: Array[Button]
+
 
 ## The cue list
-var _cue_list: CueList = null
+var _cue_list: CueList
 
 ## Contains all the CueItems, keyed by the cue uuid
 var _cues: Dictionary = {}
 
-## The uuid of the cuelist used when this panel was saved
-var _previous_uuid: String = ""
-
+## Signals to connect to the CueList
 var _signal_connections: Dictionary = {
 	"cues_added": _reload_cues,
 	"cues_removed": _reload_cues,
 	"delete_request": set_cue_list.bind(null)
 }
+
 
 ## Sets the cuelist to control
 func set_cue_list(cue_list: CueList) -> void:
@@ -38,6 +40,10 @@ func set_cue_list(cue_list: CueList) -> void:
 	
 	_reload_cues()
 	_intensity_button.set_function(cue_list)
+	
+	var disabled_state: bool = not is_instance_valid(_cue_list)
+	for button: Button in _buttons:
+		button.disabled = disabled_state
 
 
 ## Reloads the list of cues
@@ -56,14 +62,24 @@ func _reload_cues(arg1=null) -> void:
 			new_cue_item.set_cue(cue, _cue_list)
 
 
-#region Ui Callbacks
+## Called when the Go Previous button is pressed
+func _on_previous_pressed() -> void: 
+	_cue_list.go_previous()
 
-func _on_previous_pressed() -> void: if _cue_list: _cue_list.go_previous()
-func _on_next_pressed() -> void: if _cue_list: _cue_list.go_next()
-func _on_play_pause_pressed() -> void: if _cue_list: _cue_list.pause() if _cue_list.is_playing() else _cue_list.play()
-func _on_stop_pressed() -> void: if _cue_list: _cue_list.stop()
 
-#endregion
+## Called when the Go Next button is pressed
+func _on_next_pressed() -> void: 
+	_cue_list.go_next()
+
+
+## Called when the Play / Pause button is pressed
+func _on_play_pause_pressed() -> void: 
+	_cue_list.pause() if _cue_list.get_transport_state() else _cue_list.play()
+
+
+## Called when the Stop button is pressed
+func _on_stop_pressed() -> void: 
+	_cue_list.off()
 
 
 ## Saves this into a dict

@@ -23,7 +23,7 @@ var fixture_group: FixtureGroup = null : set = set_fixture_group
 @export var _virtual_fixtures_root: UIVirtualFixtures
 
 ## Stores all the current virtual fixtures, stored as {Fixture:VF}
-var _virtual_fixtures: Dictionary = {}
+var _virtual_fixtures: RefMap = RefMap.new()
 
 ## The old selected fixtures list
 var _old_selected_fixtures: Array
@@ -111,7 +111,7 @@ func set_fixture_group(p_fixture_group: FixtureGroup) -> void:
 
 ## Adds a fixture
 func add_fixture(fixture: Fixture, set_vf_selected: bool = true, at_position: Vector2 = Vector2.ZERO, no_group_add: bool = false) -> void:
-	if fixture in _virtual_fixtures:
+	if _virtual_fixtures.has_left(fixture):
 		return
 	
 	var vf_uuid: String = UUID_Util.v4()
@@ -126,13 +126,10 @@ func add_fixture(fixture: Fixture, set_vf_selected: bool = true, at_position: Ve
 	new_vf.name = vf_uuid
 	new_vf.position = at_position
 	
-	_virtual_fixtures[fixture] = new_vf
+	_virtual_fixtures.map(fixture, new_vf)
 	
 	if set_vf_selected:
-		_set_self_selected(new_vf, true)
-	
-	if fixture in Values.get_selection_value("selected_fixtures") and not _edit_mode:
-		_set_fixture_selected(fixture, true)
+		Values.add_to_selection_value("selected_fixtures", [fixture])
 	
 	if not no_group_add:
 		fixture_group.add_fixture(fixture, Vector3(at_position.x, 0, at_position.y))
@@ -152,14 +149,13 @@ func _add_fixtures(fixtures: Array) -> void:
 
 ## Removes a fixture
 func remove_fixture(fixture: Fixture) -> void:
-	if fixture not in _virtual_fixtures:
+	if not _virtual_fixtures.has_left(fixture):
 		return
 	
-	var vf: Node = _virtual_fixtures[fixture]
+	var vf: Node = _virtual_fixtures.left(fixture)
 	
-	_set_self_selected(vf, false)
 	_set_fixture_selected(fixture, false)
-	_virtual_fixtures.erase(fixture)
+	_virtual_fixtures.erase_left(fixture)
 	
 	vf.queue_free()
 
@@ -168,15 +164,6 @@ func remove_fixture(fixture: Fixture) -> void:
 func set_edit_mode(p_edit_mode: bool) -> void:
 	_edit_mode = p_edit_mode
 	$Grid.visible = _edit_mode
-	
-	if _edit_mode:
-		_reset_fixture_selected()
-		for vf: NewVirtualFixture in _selected_virtual_fixtures:
-			_set_self_selected(vf, true)
-	else:
-		_reset_self_selected()
-		for fixture: Fixture in _old_selected_fixtures:
-			_set_fixture_selected(fixture, true)
 
 
 ## Grid Aligns the selected virtual fixtures
@@ -204,14 +191,14 @@ func grid_align() -> void:
 
 ## Called when the fixture selection is changed
 func _on_selected_fixtures_changed(new_selected_fixtures: Array) -> void:
-	if not _edit_mode:
-		for fixture: Fixture in _old_selected_fixtures.duplicate():
-			if fixture not in new_selected_fixtures:
-				_set_fixture_selected(fixture, false)
-		
-		for fixture in new_selected_fixtures:
-			if fixture is Fixture and fixture not in _old_selected_fixtures and fixture in _virtual_fixtures:
-				_set_fixture_selected(fixture, true)
+	for fixture: Fixture in _old_selected_fixtures.duplicate():
+		if fixture not in new_selected_fixtures:
+			_set_fixture_selected(fixture, false)
+			
+			
+	for fixture in new_selected_fixtures:
+		if fixture is Fixture and fixture not in _old_selected_fixtures and _virtual_fixtures.has_left(fixture):
+			_set_fixture_selected(fixture, true)
 	
 	_old_selected_fixtures = new_selected_fixtures.duplicate()
 
@@ -230,7 +217,7 @@ func _on_fixture_group_fixtures_removed(fixtures: Array) -> void:
 
 ## Called when any of the fixtures change position
 func _on_fixture_position_changed(new_position: Vector3, fixture: Fixture) -> void:	
-	_set_vf_position(_virtual_fixtures[fixture], _get_v2_position(fixture), true)
+	_set_vf_position(_virtual_fixtures.left(fixture), _get_v2_position(fixture), true)
 	_reset_virtual_fixture_no_snap()
 #endregion
 
@@ -257,12 +244,7 @@ func _on_virtual_fixture_move_requested(by: Vector2, vf: NewVirtualFixture) -> v
 
 ## Called when a virtual fixture is clicked
 func _on_virtual_fixture_clicked(vf: NewVirtualFixture) -> void:
-	if _edit_mode and vf not in _selected_virtual_fixtures:
-		if not Input.is_key_pressed(KEY_SHIFT):
-			_reset_self_selected(false)
-		_set_self_selected(vf, true)
-	
-	elif not _edit_mode and vf.get_fixture() not in Values.get_selection_value("selected_fixtures"):
+	if vf.get_fixture() not in Values.get_selection_value("selected_fixtures"):
 		if Input.is_key_pressed(KEY_SHIFT):
 			Values.add_to_selection_value("selected_fixtures", [vf.get_fixture()])
 		else:
@@ -326,8 +308,10 @@ func _handle_mouse_up() -> void:
 
 ## Sets the selected state on a fixture's virtual fixtures
 func _set_fixture_selected(fixture: Fixture, state: bool) -> void:
-	if _virtual_fixtures.has(fixture):
-		_virtual_fixtures[fixture].set_fixture_selected(state)
+	if _virtual_fixtures.has_left(fixture):
+		_virtual_fixtures.left(fixture).set_fixture_selected(state)
+		
+		_set_selected(_virtual_fixtures.left(fixture), state)
 
 
 ## Sets all Virtual Fixture's self selected state to false
@@ -337,9 +321,7 @@ func _reset_fixture_selected() -> void:
 
 
 ## Sets the self selected state of a virtual fixture
-func _set_self_selected(vf: NewVirtualFixture, state: bool) -> void:
-	vf.set_self_selected(state)
-	
+func _set_selected(vf: NewVirtualFixture, state: bool) -> void:	
 	if vf not in _selected_virtual_fixtures and state:
 		_selected_virtual_fixtures.append(vf)
 	elif not state:
@@ -348,28 +330,18 @@ func _set_self_selected(vf: NewVirtualFixture, state: bool) -> void:
 	selected_virtual_fixtures_changed.emit(_selected_virtual_fixtures)
 
 
-## Sets all Virtual Fixture's self selected state to false
-func _reset_self_selected(visual_only: bool = true) -> void:
-	for vf: NewVirtualFixture in _selected_virtual_fixtures:
-		vf.set_self_selected(false)
-	
-	if not visual_only:
-		_selected_virtual_fixtures = []
-		selected_virtual_fixtures_changed.emit([])
-
-
 ## Resets all the virtualFixture's no snap positions
 func _reset_virtual_fixture_no_snap() -> void:
-	for vf: NewVirtualFixture in _virtual_fixtures.values():
+	for vf: NewVirtualFixture in _virtual_fixtures.get_right():
 		vf._no_snap_pos = vf.position
 
 
 ## Resets all values and removes all virtual fixtures
 func _reset_all() -> void:
-	for vf: NewVirtualFixture in _virtual_fixtures.values():
+	for vf: NewVirtualFixture in _virtual_fixtures.get_right():
 		vf.queue_free()
 		
-	_virtual_fixtures = {}
+	_virtual_fixtures.clear()
 	_old_selected_fixtures = []
 	_selected_virtual_fixtures = []
 	_just_moved_virtual_fixtures = []
@@ -397,29 +369,20 @@ func _update_selection_box() -> void:
 	
 	var selection_changed: bool = false
 	
-	for fixture: Fixture in _virtual_fixtures:
-		var vf: NewVirtualFixture = _virtual_fixtures[fixture]
+	for fixture: Fixture in _virtual_fixtures.get_left():
+		var vf: NewVirtualFixture = _virtual_fixtures.left(fixture)
 		var just_selected: bool = _selection_rect.intersection(Rect2(vf.position, vf.size)).size != Vector2.ZERO
-		var current_selected: Array = _selected_virtual_fixtures if _edit_mode else Values.get_selection_value("selected_fixtures")
+		var current_selected: Array = Values.get_selection_value("selected_fixtures")
 		
-		if _edit_mode:
-			if just_selected and vf in current_selected:
-				_set_self_selected(vf, true) 
-				
-			elif not just_selected and vf in current_selected and not Input.is_key_pressed(KEY_SHIFT):
-				_set_self_selected(vf, false)
-		
-		else:
-			if just_selected and fixture not in current_selected:
-				Values.add_to_selection_value("selected_fixtures", [fixture], false)
-				selection_changed = true
-				
-			elif not just_selected and fixture in current_selected and not Input.is_key_pressed(KEY_SHIFT):
-				Values.remove_from_selection_value("selected_fixtures", [fixture], false)
-				selection_changed = true
+		if just_selected and fixture not in current_selected:
+			Values.add_to_selection_value("selected_fixtures", [fixture], false)
+			selection_changed = true
+			
+		elif not just_selected and fixture in current_selected and not Input.is_key_pressed(KEY_SHIFT):
+			Values.remove_from_selection_value("selected_fixtures", [fixture], false)
+			selection_changed = true
 	
 	if selection_changed:
-		print("Selected")
 		Values.emit_selection_value("selected_fixtures")
 #endregion
 
@@ -484,9 +447,7 @@ func _on_gui_input(event: InputEvent) -> void:
 					_handle_mouse_up()
 					
 				elif not Input.is_key_pressed(KEY_SHIFT):
-					if _edit_mode and _selected_virtual_fixtures:
-						_reset_self_selected(false)
-					elif Values.get_selection_value("selected_fixtures"):
+					if Values.get_selection_value("selected_fixtures"):
 						Values.set_selection_value("selected_fixtures", [])
 				
 			MOUSE_BUTTON_RIGHT:

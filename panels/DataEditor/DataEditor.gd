@@ -6,7 +6,7 @@ class_name UIDataEditor extends UIPanel
 
 
 ## The Table
-@export var _table: Table
+@export var _tree: Tree
 
 
 ## The selected Function
@@ -15,36 +15,52 @@ var _function: Function
 ## The _component's selected DataContainer
 var _container: DataContainer
 
-## The RefMap for Fixture:RowHeadder
-var _fixture_row_headders: RefMap = RefMap.new()
+## Stores all the columns and the ids
+var _columns: Dictionary[String, int]
 
-## The RefMap for "Parameter":ColumnIndex
-var _parameter_column_indexes: RefMap = RefMap.new()
+## The root tree item
+var _root: TreeItem
+
+
+## Create the root tree item
+func _ready() -> void:
+	ComponentDB.request_component("10447be2-70aa-4600-ada3-418df4168e6c", set_function)
 
 
 ## Called when an Function is selected
-func _on_object_picker_button_object_selected(function: Function) -> void:
-	if function is not Scene:
-		return
-	
+func set_function(function: Function) -> void:
 	_function = function
-	_container = function.get_data_container()
+	_container = _function.get_data_container()
+	_columns = {"Parameter: ": 0}
+	_tree.clear()
+	_root = _tree.create_item()
 	
 	var fixture_data: Dictionary = _container.get_fixture_data()
 	for fixture: Fixture in fixture_data:
-		var row: RowHeadder = _table.create_row(fixture.name)
-		_fixture_row_headders.map(fixture, row)
+		var fixture_item: TreeItem = _root.create_child()
+		fixture_item.set_text(0, fixture.get_name())
 		
 		for zone: String in fixture_data[fixture]:
+			var zone_item: TreeItem = fixture_item
+			
+			if zone != "root":
+				zone_item = fixture_item.create_child()
+				zone_item.set_text(0, zone)
+			
 			for parameter: String in fixture_data[fixture][zone]:
-				var data: Dictionary = fixture_data[fixture][zone][parameter]
-				var key: String = zone + "." + parameter
-				var column: ColumnIndex
+				if parameter not in _columns:
+					_tree.columns = _columns.values().max() + 1
+					_columns[parameter] = _tree.columns
 				
-				if _parameter_column_indexes.has_left(key):
-					column = _parameter_column_indexes.left(key)
-				else:
-					column = _table.create_column(key)
-					_parameter_column_indexes.map(key, column)
-				
-				_table.add_data(row.index, data.value, Callable(), Signal(), column.column_index)
+				zone_item.set_text(_columns[parameter], str(fixture_data[fixture][zone][parameter].value))
+				zone_item.set_custom_bg_color(_columns[parameter], Color(Color.WHITE, 0.1))
+	
+	for column: String in _columns:
+		_tree.set_column_title(_columns[column], column)
+		_tree.set_column_expand(_columns[column], false)
+	#
+	#_tree.columns = _tree.columns + 1
+	#_tree.set_column_expand(_tree.columns, true)
+
+	
+		

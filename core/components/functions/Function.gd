@@ -29,8 +29,8 @@ enum ActiveState {
 
 ## Transport Stae
 enum TransportState {
-	FORWARDS,
 	PAUSED,
+	FORWARDS,
 	BACKWARDS
 }
 
@@ -105,6 +105,11 @@ func _handle_active_state_change(active_state: ActiveState) -> void:
 ## Gets the ActiveState
 func get_active_state() -> ActiveState:
 	return _active_state
+
+
+## Plays this Function, with the previous TransportState
+func play() -> Promise:
+	return rpc("play")
 
 
 ## Plays this Function with TransportState.FORWARDS

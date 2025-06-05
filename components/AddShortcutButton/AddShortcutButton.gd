@@ -119,7 +119,6 @@ func load(serialized_data: Dictionary) -> void:
 
 ## Called when a gui input has happened
 func _on_gui_input(p_event: InputEvent) -> void:
-	print(not p_event.get_class() in _not_allowed_events and (p_event.is_released() or not unpress_required))
 	if not p_event.get_class() in _not_allowed_events and (p_event.is_released() or not unpress_required):
 		if p_event is InputEventKey:
 			match p_event.keycode:
@@ -134,7 +133,6 @@ func _on_gui_input(p_event: InputEvent) -> void:
 					shortcut_changed.emit(event)
 				
 		else:
-			print("Setting Event")
 			set_event(p_event)
 			shortcut_changed.emit(event)
 

@@ -84,7 +84,6 @@ func rebuild_maps(tree: Dictionary) -> void:
 	for key in tree.keys():
 		_process_node(key, tree[key], inheritance_map, inheritance_trees, class_script_map, [key])
 	
-	print(inheritance_trees)
 	_inheritance_map = inheritance_map
 	_inheritance_trees = inheritance_trees
 	_script_map = class_script_map

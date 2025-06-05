@@ -23,6 +23,9 @@ class_name UIUniverses extends UIPanel
 ## The ComponentSettings for Fixtures 
 @export var _fixture_settings: ComponentSettings = null
 
+## The ComponentSettings for self
+@export var _self_settings: ComponentSettings = null
+
 ## The ObjectPickerButton for this UIUniverses panel
 @export var _object_picker_button: ObjectPickerButton = null
 
@@ -77,6 +80,7 @@ func set_universe(universe: Universe) -> void:
 	
 	_output_settings.set_component(null)
 	_fixture_settings.set_component(null)
+	_self_settings.set_component(universe)
 	
 	Utils.disconnect_signals(_universe_signal_connections, _universe)
 	_universe = universe

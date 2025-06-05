@@ -85,17 +85,16 @@ func _create_columns() -> void:
 ## Adds a row for a cue
 func _add_cue_row(cue: Cue) -> void:
 	var row_headder: RowHeadder = table.create_row(cue.name)
-	table.move_row(row_headder.index, _cue_list.get_cue_index(cue))
+	table.move_row(row_headder.index, _cue_list.get_cues().find(cue))
 	
 	var l: int = len(cue.get_fixture_data())
 	
 	var _data_values: Dictionary = {
-		"Number": 		{ "value": cue.get_number(), "setter": _cue_list.set_cue_number.bind(cue), "signal": cue.number_changed},
+		"QID": 		{ "value": cue.get_qid(), "setter": cue.set_qid, "signal": cue.qid_changed},
 		"Fade Time": 	{ "value": cue.get_fade_time(), "setter": cue.set_fade_time, "signal": cue.fade_time_changed },
 		"Pre Wait": 	{ "value": cue.get_pre_wait(), "setter": cue.set_pre_wait, "signal": cue.pre_wait_time_changed },
 		"Follow Mode": 	{ "list": ["Manual", "After Last", "With Last"], "value": cue.get_trigger_mode(), "setter": func (value): cue.set_trigger_mode(value), "signal": cue.trigger_mode_changed },
 		"Fixtures": 	{ "button_text": str(l) + " Fixture" + ("s" if l != 1 else ""), "button_callback": Callable()},
-		#"Triggers": 	{ "button_text": str(len(cue.function_triggers)) + " Triggers", "button_callback": Callable()}
 	}
 	
 	for data: Dictionary in _data_values.values():
@@ -114,8 +113,7 @@ func _add_cue_row(cue: Cue) -> void:
 
 ## Called when cues are added to the cue list
 func _on_cue_list_cues_added(cues: Array) -> void:
-	for cue_number: float in _cue_list.get_index_list():
-		var cue: Cue = _cue_list.get_cue(cue_number)
+	for cue: Cue in _cue_list.get_cues():
 		if cue in cues:
 			_add_cue_row(cue)
 
@@ -167,20 +165,19 @@ func _load(saved_data: Dictionary) -> void:
 ## Called when the CueName button is pressed
 func _on_cue_name_pressed() -> void:
 	Interface.show_object_picker(
-		ObjectPicker.SelectMode.Single, 
-		func (objects: Array): 
-			if objects[0] is CueList: set_cue_list(objects[0]), 
+		ObjectPicker.SelectMode.Single,
+		func (objects: Array):
+			if objects[0] is CueList: set_cue_list(objects[0]),
 		"CueList"
 	)
 
 
 ## Gets the cue from the current selected RowIndex
-func _get_cue_number() -> float:
-	var index_list: Array = _cue_list.get_index_list()
-	if table.get_selected_row() and table.get_selected_row().index <= len(index_list):
-		return index_list[table.get_selected_row().index]
+func _get_cue() -> Cue:
+	if table.get_selected_row():
+		return _cue_list.get_cues()[table.get_selected_row().index]
 	else:
-		return -1
+		return null
 
 
 func _on_go_pressed() -> void:
@@ -189,16 +186,14 @@ func _on_go_pressed() -> void:
 
 func _on_previous_pressed() -> void: if _cue_list: _cue_list.go_previous()
 func _on_next_pressed() -> void: if _cue_list: _cue_list.go_next()
-func _on_play_pause_pressed() -> void: if _cue_list: _cue_list.pause() if _cue_list.is_playing() else _cue_list.play()
-func _on_stop_pressed() -> void: if _cue_list: _cue_list.stop()
+func _on_play_pause_pressed() -> void: if _cue_list: _cue_list.pause() if _cue_list.is_playing() else _cue_list.on()
+func _on_stop_pressed() -> void: if _cue_list: _cue_list.off()
 
 
 func _on_delete_pressed() -> void:
-	var cue_number: float = _get_cue_number()
-	if cue_number != -1:
-		Interface.show_delete_confirmation("Confirm Deletion of Cue: " + str(cue_number)).confirmed.connect(func ():
-			_cue_list.get_cue(cue_number).delete()
-		)
+	var cue: Cue = _get_cue()
+	if cue:
+		Interface.confirm_and_delete_component(cue, self)
 
 
 func _on_add_pressed() -> void:

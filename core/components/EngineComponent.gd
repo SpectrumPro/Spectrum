@@ -102,7 +102,7 @@ func register_callback(p_signal_name: String, p_callback: Callable) -> void:
 
 
 ## Registers a setting
-func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null) -> void:
+func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null, p_enum: Dictionary = {}) -> void:
 	_settings.get_or_add(p_classname, {})[p_key] = {
 			"setter": p_setter,
 			"getter": p_getter,
@@ -111,8 +111,29 @@ func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_
 			"visual_line": p_visual_line,
 			"visual_name": p_visual_name,
 			"min": p_min,
-			"max": p_max
+			"max": p_max,
+			"enum": p_enum
 	}
+
+
+## Shorthand for register_setting() for a string value
+func register_setting_string(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_STRING, -1, p_key.capitalize())
+
+
+## Shorthand for register_setting() for a float value
+func register_setting_bool(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_BOOL, -1, p_key.capitalize(), null, null)
+
+
+## Shorthand for register_setting() for a float value
+func register_setting_float(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_min: float, p_max: float) -> void:
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_FLOAT, -1, p_key.capitalize(), p_min, p_max)
+
+
+## Shorthand for register_setting() for a float value
+func register_setting_enum(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_enum: Dictionary) -> void:
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_ENUM, -1, p_key.capitalize(), null, null, p_enum)
 
 
 ## Registers a custom setting panel

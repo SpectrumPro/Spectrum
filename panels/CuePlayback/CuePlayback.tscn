@@ -17,7 +17,7 @@
 [sub_resource type="LabelSettings" id="LabelSettings_fuler"]
 font = ExtResource("6_knbom")
 
-[node name="NewCuePlayback" type="PanelContainer" node_paths=PackedStringArray("_object_picker_button", "_intensity_button", "edit_controls")]
+[node name="CuePlayback" type="PanelContainer" node_paths=PackedStringArray("_object_picker_button", "_intensity_button", "_buttons", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,6 +28,7 @@ theme_override_styles/panel = ExtResource("2_bilu6")
 script = ExtResource("2_4bo1g")
 _object_picker_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ObjectPickerButton")
 _intensity_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton")
+_buttons = [NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/PlayPause"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/Stop"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton"), NodePath("VBoxContainer/Controls/HBoxContainer/Previous"), NodePath("VBoxContainer/Controls/HBoxContainer/GoTo"), NodePath("VBoxContainer/Controls/HBoxContainer/Next")]
 edit_controls = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -59,17 +60,22 @@ layout_mode = 2
 
 [node name="PlayPause" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer"]
 layout_mode = 2
+disabled = true
 icon = ExtResource("4_m1awm")
 
 [node name="Stop" type="Button" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer"]
 layout_mode = 2
+disabled = true
 icon = ExtResource("5_3wccy")
 
 [node name="IntensityButton" parent="VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer" instance=ExtResource("6_i5qdf")]
 layout_mode = 2
+disabled = true
 
 [node name="EditControls" parent="VBoxContainer/PanelContainer2/HBoxContainer" instance=ExtResource("9_ssq7m")]
 layout_mode = 2
+show_edit = false
+show_settings = false
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -93,17 +99,20 @@ layout_mode = 2
 [node name="Previous" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+disabled = true
 icon = ExtResource("3_v1amt")
 icon_alignment = 1
 
 [node name="GoTo" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+disabled = true
 text = "GO"
 
 [node name="Next" type="Button" parent="VBoxContainer/Controls/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+disabled = true
 icon = ExtResource("4_nfbmp")
 icon_alignment = 1
 

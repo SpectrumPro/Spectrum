@@ -45,9 +45,8 @@ func _set_parameter(p_parameter: String, p_function: String, p_value: Variant, p
 
 ## Internal: Erases the parameter on the given layer
 func _erase_parameter(p_parameter: String, p_zone: String) -> void:
-	_raw_layers.get_or_add(p_zone, {}).erace(p_parameter)
+	_raw_layers.get_or_add(p_zone, {}).erase(p_parameter)
 	parameter_erased.emit(p_parameter, p_zone)
-	
 
 
 ## Internal: Sets a parameter override to a float value
@@ -143,6 +142,14 @@ func get_parameter_functions(p_zone: String, p_parameter: String) -> Array:
 ## Checks if this DMXFixture has a function that can fade
 func function_can_fade(p_zone: String, p_parameter: String, p_function: String) -> bool:
 	return _manifest.function_can_fade(_mode, p_zone, p_parameter, p_function)
+
+
+## Gets the default value of a parameter
+func get_default(p_zone: String, p_parameter: String, p_function: String) -> float:
+	var dmx_value: int = _manifest.get_mode(_mode).zones[p_zone][p_parameter].functions[p_function].default
+	var range: Array = _manifest.get_mode(_mode).zones[p_zone][p_parameter].functions[p_function].dmx_range
+
+	return remap(dmx_value, range[0], range[1], 0.0, 1.0)
 
 
 ## Saves this DMXFixture to a dictonary

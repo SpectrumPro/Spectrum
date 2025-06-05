@@ -227,7 +227,6 @@ func _update_selection_label() -> void:
 func _update_filter() -> void:
 	for class_name_string: String in tree_items:
 		var is_filtred_for: bool = not ClassList.does_class_inherit(class_name_string, filter) and filter
-		print(ClassList.does_class_inherit(class_name_string, filter))
 		(tree_items[class_name_string].parent as TreeItem).visible = not is_filtred_for
 		
 		if class_name_string in _filter_buttons:

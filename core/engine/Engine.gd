@@ -59,6 +59,7 @@ var EngineConfig = {
 	],
 	## Root classes are the primary classes that will be seralized and loaded 
 	"root_classes": [
+		"Fixture",
 		"Universe",
 		"Function",
 		"FixtureGroup"
@@ -112,11 +113,11 @@ func _load_from(serialized_data: Dictionary) -> void:
 			if ClassList.has_class(serialized_component.get("class_name", "")):
 				var new_component: EngineComponent = ClassList.get_class_script(serialized_component.class_name).new(component_uuid)
 				new_component.load(serialized_component)
-	
+				_add_component(new_component, true)
+				
 				just_added_components.append(new_component)
 	
-	_add_components(just_added_components)
-	
+	components_added.emit.call_deferred(just_added_components)
 	load_finished.emit()
 
 

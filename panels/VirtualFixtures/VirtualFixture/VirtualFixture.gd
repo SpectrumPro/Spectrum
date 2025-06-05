@@ -37,7 +37,8 @@ var _fixture_signal_connections: Dictionary = {
 	"all_override_removed": _on_override_value_erased,
 	"parameter_changed": _on_parameter_changed,
 	"parameter_erased": _on_parameter_eraced,
-	"manifest_changed": _on_dmx_fixture_manifest_changed
+	"manifest_changed": _on_dmx_fixture_manifest_changed,
+	"name_changed": set_label_name
 }
 
 
@@ -55,6 +56,7 @@ func set_fixture(control_fixture: Fixture) -> void:
 	else:
 		render_color()
 	
+	set_label_name(control_fixture.name)
 	$UUID.text = control_fixture.uuid
 
 
@@ -135,6 +137,11 @@ func set_self_selected(state: bool) -> void:
 		$Highlight.hide()
 
 
+## Sets the name label
+func set_label_name(p_name: String) -> void:
+	$Name.text = p_name
+
+
 ## Called when a parameter is changed on a fixture
 func _on_parameter_changed(parameter: String, function: String, value: Variant, zone: String) -> void:
 	render_color()
@@ -162,6 +169,7 @@ func _on_override_value_erased(parameter: String = "", zone: String = "") -> voi
 ## Called when the manifest is changed on a DMXFixture
 func _on_dmx_fixture_manifest_changed(manifest: FixtureManifest):
 	render_color()
+
 
 
 func _on_gui_input(event: InputEvent) -> void:

@@ -39,18 +39,28 @@ func show_custom(panel: Control) -> void:
 
 
 ## Shows a setting
-func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: String, line_number: int, p_name: String, p_min: Variant = null, p_max: Variant = null) -> void:
-	if not _lines.has(line_number):
+func show_setting(setter: Callable, getter: Callable, p_signal: Signal, p_type: String, p_line_number: int, p_name: String, p_min: Variant = null, p_max: Variant = null, p_enum: Dictionary = {}) -> void:
+	if p_line_number == -1:
+		p_line_number = 0
+		
+		while p_line_number in _lines:
+			p_line_number += 1
+		
 		var new_line: HBoxContainer = HBoxContainer.new()
-		_lines[line_number] = new_line
+		_lines[p_line_number] = new_line
+		_settings_container.add_child(new_line)
+	
+	elif not _lines.has(p_line_number):
+		var new_line: HBoxContainer = HBoxContainer.new()
+		_lines[p_line_number] = new_line
 		
 		_settings_container.add_child(new_line)
-		_settings_container.move_child(new_line, line_number + 1)
+		_settings_container.move_child(new_line, p_line_number + 1)
 	
-	var line: HBoxContainer = _lines[line_number]
+	var line: HBoxContainer = _lines[p_line_number]
 	var control: Control = null
 	
-	match type:
+	match p_type:
 		Utils.TYPE_STRING, Utils.TYPE_IP:
 			var line_edit: LineEdit = LineEdit.new()
 			line_edit.text = getter.call()
@@ -65,10 +75,10 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: St
 			check_button.text = "TRUE" if check_button.button_pressed else "FALSE"
 			
 			check_button.toggled.connect(setter)
-			p_signal.connect(func (state: bool):
-				check_button.set_pressed_no_signal(state)
-				check_button.text = "TRUE" if state else "FALSE"
-			)
+			p_signal.connect((func (state: bool, button: CheckButton):
+				button.set_pressed_no_signal(state)
+				button.text = "TRUE" if state else "FALSE"
+			).bind(check_button))
 			control = check_button
 		
 		Utils.TYPE_INT:
@@ -92,6 +102,17 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: St
 			p_signal.connect(spin_box.set_value_no_signal)
 			control = spin_box
 		
+		Utils.TYPE_ENUM:
+			var option_button: OptionButton = OptionButton.new()
+			
+			for item_name: String in p_enum:
+				option_button.add_item(item_name.capitalize())
+			
+			option_button.select(getter.call())
+			option_button.item_selected.connect(setter)
+			p_signal.connect(option_button.select)
+			control = option_button
+		
 		Utils.TYPE_NULL:
 			if getter.is_null():
 				var button: Button = Button.new()
@@ -99,25 +120,23 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, type: St
 				
 				button.pressed.connect(setter)
 				control = button
+	
+	if not getter.is_null():
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
 		
+		label.text = p_name
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		
-	if true:
-		if not getter.is_null():
-			var hbox: HBoxContainer = HBoxContainer.new()
-			var label: Label = Label.new()
-			
-			label.text = p_name
-			label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			
-			hbox.add_child(label)
-			hbox.add_child(control)
-			line.add_child(hbox)
-		
-		else:
-			control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			line.add_child(control)
+		hbox.add_child(label)
+		hbox.add_child(control)
+		line.add_child(hbox)
+	
+	else:
+		control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		line.add_child(control)
 
 
 ## Called when the ExpandHide button is toggled

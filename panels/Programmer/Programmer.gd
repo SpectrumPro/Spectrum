@@ -131,7 +131,9 @@ func _update_categorys(new_fixtures: Array) -> void:
 			zone_select_index += 1
 		
 			var categories: Dictionary = fixture.get_parameter_categories(zone)
-			var current_values: Dictionary = fixture.get_all_override_values()
+			var current_values: Dictionary = fixture.get_all_parameter_values()
+			
+			current_values.merge(fixture.get_all_override_values(), true)
 			
 			for parameter: String in categories:
 				var controller: ParameterController 

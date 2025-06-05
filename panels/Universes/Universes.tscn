@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="10_5cuqi"]
 [ext_resource type="PackedScene" uid="uid://dwtaoj1uy0dok" path="res://components/ComponentSettings/ComponentSettings.tscn" id="13_fvfxy"]
 
-[node name="Universes" type="PanelContainer" node_paths=PackedStringArray("_output_list", "_fixture_tree", "_remove_output", "_remove_fixture", "_output_settings", "_fixture_settings", "_object_picker_button", "edit_controls")]
+[node name="Universes" type="PanelContainer" node_paths=PackedStringArray("_output_list", "_fixture_tree", "_remove_output", "_remove_fixture", "_output_settings", "_fixture_settings", "_self_settings", "_object_picker_button", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,6 +30,7 @@ _remove_output = NodePath("VBoxContainer/CustomTabContainer/Outputs/HSplitContai
 _remove_fixture = NodePath("VBoxContainer/CustomTabContainer/Fixtures/HSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/RemoveFixture")
 _output_settings = NodePath("VBoxContainer/CustomTabContainer/Outputs/HSplitContainer/OutputSettings")
 _fixture_settings = NodePath("VBoxContainer/CustomTabContainer/Fixtures/HSplitContainer/FixtureSettings")
+_self_settings = NodePath("VBoxContainer/CustomTabContainer/Self/SelfComponentSettings")
 _object_picker_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ObjectPickerButton")
 edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
 
@@ -194,10 +195,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/CustomTabContainer/Self"]
+[node name="SelfComponentSettings" parent="VBoxContainer/CustomTabContainer/Self" instance=ExtResource("13_fvfxy")]
 layout_mode = 2
-size_flags_horizontal = 4
-text = "Universe"
 
 [connection signal="object_selected" from="VBoxContainer/PanelContainer/HBoxContainer/ObjectPickerButton" to="." method="set_universe"]
 [connection signal="item_selected" from="VBoxContainer/CustomTabContainer/Fixtures/HSplitContainer/PanelContainer/VBoxContainer/FixtureTree" to="." method="_on_fixture_tree_item_selected"]

@@ -41,7 +41,6 @@ var panels: Dictionary = {
 	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
 	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
 	"CueListTable": load("res://panels/CueListTable/CueListTable.tscn"),
-	"DataContainerTable": load("res://panels/DataContainerTable/DataContainerTable.tscn"),
 	"DataEditor": load("res://panels/DataEditor/DataEditor.tscn"),
 	"Clock": load('res://panels/Clock/Clock.tscn'),
 	"Debug": load("res://panels/Debug/Debug.tscn"),
@@ -64,7 +63,7 @@ var panels: Dictionary = {
 ## Panels sorted into categories
 var sorted_panels: Dictionary = {
 	"Playbacks": ["CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
-	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataContainerTable", "DataEditor"],
+	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataEditor"],
 	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer"],
 	"Visualization": ["VirtualFixtures"],
 	"Widgets": ["Clock", "ColorBlock", "Image"],

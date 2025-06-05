@@ -134,7 +134,6 @@ func _add_fixture(p_fixture: DMXFixture, p_channel: int = -1, p_no_signal: bool 
 	_fixture_channels[fixture_channel].append(p_fixture)
 	_fixtures[p_fixture.uuid] = p_fixture
 
-	ComponentDB.register_component(p_fixture)
 	p_fixture.delete_requested.connect(_remove_fixture.bind(p_fixture), CONNECT_ONE_SHOT)
 
 	if not p_no_signal:
@@ -228,8 +227,8 @@ func remove_all_dmx_overrides() -> Promise: return rpc("remove_all_dmx_overrides
 
 ## Serializes this universe
 func _serialize_request() -> Dictionary:
-	var serialized_outputs: Dictionary = {}
-	var serialized_fixtures: Dictionary = {}
+	var serialized_outputs: Dictionary[String, Dictionary] = {}
+	var serialized_fixtures: Dictionary[String, Array] = {}
 
 	for output: DMXOutput in _outputs.values():
 		serialized_outputs[output.uuid] = output.serialize()
@@ -238,7 +237,7 @@ func _serialize_request() -> Dictionary:
 		serialized_fixtures[str(channel)] = []
 
 		for fixture: DMXFixture in _fixture_channels[channel]:
-			serialized_fixtures[str(channel)].append(fixture.serialize())
+			serialized_fixtures[str(channel)].append(fixture.uuid)
 
 	return {
 		"outputs": serialized_outputs,
@@ -258,12 +257,12 @@ func _load_request(p_serialized_data: Dictionary) -> void:
 	var just_added_output: Array[DMXOutput] = []
 
 	for fixture_channel: String in p_serialized_data.get("fixtures", []):
-		for serialized_fixture: Dictionary in p_serialized_data.fixtures[fixture_channel]:
-			var new_fixture: DMXFixture = DMXFixture.new(serialized_fixture.get("uuid"))
-			new_fixture.load(serialized_fixture)
-			
-			_add_fixture(new_fixture, -1, true)
-			just_added_fixtures.append(new_fixture)
+		for fixture_uuid: String in p_serialized_data.fixtures[fixture_channel]:
+			var fixture: EngineComponent = ComponentDB.get_component(fixture_uuid)
+
+			if fixture is DMXFixture:
+				_add_fixture(fixture, -1, true)
+				just_added_fixtures.append(fixture)
 	
 	for output_uuid: String in p_serialized_data.get("outputs", {}).keys():
 		var classname: String = p_serialized_data.outputs[output_uuid].get("class_name", "")
