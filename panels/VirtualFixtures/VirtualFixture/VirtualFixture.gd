@@ -68,7 +68,7 @@ func get_fixture() -> Fixture:
 ## Sets the BG color of this virtual fixture
 func render_color():
 	var base_color: Color = Color.WHITE
-	var parameters: Dictionary = _fixture.get_all_parameter_values().get("root", {})
+	var parameters: Dictionary = _fixture.get_all_values().get("root", {})
 	var overrides: Dictionary = _fixture.get_all_override_values().get("root", {})
 	
 	parameters.merge(overrides, true)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_yw200"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_eicj8"]
-[ext_resource type="Script" path="res://panels/SaveLoad/SaveLoad.gd" id="2_jkfth"]
+[ext_resource type="Script" uid="uid://vwxcnn2f2rl6" path="res://panels/SaveLoad/SaveLoad.gd" id="2_jkfth"]
 [ext_resource type="Texture2D" uid="uid://dpncjre34kf25" path="res://assets/icons/Storage.svg" id="3_eae8o"]
 [ext_resource type="Texture2D" uid="uid://c6rls43ddilxg" path="res://assets/icons/Save.svg" id="3_wj17c"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_ac6es"]
@@ -219,6 +219,7 @@ text = "Save Load Settings"
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer4/HBoxContainer/SaveUI" to="." method="_on_save_ui_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/PanelContainer3/HBoxContainer/New" to="." method="_on_new_pressed"]
 [connection signal="column_title_clicked" from="VBoxContainer/Tree" to="." method="_on_tree_column_title_clicked"]
+[connection signal="item_activated" from="VBoxContainer/Tree" to="." method="_on_open_pressed"]
 [connection signal="item_selected" from="VBoxContainer/Tree" to="." method="_dissable_action_buttons" binds= [false]]
 [connection signal="nothing_selected" from="VBoxContainer/Tree" to="." method="_on_tree_nothing_selected"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Open" to="." method="_on_open_pressed"]

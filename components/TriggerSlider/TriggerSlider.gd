@@ -19,6 +19,9 @@ var _feedback_config: Dictionary = {
 	"signal": Signal()
 }
 
+## Dragging state
+var _current_dragging: bool = false
+
 
 ## Sets the trigger connected to this slider
 func set_trigger(component_uuid: String, method_name: String) -> void:
@@ -61,6 +64,9 @@ func _on_feedback_object_found(object: EngineComponent) -> void:
 
 
 func _on_feedback_signal_emitted(p_value: Variant) -> void:
+	if _current_dragging:
+		return
+	
 	set_value_no_signal(p_value as float)
 
 
@@ -68,6 +74,16 @@ func _on_feedback_signal_emitted(p_value: Variant) -> void:
 func _on_value_changed(value: float) -> void:
 	if _trigger_config.callable.is_valid():
 		_trigger_config.callable.call(value)
+
+
+## Called when the drag is started
+func _on_drag_started() -> void:
+	_current_dragging = true
+
+
+## Called when the drag is ended
+func _on_drag_ended(value_changed: bool) -> void:
+	_current_dragging = false
 
 
 ## Saves this trigger into a dict

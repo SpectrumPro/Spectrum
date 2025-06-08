@@ -176,7 +176,7 @@ func _on_store_mode_changed(store_mode: bool, class_hint: String) -> void:
 
 ## Called when an input event is decected in the panel
 func _on_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		event = event as InputEventMouseButton
 		
 		if event.double_click: 

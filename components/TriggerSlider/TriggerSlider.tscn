@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d3reasl3xdl4l"]
 
 [ext_resource type="Texture2D" uid="uid://do3e2bue24bsp" path="res://assets/icons/Slider_handle.svg" id="1_qgbu0"]
-[ext_resource type="Script" path="res://components/TriggerSlider/TriggerSlider.gd" id="2_ge5bo"]
+[ext_resource type="Script" uid="uid://c4ud0yn3deptf" path="res://components/TriggerSlider/TriggerSlider.gd" id="2_ge5bo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hv2sk"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
@@ -26,4 +26,6 @@ max_value = 1.0
 step = 0.01
 script = ExtResource("2_ge5bo")
 
+[connection signal="drag_ended" from="." to="." method="_on_drag_ended"]
+[connection signal="drag_started" from="." to="." method="_on_drag_started"]
 [connection signal="value_changed" from="." to="." method="_on_value_changed"]

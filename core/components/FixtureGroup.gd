@@ -92,6 +92,7 @@ func remove_fixture(fixture: Fixture) -> void: rpc("remove_fixture", [fixture])
 func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
 	if not _fixtures.has(fixture): return false
 	
+	_fixtures[fixture].local_delete()
 	_fixtures.erase(fixture)
 	
 	if not no_signal:

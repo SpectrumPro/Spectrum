@@ -171,7 +171,7 @@ func _serialize_request() -> Dictionary:
 
 
 ## Loads this Cue from a dictionary
-func load_request(serialized_data: Dictionary) -> void:
+func _load_request(serialized_data: Dictionary) -> void:
 	_qid = type_convert(serialized_data.get("qid", _qid), TYPE_STRING)
 	_fade_time = type_convert(serialized_data.get("fade_time", _fade_time), TYPE_FLOAT)
 	_pre_wait = type_convert(serialized_data.get("pre_wait", _pre_wait), TYPE_FLOAT)

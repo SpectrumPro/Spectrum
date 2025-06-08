@@ -193,7 +193,6 @@ func get_all_user_meta() -> Dictionary:
 
 ## Always call this function when you want to delete this component. 
 func delete() -> void: 
-	
 	rpc("delete")
 
 ## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests

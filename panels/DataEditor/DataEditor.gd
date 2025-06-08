@@ -49,15 +49,18 @@ func set_function(function: Function) -> void:
 			
 			for parameter: String in fixture_data[fixture][zone]:
 				if parameter not in _columns:
-					_tree.columns = _columns.values().max() + 1
-					_columns[parameter] = _tree.columns
+					_tree.columns = len(_columns) + 1
+					_columns[parameter] = (_tree.columns) - 1
 				
-				zone_item.set_text(_columns[parameter], str(fixture_data[fixture][zone][parameter].value))
-				zone_item.set_custom_bg_color(_columns[parameter], Color(Color.WHITE, 0.1))
+				var value: float = fixture_data[fixture][zone][parameter].value
+				zone_item.set_text.call_deferred(_columns[parameter], str(value))
+				
+				if value:
+					zone_item.set_custom_bg_color.call_deferred(_columns[parameter], Color(Color.WHITE, 0.1))
 	
 	for column: String in _columns:
-		_tree.set_column_title(_columns[column], column)
-		_tree.set_column_expand(_columns[column], false)
+		_tree.set_column_title.call_deferred(_columns[column], column)
+		_tree.set_column_expand.call_deferred(_columns[column], true)
 	#
 	#_tree.columns = _tree.columns + 1
 	#_tree.set_column_expand(_tree.columns, true)

@@ -195,8 +195,8 @@ func _add_cue(p_cue: Cue, p_no_signal: bool = false) -> bool:
 		return false
 	
 	_cues.append(p_cue)
-	p_cue.delete_requested.connect(remove_cue.bind(p_cue))
-	Client.register_component(p_cue)
+	p_cue.delete_requested.connect(_remove_cue.bind(p_cue))
+	ComponentDB.register_component(p_cue)
 
 	if not p_no_signal:
 		cues_added.emit([p_cue])
@@ -341,5 +341,4 @@ func _load_request(serialized_data: Dictionary) -> void:
 ## Called when this CueList is to be deleted
 func _delete_request() -> void:
 	for cue: Cue in _cues:
-		_remove_cue(cue, true)
-		cue.delete()
+		cue.local_delete()
