@@ -25,6 +25,7 @@ const TYPE_FLOAT := "FLOAT"
 const TYPE_ENUM := "ENUM"
 const TYPE_NULL := "NULL"
 const TYPE_CUSTOM := "CUSTOM"
+const TYPE_CID := "CID"
 
 
 ## Saves a JSON valid dictonary to a file, creates the file and folder if it does not exist

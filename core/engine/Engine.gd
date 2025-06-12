@@ -56,6 +56,10 @@ var EngineConfig = {
 			"object": (ClassList),
 			"name": "classlist"
 		},
+		{
+			"object": (CIDManager),
+			"name": "CIDManager"
+		},
 	],
 	## Root classes are the primary classes that will be seralized and loaded 
 	"root_classes": [

@@ -34,7 +34,7 @@ func set_component(component: EngineComponent) -> void:
 						var panel: Control = setting.custom_panel.instantiate()
 						
 						if panel.has_method(setting.entry_point):
-							panel.get(setting.entry_point).call(component)
+							panel.ready.connect(panel.get(setting.entry_point).call.bind(component), CONNECT_ONE_SHOT)
 						
 						new_module.show_custom(panel)
 					

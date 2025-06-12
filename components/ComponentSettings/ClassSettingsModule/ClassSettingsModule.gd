@@ -113,6 +113,18 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, p_type: 
 			p_signal.connect(option_button.select)
 			control = option_button
 		
+		Utils.TYPE_CID:
+			var spin_box: SpinBox = SpinBox.new()
+			spin_box.min_value = -1
+			spin_box.max_value = INF
+			spin_box.prefix = getter.get_object().self_class_name + ": "
+			spin_box.select_all_on_focus = true
+			spin_box.set_value_no_signal(getter.call())
+			
+			spin_box.value_changed.connect(setter)
+			p_signal.connect(spin_box.set_value_no_signal)
+			control = spin_box
+		
 		Utils.TYPE_NULL:
 			if getter.is_null():
 				var button: Button = Button.new()

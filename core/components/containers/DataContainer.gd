@@ -11,6 +11,9 @@ signal data_stored(fixture: Fixture, parameter_key: String, value: Variant)
 ## Emitted when data is erased from this function
 signal data_erased(fixture: Fixture, parameter_key: String)
 
+## Emitted when the value of a fixtures data is changed
+signal data_value_changed(fixture: Fixture, parameter: String, zone: String, value: float)
+
 ## Emitted when global data is stored in this function
 signal global_data_stored(parameter_key: String, value: Variant)
 
@@ -31,11 +34,11 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	
 	register_callback("on_data_stored", _store_data)
 	register_callback("on_data_erased", _erase_data)
+	register_callback("on_data_value_changed", _set_value)
 	register_callback("on_global_data_stored", _store_global_data)
 	register_callback("on_global_data_erased", _erase_global_data)
 	
 	super._init(p_uuid, p_name)
-
 
 ## Gets all the fixture data
 func get_fixture_data() -> Dictionary:
@@ -60,6 +63,26 @@ func store_data(p_fixture: Fixture, p_parameter: String, p_function: String, p_v
 	return rpc("store_data", [p_fixture, p_parameter, p_function, p_value, p_zone, p_can_fade, p_start, p_stop])
 
 
+## Erases data from this function
+func erase_data(p_fixture: Fixture, p_parameter: String, p_zone: String) -> Promise:
+	return rpc("erase_data", [p_fixture, p_parameter, p_zone])
+
+
+## Sets a value
+func set_value(p_fixture: Fixture, p_parameter: String, p_zone: String, p_new_value: float) -> Promise:
+	return rpc("set_value", [p_fixture, p_parameter, p_zone, p_new_value])
+
+
+## Stores global data into this function
+func store_global_data(p_parameter: String, p_function: String, p_value: Variant, p_can_fade: bool = true, p_start: float = 0.0, p_stop: float = 0.0) -> Promise:
+	return rpc("store_data", [p_parameter, p_function, p_value, p_can_fade, p_start, p_stop])
+
+
+## Erases global data from this function
+func erase_global_data(p_parameter: String) -> Promise: 
+	return rpc("erase_global_data", [p_parameter])
+
+
 ## Internal: Stores data into this function
 func _store_data(p_fixture: Fixture, p_parameter: String, p_function: String, p_value: Variant, p_zone: String, p_can_fade: bool = true, p_start: float = 0.0, p_stop: float = 1.0) -> bool:
 	_fixture_data.get_or_add(p_fixture, {}).get_or_add(p_zone, {})[p_parameter] = {
@@ -73,11 +96,6 @@ func _store_data(p_fixture: Fixture, p_parameter: String, p_function: String, p_
 	data_stored.emit(p_fixture, p_parameter, p_function, p_value, p_zone, p_can_fade, p_start, p_stop)
 	
 	return true
-
-
-## Erases data from this function
-func erase_data(p_fixture: Fixture, p_parameter: String, p_zone: String) -> Promise:
-	return rpc("erase_data", [p_fixture, p_parameter, p_zone])
 
 
 ## Internal: Erases data from this function
@@ -95,10 +113,19 @@ func _erase_data(p_fixture: Fixture, p_parameter: String, p_zone: String) -> boo
 	return false
 
 
+## Internal: Sets a value
+func _set_value(p_fixture: Fixture, p_parameter: String, p_zone: String, p_new_value: float) -> bool:
+	if not _fixture_data.get(p_fixture, {}).get(p_zone, {}).has(p_parameter):
+		return false
 
-## Stores global data into this function
-func store_global_data(p_parameter: String, p_function: String, p_value: Variant, p_can_fade: bool = true, p_start: float = 0.0, p_stop: float = 0.0) -> Promise:
-	return rpc("store_data", [p_parameter, p_function, p_value, p_can_fade, p_start, p_stop])
+	var config: Dictionary = _fixture_data[p_fixture][p_zone][p_parameter]
+	if config.value == p_new_value:
+		return false
+
+	config.value = p_new_value
+	data_value_changed.emit(p_fixture, p_parameter, p_zone, p_new_value)
+
+	return true
 
 
 ## Internal: Stores global data into this function
@@ -113,11 +140,6 @@ func _store_global_data(p_parameter: String, p_function: String, p_value: Varian
 	global_data_stored.emit(p_parameter, p_function, p_value, p_can_fade, p_start, p_stop)
 
 	return true
-
-
-## Erases global data from this function
-func erase_global_data(p_parameter: String) -> Promise: 
-	return rpc("erase_global_data", [p_parameter])
 
 
 ## Internal: Erases global data from this function

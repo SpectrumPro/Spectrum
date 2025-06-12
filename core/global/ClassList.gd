@@ -26,6 +26,7 @@ var _global_class_tree: Dictionary = {
 			"DataPalette": DataPalette,
 			"Function": Function,
 			"Scene": Scene,
+			"FunctionGroup": FunctionGroup
 		},
 		"DMXOutput": {
 			"ArtNetOutput": ArtNetOutput,

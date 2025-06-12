@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://d3wayg6lhg7u"]
 
-[ext_resource type="Script" path="res://panels/ColorPalette/ColorPalette.gd" id="1_jjrjg"]
+[ext_resource type="Script" uid="uid://d3iv28fq1q0s4" path="res://panels/ColorPalette/ColorPalette.gd" id="1_jjrjg"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_sjs5a"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_0pwqb"]
 [ext_resource type="Texture2D" uid="uid://cxj2da5hi1g4s" path="res://assets/icons/Palette.svg" id="3_6e5bs"]

@@ -72,6 +72,11 @@ func has_right(variant: Variant) -> bool:
 	return _right.has(variant)
 
 
+## Gets this RefMap as a dictonary
+func get_as_dict() -> Dictionary:
+	return _left.duplicate()
+
+
 ## Clears the RefMap
 func clear() -> void:
 	_left.clear()

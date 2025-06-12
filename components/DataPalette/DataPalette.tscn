@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://8b2b2j0iltv8"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_pwwoo"]
-[ext_resource type="Script" path="res://components/DataPalette/DataPalette.gd" id="2_mntp3"]
+[ext_resource type="Script" uid="uid://c4wq1mq34o1l" path="res://components/DataPalette/DataPalette.gd" id="2_mntp3"]
 
 [node name="DataPalette" type="PanelContainer"]
 anchors_preset = 15

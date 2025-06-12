@@ -14,6 +14,9 @@ signal user_meta_deleted(key: String)
 ## Emitted when the name of this object has changed
 signal name_changed(new_name: String)
 
+## Emitted when the CID is changed
+signal cid_changed(cid: int)
+
 ## Emited when this object is about to be deleted
 signal delete_requested()
 
@@ -32,6 +35,9 @@ var self_class_name: String = "EngineComponent" : set = _set_self_class
 
 ## Stores all the classes this component inherits from
 var class_tree: Array[String] = ["EngineComponent"]
+
+## ComponentID
+var _cid: int = -1
 
 ## Network Config:
 ## high_frequency_signals: Contains all the signals that should be send over the udp stream, instead of the tcp websocket 
@@ -59,6 +65,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	name = p_name
 	
 	register_setting("EngineComponent", "name", set_name, get_name, name_changed, "STRING", 0, "Name")
+	register_setting("EngineComponent", "CID", CIDManager.set_component_id.bind(self), cid, cid_changed, Utils.TYPE_CID, 1, "CID")
 	_component_ready()
 	
 	print_verbose("I am: ", name, " | ", uuid)
@@ -83,6 +90,12 @@ func _set_name(p_name: String) -> void:
 ## Gets the name
 func get_name() -> String:
 	return name
+
+
+## Gets the cid
+func cid() -> int:
+	return _cid
+
 
 
 ## Sets the self class name
@@ -233,6 +246,10 @@ func load(p_serialized_data: Dictionary) -> void:
 	
 	user_meta = p_serialized_data.get("user_meta", {})
 	user_meta_changed.emit("user_meta", user_meta)
+	
+	var cid: int = type_convert(p_serialized_data.get("cid", -1), TYPE_INT)
+	if CIDManager.set_component_id_local(cid, self, true):
+		_cid = cid
 	
 	if not "uuid" in p_serialized_data:
 		print(name, " No uuid found in serialized_data, making new one: ", uuid)

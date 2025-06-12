@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://darbo0x41j3wt"]
+[gd_scene load_steps=21 format=3 uid="uid://darbo0x41j3wt"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_evtrr"]
 [ext_resource type="Script" uid="uid://da7s6m61slqga" path="res://panels/VirtualFixtures/VirtualFixtures.gd" id="2_2fnn8"]
@@ -12,7 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://dp8vkenjk120x" path="res://assets/icons/GridOff.svg" id="10_7e1ah"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="11_1axxj"]
 [ext_resource type="Texture2D" uid="uid://b45woehlhukgj" path="res://assets/icons/Download.svg" id="12_wh0as"]
-[ext_resource type="Texture2D" uid="uid://b2irkd31agi0x" path="res://assets/icons/Remove.svg" id="13_j5khv"]
 [ext_resource type="Texture2D" uid="uid://be3tq05v1ne7n" path="res://assets/icons/Horizontal_distribute.svg" id="14_pfe5j"]
 [ext_resource type="Texture2D" uid="uid://bn4jkekidjyne" path="res://assets/icons/Vertical_distribute.svg" id="15_wwye1"]
 [ext_resource type="Texture2D" uid="uid://vm1u4mv102e3" path="res://assets/icons/Dot_Grid.svg" id="16_hig83"]
@@ -218,7 +217,6 @@ icon = ExtResource("12_wh0as")
 layout_mode = 2
 tooltip_text = "Remove Selected Fixtures"
 disabled = true
-icon = ExtResource("13_j5khv")
 
 [node name="VSeparator3" type="VSeparator" parent="TitleBar/HBoxContainer"]
 layout_mode = 2
