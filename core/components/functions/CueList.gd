@@ -340,5 +340,5 @@ func _load_request(serialized_data: Dictionary) -> void:
 
 ## Called when this CueList is to be deleted
 func _delete_request() -> void:
-	for cue: Cue in _cues:
+	for cue: Cue in _cues.duplicate():
 		cue.local_delete()

@@ -32,6 +32,7 @@ var _global_class_tree: Dictionary = {
 			"ArtNetOutput": ArtNetOutput,
 			"DMXOutput": DMXOutput,
 		},
+		"ContainerItem": ContainerItem,
 		"EngineComponent": EngineComponent,
 		"FixtureGroup": FixtureGroup,
 		"FixtureGroupItem": FixtureGroupItem,
@@ -66,7 +67,8 @@ var _hidden_classes: Array = [
 	"FixtureGroupItem",
 	"DataContainer",
 	"DataPaletteItem",
-	"FixtureManifest"
+	"FixtureManifest",
+	"ContainerItem"
 ]
 
 
