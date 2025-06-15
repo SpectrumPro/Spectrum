@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bk280hh4f1sbc"]
+[gd_scene load_steps=16 format=3 uid="uid://bk280hh4f1sbc"]
 
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="1_6irvj"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="2_ixdss"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://dfi7uhhle4irm" path="res://assets/icons/DataContainer.svg" id="3_n5nmt"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="4_jpmer"]
 [ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="4_juk7q"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_c1jhn"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="7_1qlbe"]
 [ext_resource type="Texture2D" uid="uid://dvj551fd4wb7o" path="res://assets/icons/Handle.svg" id="7_cdqi6"]
 [ext_resource type="Script" uid="uid://ixt8obmja63p" path="res://panels/DataEditor/Grid.gd" id="7_jpmer"]
 [ext_resource type="Script" uid="uid://ca0v066nkb8v1" path="res://panels/DataEditor/TimeLine.gd" id="7_u2k5i"]
@@ -27,7 +29,7 @@ corner_radius_bottom_left = 4
 font_size = 11
 font_color = Color(0.529067, 0.529067, 0.529067, 1)
 
-[node name="DataEditor" type="PanelContainer" node_paths=PackedStringArray("_tree", "_select_box", "_data_view_mode_option", "edit_controls")]
+[node name="DataEditor" type="PanelContainer" node_paths=PackedStringArray("_tree", "_select_box", "_data_view_mode_option", "_remove_item_button", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -37,7 +39,8 @@ theme_override_styles/panel = ExtResource("1_6irvj")
 script = ExtResource("2_n5nmt")
 _tree = NodePath("VBoxContainer/Tree")
 _select_box = NodePath("VBoxContainer/Tree/SelectBox")
-_data_view_mode_option = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/DataViewMode")
+_data_view_mode_option = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/DataViewMode")
+_remove_item_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/RemoveItem")
 edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -62,20 +65,47 @@ enable_store_mode = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/PanelContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="DataViewMode" type="OptionButton" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="AddItem" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Add Items"
+icon = ExtResource("6_c1jhn")
+
+[node name="RemoveItem" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Remove Items"
+icon = ExtResource("7_1qlbe")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "View Mode:"
+
+[node name="DataViewMode" type="OptionButton" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 
 [node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("4_jpmer")]
 layout_mode = 2
-size_flags_horizontal = 10
 show_edit = false
 show_settings = false
 
@@ -282,7 +312,8 @@ text = "Can Fade"
 [connection signal="selection_changed" from="." to="VBoxContainer/TimeLine" method="_on_data_editor_selection_changed"]
 [connection signal="selection_reset" from="." to="VBoxContainer/TimeLine" method="_on_data_editor_selection_reset"]
 [connection signal="object_selected" from="VBoxContainer/PanelContainer/HBoxContainer/ObjectPickerButton" to="." method="set_function"]
-[connection signal="item_selected" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/DataViewMode" to="." method="_on_data_view_mode_item_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/RemoveItem" to="." method="_on_remove_item_pressed"]
+[connection signal="item_selected" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/DataViewMode" to="." method="_on_data_view_mode_item_selected"]
 [connection signal="column_title_clicked" from="VBoxContainer/Tree" to="." method="_on_tree_column_title_clicked"]
 [connection signal="gui_input" from="VBoxContainer/Tree" to="." method="_on_tree_gui_input"]
 [connection signal="item_edited" from="VBoxContainer/Tree" to="." method="_on_tree_item_edited"]

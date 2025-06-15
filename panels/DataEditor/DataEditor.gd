@@ -24,6 +24,9 @@ signal selection_reset()
 ## OptionButton for DataViewMode
 @export var _data_view_mode_option: OptionButton
 
+## The RemoveItems button
+@export var _remove_item_button: Button
+
 
 ## Data View Mode
 enum DataViewMode {VALUE, CAN_FADE, START, STOP}
@@ -79,6 +82,7 @@ var _container_signal_connections: Dictionary[String, Callable] = {
 	"items_can_fade_changed": _on_items_can_fade_changed,
 	"items_start_changed": _on_items_start_changed,
 	"items_stop_changed": _on_items_stop_changed,
+	"items_erased": _on_items_erased
 }
 
 
@@ -201,9 +205,29 @@ func _load_item_column_data(tree_item: TreeItem, container_item: ContainerItem, 
 	tree_item.set_custom_bg_color(column, _none_zero_data_color if value else _zero_data_color)
 
 
+## Called when items are addded to the DataContainer
+func _on_items_stored(items: Array) -> void:
+	pass
+
+
+## Called when items are removed from the DataContainer
+func _on_items_erased(items: Array) -> void:
+	for container_item: ContainerItem in items:
+		var tree_item: TreeItem = _tree_items[container_item].item
+		var column: int = _tree_items[container_item].column
+		
+		tree_item.set_text(column, "")
+		tree_item.set_editable(column, false)
+		tree_item.set_custom_bg_color(column, _zero_data_color)
+		
+		_add_to_selection(tree_item, column, false)
+		_tree_items.erase(container_item)
+		_container_items[tree_item].erase(column)
+
+
 ## Adds an item to the selected items
 func _add_to_selection(item: TreeItem, column: int, selected: bool) -> void:
-	if column <= 1:
+	if column <= 1 or not _container_items[item].has(column):
 		return
 	
 	var container_item: ContainerItem = _container_items[item][column]
@@ -213,6 +237,8 @@ func _add_to_selection(item: TreeItem, column: int, selected: bool) -> void:
 		_selected_items.erase(container_item)
 	
 	selection_changed.emit(container_item, selected)
+	
+	_remove_item_button.disabled = _selected_items == []
 
 
 ## Selects a whole row
@@ -399,3 +425,8 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 ## Called when the data view mode is changed
 func _on_data_view_mode_item_selected(index: int) -> void:
 	set_data_view_mode(index)
+
+
+## Called when the RemoveItems button is pressed
+func _on_remove_item_pressed() -> void:
+	_container.erase_items(_selected_items)
