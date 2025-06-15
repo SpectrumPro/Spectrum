@@ -81,6 +81,10 @@ func _ready() -> void:
 	_update_selection_label()
 	_update_filter()
 	
+	_tree.set_column_title(0, "Component")
+	_tree.set_column_title(1, "CID")
+	_tree.set_column_expand(1, false)
+	
 	for component: EngineComponent in ComponentDB.components.values():
 		_add_component(component)
 	
@@ -150,12 +154,14 @@ func _add_component(component: EngineComponent) -> void:
 	var item: TreeItem = _tree.create_item(parent_node)
 	item.set_icon(0, Interface.get_class_icon(component.self_class_name))
 	item.set_text(0, component.name)
+	item.set_text(1, str(component.cid()))
 	
 	tree_items[component.self_class_name][component.uuid] = item
 	_component_refs[item] = component
 	
 	_signal_connections[component] = _on_component_name_changed.bind(component)
 	component.name_changed.connect(_signal_connections[component])
+	component.cid_changed.connect(_on_component_cid_changed.bind(component))
 	
 	_sort(component.self_class_name)
 	_update_filter()
@@ -184,6 +190,11 @@ func _remove_component(component: EngineComponent) -> void:
 ## Callback for when a component emits name_changed
 func _on_component_name_changed(new_name: String, component: EngineComponent) -> void:
 	tree_items[component.self_class_name][component.uuid].set_text(0, new_name)
+
+
+## Callback for when a component's CID is changed
+func _on_component_cid_changed(cid: int, component: EngineComponent) -> void:
+	tree_items[component.self_class_name][component.uuid].set_text(1, str(cid))
 	_sort(component.self_class_name)
 
 
@@ -194,9 +205,9 @@ func _sort(category: String) -> void:
 	
 	var sorted_uuids: Array = tree_item_dictionary.keys()
 	sorted_uuids.sort_custom(func(a, b): 
-		var a_name = ComponentDB.components[a].name
-		var b_name = ComponentDB.components[b].name
-		return a_name.naturalnocasecmp_to(b_name) < 0
+		var a_cid: int = ComponentDB.components[a].cid()
+		var b_cid: int = ComponentDB.components[b].cid()
+		return a_cid < b_cid
 	)
 	
 	var current_child_array: Array = tree_items[category].parent.get_children()
