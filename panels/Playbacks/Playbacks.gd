@@ -100,8 +100,3 @@ func load(serialized_data: Dictionary) -> void:
 		var new_row: PlaybackRowComponent = Interface.components.PlaybackRow.instantiate()
 		_add_row(new_row)
 		new_row.deserialize(serialized_row)
-
-
-## Called when the CloseSettings button is pressed
-func _on_close_settings_pressed() -> void:
-	set_show_settings(false)

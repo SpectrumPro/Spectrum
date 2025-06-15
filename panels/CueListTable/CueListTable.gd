@@ -87,7 +87,7 @@ func _add_cue_row(cue: Cue) -> void:
 	var row_headder: RowHeadder = table.create_row(cue.name)
 	table.move_row(row_headder.index, _cue_list.get_cues().find(cue))
 	
-	var l: int = len(cue.get_fixture_data())
+	var l: int = len(cue.get_stored_fixtures())
 	
 	var _data_values: Dictionary = {
 		"QID": 		{ "value": cue.get_qid(), "setter": cue.set_qid, "signal": cue.qid_changed},

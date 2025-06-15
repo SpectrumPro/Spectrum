@@ -8,7 +8,7 @@ class_name AddShortcutButton extends Control
 
 
 ## Emitted when the shortcut is changed
-signal shortcut_changed(input_event:InputEvent)
+signal shortcut_changed(input_event: InputEvent)
 
 
 ## The BaseButton node this AddShortcutButton controls

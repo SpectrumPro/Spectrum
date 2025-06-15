@@ -17,7 +17,7 @@
 [sub_resource type="LabelSettings" id="LabelSettings_fuler"]
 font = ExtResource("6_knbom")
 
-[node name="CuePlayback" type="PanelContainer" node_paths=PackedStringArray("_object_picker_button", "_intensity_button", "_buttons", "edit_controls")]
+[node name="CuePlayback" type="PanelContainer" node_paths=PackedStringArray("_object_picker_button", "_intensity_button", "_control_buttons", "edit_controls", "buttons")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,8 +28,9 @@ theme_override_styles/panel = ExtResource("2_bilu6")
 script = ExtResource("2_4bo1g")
 _object_picker_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/ObjectPickerButton")
 _intensity_button = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton")
-_buttons = [NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/PlayPause"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/Stop"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton"), NodePath("VBoxContainer/Controls/HBoxContainer/Previous"), NodePath("VBoxContainer/Controls/HBoxContainer/GoTo"), NodePath("VBoxContainer/Controls/HBoxContainer/Next")]
+_control_buttons = [NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/PlayPause"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/Stop"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/IntensityButton"), NodePath("VBoxContainer/Controls/HBoxContainer/Previous"), NodePath("VBoxContainer/Controls/HBoxContainer/GoTo"), NodePath("VBoxContainer/Controls/HBoxContainer/Next")]
 edit_controls = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/EditControls")
+buttons = [NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/PlayPause"), NodePath("VBoxContainer/PanelContainer2/HBoxContainer/CuePlaybackControls/HBoxContainer/Stop"), NodePath("VBoxContainer/Controls/HBoxContainer/Previous"), NodePath("VBoxContainer/Controls/HBoxContainer/GoTo"), NodePath("VBoxContainer/Controls/HBoxContainer/Next")]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

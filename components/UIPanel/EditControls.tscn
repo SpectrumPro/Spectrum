@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_bsx7u"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="1_x4jel"]
 [ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="2_1xcge"]
-[ext_resource type="Script" path="res://components/UIPanel/EditControls.gd" id="2_6g6dh"]
+[ext_resource type="Script" uid="uid://djygjwg3mrdko" path="res://components/UIPanel/EditControls.gd" id="2_6g6dh"]
 [ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="3_vg853"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="5_x6bqw"]
 
@@ -31,7 +31,6 @@ icon = ExtResource("1_x4jel")
 [node name="Settings" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 disabled = true
-toggle_mode = true
 icon = ExtResource("2_1xcge")
 
 [node name="Close" type="Button" parent="HBoxContainer"]

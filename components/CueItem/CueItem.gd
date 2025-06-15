@@ -89,7 +89,12 @@ func set_cue(cue: Cue, cue_list: CueList) -> void:
 
 ## Shows or hides the status bar
 func set_status_bar(state: bool, time: float) -> void:
-	if _current_tween: _current_tween.kill()
+	if _current_tween: 
+		_current_tween.kill()
+	
+	if not is_inside_tree():
+		return
+	
 	var tween: Tween = get_tree().create_tween()
 	
 	tween.tween_method(_status_bar.set_value_no_signal, _status_bar.value, 1 if state else 0, time)

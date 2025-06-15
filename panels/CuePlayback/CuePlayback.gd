@@ -15,7 +15,7 @@ class_name UICuePlayback extends UIPanel
 @export var _intensity_button: IntensityButton
 
 ## All the buttons that need to be disabled / enabled when there is no cue list
-@export var _buttons: Array[Button]
+@export var _control_buttons: Array[Button]
 
 
 ## The cue list
@@ -42,7 +42,7 @@ func set_cue_list(cue_list: CueList) -> void:
 	_intensity_button.set_function(cue_list)
 	
 	var disabled_state: bool = not is_instance_valid(_cue_list)
-	for button: Button in _buttons:
+	for button: Button in _control_buttons:
 		button.disabled = disabled_state
 
 

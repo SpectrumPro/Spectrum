@@ -55,16 +55,16 @@ func _zoom_out() -> void:
 
 ## Sets edit mode state
 func _edit_mode_toggled(p_edit_mode: bool) -> void:
-	fixture_container.set_edit_mode(edit_mode)
-	$TitleBar/HBoxContainer/EditControls/HBoxContainer/Edit.button_pressed = edit_mode
+	fixture_container.set_edit_mode(_edit_mode)
+	$TitleBar/HBoxContainer/EditControls/HBoxContainer/Edit.button_pressed = _edit_mode
 	$GridAlignSize.hide()
 	
-	$TitleBar/HBoxContainer/GridControls.visible = edit_mode
-	$TitleBar/HBoxContainer/VSeparator.visible = edit_mode
-	$TitleBar/HBoxContainer/PanelContainer.visible = edit_mode
-	$TitleBar/HBoxContainer/VSeparator2.visible = edit_mode
-	$TitleBar/HBoxContainer/AlignControls.visible = edit_mode
-	$TitleBar/HBoxContainer/VSeparator3.visible = edit_mode
+	$TitleBar/HBoxContainer/GridControls.visible = _edit_mode
+	$TitleBar/HBoxContainer/VSeparator.visible = _edit_mode
+	$TitleBar/HBoxContainer/PanelContainer.visible = _edit_mode
+	$TitleBar/HBoxContainer/VSeparator2.visible = _edit_mode
+	$TitleBar/HBoxContainer/AlignControls.visible = _edit_mode
+	$TitleBar/HBoxContainer/VSeparator3.visible = _edit_mode
 
 
 ## Called when the selected virtual fixtures changes

@@ -48,6 +48,19 @@ var midi_controler_mappings: Dictionary = {
 	}
 }
 
+## Allowed input events for shortcuts
+var _allowed_events: Array[String] = [
+	"InputEventKey"
+]
+
+
+## Blocklist for keycodes
+var _keycode_block_list: Array[Key] = [
+	KEY_SPACE,
+	KEY_ENTER,
+	KEY_ESCAPE
+]
+
 
 func _ready() -> void:
 	OS.open_midi_inputs()
@@ -66,6 +79,16 @@ func _input(event: InputEvent) -> void:
 	
 	if Input.is_action_just_pressed("store_mode"):
 		Programmer.exit_store_mode() if Programmer.get_store_mode() else Programmer.enter_store_mode()
+
+
+## Checks if an event is allowed for shortcut inputs
+func is_event_allowed(event: InputEvent) -> bool:
+	return event.get_class() in _allowed_events
+
+
+## Checks if a key is allowed
+func is_key_allowed(key: Key) -> bool:
+	return key not in _keycode_block_list
 
 
 ## Handles Midi input events
