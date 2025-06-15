@@ -83,6 +83,9 @@ func _create_timeline_handles(container_item: ContainerItem) -> void:
 	_timeline_handles[container_item] = {"start_handle": start_handle, "stop_handle": stop_handle, "line": line}
 	await get_tree().process_frame
 	
+	if not (is_instance_valid(start_handle) and is_instance_valid(stop_handle) and is_instance_valid(line)):
+		return
+	
 	start_handle.set_position(
 		Vector2(
 			remap(container_item.get_start(), 0.0, 1.0, 0, _time_line_container.size.x),
