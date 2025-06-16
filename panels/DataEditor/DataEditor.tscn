@@ -29,7 +29,7 @@ corner_radius_bottom_left = 4
 font_size = 11
 font_color = Color(0.529067, 0.529067, 0.529067, 1)
 
-[node name="DataEditor" type="PanelContainer" node_paths=PackedStringArray("_tree", "_select_box", "_data_view_mode_option", "_remove_item_button", "edit_controls")]
+[node name="DataEditor" type="PanelContainer" node_paths=PackedStringArray("_tree", "_select_box", "_data_view_mode_option", "_add_item_button", "_remove_item_button", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -40,6 +40,7 @@ script = ExtResource("2_n5nmt")
 _tree = NodePath("VBoxContainer/Tree")
 _select_box = NodePath("VBoxContainer/Tree/SelectBox")
 _data_view_mode_option = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/DataViewMode")
+_add_item_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/AddItem")
 _remove_item_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/RemoveItem")
 edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
 
@@ -312,6 +313,7 @@ text = "Can Fade"
 [connection signal="selection_changed" from="." to="VBoxContainer/TimeLine" method="_on_data_editor_selection_changed"]
 [connection signal="selection_reset" from="." to="VBoxContainer/TimeLine" method="_on_data_editor_selection_reset"]
 [connection signal="object_selected" from="VBoxContainer/PanelContainer/HBoxContainer/ObjectPickerButton" to="." method="set_function"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/AddItem" to="." method="_on_add_item_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/RemoveItem" to="." method="_on_remove_item_pressed"]
 [connection signal="item_selected" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/DataViewMode" to="." method="_on_data_view_mode_item_selected"]
 [connection signal="column_title_clicked" from="VBoxContainer/Tree" to="." method="_on_tree_column_title_clicked"]

@@ -96,7 +96,7 @@ func erase_items(p_items: Array) -> Promise:
 
 
 ## Sets the function of mutiple items
-func set_function(p_items: Array, p_function: float) -> Promise:
+func set_function(p_items: Array, p_function: String) -> Promise:
 	return rpc("set_function", [p_items, p_function])
 
 
@@ -178,7 +178,7 @@ func _erase_items(p_items: Array) -> void:
 
 
 ## Internal: Sets the function of mutiple items
-func _set_function(p_items: Array, p_function: float) -> void:
+func _set_function(p_items: Array, p_function: String) -> void:
 	var changed_items: Array[ContainerItem]
 
 	for item: Variant in p_items:

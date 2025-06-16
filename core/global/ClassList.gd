@@ -72,6 +72,12 @@ var _hidden_classes: Array = [
 ]
 
 
+## Classes that should always seralize
+var _always_searlize_classes: Array[String] = [
+	"ContainerItem"
+]
+
+
 func _ready() -> void:
 	rebuild_maps(_global_class_tree)
 	Client.connected_to_server.connect(rebuild_maps.bind(_global_class_tree))
@@ -170,6 +176,11 @@ func is_class_custom(classname: String) -> bool:
 ## Checks if a class inherits from another class
 func does_class_inherit(base_class: String, inheritance: String) -> bool:
 	return _inheritance_trees[base_class].has(inheritance)
+
+
+## Checks if a class should seralize
+func should_class_searlize(classname: String) -> bool:
+	return _always_searlize_classes.has(classname)
 
 
 ## Attempts to fetch custom classes from the server

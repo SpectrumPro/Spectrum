@@ -58,6 +58,7 @@ var panels: Dictionary = {
 	"Universes": load("res://panels/Universes/Universes.tscn"),
 	"UIPanelSettings": load("res://panels/UIPanelSettings/UIPanelSettings.tscn"),
 	"UIControlMethodPicker": load("res://panels/ComponentControlMethodPicker/ComponentControlMethodPicker.tscn"),
+	"UiParameterFunctionList": load("res://panels/UIParameterFunctionList/UIParameterFunctionList.tscn"),
 	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
@@ -158,6 +159,12 @@ var _dialog_box_container: DialogBoxContainer
 ## The container that stores all dialog boxes
 var _ui_panel_settings: UIPanelSettings
 
+## The container that stores all dialog boxes
+var _parameter_function_list: UiParameterFunctionList
+
+## Promise for UiParameterFunctionList
+var _parameter_function_list_promise: Promise = Promise.new()
+
 ## The UIControlMethodPicker to choose controls
 var _control_method_picker: UIControlMethodPicker
 
@@ -208,6 +215,7 @@ func _set_up_custom_pickers():
 	_set_up_name_popup()
 	_set_up_dialog_box_container()
 	_set_up_panel_settings()
+	_set_up_function_list()
 	_set_up_control_method_picker()
 
 
@@ -316,6 +324,18 @@ func _set_up_panel_settings() -> void:
 	add_custom_popup(_ui_panel_settings)
 
 
+## Sets up the UiParameterFunctionList
+func _set_up_function_list() -> void:
+	_parameter_function_list = panels.UiParameterFunctionList.instantiate()
+	_parameter_function_list.close_request.connect(_parameter_function_list_promise.reject)
+	_parameter_function_list.close_request.connect(_parameter_function_list_promise.clear)
+	_parameter_function_list.function_chosen.connect(func (function: String):
+		_parameter_function_list_promise.resolve([function])
+		hide_custom_popup(_parameter_function_list)
+	)
+	add_custom_popup(_parameter_function_list)
+
+
 ## Sets up the UIControlMethodPicker
 func _set_up_control_method_picker() -> void:
 	_control_method_picker = panels.UIControlMethodPicker.instantiate()
@@ -416,6 +436,14 @@ func show_name_dialog(title: String = "", default_text: String = "", source: Var
 func show_panel_settings(panel: UIPanel) -> void:
 	_ui_panel_settings.set_panel(panel)
 	show_custom_popup(_ui_panel_settings)
+
+
+## Shows the UiParameterFunctionList
+func show_function_list(fixtures: Array, parameter: String) -> Promise:
+	_parameter_function_list.set_fixtures(fixtures, parameter)
+	show_custom_popup(_parameter_function_list)
+	
+	return _parameter_function_list_promise
 
 
 ## Shows the UIControlMethodPicker for the given component

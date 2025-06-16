@@ -24,12 +24,15 @@ signal selection_reset()
 ## OptionButton for DataViewMode
 @export var _data_view_mode_option: OptionButton
 
+## The AddItems button
+@export var _add_item_button: Button
+
 ## The RemoveItems button
 @export var _remove_item_button: Button
 
 
 ## Data View Mode
-enum DataViewMode {VALUE, CAN_FADE, START, STOP}
+enum DataViewMode {VALUE, CAN_FADE, START, STOP, FUNCTION}
 
 ## Current DataViewMode
 var _data_view_mode: DataViewMode = DataViewMode.VALUE
@@ -55,6 +58,12 @@ var _fixture_zones: Dictionary[Fixture, RefMap]
 ## All selected tree items and columns
 var _selected_items: Array[ContainerItem]
 
+## All selected fixtures
+var _selected_fixtures: Dictionary[Fixture, Array]
+
+## All selected TreeItems that dont have a corrisponding ContainerItem
+var _selected_containerless_items: Dictionary[TreeItem, Array]
+
 ## All ContainerItems sorted by TreeItems columns
 var _container_items: Dictionary[TreeItem, Dictionary]
 
@@ -78,11 +87,13 @@ var _fixture_color: Color = Color(0.09, 0.09, 0.09)
 
 ## Signals to connect to the container
 var _container_signal_connections: Dictionary[String, Callable] = {
+	"items_function_changed": _on_items_function_changed,
 	"items_value_changed": _on_items_value_changed,
 	"items_can_fade_changed": _on_items_can_fade_changed,
 	"items_start_changed": _on_items_start_changed,
 	"items_stop_changed": _on_items_stop_changed,
-	"items_erased": _on_items_erased
+	"items_erased": _on_items_erased,
+	"items_stored": _on_items_stored
 }
 
 
@@ -153,8 +164,6 @@ func _load_data(fixture_cids: Dictionary, parameters: Array, fixture_data: Dicti
 			fixture_item.set_text(1, str(cid))
 			fixture_item.set_custom_bg_color(0, _fixture_color)
 			fixture_item.set_custom_bg_color(1, _fixture_color)
-			#fixture_item.set_selectable(0, false)
-			#fixture_item.set_selectable(1, false)
 			
 			_fixture_items.map(fixture, fixture_item)
 			
@@ -183,31 +192,60 @@ func _load_item_column_data(tree_item: TreeItem, container_item: ContainerItem, 
 	match _data_view_mode:
 		DataViewMode.VALUE:
 			tree_item.set_cell_mode(column, TreeItem.CELL_MODE_STRING)
+			tree_item.set_editable(column, true)
+			
 			value = container_item.get_value()
 			tree_item.set_text(column, str(value))
 
 		DataViewMode.CAN_FADE:
 			tree_item.set_cell_mode(column, TreeItem.CELL_MODE_CHECK)
+			tree_item.set_editable(column, false)
+			
 			value = container_item.get_can_fade()
 			tree_item.set_checked(column, value)
 			
 		DataViewMode.START:
 			tree_item.set_cell_mode(column, TreeItem.CELL_MODE_STRING)
+			tree_item.set_editable(column, true)
+			
 			value = container_item.get_start()
 			tree_item.set_text(column, str(value))
 			
 		DataViewMode.STOP:
 			tree_item.set_cell_mode(column, TreeItem.CELL_MODE_STRING)
+			tree_item.set_editable(column, true)
+			
 			value = container_item.get_stop()
 			tree_item.set_text(column, str(value))
+		
+		DataViewMode.FUNCTION:
+			tree_item.set_cell_mode(column, TreeItem.CELL_MODE_STRING)
+			tree_item.set_editable(column, false)
+			
+			value = container_item.get_function()
+			tree_item.set_text(column, value)
 	
-	tree_item.set_editable(column, _data_view_mode != DataViewMode.CAN_FADE)
 	tree_item.set_custom_bg_color(column, _none_zero_data_color if value else _zero_data_color)
 
 
 ## Called when items are addded to the DataContainer
 func _on_items_stored(items: Array) -> void:
-	pass
+	for container_item: ContainerItem in items:
+		if container_item.get_fixture() in _fixture_items.get_left():
+			if container_item.get_zone() in _fixture_zones[container_item.get_fixture()].get_left():
+				if container_item.get_parameter() in _columns:
+					var column: int = _columns[container_item.get_parameter()]
+					var item: TreeItem = _fixture_zones[container_item.get_fixture()].left(container_item.get_zone())
+					var reselect_item: bool = item in _selected_containerless_items
+					
+					_add_to_selection(item, column, false)
+					_load_item_column_data( item, container_item, column)
+					
+					_container_items.get_or_add(item, {})[column] = container_item
+					_tree_items[container_item] = {"item": item, "column": column}
+					
+					if reselect_item:
+						_add_to_selection(item, column, true)
 
 
 ## Called when items are removed from the DataContainer
@@ -215,6 +253,7 @@ func _on_items_erased(items: Array) -> void:
 	for container_item: ContainerItem in items:
 		var tree_item: TreeItem = _tree_items[container_item].item
 		var column: int = _tree_items[container_item].column
+		var reselect_item: bool = container_item in _selected_items
 		
 		tree_item.set_text(column, "")
 		tree_item.set_editable(column, false)
@@ -223,22 +262,46 @@ func _on_items_erased(items: Array) -> void:
 		_add_to_selection(tree_item, column, false)
 		_tree_items.erase(container_item)
 		_container_items[tree_item].erase(column)
+		
+		if reselect_item:
+			_add_to_selection(tree_item, column, true)
 
 
 ## Adds an item to the selected items
 func _add_to_selection(item: TreeItem, column: int, selected: bool) -> void:
-	if column <= 1 or not _container_items[item].has(column):
+	if column <= 1:
 		return
 	
-	var container_item: ContainerItem = _container_items[item][column]
-	if selected:
-		_selected_items.append(container_item)
+	if _container_items[item].has(column):
+		var container_item: ContainerItem = _container_items[item][column]
+		var fixture: Fixture = container_item.get_fixture()
+		
+		if selected and not _selected_items.has(container_item):
+			_selected_items.append(container_item)
+		else:
+			_selected_items.erase(container_item)
+		
+		if selected and not _selected_fixtures.get(fixture, []).has(column):
+			_selected_fixtures.get_or_add(fixture, []).append(column)
+		else:
+			_selected_fixtures.get(fixture, []).erase(column)
+			
+			if not _selected_fixtures.get(fixture, []):
+				_selected_fixtures.erase(fixture)
+		
+		selection_changed.emit(container_item, selected)
+		_remove_item_button.disabled = _selected_items == []
+	
 	else:
-		_selected_items.erase(container_item)
-	
-	selection_changed.emit(container_item, selected)
-	
-	_remove_item_button.disabled = _selected_items == []
+		if selected and not _selected_containerless_items.get(item, []).has(column):
+			_selected_containerless_items.get_or_add(item, []).append(column)
+		else:
+			_selected_containerless_items.get(item, []).erase(column)
+			
+			if not _selected_containerless_items.get(item, []):
+				_selected_containerless_items.erase(item)
+
+		_add_item_button.disabled = _selected_containerless_items == {}
 
 
 ## Selects a whole row
@@ -252,7 +315,26 @@ func _select_row(item: TreeItem) -> void:
 func _clear_selection() -> void:
 	_tree.deselect_all()
 	_selected_items.clear()
+	_selected_fixtures.clear()
+	_selected_containerless_items.clear()
+	
+	_remove_item_button.disabled = true
+	_add_item_button.disabled = true
+	
 	selection_reset.emit()
+
+
+## Called when a functions is changed in the container
+func _on_items_function_changed(items: Array, function: String) -> void:
+	if not _data_view_mode == DataViewMode.FUNCTION:
+		return
+	
+	for container_item: ContainerItem in items:
+		var tree_item: TreeItem = _tree_items[container_item].item
+		var column: int = _tree_items[container_item].column
+		
+		tree_item.set_text(column, function)
+		tree_item.set_custom_bg_color(column, _none_zero_data_color if function else _zero_data_color)
 
 
 ## Called when data is changed in the container
@@ -339,16 +421,26 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 			else:
 				_is_dragging = false
 				_select_box.hide()
-
+		
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			if _data_view_mode == DataViewMode.CAN_FADE and _tree.get_selected_column() > 1:
-				var active_item: TreeItem = _tree.get_selected()
-				_container.set_can_fade(_selected_items, not active_item.is_checked(_tree.get_selected_column()))
-			
-			else:
-				_tree.edit_selected()
-
-
+			match _data_view_mode:
+				DataViewMode.CAN_FADE:
+					if not _tree.get_selected_column() > 1 or not _selected_items:
+						return
+					
+					var active_item: TreeItem = _tree.get_selected()
+					_container.set_can_fade(_selected_items, not active_item.is_checked(_tree.get_selected_column()))
+				
+				DataViewMode.FUNCTION:
+					if not _tree.get_selected_column() > 1 or not _selected_items:
+						return
+					
+					Interface.show_function_list(_selected_fixtures.keys(), _columns.keys()[_tree.get_selected_column()]).then(func (function: String):
+						_container.set_function(_selected_items, function)
+					)
+				_:
+					_tree.edit_selected()
+	
 	if event is InputEventMouseMotion and _is_dragging:
 		_handle_drag_selection(event)
 
@@ -425,6 +517,30 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 ## Called when the data view mode is changed
 func _on_data_view_mode_item_selected(index: int) -> void:
 	set_data_view_mode(index)
+
+
+## Called when the AddItems button is pressed
+func _on_add_item_pressed() -> void:
+	var items_to_add: Array[ContainerItem]
+	
+	for tree_item: TreeItem in _selected_containerless_items:
+		for column: int in _selected_containerless_items[tree_item]:
+			var container: ContainerItem = ContainerItem.new()
+			var fixture: Fixture = _fixture_items.right(tree_item) if tree_item.get_parent() == _root else _fixture_items.right(tree_item.get_parent())
+			var zone: String = Fixture.RootZone if tree_item.get_parent() == _root else _fixture_zones[fixture].right(tree_item)
+			var parameter: String = _columns.keys()[column]
+			var function: String = fixture.get_default_function(zone, parameter)
+			
+			container.set_fixture(fixture)
+			container.set_zone(zone)
+			container.set_parameter(parameter)
+			container.set_function(function)
+			container.set_value(fixture.get_default(zone, parameter, function))
+			container.set_can_fade(fixture.function_can_fade(zone, parameter, function))
+			
+			items_to_add.append(container)
+	
+	_container.store_items(items_to_add)
 
 
 ## Called when the RemoveItems button is pressed
