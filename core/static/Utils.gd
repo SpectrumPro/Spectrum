@@ -51,7 +51,7 @@ static func objects_to_uuids(data: Variant) -> Variant:
 		TYPE_OBJECT:
 			return {
 					"_object_ref": str(data.get("uuid")),
-					#"_serialized_object": data.serialize(),
+					"_serialized_object": data.serialize() if ClassList.should_class_searlize(data.self_class_name if data is EngineComponent else "") else {},
 					"_class_name": data.get("self_class_name")
 				}
 		

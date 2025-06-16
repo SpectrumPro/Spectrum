@@ -21,6 +21,10 @@ signal override_erased(parameter: String, zone: String)
 signal all_override_removed()
 
 
+## Root Zone
+static var RootZone: String = "root"
+
+
 ## Called when this EngineComponent is ready
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	_set_self_class("Fixture")
