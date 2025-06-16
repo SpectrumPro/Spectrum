@@ -23,8 +23,8 @@ var _fade_out_speed: float = 2
 func _component_ready() -> void:
 	_set_self_class("Scene")
 	
-	add_accessible_method("fade_in", [TYPE_FLOAT], set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, ["In Seconds"])
-	add_accessible_method("fade_out", [TYPE_FLOAT], set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, ["In Seconds"])
+	register_control_method(set_fade_in_speed, {"Seconds": TYPE_FLOAT})
+	register_control_method(set_fade_out_speed, {"Seconds": TYPE_FLOAT})
 	
 	register_setting("Scene", "fade_in", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, Utils.TYPE_FLOAT, 0, "Fade In Time", 0, INF)
 	register_setting("Scene", "fade_out", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, Utils.TYPE_FLOAT, 1, "Fade Out Time", 0, INF)

@@ -1,0 +1,81 @@
+[gd_scene load_steps=2 format=3 uid="uid://clead72nsry6n"]
+
+[ext_resource type="Script" uid="uid://b7iwdp5jp3soi" path="res://components/PlaybackColumn/PlaybackColumn.gd" id="1_ldd5c"]
+
+[node name="PlaybackColumn" type="PanelContainer" node_paths=PackedStringArray("button1", "button2", "button3", "button4", "button5", "button6", "slider")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1827.0
+offset_bottom = -581.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ldd5c")
+button1 = NodePath("VBoxContainer/Button")
+button2 = NodePath("VBoxContainer/Button2")
+button3 = NodePath("VBoxContainer/Button3")
+button4 = NodePath("VBoxContainer/Button4")
+button5 = NodePath("VBoxContainer/Button5")
+button6 = NodePath("VBoxContainer/Button6")
+slider = NodePath("VBoxContainer/VSlider")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Title" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Component"
+flat = true
+text_overrun_behavior = 1
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Button 1"
+
+[node name="Button2" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Button 2"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Button3" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Button 3"
+
+[node name="VSlider" type="VSlider" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 3
+editable = false
+
+[node name="Button4" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Button 4"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Button5" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Button 5"
+
+[node name="Button6" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Button 6"
+
+[connection signal="pressed" from="VBoxContainer/Title" to="." method="_on_title_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed" binds= [1]]
+[connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_pressed" binds= [2]]
+[connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_button_pressed" binds= [3]]
+[connection signal="pressed" from="VBoxContainer/Button4" to="." method="_on_button_pressed" binds= [4]]
+[connection signal="pressed" from="VBoxContainer/Button5" to="." method="_on_button_pressed" binds= [5]]
+[connection signal="pressed" from="VBoxContainer/Button6" to="." method="_on_button_pressed" binds= [6]]

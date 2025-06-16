@@ -58,12 +58,12 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	_set_name("Function")
 	_set_self_class("Function")
 	
-	add_accessible_method("intensity", [TYPE_FLOAT], set_intensity, get_intensity, intensity_changed, ["Intensity"])
-	add_accessible_method("on", [TYPE_NIL], on, Callable(), Signal(), ["On"])
-	add_accessible_method("off", [TYPE_NIL], off, Callable(), Signal(), ["Off"])
-	add_accessible_method("toggle", [TYPE_NIL], toggle, Callable(), Signal(), ["Toggle"])
-	add_accessible_method("play", [TYPE_NIL], play, Callable(), Signal(), ["Play"])
-	add_accessible_method("pause", [TYPE_NIL], pause, Callable(), Signal(), ["Pause"])
+	register_control_method(set_intensity, {"Intensity": TYPE_FLOAT})
+	register_control_method(on)
+	register_control_method(off)
+	register_control_method(toggle)
+	register_control_method(play)
+	register_control_method(pause)
 	
 	register_callback("on_intensity_changed", _set_intensity)
 	register_callback("on_active_state_changed", _set_active_state)

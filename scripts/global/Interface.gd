@@ -57,6 +57,7 @@ var panels: Dictionary = {
 	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
 	"Universes": load("res://panels/Universes/Universes.tscn"),
 	"UIPanelSettings": load("res://panels/UIPanelSettings/UIPanelSettings.tscn"),
+	"UIControlMethodPicker": load("res://panels/ComponentControlMethodPicker/ComponentControlMethodPicker.tscn"),
 	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
@@ -157,6 +158,12 @@ var _dialog_box_container: DialogBoxContainer
 ## The container that stores all dialog boxes
 var _ui_panel_settings: UIPanelSettings
 
+## The UIControlMethodPicker to choose controls
+var _control_method_picker: UIControlMethodPicker
+
+## Promise for the UIControlMethodPicker
+var _method_picker_promise: Promise = Promise.new()
+
 ## The container for cusoem popups
 var _custom_popup_container: Control
 
@@ -201,6 +208,7 @@ func _set_up_custom_pickers():
 	_set_up_name_popup()
 	_set_up_dialog_box_container()
 	_set_up_panel_settings()
+	_set_up_control_method_picker()
 
 
 ## Called when the engine is resetting, Will reload the whole ui layout
@@ -308,6 +316,18 @@ func _set_up_panel_settings() -> void:
 	add_custom_popup(_ui_panel_settings)
 
 
+## Sets up the UIControlMethodPicker
+func _set_up_control_method_picker() -> void:
+	_control_method_picker = panels.UIControlMethodPicker.instantiate()
+	add_custom_popup(_control_method_picker)
+	
+	_control_method_picker.close_request.connect(_method_picker_promise.reject)
+	_control_method_picker.close_request.connect(_method_picker_promise.clear)
+	_control_method_picker.method_chosen.connect(func (up_method: String, down_method: String):
+		_method_picker_promise.resolve([up_method, down_method])
+	)
+
+
 ## Try auto load the ui
 func _try_auto_load() -> void:
 	if FileAccess.file_exists(ui_library_location + "/main"):
@@ -396,6 +416,14 @@ func show_name_dialog(title: String = "", default_text: String = "", source: Var
 func show_panel_settings(panel: UIPanel) -> void:
 	_ui_panel_settings.set_panel(panel)
 	show_custom_popup(_ui_panel_settings)
+
+
+## Shows the UIControlMethodPicker for the given component
+func show_control_method_picker(component: EngineComponent) -> Promise:
+	_control_method_picker.set_component(component)
+	show_custom_popup(_control_method_picker)
+	
+	return _method_picker_promise
 
 
 ## Shows a panel popup, source is the script who triggerd the popup to avoid it showing twice

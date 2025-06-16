@@ -39,6 +39,13 @@ var class_tree: Array[String] = ["EngineComponent"]
 ## ComponentID
 var _cid: int = -1
 
+## List of functions that are allowed to be called by external control scripts.
+var _control_methods: Dictionary[String, Dictionary] = {}
+
+## Settings for this component
+var _settings: Dictionary = {
+}
+
 ## Network Config:
 ## high_frequency_signals: Contains all the signals that should be send over the udp stream, instead of the tcp websocket 
 var network_config: Dictionary = {
@@ -50,14 +57,6 @@ var network_config: Dictionary = {
 	}
 }
 
-
-## List of functions that are allowed to be called by external control scripts.
-var accessible_methods: Dictionary = {}
-
-
-## Settings for this component
-var _settings: Dictionary = {
-}
 
 
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
@@ -81,12 +80,6 @@ func set_name(new_name) -> void:
 	rpc("set_name", [new_name])
 
 
-## Internal: Sets the name of this component
-func _set_name(p_name: String) -> void:
-	name = p_name
-	name_changed.emit(name)
-
-
 ## Gets the name
 func get_name() -> String:
 	return name
@@ -95,13 +88,6 @@ func get_name() -> String:
 ## Gets the cid
 func cid() -> int:
 	return _cid
-
-
-
-## Sets the self class name
-func _set_self_class(p_self_class_name: String) -> void:
-	class_tree.append(p_self_class_name)
-	self_class_name = p_self_class_name
 
 
 ## Calls a method on the remote object.
@@ -163,35 +149,34 @@ func get_settings(p_classname: String) -> Dictionary:
 	return _settings.get(p_classname, {}).duplicate()
 
 
-## Adds a method that can be safley callled by client controls
-func add_accessible_method(p_name: String, p_types: Array[int], p_set_method: Callable, p_get_method: Callable = Callable(), p_changed_signal: Signal = Signal(), p_arg_description: Array[String] = []) -> void:
-	accessible_methods.merge({
-		p_name: {
-			"set": p_set_method,
-			"get": p_get_method,
-			"signal": p_changed_signal,
-			"types": p_types,
-			"arg_description": p_arg_description
+## Registers a method that can be called by external control systems
+func register_control_method(p_method: Callable, p_args: Dictionary[String, int] = {}) -> void:
+	_control_methods.merge({
+		p_method.get_method(): {
+			"method": p_method,
+			"args": p_args
 		}
 	})
 
 
-## Sets user_meta from the given value
-func set_user_meta(key: String, value: Variant): rpc("set_user_meta", [key, value])
+## Gets a control method by name
+func get_control_methods() -> Dictionary[String, Dictionary]:
+	return _control_methods.duplicate()
 
-## Internal: Sets user meta
-func _set_user_meta(p_key: String, p_value: Variant) -> void:
-	user_meta[p_key] = p_value
-	user_meta_changed.emit(p_key, p_value)
+
+## Gets a control method by name
+func get_control_method(p_method_name: String) -> Dictionary:
+	return _control_methods.get(p_method_name, {})
+
+
+## Sets user_meta from the given value
+func set_user_meta(key: String, value: Variant): 
+	rpc("set_user_meta", [key, value])
 
 
 ## Delets an item from user meta, returning true if item was found and deleted, and false if not
-func delete_user_meta(key: String) -> void: rpc("delete_user_meta", [key])
-
-## Internal: Deletes user meta
-func _delete_user_meta(p_key: String) -> void:
-	if user_meta.erase(p_key):
-		user_meta_deleted.emit(p_key)
+func delete_user_meta(key: String) -> void: 
+	rpc("delete_user_meta", [key])
 
 
 ## Returns the value from user meta at the given key, if the key is not found, default is returned
@@ -204,9 +189,34 @@ func get_all_user_meta() -> Dictionary:
 	return user_meta
 
 
+## Internal: Sets the name of this component
+func _set_name(p_name: String) -> void:
+	name = p_name
+	name_changed.emit(name)
+
+
+## Sets the self class name
+func _set_self_class(p_self_class_name: String) -> void:
+	class_tree.append(p_self_class_name)
+	self_class_name = p_self_class_name
+
+
+## Internal: Sets user meta
+func _set_user_meta(p_key: String, p_value: Variant) -> void:
+	user_meta[p_key] = p_value
+	user_meta_changed.emit(p_key, p_value)
+
+
+## Internal: Deletes user meta
+func _delete_user_meta(p_key: String) -> void:
+	if user_meta.erase(p_key):
+		user_meta_deleted.emit(p_key)
+
+
 ## Always call this function when you want to delete this component. 
 func delete() -> void: 
 	rpc("delete")
+
 
 ## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
 func local_delete() -> void:
