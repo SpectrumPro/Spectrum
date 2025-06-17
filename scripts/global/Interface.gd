@@ -343,8 +343,9 @@ func _set_up_control_method_picker() -> void:
 	
 	_control_method_picker.close_request.connect(_method_picker_promise.reject)
 	_control_method_picker.close_request.connect(_method_picker_promise.clear)
-	_control_method_picker.method_chosen.connect(func (up_method: String, down_method: String):
-		_method_picker_promise.resolve([up_method, down_method])
+	_control_method_picker.method_chosen.connect(func (control_name: String):
+		_method_picker_promise.resolve([control_name])
+		hide_custom_popup(_control_method_picker)
 	)
 
 

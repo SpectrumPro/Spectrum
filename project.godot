@@ -77,6 +77,10 @@ movie_writer/fps=30
 naming/scene_name_casing=1
 naming/script_name_casing=1
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/wakatime/plugin.cfg")
+
 [gui]
 
 timers/button_shortcut_feedback_highlight_time=0.1

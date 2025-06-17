@@ -24,3 +24,5 @@ android/
 *.spshow
 
 addons/script_search/
+
+addons/wakatime/

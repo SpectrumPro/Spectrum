@@ -6,14 +6,11 @@ class_name UIControlMethodPicker extends UIPanel
 
 
 ## Emitted when a method is chosen
-signal method_chosen(up_method: String, down_method: String)
+signal method_chosen(control_name: String)
 
 
-## List of controls for the UP trigger
-@export var _up_list: ItemList
-
-## List of control for the DOWN trigger
-@export var _down_list: ItemList
+## List of controls for the trigger
+@export var _list: ItemList
 
 
 ## Component to show
@@ -25,30 +22,20 @@ var _controls: Dictionary[String, Dictionary]
 
 ## Sets the component
 func set_component(component: EngineComponent) -> void:
-	_up_list.clear()
-	_down_list.clear()
-	
-	_up_list.add_item("None")
-	_down_list.add_item("None")
-	
-	_up_list.select(0)
-	_down_list.select(0)
+	_list.clear()
+	_list.add_item("None")
+	_list.select(0)
 	
 	_component = component
 	_controls = _component.get_control_methods()
 	
-	for method_name: String in _controls:
-		method_name = method_name.capitalize()
-		_up_list.add_item(method_name)
-		_down_list.add_item(method_name)
+	for control_name: String in _controls:
+		_list.add_item(control_name)
 
 
 ## Called when the confirm button is pressed
 func _on_confirm_pressed() -> void:
-	var up_selected: int = _up_list.get_selected_items()[0]
-	var up_method: String = _controls.keys()[up_selected - 1] if up_selected else ""
+	var selected: int = _list.get_selected_items()[0]
+	var control_name: String = _controls.keys()[selected - 1] if selected else ""
 	
-	var down_selected: int = _down_list.get_selected_items()[0]
-	var down_method: String = _controls.keys()[down_selected - 1] if down_selected else ""
-	
-	method_chosen.emit(up_method, down_method)
+	method_chosen.emit(control_name)

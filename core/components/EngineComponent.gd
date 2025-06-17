@@ -150,10 +150,12 @@ func get_settings(p_classname: String) -> Dictionary:
 
 
 ## Registers a method that can be called by external control systems
-func register_control_method(p_method: Callable, p_args: Dictionary[String, int] = {}) -> void:
+func register_control_method(p_name: String, p_down_method: Callable, p_up_method: Callable = Callable(), p_signal: Signal = Signal(), p_args: Array[int] = []) -> void:
 	_control_methods.merge({
-		p_method.get_method(): {
-			"method": p_method,
+		p_name: {
+			"down": p_down_method,
+			"up": p_up_method,
+			"signal": p_signal,
 			"args": p_args
 		}
 	})
@@ -165,8 +167,8 @@ func get_control_methods() -> Dictionary[String, Dictionary]:
 
 
 ## Gets a control method by name
-func get_control_method(p_method_name: String) -> Dictionary:
-	return _control_methods.get(p_method_name, {})
+func get_control_method(p_control_name: String) -> Dictionary:
+	return _control_methods.get(p_control_name, {})
 
 
 ## Sets user_meta from the given value

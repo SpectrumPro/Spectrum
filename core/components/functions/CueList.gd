@@ -83,6 +83,11 @@ func _component_ready() -> void:
 	register_callback("on_cues_removed", _remove_cues)
 	register_callback("cue_order_changed", _set_cue_position)
 	
+	register_control_method("Go Previous", go_previous)
+	register_control_method("Go Next", go_next)
+	register_control_method("Set Global Fade", set_global_fade_speed, get_global_fade_speed, global_fade_changed)
+	register_control_method("Set Global Pre-Wait", set_global_pre_wait_speed, get_global_pre_wait_speed, global_pre_wait_changed)
+	
 	register_setting_bool("allow_triggered_looping", set_allow_triggered_looping, get_allow_triggered_looping, triggered_looping_changed)
 	register_setting_bool("use_global_fade", set_global_fade_state, get_global_fade_state, global_fade_state_changed)
 	register_setting_bool("use_global_pre_wait", set_global_pre_wait_state, get_global_pre_wait_state, global_pre_wait_state_changed)

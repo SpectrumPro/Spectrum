@@ -77,7 +77,7 @@ func call_trigger_up(p_row: int, p_column: int, p_value: Variant = null) -> Prom
 
 ## Triggers a trigger
 func call_trigger_down(p_row: int, p_column: int, p_value: Variant = null) -> Promise:
-	return rpc("call_trigger_up", [p_row, p_column, p_value])
+	return rpc("call_trigger_down", [p_row, p_column, p_value])
 
 
 # Adds a function
@@ -131,6 +131,7 @@ func _add_trigger(p_component: EngineComponent, p_up_method: String, p_down_meth
 		return false
 
 	_triggers.get_or_add(p_row, {})[p_column] = {
+		"component": p_component,
 		"up": p_component.get(p_up_method),
 		"down": p_component.get(p_down_method),
 		"p_name": p_name
@@ -276,8 +277,8 @@ func _serialize_request() -> Dictionary:
 		for column: int in _triggers[row]:
 			triggers[row][column] = {
 				"component": _triggers[row][column].component.uuid,
-				"up": _triggers[row][column].up.get_method(),
-				"down": _triggers[row][column].down.get_method(),
+				"up": _triggers[row][column].up.get_method() if _triggers[row][column].up else "",
+				"down": _triggers[row][column].down.get_method() if _triggers[row][column].down else "",
 				"name": _triggers[row][column].name,
 			}
 	

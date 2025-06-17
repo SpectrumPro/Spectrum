@@ -73,9 +73,3 @@ disabled = true
 text = "Button 6"
 
 [connection signal="pressed" from="VBoxContainer/Title" to="." method="_on_title_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed" binds= [1]]
-[connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_button_pressed" binds= [2]]
-[connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_button_pressed" binds= [3]]
-[connection signal="pressed" from="VBoxContainer/Button4" to="." method="_on_button_pressed" binds= [4]]
-[connection signal="pressed" from="VBoxContainer/Button5" to="." method="_on_button_pressed" binds= [5]]
-[connection signal="pressed" from="VBoxContainer/Button6" to="." method="_on_button_pressed" binds= [6]]

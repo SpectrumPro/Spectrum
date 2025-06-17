@@ -15,6 +15,9 @@ var _default_columns: int = 10
 ## All UI columns
 var _columns: Dictionary[int, PlaybackColumn]
 
+## The function group
+var _function_group: FunctionGroup
+
 
 ## Load Default Columns
 func _ready() -> void:
@@ -24,8 +27,19 @@ func _ready() -> void:
 		_container.add_child(new_column)
 
 
+## Called when a function group is selected
+func _on_object_picker_button_object_selected(object: EngineComponent) -> void:
+	_function_group = object
+	
+	for playback: PlaybackColumn in _columns.values():
+		playback.set_function_group(_function_group)
+
+
 ## Called when editmode state is changed
 func _edit_mode_toggled(state: bool) -> void:
+	if not _function_group:
+		return
+	
 	for column: PlaybackColumn in _columns.values():
 		column.set_edit_mode(state)
 

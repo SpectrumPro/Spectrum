@@ -58,12 +58,12 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	_set_name("Function")
 	_set_self_class("Function")
 	
-	register_control_method(set_intensity, {"Intensity": TYPE_FLOAT})
-	register_control_method(on)
-	register_control_method(off)
-	register_control_method(toggle)
-	register_control_method(play)
-	register_control_method(pause)
+	register_control_method("Intensity", set_intensity, get_intensity, intensity_changed, [TYPE_FLOAT])
+	register_control_method("On", on)
+	register_control_method("Off", off)
+	register_control_method("Toggle", toggle)
+	register_control_method("Play", play)
+	register_control_method("Pause", pause)
 	
 	register_callback("on_intensity_changed", _set_intensity)
 	register_callback("on_active_state_changed", _set_active_state)

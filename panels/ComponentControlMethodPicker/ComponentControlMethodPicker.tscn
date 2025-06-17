@@ -6,22 +6,21 @@
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="4_8xt6o"]
 [ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="5_uhjji"]
 
-[node name="ComponentControlMethodPicker" type="PanelContainer" node_paths=PackedStringArray("_up_list", "_down_list", "edit_controls")]
+[node name="ComponentControlMethodPicker" type="PanelContainer" node_paths=PackedStringArray("_list", "edit_controls")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -264.0
+offset_left = -160.0
 offset_top = -352.0
-offset_right = 264.0
+offset_right = 160.0
 offset_bottom = 352.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_yhhqg")
 script = ExtResource("1_ombg4")
-_up_list = NodePath("VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer/UpList")
-_down_list = NodePath("VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer/DownList")
+_list = NodePath("VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer/List")
 edit_controls = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -59,36 +58,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
-layout_mode = 2
-text = "Button Up"
-flat = true
-
-[node name="UpList" type="ItemList" parent="VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PanelContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer/PanelContainer"]
-layout_mode = 2
-text = "Button Down"
-flat = true
-
-[node name="DownList" type="ItemList" parent="VBoxContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+[node name="List" type="ItemList" parent="VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

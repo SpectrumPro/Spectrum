@@ -43,6 +43,29 @@ var _column: int
 var _edit_mode: bool = false
 
 
+## Bind Signals
+func _ready() -> void:
+	button1.pressed.connect(_on_button_pressed.bind(0))
+	button2.pressed.connect(_on_button_pressed.bind(1))
+	button3.pressed.connect(_on_button_pressed.bind(2))
+	button4.pressed.connect(_on_button_pressed.bind(3))
+	button5.pressed.connect(_on_button_pressed.bind(4))
+	button6.pressed.connect(_on_button_pressed.bind(5))
+	
+	button1.button_down.connect(_on_button_down.bind(0))
+	button2.button_down.connect(_on_button_down.bind(1))
+	button3.button_down.connect(_on_button_down.bind(2))
+	button4.button_down.connect(_on_button_down.bind(3))
+	button5.button_down.connect(_on_button_down.bind(4))
+	button6.button_down.connect(_on_button_down.bind(5))
+	
+	button1.button_up.connect(_on_button_up.bind(0))
+	button2.button_up.connect(_on_button_up.bind(1))
+	button3.button_up.connect(_on_button_up.bind(2))
+	button4.button_up.connect(_on_button_up.bind(3))
+	button5.button_up.connect(_on_button_up.bind(4))
+	button6.button_up.connect(_on_button_up.bind(5))
+
 ## Sets the FunctionGroup
 func set_function_group(function_group: FunctionGroup) -> void:
 	_function_group = function_group
@@ -91,8 +114,20 @@ func _on_title_pressed() -> void:
 ## Called when a button is clicked
 func _on_button_pressed(button_index: int) -> void:
 	if _edit_mode and _component:
-		Interface.show_control_method_picker(_component).then(func (up_method: String, down_method: String):
-			if up_method:
-				_function_group.add_trigger(_component, up_method, down_method, up_method.capitalize(), _row_start + button_index - 1, _column)
+		Interface.show_control_method_picker(_component).then(func (control_name: String):
+			if control_name:
+				var config: Dictionary = _component.get_control_method(control_name)
+				_function_group.add_trigger(_component, config.up.get_method(), config.down.get_method(), control_name.capitalize(), _row_start + button_index, _column)
 		)
-	
+
+
+## Called when a button is pressed down
+func _on_button_down(button_index: int) -> void:
+	if _function_group:
+		_function_group.call_trigger_down(_row_start + button_index, _column)
+
+
+## Called when a button is up
+func _on_button_up(button_index: int) -> void:
+	if _function_group:
+		_function_group.call_trigger_up(_row_start + button_index, _column)

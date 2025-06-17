@@ -37,6 +37,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Function Group"
 flat = true
+filter = "FunctionGroup"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
 layout_mode = 2
@@ -63,3 +64,5 @@ vertical_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[connection signal="object_selected" from="VBoxContainer/PanelContainer3/HBoxContainer/ObjectPickerButton" to="." method="_on_object_picker_button_object_selected"]
