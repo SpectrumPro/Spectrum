@@ -14,6 +14,9 @@ signal active_state_changed(state: ActiveState)
 ## Emitted when the transport state changes
 signal transport_state_changed(state: TransportState)
 
+## Emitted when the PriorityMode state changes
+signal priority_mode_state_changed(state: PriorityMode)
+
 ## Emitted when auto start is changed
 signal auto_start_changed(auto_start: bool)
 
@@ -34,6 +37,12 @@ enum TransportState {
 	BACKWARDS
 }
 
+## Priority Mode
+enum PriorityMode {
+	HTP,
+	LTP
+}
+
 ## Intensity of this function
 var _intensity: float = 0
 
@@ -42,6 +51,9 @@ var _active_state: ActiveState = ActiveState.DISABLED
 
 ## Current TransportState of this function
 var _transport_state: TransportState = TransportState.PAUSED
+
+## The current PriorityMode
+var _priority_mode: PriorityMode = PriorityMode.HTP
 
 ## Should this Function set ActiveState to ENABLED when intensity is not 0
 var _auto_start: bool = true
@@ -72,10 +84,12 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	register_callback("on_intensity_changed", _set_intensity)
 	register_callback("on_active_state_changed", _set_active_state)
 	register_callback("on_transport_state_changed", _set_transport_state)
+	register_callback("on_priority_mode_state_changed", _set_priority_mode_state)
 	register_callback("on_auto_start_changed", _set_auto_start)
 	register_callback("on_auto_stop_changed", _set_auto_stop)
 	
 	register_custom_panel("Function", "status_controls", "set_function", load("res://components/ComponentSettings/ClassCustomModules/FunctionStatusControls.tscn"))
+	register_setting_enum("priority_mode", set_priority_mode_state, get_priority_mode_state, priority_mode_state_changed, PriorityMode)
 	register_setting("Function", "auto_start", set_auto_start, get_auto_start, auto_start_changed, Utils.TYPE_BOOL, 2, "Auto Start")
 	register_setting("Function", "auto_stop", set_auto_stop, get_auto_stop, auto_stop_changed, Utils.TYPE_BOOL, 3, "Auto Stop")
 	
@@ -173,6 +187,16 @@ func get_intensity() -> float:
 	return _intensity
 
 
+## Sets the _priority_mode state
+func set_priority_mode_state(p_priority_mode: PriorityMode) -> Promise:
+	return rpc("set_priority_mode_state", [p_priority_mode])
+
+
+## Gets the current PriorityMode
+func get_priority_mode_state() -> PriorityMode:
+	return _priority_mode
+
+
 ## Sets the auto start state
 func set_auto_start(p_auto_start: bool) -> Promise:
 	return rpc("set_auto_start", [p_auto_start])
@@ -231,6 +255,15 @@ func _set_intensity(p_intensity: float) -> void:
 	intensity_changed.emit(_intensity)
 
 
+## Interna; Sets the _priority_mode state
+func _set_priority_mode_state(p_priority_mode: PriorityMode) -> void:
+	if p_priority_mode == _priority_mode:
+		return
+	
+	_priority_mode = p_priority_mode
+	priority_mode_state_changed.emit(_priority_mode)
+
+
 ## Internal: Sets the auto start state
 func _set_auto_start(p_auto_start: bool) -> void:
 	if _auto_start == p_auto_start:
@@ -252,6 +285,7 @@ func _set_auto_stop(p_auto_stop: bool) -> void:
 ## Returns serialized version of this component, change the mode to define if this object should be serialized for saving to disk, or for networking to clients
 func serialize() -> Dictionary:
 	return super.serialize().merged({
+		"priority_mode": _priority_mode,
 		"auto_start": _auto_start,
 		"auto_stop": _auto_stop
 	})
@@ -259,6 +293,8 @@ func serialize() -> Dictionary:
 
 ## Loades this object from a serialized version
 func load(p_serialized_data: Dictionary) -> void:
+	_set_priority_mode_state(type_convert(p_serialized_data.get("priority_mode", _priority_mode), TYPE_INT))
+
 	_auto_start = type_convert(p_serialized_data.get("auto_start", _auto_start), TYPE_BOOL)
 	_auto_stop = type_convert(p_serialized_data.get("auto_stop", _auto_stop), TYPE_BOOL)
 	
