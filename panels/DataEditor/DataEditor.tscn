@@ -29,7 +29,7 @@ corner_radius_bottom_left = 4
 font_size = 11
 font_color = Color(0.529067, 0.529067, 0.529067, 1)
 
-[node name="DataEditor" type="PanelContainer" node_paths=PackedStringArray("_tree", "_select_box", "_data_view_mode_option", "_add_item_button", "_remove_item_button", "edit_controls")]
+[node name="DataEditor" type="PanelContainer" node_paths=PackedStringArray("_tree", "_select_box", "_data_view_mode_option", "_add_item_button", "_remove_item_button", "_object_picker_button", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -42,6 +42,7 @@ _select_box = NodePath("VBoxContainer/Tree/SelectBox")
 _data_view_mode_option = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/DataViewMode")
 _add_item_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/AddItem")
 _remove_item_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/RemoveItem")
+_object_picker_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/ObjectPickerButton")
 edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]

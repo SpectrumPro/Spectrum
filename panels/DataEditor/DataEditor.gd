@@ -30,6 +30,9 @@ signal selection_reset()
 ## The RemoveItems button
 @export var _remove_item_button: Button
 
+## The ObjectPickerButton
+@export var _object_picker_button: ObjectPickerButton
+
 
 ## Data View Mode
 enum DataViewMode {VALUE, CAN_FADE, START, STOP, FUNCTION}
@@ -546,3 +549,17 @@ func _on_add_item_pressed() -> void:
 ## Called when the RemoveItems button is pressed
 func _on_remove_item_pressed() -> void:
 	_container.erase_items(_selected_items)
+
+
+## Saves this into a dict
+func _save() -> Dictionary:
+	if _function: 
+		return { "uuid": _function.uuid }
+	else: 
+		return {}
+
+
+## Loads this from a dict
+func _load(saved_data: Dictionary) -> void:
+	if saved_data.get("uuid") is String:
+		_object_picker_button.look_for(saved_data.uuid)

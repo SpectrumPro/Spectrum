@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://crlak6jhg5jy2"
-path="res://.godot/imported/RubikMonoOne-Regular.ttf-c7f4828edaadf3b5c6cd2be6c789052c.fontdata"
+uid="uid://dqfja4u7dppxy"
+path="res://.godot/imported/Bytesized-Regular.ttf-fdb2544298d88fd906df2f9359a1dd47.fontdata"
 
 [deps]
 
-source_file="res://assets/font/RubikMonoOne-Regular.ttf"
-dest_files=["res://.godot/imported/RubikMonoOne-Regular.ttf-c7f4828edaadf3b5c6cd2be6c789052c.fontdata"]
+source_file="res://assets/font/Bytesized-Regular.ttf"
+dest_files=["res://.godot/imported/Bytesized-Regular.ttf-fdb2544298d88fd906df2f9359a1dd47.fontdata"]
 
 [params]
 
@@ -22,19 +22,14 @@ msdf_size=48
 allow_system_fallback=true
 force_autohinter=false
 hinting=1
-subpixel_positioning=1
+subpixel_positioning=4
 keep_rounding_remainders=true
-oversampling=1.0
+oversampling=2.0
 Fallbacks=null
 fallbacks=[]
 Compress=null
 compress=true
-preload=[{
-"chars": [],
-"glyphs": [],
-"name": "New Configuration",
-"size": Vector2i(16, 0)
-}]
+preload=[]
 language_support={}
 script_support={}
 opentype_features={}

@@ -105,19 +105,21 @@ var component_settings_panels: Dictionary = {
 
 ## Stores the default icons for all the classes
 var icon_class_list: Dictionary = {
-	"EngineComponent": load("res://assets/icons/Component.svg"),
-	"Universe": load("res://assets/icons/Universe.svg"),
+	"ArtNetOutput": load("res://assets/icons/ArtNet.svg"),
+	"Cue": load("res://assets/icons/Cue.svg"),
+	"CueList": load("res://assets/icons/CueList.svg"),
 	"DMXFixture": load("res://assets/icons/DMXFixture.svg"),
+	"DMXOutput": load("res://assets/icons/DMXOutput.svg"),
+	"DataPalette": load("res://assets/icons/Palette.svg"),
+	"EngineComponent": load("res://assets/icons/Component.svg"),
 	"Fixture": load("res://assets/icons/Fixture.svg"),
 	"FixtureGroup": load("res://assets/icons/FixtureGroup.svg"),
-	"Programmer": load("res://assets/icons/Programmer.svg"),
-	"Cue": load("res://assets/icons/Cue.svg"),
-	"Scene": load("res://assets/icons/Scene.svg"),
-	"CueList": load("res://assets/icons/CueList.svg"),
-	"DataPalette": load("res://assets/icons/Palette.svg"),
-	"DMXOutput": load("res://assets/icons/DMXOutput.svg"),
-	"ArtNetOutput": load("res://assets/icons/ArtNet.svg"),
 	"Function": load("res://assets/icons/Function.svg"),
+	"FunctionGroup": load("res://assets/icons/FunctionGroup.svg"),
+	"Programmer": load("res://assets/icons/Programmer.svg"),
+	"Scene": load("res://assets/icons/Scene.svg"),
+	"TriggerBlock": load("res://assets/icons/TriggerBlock.svg"),
+	"Universe": load("res://assets/icons/Universe.svg"),
 }
 
 
@@ -332,6 +334,7 @@ func _set_up_function_list() -> void:
 	_parameter_function_list.function_chosen.connect(func (function: String):
 		_parameter_function_list_promise.resolve([function])
 		hide_custom_popup(_parameter_function_list)
+		_parameter_function_list_promise.clear()
 	)
 	add_custom_popup(_parameter_function_list)
 
@@ -346,6 +349,7 @@ func _set_up_control_method_picker() -> void:
 	_control_method_picker.method_chosen.connect(func (control_name: String):
 		_method_picker_promise.resolve([control_name])
 		hide_custom_popup(_control_method_picker)
+		_method_picker_promise.clear()
 	)
 
 

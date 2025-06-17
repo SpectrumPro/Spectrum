@@ -5,6 +5,9 @@ class_name PlaybackColumn extends PanelContainer
 ## The playback column container used in the playbacks panel
 
 
+## The Title Button
+@export var title_button: Button
+
 ## Button 1
 @export var button1: Button
 
@@ -26,9 +29,12 @@ class_name PlaybackColumn extends PanelContainer
 ## Slider
 @export var slider: VSlider
 
+## All buttons, with a null for the slider
+@onready var _buttons: Array[Button] = [button1, button2, button3, null, button4, button5, button6]
 
-## The current FunctionGroup
-var _function_group: FunctionGroup
+
+## The current TriggerBlock
+var _trigger_block: TriggerBlock
 
 ## The EngineComponent asigned to this column
 var _component: EngineComponent
@@ -42,33 +48,27 @@ var _column: int
 ## Edit mode state
 var _edit_mode: bool = false
 
+## Signals to connect to the component
+var _component_signal_connections: Dictionary[String, Callable] = {
+	"name_changed": _on_component_name_changed
+}
 
 ## Bind Signals
 func _ready() -> void:
-	button1.pressed.connect(_on_button_pressed.bind(0))
-	button2.pressed.connect(_on_button_pressed.bind(1))
-	button3.pressed.connect(_on_button_pressed.bind(2))
-	button4.pressed.connect(_on_button_pressed.bind(3))
-	button5.pressed.connect(_on_button_pressed.bind(4))
-	button6.pressed.connect(_on_button_pressed.bind(5))
-	
-	button1.button_down.connect(_on_button_down.bind(0))
-	button2.button_down.connect(_on_button_down.bind(1))
-	button3.button_down.connect(_on_button_down.bind(2))
-	button4.button_down.connect(_on_button_down.bind(3))
-	button5.button_down.connect(_on_button_down.bind(4))
-	button6.button_down.connect(_on_button_down.bind(5))
-	
-	button1.button_up.connect(_on_button_up.bind(0))
-	button2.button_up.connect(_on_button_up.bind(1))
-	button3.button_up.connect(_on_button_up.bind(2))
-	button4.button_up.connect(_on_button_up.bind(3))
-	button5.button_up.connect(_on_button_up.bind(4))
-	button6.button_up.connect(_on_button_up.bind(5))
+	for button: Button in _buttons:
+		if button:
+			var index: int = _buttons.find(button)
+			
+			button.pressed.connect(_on_button_pressed.bind(index))
+			button.button_down.connect(_on_button_down.bind(index))
+			button.button_up.connect(_on_button_up.bind(index))
+			
+			(button.get_node("ID") as Label).set_text(str(_row_start + index) + "." + str(_column))
+
 
 ## Sets the FunctionGroup
-func set_function_group(function_group: FunctionGroup) -> void:
-	_function_group = function_group
+func set_trigger_block(trigger_block: TriggerBlock) -> void:
+	_trigger_block = trigger_block
 
 
 ## Sets the column
@@ -77,37 +77,60 @@ func set_column(column: int) -> void:
 
 
 ## Sets the component
-func set_component(component: EngineComponent) -> void:
-	_component = component
-	_set_disalbed(false)
+func set_component(component: EngineComponent, no_remove: bool = false) -> void:
+	if component == _component:
+		return
 	
-	if _function_group:
+	Utils.disconnect_signals(_component_signal_connections, _component)
+	_component = component
+	Utils.connect_signals(_component_signal_connections, _component)
+	
+	_set_disalbed(false)
+	title_button.text = component.get_name()
+	
+	if _trigger_block and not no_remove:
 		for row: int in range(_row_start, _row_start + 7):
-			_function_group.remove_trigger(row, _column)
+			_trigger_block.remove_trigger(row, _column)
 
 
 ## Sets the edit mode state
 func set_edit_mode(edit_mode: bool) -> void:
 	_edit_mode = edit_mode
+	title_button.disabled = not edit_mode
+
+
+## Sets the name of a row
+func set_row_name(row: int, p_name: String) -> void:
+	if row == 3:
+		pass # Slider
+	
+	elif row <= len(_buttons):
+		var button: Button = _buttons[row]
+		
+		if button:
+			button.set_text(p_name)
 
 
 ## Sets the disabled state of all buttons and sliders
 func _set_disalbed(disabled: bool) -> void:
-	button1.disabled = disabled
-	button2.disabled = disabled
-	button3.disabled = disabled
+	title_button.disabled = disabled
 	slider.editable = not disabled
-	button4.disabled = disabled
-	button5.disabled = disabled
-	button6.disabled = disabled
+	
+	for button: Button in _buttons:
+		if button:
+			button.disabled = disabled
+
+
+## Emitted when the component's name is changed
+func _on_component_name_changed(new_name: String) -> void:
+	title_button.set_text(new_name)
 
 
 ## Called when the Title Button is pressed
 func _on_title_pressed() -> void:
 	if _edit_mode:
 		Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (objects: Array):
-			_component = objects[0]
-			_set_disalbed(false)
+			set_component(objects[0])
 		)
 
 
@@ -117,17 +140,17 @@ func _on_button_pressed(button_index: int) -> void:
 		Interface.show_control_method_picker(_component).then(func (control_name: String):
 			if control_name:
 				var config: Dictionary = _component.get_control_method(control_name)
-				_function_group.add_trigger(_component, config.up.get_method(), config.down.get_method(), control_name.capitalize(), _row_start + button_index, _column)
+				_trigger_block.add_trigger(_component, config.up.get_method(), config.down.get_method(), control_name.capitalize(), control_name, _row_start + button_index, _column)
 		)
 
 
 ## Called when a button is pressed down
 func _on_button_down(button_index: int) -> void:
-	if _function_group:
-		_function_group.call_trigger_down(_row_start + button_index, _column)
+	if _trigger_block and not _edit_mode:
+		_trigger_block.call_trigger_down(_row_start + button_index, _column)
 
 
 ## Called when a button is up
 func _on_button_up(button_index: int) -> void:
-	if _function_group:
-		_function_group.call_trigger_up(_row_start + button_index, _column)
+	if _trigger_block and not _edit_mode:
+		_trigger_block.call_trigger_up(_row_start + button_index, _column)

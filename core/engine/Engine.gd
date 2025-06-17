@@ -66,7 +66,8 @@ var EngineConfig = {
 		"Fixture",
 		"Universe",
 		"Function",
-		"FixtureGroup"
+		"FixtureGroup",
+		"TriggerBlock"
 	]
 }
 

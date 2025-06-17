@@ -37,6 +37,7 @@ var _global_class_tree: Dictionary = {
 		"FixtureGroup": FixtureGroup,
 		"FixtureGroupItem": FixtureGroupItem,
 		"FixtureManifest": FixtureManifest,
+		"TriggerBlock": TriggerBlock,
 		"Universe": Universe,
 	}
 }
