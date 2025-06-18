@@ -6,7 +6,7 @@ class_name TriggerBlock extends EngineComponent
 
 
 ## Emitted when a trigger is added
-signal trigger_added(component: EngineComponent, up_method: String, down_method: String, name: String, id: String, row: int, column: int)
+signal trigger_added(component: EngineComponent, id: String, name: String, row: int, column: int)
 
 ## Emitted when a trigger is added
 signal trigger_removed(row: int, column: int)
@@ -38,8 +38,8 @@ func _component_ready() -> void:
 
 
 ## Adds a trigger at the given row and column
-func add_trigger(p_component: EngineComponent, p_up_method: String, p_down_method: String, p_name: String, p_id: String, p_row: int, p_column: int) -> Promise:
-	return rpc("add_trigger", [p_component, p_up_method, p_down_method, p_name, p_id, p_row, p_column])
+func add_trigger(p_component: EngineComponent, p_id: String, p_name: String, p_row: int, p_column: int) -> Promise:
+	return rpc("add_trigger", [p_component, p_id, p_name, p_row, p_column])
 
 
 ## Removes a trigger
@@ -68,20 +68,18 @@ func get_triggers() -> Dictionary[int, Dictionary]:
 
 
 ## Internal: Adds a trigger at the given row and column
-func _add_trigger(p_component: EngineComponent, p_up_method: String, p_down_method: String, p_name: String, p_id: String, p_row: int, p_column: int, no_signal: bool = false) -> bool:
-	if (p_up_method and not p_component.has_method(p_up_method)) or (p_down_method and not p_component.has_method(p_down_method)):
+func _add_trigger(p_component: EngineComponent, p_id: String, p_name: String, p_row: int, p_column: int, no_signal: bool = false) -> bool:
+	if not p_component.get_control_method(p_id):
 		return false
 	
 	_triggers.get_or_add(p_row, {})[p_column] = {
 		"component": p_component,
-		"up": p_component.get(p_up_method) if p_component.has_method(p_up_method) else Callable(),
-		"down": p_component.get(p_down_method) if p_component.has_method(p_down_method) else Callable(),
+		"id": p_id,
 		"name": p_name,
-		"id": p_id
 	}
 	
 	if not no_signal:
-		trigger_added.emit(p_component, p_up_method, p_down_method, p_name, p_id, p_row, p_column)
+		trigger_added.emit(p_component, p_id, p_name, p_row, p_column)
 	
 	return true
 
@@ -163,15 +161,14 @@ func _load_request(p_serialized_data: Dictionary) -> void:
 		for column_key: int in row_dict.keys():
 			var trigger_data: Dictionary = type_convert(row_dict.get(column_key, {}), TYPE_DICTIONARY)
 
-			var component_id: Variant = trigger_data.get("component", null)
-			var up: String = type_convert(trigger_data.get("up", false), TYPE_STRING)
-			var down: String = type_convert(trigger_data.get("down", false), TYPE_STRING)
-			var name: String = type_convert(trigger_data.get("name", ""), TYPE_STRING)
+			var component_id: String = type_convert(trigger_data.get("component", ""), TYPE_STRING)
 			var id: String = type_convert(trigger_data.get("id", ""), TYPE_STRING)
+			var name: String = type_convert(trigger_data.get("name", ""), TYPE_STRING)
 
 			if component_id == null:
 				continue
-
+			
 			ComponentDB.request_component(component_id, func(component: EngineComponent) -> void:
-				_add_trigger(component, up, down, name, id, row_key, column_key, true)
+				_add_trigger(component, id, name, row_key, column_key, true)
 			)
+		

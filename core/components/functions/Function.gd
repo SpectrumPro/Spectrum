@@ -70,7 +70,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	_set_name("Function")
 	_set_self_class("Function")
 	
-	register_control_method("set_intensity", set_intensity, get_intensity, intensity_changed, [TYPE_FLOAT])
+	register_control_method("set_intensity", set_intensity, Callable(), intensity_changed, [TYPE_FLOAT])
 	register_control_method("on", on)
 	register_control_method("off", off)
 	register_control_method("toggle", toggle)

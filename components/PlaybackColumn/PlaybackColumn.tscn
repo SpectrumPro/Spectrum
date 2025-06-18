@@ -106,6 +106,8 @@ label_settings = SubResource("LabelSettings_ldd5c")
 layout_mode = 2
 size_flags_horizontal = 1
 size_flags_vertical = 3
+max_value = 1.0
+step = 0.001
 editable = false
 
 [node name="ID" type="Label" parent="VBoxContainer/VSlider"]
@@ -185,3 +187,4 @@ text = "6.1"
 label_settings = SubResource("LabelSettings_ldd5c")
 
 [connection signal="pressed" from="VBoxContainer/Title" to="." method="_on_title_pressed"]
+[connection signal="value_changed" from="VBoxContainer/VSlider" to="." method="_on_v_slider_value_changed"]

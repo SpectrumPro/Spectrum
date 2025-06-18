@@ -61,10 +61,8 @@ func set_trigger_block(trigger_block: TriggerBlock) -> void:
 		for column: int in triggers[row]:
 			_add_trigger(
 				triggers[row][column].component,
-				triggers[row][column].up.get_method(),
-				triggers[row][column].down.get_method(),
-				triggers[row][column].name,
 				triggers[row][column].id,
+				triggers[row][column].name,
 				row,
 				column,
 			)
@@ -80,10 +78,10 @@ func _edit_mode_toggled(state: bool) -> void:
 
 
 ## Called when a trigger is added to the TriggerBlock
-func _add_trigger(component: EngineComponent, up_method: String, down_method: String, name: String, id: String, row: int, column: int) -> void:
+func _add_trigger(component: EngineComponent, id: String, p_name: String,  row: int, column: int) -> void:
 	if _columns.has(column):
 		_columns[column].set_component(component, true)
-		_columns[column].set_row_name(row, name)
+		_columns[column].set_row_name(row, p_name)
 
 
 ## Called when a trigger is removed from the TriggerBlock

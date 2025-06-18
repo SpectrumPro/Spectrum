@@ -140,7 +140,7 @@ func _on_button_pressed(button_index: int) -> void:
 		Interface.show_control_method_picker(_component).then(func (control_name: String):
 			if control_name:
 				var config: Dictionary = _component.get_control_method(control_name)
-				_trigger_block.add_trigger(_component, config.up.get_method(), config.down.get_method(), control_name.capitalize(), control_name, _row_start + button_index, _column)
+				_trigger_block.add_trigger(_component, control_name, control_name.capitalize(), _row_start + button_index, _column)
 		)
 
 
@@ -154,3 +154,16 @@ func _on_button_down(button_index: int) -> void:
 func _on_button_up(button_index: int) -> void:
 	if _trigger_block and not _edit_mode:
 		_trigger_block.call_trigger_up(_row_start + button_index, _column)
+
+
+## Called when the Slider value changes
+func _on_v_slider_value_changed(value: float) -> void:
+	if _edit_mode and _component:
+		Interface.show_control_method_picker(_component).then(func (control_name: String):
+			if control_name:
+				var config: Dictionary = _component.get_control_method(control_name)
+				_trigger_block.add_trigger(_component, control_name, control_name.capitalize(), _row_start + 3, _column)
+		)
+	
+	elif _trigger_block and not _edit_mode:
+		_trigger_block.call_trigger_down(_row_start + 3, _column, value)
