@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name ClassSettingsModule extends PanelContainer
+class_name ClientClassSettingsModule extends PanelContainer
 ## Class settings module
 
 
@@ -124,6 +124,29 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, p_type: 
 			spin_box.value_changed.connect(setter)
 			p_signal.connect(spin_box.set_value_no_signal)
 			control = spin_box
+		
+		Utils.TYPE_INPUTEVENTKEY:
+			var button: Button = Button.new()
+			var event: InputEventKey = getter.call()
+			button.text = event.as_text()
+			button.toggle_mode = true
+			button.toggled.connect(func (state: bool) -> void:
+				if state:
+					button.text = "Press a Key"
+				else:
+					button.text = getter.call().as_text()
+			)
+			button.gui_input.connect(func (event: InputEvent):
+				if event is InputEventKey and button.button_pressed:
+					print(event.keycode)
+					if InputServer.is_key_allowed(event.keycode):
+						if event.is_pressed():
+							button.text = event.as_text()
+							setter.call(event)
+					elif event.keycode == KEY_ESCAPE:
+						button.set_pressed(false)
+			)
+			control = button
 		
 		Utils.TYPE_NULL:
 			if getter.is_null():

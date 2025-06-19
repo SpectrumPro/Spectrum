@@ -107,14 +107,31 @@ func _ready() -> void:
 
 ## Called when an Function is selected
 func set_function(function: Function) -> void:
+	if _function is CueList:
+		_function.active_cue_changed.disconnect(_on_cue_list_active_cue_changed)
+	
 	_function = function
 	
+	if _function is CueList:
+		_function.active_cue_changed.connect(_on_cue_list_active_cue_changed)
+		
+		var cues: Array[Cue] = _function.get_cues()
+		if cues:
+			_set_container(cues[0])
+		
+	else:
+		_set_container(_function.get_data_container())
+
+
+## Sets the DataContainer
+func _set_container(p_container: DataContainer) -> void:
+	_reset()
+	
 	Utils.disconnect_signals(_container_signal_connections, _container)
-	_container = _function.get_data_container()
+	_container = p_container
 	Utils.connect_signals(_container_signal_connections, _container)
 	
 	_columns = {"Fixture": 0, "CID": 1}
-	_tree.clear()
 	_root = _tree.create_item()
 	
 	var fixture_data: Dictionary = _container.get_fixtures()
@@ -139,6 +156,23 @@ func set_function(function: Function) -> void:
 	
 	_tree.set_column_expand.call_deferred(1, false)
 	container_changed.emit(_container)
+
+
+## Resets everything
+func _reset() -> void:
+	_tree.clear()
+	_add_item_button.set_disabled(true)
+	_remove_item_button.set_disabled(true)
+	
+	_root = null
+	_columns.clear()
+	_fixture_items.clear()
+	_fixture_zones.clear()
+	_selected_items.clear()
+	_selected_fixtures.clear()
+	_selected_containerless_items.clear()
+	_container_items.clear()
+	_tree_items.clear()
 
 
 ## Sets the data view mode
@@ -390,6 +424,11 @@ func _on_items_stop_changed(items: Array, stop: float) -> void:
 		
 		tree_item.set_text(column, str(stop))
 		tree_item.set_custom_bg_color(column, _none_zero_data_color if stop else _zero_data_color)
+
+
+## Called when the active cue is changed when a cuelist is asigned
+func _on_cue_list_active_cue_changed(cue: Cue) -> void:
+	_set_container(cue)
 
 
 ## Called when a column title is clicked

@@ -59,7 +59,8 @@ var panels: Dictionary = {
 	"UIPanelSettings": load("res://panels/UIPanelSettings/UIPanelSettings.tscn"),
 	"UIControlMethodPicker": load("res://panels/ComponentControlMethodPicker/ComponentControlMethodPicker.tscn"),
 	"UiParameterFunctionList": load("res://panels/UIParameterFunctionList/UIParameterFunctionList.tscn"),
-	"UISetting": load("res://panels/UISettings/UISettings.tscn"),
+	"UIInputActionList": load("res://panels/UIInputActionList/UIInputActionList.tscn"),
+	"UISettings": load("res://panels/UISettings/UISettings.tscn"),
 	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
@@ -68,7 +69,7 @@ var panels: Dictionary = {
 var sorted_panels: Dictionary = {
 	"Playbacks": ["CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
 	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataEditor"],
-	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "UISetting"],
+	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "UISettings"],
 	"Visualization": ["VirtualFixtures"],
 	"Widgets": ["Clock", "ColorBlock", "Image"],
 }
@@ -349,10 +350,10 @@ func _set_up_function_list() -> void:
 
 ## Sets up the UIInputActionList
 func _set_up_input_action_list() -> void:
-	_input_action_list = panels.UiParameterFunctionList.instantiate()
+	_input_action_list = panels.UIInputActionList.instantiate()
 	_input_action_list.close_request.connect(_input_action_list_promise.reject)
 	_input_action_list.close_request.connect(_input_action_list_promise.clear)
-	_input_action_list.function_chosen.connect(func (input_action: InputAction):
+	_input_action_list.action_chosen.connect(func (input_action: InputAction):
 		_input_action_list_promise.resolve([input_action])
 		hide_custom_popup(_input_action_list)
 		_input_action_list_promise.clear()

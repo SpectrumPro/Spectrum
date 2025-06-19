@@ -44,6 +44,9 @@ var _edit_mode_disabled: bool = false
 ## RefMap for Button: ButtonName
 var _buttons_map: RefMap = RefMap.new()
 
+## Stores all buttons and thier InputAction connections
+var _button_actions: Dictionary[Button, Array]
+
 ## Display mode for this panel
 var _display_mode: DisplayMode = DisplayMode.Panel
 
@@ -59,6 +62,7 @@ func _init() -> void:
 	
 	for button: Button in buttons:
 		_buttons_map.map(button, button.name)
+		_button_actions[button] = []
 
 
 ## Sets the move and resize handle
@@ -156,6 +160,33 @@ func enable_button_array(buttons: Array[Button]) -> void:
 		button.disabled = false
 
 
+## Asigned an InputAction to a button
+func asign_button_action(button: Button, action: InputAction) -> bool:
+	if button not in _button_actions or _button_actions[button].has(action):
+		return false
+	
+	if action.connect_button(button):
+		_button_actions[button].append(action)
+		return true
+	
+	else:
+		return false
+
+
+## Asigned an InputAction to a button
+func remove_button_action(button: Button, action: InputAction) -> bool:
+	if button not in _button_actions or not _button_actions[button].has(action):
+		return false
+	
+	_button_actions[button].erase(action)
+	return action.disconnect_button(button)
+
+
+## Gets all the InputActions asigned to a button
+func get_button_actions(button: Button) -> Array:
+	return _button_actions.get(button, [])
+
+
 ## Called for GUI inputs on the move resize handle
 func _on_move_resize_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -198,14 +229,17 @@ func _on_close_button_pressed() -> void:
 
 ## Saves this UIPanel into a dictonary
 func save() -> Dictionary:
-	var seralized_buttons: Dictionary[String, String]
+	var button_actions: Dictionary[String, Array]
 	
 	for button: Button in buttons:
-		if button.shortcut:
-			seralized_buttons[button.name] = var_to_str(button.shortcut)
+		var actions: Array[String]
+		for action: InputAction in get_button_actions(button):
+			actions.append(action.uuid())
+		
+		button_actions[button.name] = actions
 	
 	return _save().merged({
-		"button_shortcuts": seralized_buttons
+		"button_actions": button_actions
 	})
 
 
@@ -216,13 +250,17 @@ func _save() -> Dictionary:
 
 ## Loads this UIPanel from dictionary
 func load(saved_data: Dictionary) -> void: 
-	var seralized_buttons: Variant = type_convert(saved_data.get("button_shortcuts", {}), TYPE_DICTIONARY)
+	var button_actions: Dictionary = type_convert(saved_data.get("button_actions"), TYPE_DICTIONARY)
 	
-	for button_name: Variant in seralized_buttons:
-		if button_name is String and _buttons_map.has_right(button_name):
-			var shortcut: Variant = str_to_var(seralized_buttons[button_name])
-			if shortcut is Shortcut:
-				_buttons_map.right(button_name).shortcut = shortcut
+	for button_name: Variant in button_actions.keys():
+		if button_name is String and _buttons_map.has_right(button_name) and button_actions[button_name] is Array:
+			for action_uuid: Variant in button_actions[button_name]:
+				if action_uuid is String:
+					var button: Button = _buttons_map.right(button_name)
+					var action: InputAction = InputServer.get_input_action(action_uuid)
+					
+					if action:
+						asign_button_action(button, action)
 	
 	_load(saved_data)
 

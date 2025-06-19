@@ -19,7 +19,7 @@ var _midi_pitch_mappings: Dictionary = {}
 var _midi_controler_mappings: Dictionary = {}
 
 ## User defined actions
-var _input_actions: Array[InputAction] = []
+var _input_actions: RefMap = RefMap.new()
 
 ## Internal actions
 var _internal_actions: Dictionary[String, Callable] = {
@@ -66,7 +66,7 @@ func _input(event: InputEvent) -> void:
 		if Input.is_action_just_released(action):
 			_internal_actions[action].call()
 	
-	for input_action: InputAction in _input_actions:
+	for input_action: InputAction in _input_actions.get_left():
 		if Input.is_action_just_pressed(input_action.uuid()):
 			input_action.activate()
 			
@@ -75,8 +75,13 @@ func _input(event: InputEvent) -> void:
 
 
 ## Gets all current InputActions
-func get_input_actions() -> Array[InputAction]:
-	return _input_actions.duplicate()
+func get_input_actions() -> Array:
+	return _input_actions.get_left()
+
+
+## Gets an InputAction by uuid
+func get_input_action(p_uuid: String) -> InputAction:
+	return _input_actions.right(p_uuid)
 
 
 ## Creates a new InputAction
@@ -91,10 +96,10 @@ func create_input_action() -> InputAction:
 
 ## Adds an InputAction
 func add_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
-	if p_action in _input_actions:
+	if _input_actions.has_left(p_action):
 		return false
 	
-	_input_actions.append(p_action)
+	_input_actions.map(p_action, p_action.uuid())
 	
 	if not InputMap.has_action(p_action.uuid()):
 		InputMap.add_action(p_action.uuid())
@@ -107,10 +112,10 @@ func add_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
 
 ## Removes an InputAction
 func remove_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
-	if not _input_actions.has(p_action):
+	if not _input_actions.has_left(p_action):
 		return false
 	
-	_input_actions.erase(p_action)
+	_input_actions.erase_left(p_action)
 	
 	if InputMap.has_action(p_action.uuid()):
 		InputMap.erase_action(p_action.uuid())
@@ -193,7 +198,7 @@ func _handle_store_mode_action() -> void:
 func save() -> Dictionary:
 	var saved_input_actions: Array[Dictionary]
 	
-	for input_action: InputAction in _input_actions:
+	for input_action: InputAction in _input_actions.get_left():
 		saved_input_actions.append(input_action.save())
 	
 	return {

@@ -39,7 +39,7 @@ layout_mode = 2
 
 [node name="Button" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer"]
 layout_mode = 2
-text = "Choose Parameter Function"
+text = "Choose InputAction"
 flat = true
 
 [node name="EditControls" parent="VBoxContainer/TitleBar/HBoxContainer" instance=ExtResource("4_rdffc")]

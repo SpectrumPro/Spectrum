@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://bxwylw4uk8cyk" path="res://assets/styles/ClassSettingsBG.tres" id="1_hragf"]
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_pf2nj"]
 [ext_resource type="Texture2D" uid="uid://dj7k0od8o16ok" path="res://assets/icons/UnfoldLess.svg" id="2_873xa"]
-[ext_resource type="Script" path="res://components/ComponentSettings/ClassSettingsModule/ClassSettingsModule.gd" id="3_2hkcc"]
+[ext_resource type="Script" uid="uid://d1fe2btfsips6" path="res://components/ComponentSettings/ClassSettingsModule/ClassSettingsModule.gd" id="3_2hkcc"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hbu47"]
 font_size = 18

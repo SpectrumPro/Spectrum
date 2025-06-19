@@ -24,6 +24,9 @@ var _input_triggers: Array[InputTrigger]
 ## All ActionTriggers in this InputAction
 var _action_triggers: Array[ActionTrigger]
 
+## Conects a Button to this action
+var _buttons: Array[Button]
+
 
 ## Ready
 func _component_ready() -> void:
@@ -32,12 +35,39 @@ func _component_ready() -> void:
 
 ## Activates this InputAction
 func activate() -> void:
-	print("Activated")
+	for button: Button in _buttons:
+		if button.toggle_mode:
+			button.set_pressed(true)
+		else:
+			button.button_down.emit()
 
 
 ## Deactivates this InputAction
 func deactivate() -> void:
-	print("deactivated")
+	for button: Button in _buttons:
+		if button.toggle_mode:
+			button.set_pressed(false)
+		else:
+			button.button_up.emit()
+			button.pressed.emit()
+
+
+## Connects a button to this InputAction
+func connect_button(p_button: Button) -> bool:
+	if _buttons.has(p_button):
+		return false
+	
+	_buttons.append(p_button)
+	return true
+
+
+## Connects a button to this InputAction
+func disconnect_button(p_button: Button) -> bool:
+	if not _buttons.has(p_button):
+		return false
+	
+	_buttons.erase(p_button)
+	return true
 
 
 ## Creates a new InputTrigger

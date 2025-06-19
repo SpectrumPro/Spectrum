@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://components/PanelMenuBar.tscn" id="3_rou2v"]
 [ext_resource type="PackedScene" uid="uid://c4vlxpk3ywg42" path="res://components/ComponentList/ComponentList.tscn" id="4_bosbs"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="5_7afv4"]
-[ext_resource type="PackedScene" uid="uid://dwtaoj1uy0dok" path="res://assets/icons/ComponentSettings.tscn" id="5_re3nl"]
+[ext_resource type="PackedScene" uid="uid://nqgh8nmma3kj" path="res://components/ComponentSettings/ComponentSettings.tscn" id="5_re3nl"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="6_fsh4n"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_7afv4"]
