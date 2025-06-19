@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name ComponentTrigger extends RefCounted
+class_name ActionTriggerComponent extends ActionTrigger
 ## Triggers when inputs are recieved
 
 
@@ -22,6 +22,12 @@ var _down_args: Array[Variant]
 
 ## The callable for the VALUE action
 var _value_method: Callable
+
+
+
+## Ready
+func _component_ready() -> void:
+	set_name("ActionTriggerComponent")
 
 
 ## Calls the UP action
@@ -116,7 +122,7 @@ func seralize() -> Dictionary:
 
 
 ## Loads this ComponentTrigger from a dictionary
-func deseralize(seralized_data: Dictionary) -> ComponentTrigger:
+func deseralize(seralized_data: Dictionary) -> ActionTriggerComponent:
 	var component_uuid: String = type_convert(seralized_data.get("component", ""), TYPE_STRING)
 	ComponentDB.request_component(component_uuid, func (component: EngineComponent):
 		set_component(component)

@@ -59,6 +59,7 @@ var panels: Dictionary = {
 	"UIPanelSettings": load("res://panels/UIPanelSettings/UIPanelSettings.tscn"),
 	"UIControlMethodPicker": load("res://panels/ComponentControlMethodPicker/ComponentControlMethodPicker.tscn"),
 	"UiParameterFunctionList": load("res://panels/UIParameterFunctionList/UIParameterFunctionList.tscn"),
+	"UISetting": load("res://panels/UISettings/UISettings.tscn"),
 	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
 }
 
@@ -67,7 +68,7 @@ var panels: Dictionary = {
 var sorted_panels: Dictionary = {
 	"Playbacks": ["CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
 	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataEditor"],
-	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer"],
+	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "UISetting"],
 	"Visualization": ["VirtualFixtures"],
 	"Widgets": ["Clock", "ColorBlock", "Image"],
 }
@@ -167,6 +168,12 @@ var _parameter_function_list: UiParameterFunctionList
 ## Promise for UiParameterFunctionList
 var _parameter_function_list_promise: Promise = Promise.new()
 
+## The container that stores all dialog boxes
+var _input_action_list: UIInputActionList
+
+## Promise for UIInputActionList
+var _input_action_list_promise: Promise = Promise.new()
+
 ## The UIControlMethodPicker to choose controls
 var _control_method_picker: UIControlMethodPicker
 
@@ -218,6 +225,7 @@ func _set_up_custom_pickers():
 	_set_up_dialog_box_container()
 	_set_up_panel_settings()
 	_set_up_function_list()
+	_set_up_input_action_list()
 	_set_up_control_method_picker()
 
 
@@ -339,6 +347,19 @@ func _set_up_function_list() -> void:
 	add_custom_popup(_parameter_function_list)
 
 
+## Sets up the UIInputActionList
+func _set_up_input_action_list() -> void:
+	_input_action_list = panels.UiParameterFunctionList.instantiate()
+	_input_action_list.close_request.connect(_input_action_list_promise.reject)
+	_input_action_list.close_request.connect(_input_action_list_promise.clear)
+	_input_action_list.function_chosen.connect(func (input_action: InputAction):
+		_input_action_list_promise.resolve([input_action])
+		hide_custom_popup(_input_action_list)
+		_input_action_list_promise.clear()
+	)
+	add_custom_popup(_input_action_list)
+
+
 ## Sets up the UIControlMethodPicker
 func _set_up_control_method_picker() -> void:
 	_control_method_picker = panels.UIControlMethodPicker.instantiate()
@@ -451,6 +472,13 @@ func show_function_list(fixtures: Array, parameter: String) -> Promise:
 	return _parameter_function_list_promise
 
 
+## Shows the UIInputActionList
+func show_input_action_list() -> Promise:
+	show_custom_popup(_input_action_list)
+	
+	return _input_action_list_promise
+
+
 ## Shows the UIControlMethodPicker for the given component
 func show_control_method_picker(component: EngineComponent) -> Promise:
 	_control_method_picker.set_component(component)
@@ -529,11 +557,15 @@ func save_to_file():
 ## Saves this ui to a dictionary
 func save() -> Dictionary:
 	return {
-		"main_window": get_tree().root.get_node("Main").save()
+		"InputServer": InputServer.save(),
+		"main_window": get_tree().root.get_node("Main").save(),
 	}
 
 
 ## Loads this ui from a dictionary
 func load(saved_data: Dictionary) -> void:
+	InputServer.load(type_convert(saved_data.get("InputServer", {}), TYPE_DICTIONARY))
+	
 	if saved_data.has("main_window") and get_tree().root.has_node("Main"):
 		get_tree().root.get_node("Main").load(saved_data.main_window)
+	

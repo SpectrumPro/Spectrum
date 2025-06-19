@@ -5,6 +5,13 @@ class_name SpectrumInputServer extends Node
 ## Custom input manager for Spectrum
 
 
+## Called when an InputAction is added
+signal input_action_added(action: InputAction)
+
+## Called when an InputAction is removed
+signal input_action_removed(action: InputAction)
+
+
 ## Midi Mappings based on the pitch value, {channel: {pitch: Mapping, ...}, ...}
 var _midi_pitch_mappings: Dictionary = {}
 
@@ -12,13 +19,7 @@ var _midi_pitch_mappings: Dictionary = {}
 var _midi_controler_mappings: Dictionary = {}
 
 ## User defined actions
-var _user_actions: Dictionary[String, ComponentTrigger] = {
-	"Test": ComponentTrigger.new().deseralize({
-		"component": "9971302f-5c61-42f6-bf40-4e4a2592391e",
-		"up_method": "off",
-		"down_method": "on",
-	})
-}
+var _input_actions: Array[InputAction] = []
 
 ## Internal actions
 var _internal_actions: Dictionary[String, Callable] = {
@@ -38,8 +39,18 @@ var _allowed_events: Array[String] = [
 var _keycode_block_list: Array[Key] = [
 	KEY_SPACE,
 	KEY_ENTER,
-	KEY_ESCAPE
+	KEY_ESCAPE,
 ]
+
+## All Action Triggers
+var _action_triggers_types: Dictionary[String, Script] = {
+	"ActionTriggerComponent": ActionTriggerComponent
+}
+
+## All Action Triggers
+var _input_triggers_types: Dictionary[String, Script] = {
+	"InputTriggerKey": InputTriggerKey
+}
 
 
 func _ready() -> void:
@@ -51,16 +62,99 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMIDI: 
 		_handle_midi_input(event)
 	
-	for action: String in _user_actions:
-		if Input.is_action_just_pressed(action):
-			_user_actions[action].down()
-		
-		if Input.is_action_just_released(action):
-			_user_actions[action].up()
-	
 	for action: String in _internal_actions:
 		if Input.is_action_just_released(action):
 			_internal_actions[action].call()
+	
+	for input_action: InputAction in _input_actions:
+		if Input.is_action_just_pressed(input_action.uuid()):
+			input_action.activate()
+			
+		elif Input.is_action_just_released(input_action.uuid()):
+			input_action.deactivate()
+
+
+## Gets all current InputActions
+func get_input_actions() -> Array[InputAction]:
+	return _input_actions.duplicate()
+
+
+## Creates a new InputAction
+func create_input_action() -> InputAction:
+	var action: InputAction = InputAction.new()
+	
+	if add_input_action(action):
+		return action
+	else:
+		return null
+
+
+## Adds an InputAction
+func add_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
+	if p_action in _input_actions:
+		return false
+	
+	_input_actions.append(p_action)
+	
+	if not InputMap.has_action(p_action.uuid()):
+		InputMap.add_action(p_action.uuid())
+	
+	if not no_signal:
+		input_action_added.emit(p_action)
+	
+	return true
+
+
+## Removes an InputAction
+func remove_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
+	if not _input_actions.has(p_action):
+		return false
+	
+	_input_actions.erase(p_action)
+	
+	if InputMap.has_action(p_action.uuid()):
+		InputMap.erase_action(p_action.uuid())
+	
+	if not no_signal:
+		input_action_removed.emit(p_action)
+	
+	return true
+
+
+## Returns an array with the classname for all ActionTriggers
+func get_action_trigger_types() -> Array[String]:
+	return Array(_action_triggers_types.keys(), TYPE_STRING, "", null)
+
+
+## Returns an array with the classname for all InputTriggers
+func get_input_trigger_types() -> Array[String]:
+	return Array(_input_triggers_types.keys(), TYPE_STRING, "", null)
+
+
+## Gets a new InputTrigger from the classname
+func get_input_trigger(p_input_trigger_class) -> InputTrigger:
+	if not has_input_trigger_class(p_input_trigger_class):
+		return null
+	
+	return _input_triggers_types[p_input_trigger_class].new()
+
+
+## Gets a new ActionTrigger from the classname
+func get_action_trigger(p_action_trigger_class) -> ActionTrigger:
+	if not has_action_trigger_class(p_action_trigger_class):
+		return null
+	
+	return _action_triggers_types[p_action_trigger_class].new()
+
+
+## Checks if an InputTrigger class is valid
+func has_input_trigger_class(p_input_trigger_class: String) -> bool:
+	return _input_triggers_types.has(p_input_trigger_class)
+
+
+## Checks if an ActionTrigger class is valid
+func has_action_trigger_class(p_action_trigger_class: String) -> bool:
+	return _action_triggers_types.has(p_action_trigger_class)
 
 
 ## Checks if an event is allowed for shortcut inputs
@@ -93,3 +187,28 @@ func _handle_midi_input(midi: InputEventMIDI) -> void:
 ## Handles the store mode action
 func _handle_store_mode_action() -> void:
 	Programmer.exit_store_mode() if Programmer.get_store_mode() else Programmer.enter_store_mode()
+
+
+## Saves this ui to a dictionary
+func save() -> Dictionary:
+	var saved_input_actions: Array[Dictionary]
+	
+	for input_action: InputAction in _input_actions:
+		saved_input_actions.append(input_action.save())
+	
+	return {
+		"input_actions": saved_input_actions
+	}
+
+
+## Loads this ui from a dictionary
+func load(saved_data: Dictionary) -> void:
+	var saved_input_actions: Array = type_convert(saved_data.get("input_actions", []), TYPE_ARRAY)
+		
+	for saved_input_action: Variant in saved_input_actions:
+		if saved_input_action is Dictionary and saved_input_action.get("class") == "InputAction":
+			var input_action: InputAction = InputAction.new()
+			InputMap.add_action(type_convert(saved_input_action.get("uuid"), TYPE_STRING))
+			
+			input_action.load(saved_input_action)
+			add_input_action(input_action)

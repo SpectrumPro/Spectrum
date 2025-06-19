@@ -26,6 +26,7 @@ const TYPE_ENUM := "ENUM"
 const TYPE_NULL := "NULL"
 const TYPE_CUSTOM := "CUSTOM"
 const TYPE_CID := "CID"
+const TYPE_INPUTEVENTKEY := "INPUTEVENTKEY"
 
 
 ## Saves a JSON valid dictonary to a file, creates the file and folder if it does not exist

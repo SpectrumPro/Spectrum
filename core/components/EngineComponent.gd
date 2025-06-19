@@ -168,7 +168,8 @@ func get_control_methods() -> Dictionary[String, Dictionary]:
 
 ## Gets a control method by name
 func get_control_method(p_control_name: String) -> Dictionary:
-	return _control_methods.get(p_control_name, {})
+	return _control_methods.get(p_control_name
+	, {})
 
 
 ## Sets user_meta from the given value
