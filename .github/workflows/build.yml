@@ -1,28 +1,32 @@
-name: Build Godot Project
+name: Build Godot 4.4.1 Project
 
 on:
   push: {}
   pull_request: {}
 
 jobs:
-  Godot:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [win64, linux/X11, macOS]
+        platform: [Windows, Linux, macOS, Android]
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Build
-        id: build
-        uses: manleydev/build-godot-action@v1.4.1
+
+      - name: Export Godot Project
+        uses: firebelley/godot-export@v4.8.1
         with:
-          name: Spectrum
-          preset: ${{ matrix.platform }}
-          debugMode: "false"
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.4.1/Godot_v4.4.1-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.4.1/Godot_v4.4.1-stable_export_templates.tpz
+          export_platforms: ${{ matrix.platform }}
+          use_cache: true
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Spectrum - ${{ matrix.platform }}
-          path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
+          path: build/${{ matrix.platform }}
+
