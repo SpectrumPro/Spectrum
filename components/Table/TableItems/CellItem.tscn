@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://crpw0r23mf14u"]
 
-[ext_resource type="Script" path="res://components/Table/TableItems/CellItem.gd" id="1_omh0o"]
+[ext_resource type="Script" uid="uid://d0s5cvidw71db" path="res://components/Table/TableItems/CellItem.gd" id="1_omh0o"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_vvvut"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_gm4bw"]
 
 [node name="CellItem" type="PanelContainer"]
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(120, 50)
 offset_right = 120.0
 script = ExtResource("1_omh0o")
 
@@ -43,6 +43,7 @@ layout_mode = 2
 size_flags_horizontal = 6
 
 [node name="ColorEdit" type="ColorPickerButton" parent="HBox"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 edit_alpha = false

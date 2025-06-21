@@ -1,32 +1,20 @@
-[gd_scene load_steps=12 format=3 uid="uid://dqatkkghk5b2q"]
+[gd_scene load_steps=11 format=3 uid="uid://dqatkkghk5b2q"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_804im"]
-[ext_resource type="Script" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
+[ext_resource type="Script" uid="uid://bshfmstayckth" path="res://panels/Debug/Debug.gd" id="2_f46o2"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_hysiy"]
 [ext_resource type="Texture2D" uid="uid://chva73v2q1246" path="res://assets/icons/Bug.svg" id="3_2fxag"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_lse07"]
 [ext_resource type="Texture2D" uid="uid://dlikb8or3xepr" path="res://assets/icons/Reset.svg" id="4_p3gkg"]
 [ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="5_ktb1m"]
 [ext_resource type="Texture2D" uid="uid://bjpa56jg5lki7" path="res://assets/icons/Skull.svg" id="6_hgh5s"]
-[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="7_31sgn"]
-[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="8_urdo5"]
-[ext_resource type="Texture2D" uid="uid://bqdebneaw8anq" path="res://assets/icons/ResizeAlt.svg" id="9_1kl5l"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2cu10"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
-border_color = Color(0.309804, 0.309804, 0.309804, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="9_cbp8s"]
 
 [sub_resource type="SystemFont" id="SystemFont_fhcgp"]
 font_names = PackedStringArray("Open Sans")
 font_weight = 925
 
-[node name="Debug" type="PanelContainer" node_paths=PackedStringArray("move_resize_handle")]
+[node name="Debug" type="PanelContainer" node_paths=PackedStringArray("message_for", "message_method", "message_args", "local_remote_option", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -35,8 +23,13 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_804im")
+theme_override_styles/panel = ExtResource("2_hysiy")
 script = ExtResource("2_f46o2")
-move_resize_handle = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer/MoveResize")
+message_for = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer/For")
+message_method = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer/Method")
+message_args = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer/Args")
+local_remote_option = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/LocalRemoteOption")
+edit_controls = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -45,7 +38,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_2cu10")
+theme_override_styles/panel = ExtResource("4_lse07")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3"]
 layout_mode = 2
@@ -85,46 +78,23 @@ tooltip_text = "CRASH THE SERVER"
 theme_override_colors/font_disabled_color = Color(0.713726, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_hover_color = Color(1, 0, 0, 1)
-theme_override_colors/icon_hover_pressed_color = Color(1, 0, 0, 1)
 theme_override_colors/icon_disabled_color = Color(0.713726, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
 theme_override_fonts/font = SubResource("SystemFont_fhcgp")
 text = "CRASH SERVER"
 icon = ExtResource("6_hgh5s")
 
-[node name="EditControls" type="PanelContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
+[node name="EditControls" parent="VBoxContainer/PanelContainer3/HBoxContainer" instance=ExtResource("9_cbp8s")]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer"]
-layout_mode = 2
-disabled = true
-icon = ExtResource("7_31sgn")
-
-[node name="Button2" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer"]
-layout_mode = 2
-disabled = true
-icon = ExtResource("8_urdo5")
-
-[node name="MoveResize" type="TextureRect" parent="VBoxContainer/PanelContainer3/HBoxContainer/EditControls/HBoxContainer"]
-modulate = Color(0.255659, 0.255659, 0.255659, 1)
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 13
-texture = ExtResource("9_1kl5l")
-expand_mode = 4
-stretch_mode = 5
+show_edit = false
+show_settings = false
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -161,6 +131,22 @@ text = "List Functions"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Get Component UUID"
+
+[node name="ChangeName" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Change Component Name"
+
+[node name="DumpFixtureData" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Dump Fxture Data"
+
+[node name="GetSerializedComponentRemote" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Get Serialized Component Remote"
+
+[node name="GetSerializedComponentLocal" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+text = "Get Serialized Component Local"
 
 [node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -235,7 +221,16 @@ text = "[]"
 placeholder_text = "Args: Array"
 expand_to_text_length = true
 
-[node name="SendMessageToServer" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+[node name="LocalRemoteOption" type="OptionButton" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Remote"
+popup/item_0/id = 0
+popup/item_1/text = "Local"
+popup/item_1/id = 1
+
+[node name="SendMessage" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Send"
@@ -248,4 +243,8 @@ text = "Send"
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetComponentUUID" to="." method="_on_get_component_uuid_pressed"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessageToServer" to="." method="_on_send_message_to_server_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ChangeName" to="." method="_on_change_name_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/DumpFixtureData" to="." method="_on_dump_fixture_data_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetSerializedComponentRemote" to="." method="_on_get_serialized_component_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetSerializedComponentLocal" to="." method="_on_get_serialized_component_local_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessage" to="." method="_on_send_message_to_server_pressed"]

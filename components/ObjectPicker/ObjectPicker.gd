@@ -27,6 +27,12 @@ signal selection_canceled()
 ## The select button
 @export var _select_button: Button = null
 
+## Object picker main panel
+@export var _object_picker_main: VBoxContainer
+
+## The built-in create component panel
+@export var _create_component: CreateComponent
+
 
 ## Stores all the items that are in the tree, stored as {"class_name": {"uuid", TreeItem}}
 var tree_items: Dictionary = {}
@@ -37,9 +43,9 @@ var selected_items: Array[EngineComponent] = []
 ## Allow and deny lists for the filt er
 ## Everything in the allow list will be shown, and anything not will be hidden. You will need to set this var directley, or use the add / remove methods
 ## Modifying it using .append, or .erase will not work.
-var filter_allow_list: Array = [] : 
+var filter: String = "" : 
 	set(value):
-		filter_allow_list = value
+		filter = value
 		_update_filter()
 
 
@@ -75,13 +81,19 @@ func _ready() -> void:
 	_update_selection_label()
 	_update_filter()
 	
+	_tree.set_column_title(0, "Component")
+	_tree.set_column_title(1, "CID")
+	_tree.set_column_expand(1, false)
+	
 	for component: EngineComponent in ComponentDB.components.values():
 		_add_component(component)
+	
+	_create_component.set_mode(CreateComponent.Mode.Component)
 
 
 ## Resets the tree and root node
 func _reset() -> void:
-	filter_allow_list = []
+	filter = ""
 	selected_items = []
 	tree_items = {}
 	
@@ -117,20 +129,11 @@ func set_user_filtering(p_user_filtering: bool) -> void:
 		button.disabled = not user_filtering
 
 
-## Adds an item to the filter
-func add_to_filter(class_name_string: String) -> void:
-	filter_allow_list.append(class_name_string)
-	_update_filter()
-
-
-## Removes and item from the filter
-func remove_from_filter(class_name_string: String) -> void:
-	filter_allow_list.erase(class_name_string)
-	_update_filter()
-
-
 ## Adds a component to the tree
 func _add_component(component: EngineComponent) -> void:
+	if ClassList.is_class_hidden(component.self_class_name):
+		return
+	
 	var parent_node: TreeItem = null
 	
 	if component.self_class_name in tree_items:
@@ -144,18 +147,21 @@ func _add_component(component: EngineComponent) -> void:
 			
 		parent_node.set_text(0, parent_name)
 		parent_node.set_icon(0, Interface.get_class_icon(component.self_class_name))
+		parent_node.set_custom_color(0, Color.WEB_GRAY)
 		
 		tree_items[component.self_class_name] = {"parent": parent_node}
 	
 	var item: TreeItem = _tree.create_item(parent_node)
 	item.set_icon(0, Interface.get_class_icon(component.self_class_name))
 	item.set_text(0, component.name)
+	item.set_text(1, str(component.cid()))
 	
 	tree_items[component.self_class_name][component.uuid] = item
 	_component_refs[item] = component
 	
 	_signal_connections[component] = _on_component_name_changed.bind(component)
 	component.name_changed.connect(_signal_connections[component])
+	component.cid_changed.connect(_on_component_cid_changed.bind(component))
 	
 	_sort(component.self_class_name)
 	_update_filter()
@@ -184,6 +190,11 @@ func _remove_component(component: EngineComponent) -> void:
 ## Callback for when a component emits name_changed
 func _on_component_name_changed(new_name: String, component: EngineComponent) -> void:
 	tree_items[component.self_class_name][component.uuid].set_text(0, new_name)
+
+
+## Callback for when a component's CID is changed
+func _on_component_cid_changed(cid: int, component: EngineComponent) -> void:
+	tree_items[component.self_class_name][component.uuid].set_text(1, str(cid))
 	_sort(component.self_class_name)
 
 
@@ -194,9 +205,9 @@ func _sort(category: String) -> void:
 	
 	var sorted_uuids: Array = tree_item_dictionary.keys()
 	sorted_uuids.sort_custom(func(a, b): 
-		var a_name = ComponentDB.components[a].name
-		var b_name = ComponentDB.components[b].name
-		return a_name.naturalnocasecmp_to(b_name) < 0
+		var a_cid: int = ComponentDB.components[a].cid()
+		var b_cid: int = ComponentDB.components[b].cid()
+		return a_cid < b_cid
 	)
 	
 	var current_child_array: Array = tree_items[category].parent.get_children()
@@ -226,14 +237,18 @@ func _update_selection_label() -> void:
 ## Updates the filter, to show and hide classes
 func _update_filter() -> void:
 	for class_name_string: String in tree_items:
-		var is_filtred_for: bool = not class_name_string in filter_allow_list and filter_allow_list
+		var is_filtred_for: bool = not ClassList.does_class_inherit(class_name_string, filter) and filter
 		(tree_items[class_name_string].parent as TreeItem).visible = not is_filtred_for
 		
 		if class_name_string in _filter_buttons:
-			(_filter_buttons[class_name_string] as Button).set_pressed_no_signal(class_name_string in filter_allow_list)
+			(_filter_buttons[class_name_string] as Button).set_pressed_no_signal(class_name_string == filter)
 		else:
 			_filter_buttons[class_name_string] = _create_filter_class_button(class_name_string)
 			_filter_container.add_child(_filter_buttons[class_name_string])
+	
+	selected_items = []
+	_update_selection_label()
+	_create_component.set_class_filter(filter)
 
  
 func _create_filter_class_button(class_name_string: String) -> Button:
@@ -248,13 +263,10 @@ func _create_filter_class_button(class_name_string: String) -> Button:
 	filter_button.tooltip_text = "Filter for: " + tool_tip_name
 	
 	filter_button.toggled.connect(func (state: bool) -> void:
-		if state:
-			add_to_filter(class_name_string)
-		else:
-			remove_from_filter(class_name_string)
+		filter = class_name_string
 	)
 	
-	filter_button.set_pressed_no_signal(class_name_string in filter_allow_list)
+	filter_button.set_pressed_no_signal(class_name_string == class_name_string)
 	filter_button.disabled = not user_filtering
 	
 	return filter_button
@@ -288,9 +300,40 @@ func _on_tree_item_selected() -> void:
 	_update_selection_label()
 
 
+## Called when an item is dubble clicked
+func _on_tree_item_activated() -> void:
+	var item: TreeItem = _tree.get_selected()
+	if item in _component_refs:
+		selected_items = [_component_refs[item]]
+		_on_select_pressed()
+
+
+## Called when the plus button is presses
+func _on_create_new_pressed() -> void:
+	_object_picker_main.hide()
+	_create_component.show()
+
+
+## Called when the cancel button is pressed in the create component panel
+func _on_create_component_canceled() -> void:
+	_object_picker_main.show()
+	_create_component.hide()
+
+
+## Called when a component has been added to the engine from the create component panel
+func _on_create_component_component_created(component: EngineComponent) -> void:
+	_object_picker_main.show()
+	_create_component.hide()
+	
+	_tree.deselect_all()
+	_tree.set_selected(_component_refs.keys()[_component_refs.values().find(component)], 0)
+
+
+## Called when the select button is pressed
 func _on_select_pressed() -> void:
 	selection_confirmed.emit(selected_items)
 
 
+## Called when the cancel button is pressed
 func _on_cancel_pressed() -> void:
 	selection_canceled.emit()

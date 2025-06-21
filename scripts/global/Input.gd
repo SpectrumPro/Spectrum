@@ -2,83 +2,225 @@
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
 class_name SpectrumInputServer extends Node
-## Custem input manager for spectrum
+## Custom input manager for Spectrum
+
+
+## Called when an InputAction is added
+signal input_action_added(action: InputAction)
+
+## Called when an InputAction is removed
+signal input_action_removed(action: InputAction)
 
 
 ## Midi Mappings based on the pitch value, {channel: {pitch: Mapping, ...}, ...}
-var midi_pitch_mappings: Dictionary = {
-	0: {
-		9: InputTrigger.new().deseralize({
-			"up": {"uuid": "eb92c15b-5c47-4688-8584-b40a8b83b7e9", "method_name": "intensity", "args": [0]},
-			"down": {"uuid": "eb92c15b-5c47-4688-8584-b40a8b83b7e9", "method_name": "intensity", "args": [1]}
-		}),
-		10: InputTrigger.new().deseralize({
-			"down": {"uuid": "c4c7069a-5db1-446b-8340-a5afd2418ced", "method_name": "flash", "args": [0, 0.3, 0.1]}
-		}),
-		11: InputTrigger.new().deseralize({
-			"up": {"uuid": "6a07961e-d908-4c79-b43d-eee5abf5af43", "method_name": "intensity", "args": [0]},
-			"down": {"uuid": "6a07961e-d908-4c79-b43d-eee5abf5af43", "method_name": "intensity", "args": [1]}
-		}),
-		12: InputTrigger.new().deseralize({
-			"up": {"uuid": "bb3596a3-24ba-4b28-8269-5e7648c6289b", "method_name": "intensity", "args": [0]},
-			"down": {"uuid": "bb3596a3-24ba-4b28-8269-5e7648c6289b", "method_name": "intensity", "args": [1]}
-		}),
-		28: InputTrigger.new().deseralize({
-			"down": {"uuid": "c4c7069a-5db1-446b-8340-a5afd2418ced", "method_name": "flash", "args": [0, 0, 0.1]}
-		}),
-	}
-}
-
+var _midi_pitch_mappings: Dictionary = {}
 
 ## Midi Mappings based on the control number value, {channel: {control: Mapping, ...}, ...}
-var midi_controler_mappings: Dictionary = {
-	0: {
-		41: InputTrigger.new().deseralize({
-			"value": {"uuid": "eb92c15b-5c47-4688-8584-b40a8b83b7e9", "method_name": "global_pre_wait", "args": []},
-			"value_config": {
-				"remap": [0, 127, 0.003, 0.5]
-			}
-		}),
-		43: InputTrigger.new().deseralize({
-			"value": {"uuid": "6a07961e-d908-4c79-b43d-eee5abf5af43", "method_name": "global_pre_wait", "args": []},
-			"value_config": {
-				"remap": [0, 127, 0.003, 0.5]
-			}
-		}),
-	}
+var _midi_controler_mappings: Dictionary = {}
+
+## User defined actions
+var _input_actions: RefMap = RefMap.new()
+
+## Internal actions
+var _internal_actions: Dictionary[String, Callable] = {
+	"reload": Client.connect_to_server,
+	"clear_programmer": Programmer.clear,
+	"store_mode": _handle_store_mode_action
+
+}
+
+## Allowed input events for shortcuts
+var _allowed_events: Array[String] = [
+	"InputEventKey"
+]
+
+
+## Blocklist for keycodes
+var _keycode_block_list: Array[Key] = [
+	KEY_SPACE,
+	KEY_ENTER,
+	KEY_ESCAPE,
+]
+
+## All Action Triggers
+var _action_triggers_types: Dictionary[String, Script] = {
+	"ActionTriggerComponent": ActionTriggerComponent
+}
+
+## All Action Triggers
+var _input_triggers_types: Dictionary[String, Script] = {
+	"InputTriggerKey": InputTriggerKey
 }
 
 
 func _ready() -> void:
 	OS.open_midi_inputs()
-	print(OS.get_connected_midi_inputs())
+	Core.resetting.connect(_reset)
 
 
 ## Called for every InputEvent
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMIDI: 
 		_handle_midi_input(event)
 	
-	if event.is_action_pressed("reload"):
-		Client.connect_to_server()
+	for action: String in _internal_actions:
+		if Input.is_action_just_released(action):
+			_internal_actions[action].call()
 	
-	if Input.is_action_just_pressed("clear_programmer"): 
-		Programmer.clear()
+	for input_action: InputAction in _input_actions.get_left():
+		if event.is_action_pressed(input_action.uuid()):
+			input_action.activate()
+			
+		elif event.is_action_released(input_action.uuid()):
+			input_action.deactivate()
+
+
+## Resets to a default state
+func _reset() -> void:
+	for action: InputAction in _input_actions.get_left():
+		remove_input_action(action)
+
+
+## Gets all current InputActions
+func get_input_actions() -> Array:
+	return _input_actions.get_left()
+
+
+## Gets an InputAction by uuid
+func get_input_action(p_uuid: String) -> InputAction:
+	return _input_actions.right(p_uuid)
+
+
+## Creates a new InputAction
+func create_input_action() -> InputAction:
+	var action: InputAction = InputAction.new()
+	
+	if add_input_action(action):
+		return action
+	else:
+		return null
+
+
+## Adds an InputAction
+func add_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
+	if _input_actions.has_left(p_action):
+		return false
+	
+	_input_actions.map(p_action, p_action.uuid())
+	
+	if not InputMap.has_action(p_action.uuid()):
+		InputMap.add_action(p_action.uuid())
+	
+	if not no_signal:
+		input_action_added.emit(p_action)
+	
+	return true
+
+
+## Removes an InputAction
+func remove_input_action(p_action: InputAction, no_signal: bool = false) -> bool:
+	if not _input_actions.has_left(p_action):
+		return false
+	
+	_input_actions.erase_left(p_action)
+	
+	if InputMap.has_action(p_action.uuid()):
+		InputMap.erase_action(p_action.uuid())
+	
+	if not no_signal:
+		input_action_removed.emit(p_action)
+	
+	return true
+
+
+## Returns an array with the classname for all ActionTriggers
+func get_action_trigger_types() -> Array[String]:
+	return Array(_action_triggers_types.keys(), TYPE_STRING, "", null)
+
+
+## Returns an array with the classname for all InputTriggers
+func get_input_trigger_types() -> Array[String]:
+	return Array(_input_triggers_types.keys(), TYPE_STRING, "", null)
+
+
+## Gets a new InputTrigger from the classname
+func get_input_trigger(p_input_trigger_class) -> InputTrigger:
+	if not has_input_trigger_class(p_input_trigger_class):
+		return null
+	
+	return _input_triggers_types[p_input_trigger_class].new()
+
+
+## Gets a new ActionTrigger from the classname
+func get_action_trigger(p_action_trigger_class) -> ActionTrigger:
+	if not has_action_trigger_class(p_action_trigger_class):
+		return null
+	
+	return _action_triggers_types[p_action_trigger_class].new()
+
+
+## Checks if an InputTrigger class is valid
+func has_input_trigger_class(p_input_trigger_class: String) -> bool:
+	return _input_triggers_types.has(p_input_trigger_class)
+
+
+## Checks if an ActionTrigger class is valid
+func has_action_trigger_class(p_action_trigger_class: String) -> bool:
+	return _action_triggers_types.has(p_action_trigger_class)
+
+
+## Checks if an event is allowed for shortcut inputs
+func is_event_allowed(event: InputEvent) -> bool:
+	return event.get_class() in _allowed_events
+
+
+## Checks if a key is allowed
+func is_key_allowed(key: Key) -> bool:
+	return key not in _keycode_block_list
 
 
 ## Handles Midi input events
 func _handle_midi_input(midi: InputEventMIDI) -> void:
-	print(midi)
-	if midi.channel in midi_pitch_mappings:
+	if midi.channel in _midi_pitch_mappings:
 		match midi.message:
 			MIDI_MESSAGE_NOTE_ON:
-				if midi.pitch in midi_pitch_mappings[midi.channel]: 
-					midi_pitch_mappings[midi.channel][midi.pitch].down()
+				if midi.pitch in _midi_pitch_mappings[midi.channel]: 
+					_midi_pitch_mappings[midi.channel][midi.pitch].down()
 			
 			MIDI_MESSAGE_NOTE_OFF:
-				if midi.pitch in midi_pitch_mappings[midi.channel]: 
-					midi_pitch_mappings[midi.channel][midi.pitch].up()
+				if midi.pitch in _midi_pitch_mappings[midi.channel]: 
+					_midi_pitch_mappings[midi.channel][midi.pitch].up()
 			
 			MIDI_MESSAGE_CONTROL_CHANGE:
-				if midi.controller_number in midi_controler_mappings[midi.channel]:
-					midi_controler_mappings[midi.channel][midi.controller_number].value(midi.controller_value)
+				if midi.controller_number in _midi_controler_mappings[midi.channel]:
+					_midi_controler_mappings[midi.channel][midi.controller_number].value(midi.controller_value)
+
+
+## Handles the store mode action
+func _handle_store_mode_action() -> void:
+	Programmer.exit_store_mode() if Programmer.get_store_mode() else Programmer.enter_store_mode()
+
+
+## Saves this ui to a dictionary
+func save() -> Dictionary:
+	var saved_input_actions: Array[Dictionary]
+	
+	for input_action: InputAction in _input_actions.get_left():
+		saved_input_actions.append(input_action.save())
+	
+	return {
+		"input_actions": saved_input_actions
+	}
+
+
+## Loads this ui from a dictionary
+func load(saved_data: Dictionary) -> void:
+	var saved_input_actions: Array = type_convert(saved_data.get("input_actions", []), TYPE_ARRAY)
+		
+	for saved_input_action: Variant in saved_input_actions:
+		if saved_input_action is Dictionary and saved_input_action.get("class") == "InputAction":
+			var input_action: InputAction = InputAction.new()
+			InputMap.add_action(type_convert(saved_input_action.get("uuid"), TYPE_STRING))
+			
+			input_action.load(saved_input_action)
+			add_input_action(input_action)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d12eb0smjpwuk"]
 
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_8onam"]
-[ext_resource type="Script" path="res://panels/Fixtures/Fixtures.gd" id="1_xjo7n"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="1_8onam"]
+[ext_resource type="Script" uid="uid://c6mhb54lpvl37" path="res://panels/Fixtures/Fixtures.gd" id="1_xjo7n"]
 [ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="2_o0s47"]
 
 [node name="Fixtures" type="PanelContainer"]
@@ -16,9 +16,8 @@ script = ExtResource("1_xjo7n")
 [node name="ItemListView" parent="." instance=ExtResource("2_o0s47")]
 layout_mode = 2
 show_new = false
-show_take = false
 show_edit = false
-sort_alphabetically = false
+sort_parameter = "_channel"
 
 [connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
 [connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]

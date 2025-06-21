@@ -269,7 +269,6 @@ func _on_random_pressed() -> void:
 	if send_randomise_command:
 		Client.send_command(object_id, randomise_method, [_min_random_value, _max_random_value] + randomise_args if not send_selection_value else [Values.get_selection_value(send_selection_value, [])] + [_min_random_value, _max_random_value] + randomise_args)
 	else:
-		print(_min_random_value, _max_random_value)
 		slider.value = randi_range(_min_random_value, _max_random_value)
 	
 	randomise_pressed.emit(_min_random_value, _max_random_value)

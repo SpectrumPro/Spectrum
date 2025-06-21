@@ -58,8 +58,9 @@ func get_as_string() -> String:
 
 ## Trys to set the method from the object and method name
 func _try_set_method() -> void:
-	if is_instance_valid(_component) and _component.accessible_methods.has(_method_name):
-		_method = _component.accessible_methods[_method_name].set
+	pass
+	#if is_instance_valid(_component) and _component.accessible_methods.has(_method_name):
+		#_method = _component.accessible_methods[_method_name].set
 
 
 ## Called when ComponentDB finds the component

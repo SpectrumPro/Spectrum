@@ -106,7 +106,6 @@ func save() -> Dictionary:
 	
 	if _panel:
 		var script_name: String = _panel.get_script().resource_path.get_file()
-		print(script_name.substr(0, script_name.rfind(".")))
 		saved_data.merge({
 			"type": script_name.substr(0, script_name.rfind(".")),
 			"settings": _panel.save()
@@ -158,12 +157,14 @@ func _on_br_handle_gui_input(event: InputEvent) -> void:
 func _on_panel_request_move(by: Vector2) -> void:
 	_new_position += by
 	position = snapped(_new_position, snapping_distance)
+	move_to_front()
 
 
-## Called when the client UIPanel emits request_move
+## Called when the client UIPanel emits request_resize
 func _on_panel_request_resize(by: Vector2) -> void:
 	if Input.is_key_pressed(KEY_SHIFT): by = by * 4
 	_new_size += by
 	size = snapped(_new_size, snapping_distance)
+	move_to_front()
 
 #endregion

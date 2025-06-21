@@ -41,18 +41,30 @@ func _ready() -> void:
 	set_edit_mode_disabled(true)
 
 
+## Zooms in the canvas
+func _zoom_in() -> void:
+	fixture_container.scale += zoom_step
+	#_update_scroll_containers()
+
+
+## Zooms out the canvas
+func _zoom_out() -> void:
+	fixture_container.scale -= zoom_step
+	#_update_scroll_containers()
+
+
 ## Sets edit mode state
 func _edit_mode_toggled(p_edit_mode: bool) -> void:
-	fixture_container.set_edit_mode(edit_mode)
-	$TitleBar/HBoxContainer/EditControls/HBoxContainer/Edit.button_pressed = edit_mode
+	fixture_container.set_edit_mode(_edit_mode)
+	$TitleBar/HBoxContainer/EditControls/HBoxContainer/Edit.button_pressed = _edit_mode
 	$GridAlignSize.hide()
 	
-	$TitleBar/HBoxContainer/GridControls.visible = edit_mode
-	$TitleBar/HBoxContainer/VSeparator.visible = edit_mode
-	$TitleBar/HBoxContainer/PanelContainer.visible = edit_mode
-	$TitleBar/HBoxContainer/VSeparator2.visible = edit_mode
-	$TitleBar/HBoxContainer/AlignControls.visible = edit_mode
-	$TitleBar/HBoxContainer/VSeparator3.visible = edit_mode
+	$TitleBar/HBoxContainer/GridControls.visible = _edit_mode
+	$TitleBar/HBoxContainer/VSeparator.visible = _edit_mode
+	$TitleBar/HBoxContainer/PanelContainer.visible = _edit_mode
+	$TitleBar/HBoxContainer/VSeparator2.visible = _edit_mode
+	$TitleBar/HBoxContainer/AlignControls.visible = _edit_mode
+	$TitleBar/HBoxContainer/VSeparator3.visible = _edit_mode
 
 
 ## Called when the selected virtual fixtures changes
@@ -71,6 +83,7 @@ func _on_selected_fixtures_changed(fixtures: Array) -> void:
 	$TitleBar/HBoxContainer/PanelContainer/HBoxContainer/Import.disabled = fixtures == []
 
 
+## Called when when there is a GUI input on the fixture container
 func _on_fixture_container_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and event.button_mask == MOUSE_BUTTON_MASK_MIDDLE:
 		real_scroll.scroll_horizontal -= event.relative.x
@@ -90,21 +103,15 @@ func _on_grid_align_pressed() -> void:
 	$GridAlignSize.show()
 
 
-func _on_zoom_in_pressed() -> void:
-	fixture_container.scale += zoom_step
-	_update_scroll_containers()
-
-
-func _on_zoom_out_pressed() -> void:
-	fixture_container.scale -= zoom_step
-	_update_scroll_containers()
-
 
 ## Saves this VirtualFixture layout into a dict
 func _save() -> Dictionary:
 	if fixture_container.fixture_group:
 		return {
-			"fixture_group": fixture_container.fixture_group.uuid
+			"fixture_group": fixture_container.fixture_group.uuid,
+			"scroll_h": real_scroll.scroll_horizontal,
+			"scroll_v": real_scroll.scroll_vertical,
+			"zoom": fixture_container.scale.x
 		}
 	else:
 		return {}
@@ -117,3 +124,16 @@ func _load(saved_data) -> void:
 			if fixture_group is FixtureGroup:
 				fixture_container.set_fixture_group(fixture_group)
 		)
+	
+	real_scroll.scroll_horizontal = type_convert(saved_data.get("scroll_h"), TYPE_INT)
+	real_scroll.scroll_vertical = type_convert(saved_data.get("scroll_v"), TYPE_INT)
+	
+	fixture_container.scale = Vector2(
+		type_convert(saved_data.get("zoom"), TYPE_FLOAT),
+		type_convert(saved_data.get("zoom"), TYPE_FLOAT)
+	)
+
+
+
+func _on_table_gui_input(event: InputEvent) -> void:
+	print(event)

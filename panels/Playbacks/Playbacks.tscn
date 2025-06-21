@@ -1,13 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://baortk0rwrhup"]
+[gd_scene load_steps=11 format=3 uid="uid://baortk0rwrhup"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_8dmeu"]
-[ext_resource type="Script" path="res://panels/Playbacks/Playbacks.gd" id="1_io88g"]
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="2_psu7s"]
-[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="8_5f7rw"]
-[ext_resource type="PackedScene" uid="uid://dhim1qpe23x0i" path="res://components/TriggerButtonSettings/TriggerButtonSettings.tscn" id="8_14mkr"]
-[ext_resource type="PackedScene" uid="uid://brq6gv04pu72i" path="res://components/TriggerSliderSettings/TriggerSliderSettings.tscn" id="10_ni381"]
+[ext_resource type="Script" uid="uid://bmu8b4eaoouxa" path="res://panels/Playbacks/Playbacks.gd" id="1_io88g"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="2_psu7s"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_qthjn"]
+[ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="5_hnbt5"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_kxarm"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="6_ms2qx"]
+[ext_resource type="Texture2D" uid="uid://f8q8t2pxjmkl" path="res://assets/icons/remove_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="7_ad7jd"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="8_5st74"]
 
-[node name="Playbacks" type="PanelContainer" node_paths=PackedStringArray("_add_row_button", "_dummy_container", "_scroll_container", "_trigger_button_settings", "_trigger_slider_settings", "settings_node")]
+[sub_resource type="ButtonGroup" id="ButtonGroup_ahq5b"]
+
+[node name="Playbacks" type="PanelContainer" node_paths=PackedStringArray("_container", "_object_picker_button", "edit_controls", "edit_mode_nodes")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -18,57 +23,76 @@ size_flags_vertical = 3
 theme = ExtResource("1_8dmeu")
 theme_override_styles/panel = ExtResource("2_psu7s")
 script = ExtResource("1_io88g")
-_add_row_button = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer/AddRow")
-_dummy_container = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer")
-_scroll_container = NodePath("Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer")
-_trigger_button_settings = NodePath("Settings/VBoxContainer/HSplitContainer/TriggerButtonSettings")
-_trigger_slider_settings = NodePath("Settings/VBoxContainer/HSplitContainer/TriggerSliderSettings")
-settings_node = NodePath("Settings")
+_container = NodePath("VBoxContainer/ScrollContainer/HBoxContainer")
+_object_picker_button = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/ObjectPickerButton")
+edit_controls = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/EditControls")
+edit_mode_nodes = [NodePath("VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode")]
 
-[node name="Container" type="HBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Settings" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(0, 570)
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("4_qthjn")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Settings"]
+[node name="ObjectPickerButton" parent="VBoxContainer/PanelContainer3/HBoxContainer" instance=ExtResource("5_hnbt5")]
 layout_mode = 2
+text = "Function Group"
+flat = true
+filter = "TriggerBlock"
 
-[node name="Label" type="Label" parent="Settings/VBoxContainer"]
-layout_mode = 2
-text = "Click on a control to edit settings
-"
-
-[node name="HSplitContainer" type="HSplitContainer" parent="Settings/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="PanelContainer" type="PanelContainer" parent="Settings/VBoxContainer/HSplitContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Settings/VBoxContainer/HSplitContainer/PanelContainer"]
+[node name="Mode" type="PanelContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer"]
+visible = false
 layout_mode = 2
-vertical_scroll_mode = 0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer"]
-layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 3
 
-[node name="AddRow" type="Button" parent="Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 100)
-layout_mode = 2
-size_flags_vertical = 4
-icon = ExtResource("8_5f7rw")
-icon_alignment = 1
-
-[node name="TriggerButtonSettings" parent="Settings/VBoxContainer/HSplitContainer" instance=ExtResource("8_14mkr")]
-visible = false
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode"]
 layout_mode = 2
 
-[node name="TriggerSliderSettings" parent="Settings/VBoxContainer/HSplitContainer" instance=ExtResource("10_ni381")]
-visible = false
+[node name="Asign" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode/HBoxContainer"]
 layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_ahq5b")
+icon = ExtResource("6_kxarm")
 
-[connection signal="pressed" from="Settings/VBoxContainer/HSplitContainer/PanelContainer/ScrollContainer/HBoxContainer/AddRow" to="." method="_on_add_row_pressed"]
+[node name="Delete" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ahq5b")
+icon = ExtResource("7_ad7jd")
+
+[node name="Edit" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ahq5b")
+icon = ExtResource("8_5st74")
+
+[node name="EditControls" parent="VBoxContainer/PanelContainer3/HBoxContainer" instance=ExtResource("6_ms2qx")]
+layout_mode = 2
+show_settings = false
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="object_selected" from="VBoxContainer/PanelContainer3/HBoxContainer/ObjectPickerButton" to="." method="_on_object_picker_button_object_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode/HBoxContainer/Asign" to="." method="set_mode" binds= [0]]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode/HBoxContainer/Delete" to="." method="set_mode" binds= [1]]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/ScrollContainer/Mode/HBoxContainer/Edit" to="." method="set_mode" binds= [2]]

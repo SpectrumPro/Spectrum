@@ -8,6 +8,9 @@ class_name TriggerButtonSettings extends PanelContainer
 ## The ComponentMethodPicker used here
 @onready var method_picker: ComponentMethodPicker = $ComponentMethodPicker
 
+## The AddShortcutButton button
+@export var _external_input_button: AddShortcutButton
+
 
 ## The trigger button used
 var trigger_button: TriggerButton = null : set = set_trigger_button
@@ -33,6 +36,8 @@ func set_trigger_button(p_trigger_button: TriggerButton) -> void:
 	$VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/BGColor/BGColorPicker.color = trigger_button.get_bg_color()
 	$VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/Border/BorderColorPicker.color = trigger_button.get_border_color()
 	$VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/HBoxContainer/BorderWidth.set_value_no_signal(trigger_button.get_border_width())
+	
+	_external_input_button.set_button(trigger_button)
 
 
 ## Updates the name on the button down button
@@ -132,3 +137,11 @@ func _on_component_method_picker_method_confired(method_trigger: MethodTrigger) 
 			_update_button_up_name()
 		Mode.Feedback:
 			pass
+
+## Called when a shortcut is added
+func _on_add_shortcut_button_shortcut_changed(input_event: InputEvent) -> void:
+	if trigger_button:
+		input_event.device = -1
+		#input_event.physical_keycode = 0
+		#input_event.key_label = 0
+		trigger_button.add_shortcut(input_event)

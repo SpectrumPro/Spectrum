@@ -2,16 +2,16 @@
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_0eyvo"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="2_20jl7"]
-[ext_resource type="Script" path="res://panels/Desk/Desk.gd" id="2_jux45"]
+[ext_resource type="Script" uid="uid://ls3oi5ej0d0g" path="res://panels/Desk/Desk.gd" id="2_jux45"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="3_8jyrh"]
-[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/PanelMenuBar.tres" id="3_eidul"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="3_eidul"]
 [ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="4_mrmr6"]
 [ext_resource type="Texture2D" uid="uid://dee78hal6ympb" path="res://assets/icons/Grid_On.svg" id="4_nh5c7"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="5_mhd6h"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="6_0ouy4"]
 [ext_resource type="Texture2D" uid="uid://1ha66l33ttxn" path="res://assets/icons/Copy.svg" id="6_kyuoi"]
 [ext_resource type="Texture2D" uid="uid://cv0titm4w4jp6" path="res://assets/icons/Arrow_downward.svg" id="7_3vntk"]
-[ext_resource type="Script" path="res://panels/Desk/DrawGrid.gd" id="8_lbx4f"]
+[ext_resource type="Script" uid="uid://b3irikla64343" path="res://panels/Desk/DrawGrid.gd" id="8_lbx4f"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="11_wp0lx"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_trkq2"]
@@ -109,6 +109,7 @@ suffix = "px"
 [node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("11_wp0lx")]
 layout_mode = 2
 size_flags_horizontal = 10
+show_settings = false
 
 [node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

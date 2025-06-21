@@ -1,28 +1,42 @@
-name: Build Godot Project
+name: Export and Release Godot 4.4.1 Game
 
 on:
-  push: {}
-  pull_request: {}
+  push:
+    tags:
+      - "v*"
 
 jobs:
-  Godot:
+  export_game:
+    name: Export Game
     runs-on: ubuntu-latest
+    permissions: write-all
+
     strategy:
       matrix:
-        platform: [win64, linux/X11, macOS]
+        platform: [Windows, Linux, macOS, Android]
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Build
-        id: build
-        uses: manleydev/build-godot-action@v1.4.1
+
+      - name: Export game
+        id: export
+        uses: firebelley/godot-export@v6.0.0
         with:
-          name: Spectrum
-          preset: ${{ matrix.platform }}
-          debugMode: "false"
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.4.1/Godot_v4.4.1-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.4.1/Godot_v4.4.1-stable_export_templates.tpz
+          relative_project_path: ./
+          export_platforms: ${{ matrix.platform }}
+          archive_output: true  # ZIP the builds
+          use_cache: true
+
+      - name: Upload build to release
+        uses: ncipollo/release-action@v1.14.0
         with:
-          name: Spectrum - ${{ matrix.platform }}
-          path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
+          tag: ${{ github.ref_name }}
+          artifacts: ${{ steps.export.outputs.archive_directory }}/*
+

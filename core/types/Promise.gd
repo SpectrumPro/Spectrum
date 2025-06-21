@@ -19,6 +19,12 @@ var _resolved_methods: Array[Callable] = []
 ## Methods to call once this promise is rejected
 var _rejected_methods: Array[Callable] = []
 
+## Args for the auto resolve
+var _auto_resolve_args: Array = []
+
+## Auto resolve state
+var _use_auto_resolve: bool = false
+
 
 ## Resolve this promise
 func resolve(args: Array = []) -> void:
@@ -44,10 +50,19 @@ func reject(args: Array = []) -> void:
 	rejected.emit(args)
 
 
-## Adds a method that will be called if this promise id resolved
+## Automatically resolves this promise when ever a new then() callable is added
+func auto_resolve(args: Array = []) -> void:
+	_use_auto_resolve = true
+	_auto_resolve_args = args
+
+
+## Adds a method that will be called if this promise is resolved
 func then(method: Callable) -> Promise:
 	_resolved_methods.append(method)
-
+	
+	if _use_auto_resolve:
+		method.callv(_auto_resolve_args)
+	
 	return self
 
 

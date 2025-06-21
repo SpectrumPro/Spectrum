@@ -46,7 +46,7 @@ var EngineConfig = {
 		},
 		{
 			"object": (Programmer),
-			"name": "programmer"
+			"name": "Programmer"
 		},
 		{
 			"object": (FixtureLibrary),
@@ -56,11 +56,18 @@ var EngineConfig = {
 			"object": (ClassList),
 			"name": "classlist"
 		},
+		{
+			"object": (CIDManager),
+			"name": "CIDManager"
+		},
 	],
 	## Root classes are the primary classes that will be seralized and loaded 
 	"root_classes": [
+		"Fixture",
 		"Universe",
-		"Function"
+		"Function",
+		"FixtureGroup",
+		"TriggerBlock"
 	]
 }
 
@@ -98,28 +105,24 @@ func _load_from_server() -> void:
 ## Loads this engine from serialized data
 func _load_from(serialized_data: Dictionary) -> void:
 	_set_file_name(str(serialized_data.get("file_name", "")))
-	
-	var just_added_universes: Array[Universe] = []
-	
-	for universe_uuid: String in serialized_data.get("Universe", {}).keys():
-		var new_universe: Universe = Universe.new(universe_uuid, serialized_data.Universe[universe_uuid].name)
+
+	# Array to keep track of all the components that have just been added, allowing them all to be networked to the client in the same message
+	var just_added_components: Array[EngineComponent] = []
+
+	# Loops throught all the classes we have been told to seralize, and check if they are present in the saved data
+	for object_class_name: String in EngineConfig.root_classes:
+		for component_uuid: String in serialized_data.get(object_class_name, {}):
+			var serialized_component: Dictionary = serialized_data[object_class_name][component_uuid]
 		
-		just_added_universes.append(new_universe)
-		new_universe.load.call_deferred(serialized_data.Universe[universe_uuid])
+			# Check if the components class name is a valid class type in the engine
+			if ClassList.has_class(serialized_component.get("class_name", "")):
+				var new_component: EngineComponent = ClassList.get_class_script(serialized_component.class_name).new(component_uuid)
+				new_component.load(serialized_component)
+				_add_component(new_component, true)
+				
+				just_added_components.append(new_component)
 	
-	_add_components(just_added_universes)
-	
-	var just_added_functions: Array[Function] = []
-	# Loops through each function in the save file (if any), and adds them into the engine
-	for function_uuid: String in serialized_data.get("Function", {}):
-		if serialized_data.Function[function_uuid].get("class_name", "") in ClassList.function_class_table:
-			var new_function: Function = ClassList.function_class_table[serialized_data.Function[function_uuid]["class_name"]].new(function_uuid, serialized_data.Function[function_uuid].name)
-			
-			just_added_functions.append(new_function)
-			new_function.load.call_deferred(serialized_data.Function[function_uuid])
-	
-	_add_components(just_added_functions)
-	
+	components_added.emit.call_deferred(just_added_components)
 	load_finished.emit()
 
 
@@ -172,10 +175,12 @@ func _reset():
 	for object_class_name: String in EngineConfig.root_classes:
 		for component: EngineComponent in ComponentDB.get_components_by_classname(object_class_name):
 			component.local_delete()
+	
+	_load_from_server()
 
 
 ## Creates and adds a new component using the classname to get the type, will return null if the class is not found
-func create_component(classname: String, name: String = "", callback: Callable = Callable()) -> Promise: 
+func create_component(classname: String, name: String = "") -> Promise: 
 	return Client.send_command("engine", "create_component", [classname, name])
 
 

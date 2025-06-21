@@ -22,59 +22,82 @@ signal close_request()
 @export var edit_controls: UIPanelEditControls = null : set = set_edit_controls
 
 ## The panel's settings node
-@export var settings_node: Control = null : set = set_settings_node
+@export var settings_node: Control = null
 
 ## All the nodes whos visibility should be toggled with edit mode
 @export var edit_mode_nodes: Array[Control] = []
+
+## All buttons that can have a shortcut asigned to them
+@export var buttons: Array[Button]
 
 
 ## Display mode for this panel
 enum DisplayMode {Panel, Popup}
 
-## The current settigns node, if any
-var _settings_node: Control = null
 
 ## Edit mode state
-var edit_mode: bool = false : set = set_edit_mode
+var _edit_mode: bool = false
 
 ## Edit mode disabled state
 var _edit_mode_disabled: bool = false
 
+## RefMap for Button: ButtonName
+var _buttons_map: RefMap = RefMap.new()
+
+## Stores all buttons and thier InputAction connections
+var _button_actions: Dictionary[Button, Array]
+
+## Display mode for this panel
+var _display_mode: DisplayMode = DisplayMode.Panel
+
+## Mouse warp distance
+var _mouse_warp: Vector2
 
 
 func _init() -> void:
 	set_edit_mode.call_deferred(false)
+	
+	await ready
+	set_settings_node(settings_node)
+	
+	for button: Button in buttons:
+		_buttons_map.map(button, button.name)
+		_button_actions[button] = []
 
 
 ## Sets the move and resize handle
-func set_edit_controls(node: UIPanelEditControls) -> void:
+func set_edit_controls(p_edit_controls: UIPanelEditControls) -> void:
 	if is_instance_valid(edit_controls): 
 		edit_controls.move_resize_handle.gui_input.disconnect(_on_move_resize_gui_input)
 		edit_controls.edit_button.toggled.disconnect(_on_edit_button_toggled)
-		edit_controls.settings_button.toggled.disconnect(_on_settings_button_toggled)
+		edit_controls.settings_button.pressed.disconnect(_on_settings_button_pressed)
 		edit_controls.close_button.pressed.disconnect(_on_close_button_pressed)
-		edit_controls = null
 	
-	if node:
-		edit_controls = node
+	edit_controls = p_edit_controls
+	
+	if edit_controls:
 		edit_controls.move_resize_handle.gui_input.connect(_on_move_resize_gui_input)
 		edit_controls.edit_button.toggled.connect(_on_edit_button_toggled)
-		edit_controls.settings_button.toggled.connect(_on_settings_button_toggled)
+		edit_controls.settings_button.pressed.connect(_on_settings_button_pressed)
 		edit_controls.close_button.pressed.connect(_on_close_button_pressed)
+		
+		edit_controls.settings_button.visible = edit_controls.show_settings
+		edit_controls.edit_button.visible = edit_controls.show_edit
+		edit_controls.close_button.visible = edit_controls.show_close
 
 
 ## Sets the settings node
 func set_settings_node(node: Control) -> void:
-	if is_instance_valid(_settings_node):
-		Interface.remove_custom_popup(_settings_node)
-		_settings_node = null
+	if is_instance_valid(settings_node):
+		Interface.remove_custom_popup(settings_node)
+		settings_node = null
 	
 	if is_instance_valid(node):
-		_settings_node = node
-		_settings_node.get_parent_control().remove_child(_settings_node)
-		_settings_node.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+		settings_node = node
+		settings_node.get_parent_control().remove_child(settings_node)
+		settings_node.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
 		
-		Interface.add_custom_popup(_settings_node)
+		Interface.add_custom_popup(settings_node)
 		
 		if is_instance_valid(edit_controls):
 			edit_controls.settings_button.disabled = false
@@ -82,26 +105,26 @@ func set_settings_node(node: Control) -> void:
 
 ## Sets the display mode
 func set_display_mode(mode: DisplayMode) -> void:
-	if not is_instance_valid(edit_controls):
-		return 
+	_display_mode = mode
 	
-	edit_controls.close_button.visible = (mode == DisplayMode.Popup)
+	if is_instance_valid(edit_controls):
+		edit_controls.close_button.visible = (mode == DisplayMode.Popup)
 
 
 ## Sets the edit mode state
 func set_edit_mode(state: bool) -> void:
-	edit_mode = state
+	_edit_mode = state
 	
 	for control: Control in edit_mode_nodes:
 		control.visible = state
 	
-	_edit_mode_toggled(edit_mode)
-	edit_mode_toggled.emit(edit_mode)
+	_edit_mode_toggled(_edit_mode)
+	edit_mode_toggled.emit(_edit_mode)
 
 
 ## Gets the edit mode state
 func get_edit_mode() -> bool:
-	return edit_mode
+	return _edit_mode
 
 
 ## Override this function to change state when edit mode is toggled
@@ -110,19 +133,13 @@ func _edit_mode_toggled(state: bool) -> void:
 
 
 ## Shows or hides the panels settings
-func set_show_settings(show_settings: bool) -> void:
-	if not is_instance_valid(_settings_node):
-		return
-	
-	if show_settings:
-		Interface.show_custom_popup(_settings_node)
-	else:
-		Interface.hide_custom_popup(_settings_node)
+func show_settings() -> void:
+	Interface.show_panel_settings(self)
 
 
 ## Disables or enabled edit mode
 func set_edit_mode_disabled(disabled: bool) -> void:
-	if edit_mode:
+	if _edit_mode:
 		set_edit_mode(false)
 	
 	_edit_mode_disabled = disabled
@@ -143,16 +160,56 @@ func enable_button_array(buttons: Array[Button]) -> void:
 		button.disabled = false
 
 
+## Asigned an InputAction to a button
+func asign_button_action(button: Button, action: InputAction) -> bool:
+	if button not in _button_actions or _button_actions[button].has(action):
+		return false
+	
+	if action.connect_button(button):
+		_button_actions[button].append(action)
+		return true
+	
+	else:
+		return false
+
+
+## Asigned an InputAction to a button
+func remove_button_action(button: Button, action: InputAction) -> bool:
+	if button not in _button_actions or not _button_actions[button].has(action):
+		return false
+	
+	_button_actions[button].erase(action)
+	return action.disconnect_button(button)
+
+
+## Gets all the InputActions asigned to a button
+func get_button_actions(button: Button) -> Array:
+	return _button_actions.get(button, [])
+
+
 ## Called for GUI inputs on the move resize handle
 func _on_move_resize_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		event = event as InputEventMouseMotion
+		var relative: Vector2 = event.screen_relative - _mouse_warp
+		_mouse_warp = Vector2.ZERO
 		match event.button_mask:
 			MOUSE_BUTTON_MASK_LEFT:
-				request_move.emit(event.screen_relative)
+				request_move.emit(relative)
+				if _display_mode == DisplayMode.Popup:
+					position.x = clamp(position.x + relative.x, 0, get_parent_control().size.x - size.x)
+					position.y = clamp(position.y + relative.y, 0, get_parent_control().size.y - size.y)
 			
 			MOUSE_BUTTON_MASK_RIGHT:
-				request_resize.emit(event.screen_relative)
+				request_resize.emit(relative)
+				if _display_mode == DisplayMode.Popup:
+					size.x = clamp(size.x + relative.x, 0, get_parent_control().size.x - position.x)
+					size.y = clamp(size.y + relative.y, 0, get_parent_control().size.y - position.y)
+					
+					var gp: Vector2 = get_global_mouse_position()
+					if gp.y <= 0:
+						_mouse_warp = Vector2(0, edit_controls.move_resize_handle.global_position.y)
+						Input.warp_mouse(Vector2(gp.x, _mouse_warp.y))
 
 
 ## Called when the edit mode button is toggled
@@ -161,8 +218,8 @@ func _on_edit_button_toggled(state: bool) -> void:
 
 
 ## Called when the settings button is toggled
-func _on_settings_button_toggled(state: bool) -> void:
-	set_show_settings(state)
+func _on_settings_button_pressed() -> void:
+	show_settings()
 
 
 ## Called when the close button is pressed
@@ -170,8 +227,44 @@ func _on_close_button_pressed() -> void:
 	close_request.emit()
 
 
-func save() -> Dictionary: return _save()
-func _save() -> Dictionary: return {}
+## Saves this UIPanel into a dictonary
+func save() -> Dictionary:
+	var button_actions: Dictionary[String, Array]
+	
+	for button: Button in buttons:
+		var actions: Array[String]
+		for action: InputAction in get_button_actions(button):
+			actions.append(action.uuid())
+		
+		button_actions[button.name] = actions
+	
+	return _save().merged({
+		"button_actions": button_actions
+	})
 
-func load(saved_data: Dictionary) -> void: _load(saved_data)
-func _load(saved_data: Dictionary) -> void: pass
+
+## Override to provide save function to your panel
+func _save() -> Dictionary: 
+	return {}
+
+
+## Loads this UIPanel from dictionary
+func load(saved_data: Dictionary) -> void: 
+	var button_actions: Dictionary = type_convert(saved_data.get("button_actions"), TYPE_DICTIONARY)
+	
+	for button_name: Variant in button_actions.keys():
+		if button_name is String and _buttons_map.has_right(button_name) and button_actions[button_name] is Array:
+			for action_uuid: Variant in button_actions[button_name]:
+				if action_uuid is String:
+					var button: Button = _buttons_map.right(button_name)
+					var action: InputAction = InputServer.get_input_action(action_uuid)
+					
+					if action:
+						asign_button_action(button, action)
+	
+	_load(saved_data)
+
+
+## Override to provide load function to your panel
+func _load(saved_data: Dictionary) -> void: 
+	pass

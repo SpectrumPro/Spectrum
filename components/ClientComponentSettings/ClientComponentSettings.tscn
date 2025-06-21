@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwj2kgbjtdg17"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_l3qdu"]
+[ext_resource type="Script" uid="uid://dxyqgbdvws8fi" path="res://components/ClientComponentSettings/ClientComponentSettings.gd" id="2_l3qdu"]
+
+[node name="ClientComponentSettings" type="PanelContainer" node_paths=PackedStringArray("_settings_module_container")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_l3qdu")
+script = ExtResource("2_l3qdu")
+_settings_module_container = NodePath("ScrollContainer/SettingsModuleContainer")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+
+[node name="SettingsModuleContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

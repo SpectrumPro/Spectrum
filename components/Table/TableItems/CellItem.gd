@@ -23,6 +23,10 @@ var dropdown_items: Array = []
 ## The signal that will change the data
 var changer: Signal = Signal() : set = set_signal
 
+## Is this cell item empty
+var is_blank: bool = true
+
+var i: int
 
 func _ready() -> void:
 	$HBox/FloatEdit.get_line_edit().flat = true
@@ -52,6 +56,8 @@ func set_data(data: Variant) -> void:
 		TYPE_COLOR:
 			$HBox/ColorEdit.show()
 			$HBox/ColorEdit.set_pick_color(data)
+	
+	is_blank = false
 
 
 ## Shows a button instead of a data box
@@ -61,6 +67,8 @@ func set_button(text: String, callback: Callable) -> void:
 	
 	$HBox/Button.text = text
 	$HBox/Button.show()
+	
+	is_blank = false
 
 
 ## Shows a drop down options
@@ -76,6 +84,8 @@ func set_dropdown(items: Array, current: int, callback: Callable) -> void:
 	
 	$HBox/OptionButton.select(current)
 	$HBox/OptionButton.show()
+	
+	is_blank = false
 
 
 ## Sets the signal
@@ -115,6 +125,8 @@ func _hide_all() -> void:
 	
 	$HBox/Button.hide()
 	$HBox/OptionButton.hide()
+	
+	is_blank = true
 
 
 ## Callbacks for the inputs

@@ -15,46 +15,107 @@ signal clicked()
 signal released()
 
 
-## The fixture linked to this virtual fixture
-var fixture: Fixture : set = set_fixture
-
-const fixture_selected_color: Color = Color.ROYAL_BLUE
-const self_selected_color: Color = Color.WHITE
-
-
 ## The position of this virtual fixture not effected by snapping
 @onready var _no_snap_pos: Vector2 = position
 
 
+## Color of this VF when it the fixture is selected
+const fixture_selected_color: Color = Color.ROYAL_BLUE
+
+## Color of this VF when self is selected
+const self_selected_color: Color = Color.WHITE
+
+
+## The fixture linked to this virtual fixture
+var _fixture: Fixture = null
+
+
+## Signals to connect to the fixture
+var _fixture_signal_connections: Dictionary = {
+	"override_changed": _on_override_value_changed,
+	"override_erased": _on_override_value_erased,
+	"all_override_removed": _on_override_value_erased,
+	"parameter_changed": _on_parameter_changed,
+	"parameter_erased": _on_parameter_eraced,
+	"manifest_changed": _on_dmx_fixture_manifest_changed,
+	"name_changed": set_label_name
+}
+
+
+## Sets the fixture linked to this virtual fixture
+func set_fixture(control_fixture: Fixture) -> void:
+	Utils.disconnect_signals(_fixture_signal_connections, _fixture)
+	_fixture = control_fixture
+	Utils.connect_signals(_fixture_signal_connections, _fixture)
+	
+	if _fixture.has_overrides():
+		$Override.show()
+	
+	if _fixture is DMXFixture and not _fixture.get_manifest():
+		pass
+	else:
+		render_color()
+	
+	set_label_name(control_fixture.name)
+	$UUID.text = control_fixture.uuid
+
+
+## Gets the fixture linked to this virtual fixture
+func get_fixture() -> Fixture:
+	return _fixture
+
+
 ## Sets the BG color of this virtual fixture
-func render_color(arg1=null):
-	if is_instance_valid(fixture):
-		var current_values: Dictionary = fixture.get_current_values()
-		var color: Color = current_values.get("set_color", Color.BLACK)
-		
-		var ColorIntensityWhite = current_values.get("ColorIntensityWhite")
-		if ColorIntensityWhite != null: color = _blend_color(color, Color.WHITE, ColorIntensityWhite)
-		
-		var ColorIntensityAmber = current_values.get("ColorIntensityAmber")
-		if ColorIntensityAmber != null: color = _blend_color(color, Color.ORANGE_RED, ColorIntensityAmber)
-		
-		var ColorIntensityUV = current_values.get("ColorIntensityUV")
-		if ColorIntensityUV != null: color = _blend_color(color, Color.BLUE_VIOLET, ColorIntensityUV)
-		
-		
-		if "Dimmer" in fixture.get_channels():
-			var dimmer_value: int = current_values.get("Dimmer", 0)
-			if len(fixture.get_channels()) == 1:
-				color = _blend_color(color, Color.from_string("F6E7D2", Color.ORANGE), dimmer_value)
-			else:
-				color = color.darkened(remap(Fixture.MAX_DMX_VALUE - dimmer_value, 0, Fixture.MAX_DMX_VALUE, 0.0, 1.0))
-		
-		
-		set_color(color)
+func render_color():
+	var base_color: Color = Color.WHITE
+	var parameters: Dictionary = _fixture.get_all_values().get("root", {})
+	var overrides: Dictionary = _fixture.get_all_override_values().get("root", {})
+	
+	parameters.merge(overrides, true)
+	
+	if _fixture.has_parameter("root", "ColorAdd_R") and "ColorAdd_R" in parameters:
+		base_color.r = parameters["ColorAdd_R"].value
+	
+	if _fixture.has_parameter("root", "ColorAdd_G") and "ColorAdd_G" in parameters:
+		base_color.g = parameters["ColorAdd_G"].value
+	
+	if _fixture.has_parameter("root", "ColorAdd_B") and "ColorAdd_B" in parameters:
+		base_color.b = parameters["ColorAdd_B"].value
+	
+	
+	if _fixture.has_parameter("root", "ColorAdd_W") and "ColorAdd_W" in parameters:
+		base_color = Utils.blend_color_additive(base_color, Color.WHITE * parameters["ColorAdd_W"].value)
+	
+	if _fixture.has_parameter("root", "ColorAdd_RY") and "ColorAdd_RY" in parameters:
+		base_color = Utils.blend_color_additive(base_color, Color.ORANGE * parameters["ColorAdd_RY"].value)
+	
+	if _fixture.has_parameter("root", "ColorAdd_UV") and "ColorAdd_UV" in parameters:
+		base_color = Utils.blend_color_additive(base_color, Color.BLUE_VIOLET * parameters["ColorAdd_UV"].value)
+	
+	
+	if _fixture.has_parameter("root", "ColorSub_C") and "ColorSub_C" in parameters:
+		base_color.r -= parameters["ColorSub_C"].value
+	
+	if _fixture.has_parameter("root", "ColorSub_M") and "ColorSub_M" in parameters:
+		base_color.g -= parameters["ColorSub_M"].value
+	
+	if _fixture.has_parameter("root", "ColorSub_Y") and "ColorSub_Y" in parameters:
+		base_color.b -= parameters["ColorSub_Y"].value
+	
+	
+	if _fixture.has_parameter("root", "Dimmer"):
+		if "Dimmer" in parameters:
+			base_color = base_color * parameters["Dimmer"].value
+		else:
+			base_color = Color.BLACK
+	
+	
+	set_color(base_color)
 
 
 ## Sets the base color
 func set_color(color: Color) -> void:
+	color.a = 1
 	$Color.modulate = color
 
 
@@ -76,51 +137,39 @@ func set_self_selected(state: bool) -> void:
 		$Highlight.hide()
 
 
-## Custom blend function for colors
-func _blend_color(blend_target: Color, base_color: Color, darken_amount: int) -> Color:
-	return Utils.get_htp_color(blend_target, base_color.darkened(remap(Fixture.MAX_DMX_VALUE - darken_amount, 0, Fixture.MAX_DMX_VALUE, 0.0, 1.0)))
+## Sets the name label
+func set_label_name(p_name: String) -> void:
+	$Name.text = p_name
 
 
-## Sets the fixture linked to this virtual fixture
-func set_fixture(control_fixture: Fixture) -> void:
-	## Sets the fixture this virtual fixture is atached to
-	
-	if is_instance_valid(fixture):
-		fixture.color_changed.disconnect(render_color)
-		fixture.white_intensity_changed.disconnect(render_color)
-		fixture.amber_intensity_changed.disconnect(render_color)
-		fixture.uv_intensity_changed.disconnect(render_color)
-		fixture.dimmer_changed.disconnect(render_color)
-		fixture.delete_request.disconnect(self.delete)
-		fixture.override_value_changed.disconnect(_on_override_value_changed)
-		fixture.override_value_removed.disconnect(_on_override_value_removed)
-	
-	fixture = control_fixture
-	
-	if is_instance_valid(fixture):
-		fixture.color_changed.connect(render_color)
-		fixture.white_intensity_changed.connect(render_color)
-		fixture.amber_intensity_changed.connect(render_color)
-		fixture.uv_intensity_changed.connect(render_color)
-		fixture.dimmer_changed.connect(render_color)
-		fixture.override_value_changed.connect(_on_override_value_changed)
-		fixture.override_value_removed.connect(_on_override_value_removed)
-	
-		render_color()
-		if fixture.get_all_override_values():
-			$Override.show()
+## Called when a parameter is changed on a fixture
+func _on_parameter_changed(zone: String, parameter: String, function: String, value: Variant) -> void:
+	render_color()
+
+
+## Called when a parameter is eraced on a fixture
+func _on_parameter_eraced(zone: String, parameter: String) -> void:
+	render_color()
 
 
 ## Called when a override value is changed on a fixture
-func _on_override_value_changed(arg1=null, arg2=null) -> void: 
+func _on_override_value_changed(zone: String, parameter: String, function: String, value: Variant) -> void: 
 	$Override.show()
+	render_color()
 
 
 ## Called when an override value is removed from the fixture
-func _on_override_value_removed(arg1=null) -> void:
-	if not fixture.get_all_override_values():
+func _on_override_value_erased(zone: String = "", parameter: String = "") -> void:
+	if not _fixture.has_overrides():
 		$Override.hide()
 	
+	render_color()
+
+
+## Called when the manifest is changed on a DMXFixture
+func _on_dmx_fixture_manifest_changed(manifest: FixtureManifest):
+	render_color()
+
 
 
 func _on_gui_input(event: InputEvent) -> void:

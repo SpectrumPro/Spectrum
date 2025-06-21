@@ -46,7 +46,6 @@ func register_component(component: EngineComponent) -> bool:
 	if component.uuid in components:
 		return false
 	
-	print("register_component: ", component)
 	components[component.uuid] = component
 	
 	for classname in component.class_tree:
@@ -73,17 +72,14 @@ func deregister_component(component: EngineComponent) -> bool:
 	if not component.uuid in components:
 		return false
 	
-	print()
-	print("deregister_component: ", component)
-	print("Returned: ", components.erase(component.uuid))
-	print()
-	
 	for classname in component.class_tree:
 		components_by_classname[classname].erase(component)
 	
 	_check_class_callbacks(component, true)
 	
 	Client.remove_networked_object(component.uuid)
+	components.erase(component.uuid)
+	
 	component_removed.emit(component)
 	return true
 

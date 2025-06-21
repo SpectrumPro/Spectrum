@@ -1,44 +1,23 @@
-[gd_scene load_steps=8 format=3 uid="uid://cedqo06n6en8u"]
+[gd_scene load_steps=10 format=3 uid="uid://cedqo06n6en8u"]
 
-[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/SolidPanel.tres" id="1_es5ky"]
-[ext_resource type="Script" path="res://panels/Functions/Functions.gd" id="2_bfwkh"]
-[ext_resource type="PackedScene" uid="uid://c6smssfk7gn2w" path="res://components/ItemListView/ItemListView.tscn" id="3_knoqd"]
-[ext_resource type="PackedScene" uid="uid://b0wxeveie0uk8" path="res://components/CreateFunction/CreateFunction.tscn" id="4_ifan4"]
-[ext_resource type="PackedScene" uid="uid://dkdq40xavnqdl" path="res://components/ComponentNamePopup/ComponentNamePopup.tscn" id="5_yy71q"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/SolidPanel.tres" id="1_es5ky"]
+[ext_resource type="Script" uid="uid://byqpqgm3d03aq" path="res://panels/Functions/Functions.gd" id="2_bfwkh"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://components/PanelMenuBar.tscn" id="3_rou2v"]
+[ext_resource type="PackedScene" uid="uid://c4vlxpk3ywg42" path="res://components/ComponentList/ComponentList.tscn" id="4_bosbs"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="5_7afv4"]
+[ext_resource type="PackedScene" uid="uid://nqgh8nmma3kj" path="res://components/ComponentSettings/ComponentSettings.tscn" id="5_re3nl"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="6_fsh4n"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxlfg"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.309804, 0.309804, 0.309804, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="InputEventKey" id="InputEventKey_7afv4"]
+device = -1
+shift_pressed = true
+keycode = 79
+unicode = 79
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvpr3"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.309804, 0.309804, 0.309804, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="Shortcut" id="Shortcut_fsh4n"]
+events = [SubResource("InputEventKey_7afv4")]
 
-[node name="Functions" type="PanelContainer"]
+[node name="Functions" type="PanelContainer" node_paths=PackedStringArray("_delete_button", "_component_list", "edit_controls")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -46,34 +25,60 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_es5ky")
 script = ExtResource("2_bfwkh")
+_delete_button = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/Delete")
+_component_list = NodePath("VBoxContainer/HBoxContainer/VBoxContainer/ComponentList")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
 
-[node name="ItemListView" parent="." instance=ExtResource("3_knoqd")]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-show_select = false
-show_invert = false
-show_take = false
-show_edit = false
-show_separators = false
 
-[node name="CreateFunction" parent="." instance=ExtResource("4_ifan4")]
-visible = false
-custom_minimum_size = Vector2(500, 300)
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("3_rou2v")]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_sxlfg")
-auto_hide = true
 
-[node name="ComponentNamePopup" parent="." instance=ExtResource("5_yy71q")]
-visible = false
+[node name="HBoxContainer" type="HSplitContainer" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_mvpr3")
-auto_hide = true
+size_flags_vertical = 3
+split_offset = -2190
 
-[connection signal="add_requested" from="ItemListView" to="." method="_on_item_list_view_add_requested"]
-[connection signal="delete_requested" from="ItemListView" to="." method="_on_item_list_view_delete_requested"]
-[connection signal="edit_requested" from="ItemListView" to="." method="_on_item_list_view_edit_requested"]
-[connection signal="selection_changed" from="ItemListView" to="." method="_on_item_list_view_selection_changed"]
-[connection signal="component_added" from="CreateFunction" to="." method="_on_create_function_component_added"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ComponentList" parent="VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("4_bosbs")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+component_filter = "Function"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Create" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+shortcut = SubResource("Shortcut_fsh4n")
+text = "Create"
+icon = ExtResource("5_7afv4")
+
+[node name="Delete" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Delete"
+icon = ExtResource("6_fsh4n")
+
+[node name="ComponentSettings" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_re3nl")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="selected" from="VBoxContainer/HBoxContainer/VBoxContainer/ComponentList" to="." method="_on_component_list_selected"]
+[connection signal="selected" from="VBoxContainer/HBoxContainer/VBoxContainer/ComponentList" to="VBoxContainer/HBoxContainer/ComponentSettings" method="set_component"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/Create" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/Delete" to="." method="_on_delete_pressed"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

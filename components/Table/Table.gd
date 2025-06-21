@@ -33,7 +33,7 @@ signal nothing_selected()
 
 
 ## Stores all the row items. {{index: RowItem}
-var _row_items: Dictionary = {}
+var _row_items: Dictionary[int, RowItem] = {}
 
 ## Current selected row
 var _selected_row: RowHeadder
@@ -105,6 +105,9 @@ func create_column(column_name: String) -> ColumnIndex:
 		cell_item_container.custom_minimum_size.x = new_column.position.x + new_column.size.x
 	).call_deferred()
 	
+	for row: RowItem in _row_items.values():
+		row.add_blank()
+	
 	return new_column
 
 
@@ -138,6 +141,9 @@ func create_row(row_name: String) -> RowHeadder:
 		set_row_selected(new_row.index)
 	)
 	
+	for column: ColumnIndex in column_item_container.get_children():
+		new_row_item.add_blank()
+	
 	_row_items[new_row.index] = new_row_item
 	return new_row
 
@@ -156,7 +162,7 @@ func create_rows(rows: Array[String]) -> Array[RowHeadder]:
 func remove_row(row_index: int) -> void:
 	if not row_index in _row_items: return
 	
-	if _selected_row.index == row_index:
+	if _selected_row and _selected_row.index == row_index:
 		deselect_all()
 	
 	var row_header: RowHeadder = _row_items[row_index].headder
@@ -176,24 +182,24 @@ func move_row(row_index: int, to: int) -> void:
 
 
 ## Adds a cellitem with data in it
-func add_data(row_index: int, data: Variant, setter: Callable, changer: Signal) -> CellItem:
+func add_data(row_index: int, data: Variant, setter: Callable, changer: Signal, index: int = -1) -> CellItem:
 	if not row_index in _row_items: return null
 	
-	return (_row_items[row_index] as RowItem).add_data(data, setter, changer)
+	return (_row_items[row_index] as RowItem).add_data(data, setter, changer, index)
 
 
 ## Adds a button
-func add_button(row_index: int, text: String, callback: Callable) -> CellItem:
+func add_button(row_index: int, text: String, callback: Callable, index: int = -1) -> CellItem:
 	if not row_index in _row_items: return null
 	
-	return (_row_items[row_index] as RowItem).add_button(text, callback)
+	return (_row_items[row_index] as RowItem).add_button(text, callback, index)
 
 
 ## Adds a dropdown
-func add_dropdown(row_index: int, items: Array, current: int ,callback: Callable, changer: Signal) -> CellItem:
+func add_dropdown(row_index: int, items: Array, current: int ,callback: Callable, changer: Signal, index: int = -1) -> CellItem:
 	if not row_index in _row_items: return null
 	
-	return (_row_items[row_index] as RowItem).add_dropdown(items, current, callback, changer)
+	return (_row_items[row_index] as RowItem).add_dropdown(items, current, callback, changer, index)
 
 
 ## Selectes nothing

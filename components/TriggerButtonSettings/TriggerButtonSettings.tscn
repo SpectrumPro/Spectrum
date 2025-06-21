@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://dhim1qpe23x0i"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_l8o6r"]
-[ext_resource type="Script" path="res://components/TriggerButtonSettings/TriggerButtonSettings.gd" id="2_hui0o"]
+[ext_resource type="Script" uid="uid://ctgshtyvnderi" path="res://components/TriggerButtonSettings/TriggerButtonSettings.gd" id="2_hui0o"]
 [ext_resource type="PackedScene" uid="uid://daxklqm8l01pf" path="res://components/AddShortcutButton/AddShortcutButton.tscn" id="2_renag"]
 [ext_resource type="PackedScene" uid="uid://cg60ugredi103" path="res://components/ComponentMethodPicker/ComponentMethodPicker.tscn" id="4_rttbe"]
 
@@ -36,7 +36,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="TriggerButtonSettings" type="PanelContainer"]
+[node name="TriggerButtonSettings" type="PanelContainer" node_paths=PackedStringArray("_external_input_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -44,6 +44,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_l8o6r")
 script = ExtResource("2_hui0o")
+_external_input_button = NodePath("VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ExternalInput/VBoxContainer/AddShortcutButton")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -248,6 +249,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qs2yx")
 [connection signal="color_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/BGColor/BGColorPicker" to="." method="_on_bg_color_picker_color_changed"]
 [connection signal="color_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/Border/BorderColorPicker" to="." method="_on_border_color_picker_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ColorAndDisplay/VBoxContainer/HBoxContainer/BorderWidth" to="." method="_on_border_width_value_changed"]
+[connection signal="shortcut_changed" from="VBoxContainer/ScrollContainer/PanelContainer/VBoxContainer/ExternalInput/VBoxContainer/AddShortcutButton" to="." method="_on_add_shortcut_button_shortcut_changed"]
 [connection signal="cancled" from="ComponentMethodPicker" to="." method="_on_component_method_picker_cancled"]
 [connection signal="method_confired" from="ComponentMethodPicker" to="." method="_on_component_method_picker_method_confired"]
 [connection signal="remove_requested" from="ComponentMethodPicker" to="." method="_on_component_method_picker_remove_requested"]

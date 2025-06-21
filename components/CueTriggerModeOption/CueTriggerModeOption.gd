@@ -40,7 +40,7 @@ func set_cue(p_cue: Cue) -> void:
 
 
 ## Called when the cue's trigger mode is changed
-func _on_cue_trigger_mode_changed(trigger_mode: Cue.TRIGGER_MODE) -> void:
+func _on_cue_trigger_mode_changed(trigger_mode: Cue.TriggerMode) -> void:
 	_buttons[trigger_mode].button_pressed = true
 
 

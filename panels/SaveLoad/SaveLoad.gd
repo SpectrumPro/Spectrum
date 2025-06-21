@@ -17,6 +17,9 @@ class_name UISaveFiles extends UIPanel
 ## Current file name label
 @export var _current_file_name: LineEdit
 
+## The save button
+@export var _save_button: Button
+
 
 ## All the currtent listed files
 var _listed_files: Array[String]
@@ -64,6 +67,7 @@ func _reload_saves() -> Promise:
 ## Sets the file name
 func _set_file_name(file_name: String) -> void:
 	_current_file_name.text = file_name
+	_save_button.disabled = file_name == ""
 
 
 ## Sorts the files
@@ -144,7 +148,7 @@ func _on_open_pressed() -> void:
 		var file_name: String = selected.get_text(0)
 		
 		Interface.show_confirmation_dialog("Warning: Opening a show will erace all current components!").confirmed.connect(func ():
-			if _files[selected.get_index() - 1].version != str(Details.schema_version):
+			if int(_files[selected.get_index()].version) != Details.schema_version:
 				Interface.show_confirmation_dialog("Warning: This file was made in an older version of the engine. Opening it may cause errors!").confirmed.connect(func ():
 					Core.reset_and_load(file_name)
 				)
@@ -154,10 +158,12 @@ func _on_open_pressed() -> void:
 
 
 ## Saves the main ui layout
-func _on_save_ui_pressed() -> void: Interface.save_to_file()
+func _on_save_ui_pressed() -> void: 
+	Interface.save_to_file()
 
 ## Called when the save button is pressed
-func _on_save_pressed() -> void: Core.save()
+func _on_save_pressed() -> void: 
+	Core.save()
 
 
 ## Called when the new button is clicked

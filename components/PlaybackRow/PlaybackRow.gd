@@ -25,23 +25,17 @@ signal label_changed(new_label: String)
 @onready var auto_config: Dictionary = {
 	"Scene": {
 		button1: {
-			"label": "Toggle", 
-			"button_down": { "method_name": "enabled", "args": [true] },
-			"button_up": { "method_name": "enabled", "args": [false] },
-			"button_mode": TriggerButton.Mode.Toggle
+			"label": "Toggle",
+			"button_down": { "method_name": "Toggle", "args": [] },
 		},
 		button2: {
 			"label": "Enable",
-			"button_down": { "method_name": "enabled", "args": [true] },
+			"button_down": { "method_name": "on", "args": [] },
 		},
-		button3: {
-			"label": "Flash",
-			"button_down": { "method_name": "flash_hold", "args": [0]},
-			"button_up": { "method_name": "flash_release", },
-		},
+		button3: {"visible": false},
 		button4: {
 			"label": "Disable",
-			"button_down": { "method_name": "enabled", "args": [false] },
+			"button_down": { "method_name": "off", "args": [] },
 		},
 		button5: {"visible": false},
 		slider: { 
@@ -51,16 +45,16 @@ signal label_changed(new_label: String)
 	},
 	"CueList": {
 		button1: {
-			"label": "Play", 
-			"button_down": { "method_name": "play" },
+			"label": "Enable", 
+			"button_down": { "method_name": "on" },
 		},
 		button2: {
 			"label": "Pause",
 			"button_down": { "method_name": "pause" },
 		},
 		button3: {
-			"label": "Stop",
-			"button_down": { "method_name": "stop" },
+			"label": "Disable",
+			"button_down": { "method_name": "off" },
 		},
 		button4: {
 			"label": "Go Previous",

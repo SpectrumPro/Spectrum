@@ -21,5 +21,8 @@ android/
 
 .DS_Store
 
-Debug_save.spshow
 *.spshow
+
+addons/script_search/
+
+addons/wakatime/

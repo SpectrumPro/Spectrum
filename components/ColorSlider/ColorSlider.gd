@@ -23,14 +23,12 @@ var top_color: Color = Color.WHITE: set = set_top_color
 
 ## Sets the color at the bottom of the BG graident
 func set_botton_color(color: Color) -> void:
-	print(color)
 	bottom_color = color
 	$VBoxContainer/PanelContainer/TextureRect.texture.gradient.set_color(0, color)
 
 
 ## Sets the color at the bottom of the BG graident
 func set_top_color(color: Color) -> void:
-	print(color)
 	top_color = color
 	$VBoxContainer/PanelContainer/TextureRect.texture.gradient.set_color(1, color)
 

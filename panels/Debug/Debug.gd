@@ -5,25 +5,38 @@ class_name UIDebug extends UIPanel
 ## UI Panel use for debugging
 
 
+## Message for object input
+@export var message_for: LineEdit
+
+## Message object method
+@export var message_method: LineEdit
+
+## Message method args
+@export var message_args: LineEdit
+
+## OptionButton for the local / remote option
+@export var local_remote_option: OptionButton
+
+
 ## Sets the text in the output
 func set_output(output: Variant) -> void:
 	var result: String = ""
 	
 	if output is Dictionary:
-		result = JSON.stringify(result, "\t")
+		result = JSON.stringify(output, "\t")
 	else:
 		result = str(output)
 	
 	$VBoxContainer/PanelContainer/HBoxContainer/Output.text = result
 
 
-## Will reset the engine
+## Resets the engine
 func _on_reset_pressed() -> void: Client.send_command("debug", "reset")
 
-## Will quit the engine
+## Quits the engine
 func _on_stop_pressed() -> void: Client.send_command("debug", "quit")
 
-## Will crash the server
+## Crash the server
 func _on_crash_pressed() -> void: Client.send_command("debug", "crash")
 
 
@@ -54,11 +67,76 @@ func _on_list_functions_pressed() -> void:
 	set_output(output)
 
 
-func _on_send_message_to_server_pressed() -> void:
-	Client.send_command(
-		$VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer/For.text,
-		$VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer/Method.text,
-		str_to_var($VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer/Args.text)
-	).then(func (result: Variant = null):
-		set_output(result)
+## Shows an objectpicker then a ComponentNamePopup
+func _on_change_name_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func(objects: Array):
+		Interface.show_name_prompt(objects[0])
 	)
+
+
+## Dumps fixture data
+func _on_dump_fixture_data_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (fixtures: Array):
+		Client.send_command("debug", "dump_fixture_data", [fixtures[0]]).then(func (path: String):
+			OS.shell_open(path)
+			set_output(path)
+		)
+	, "Fixture")
+
+
+## Gets a Serialized Component
+func _on_get_serialized_component_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (components: Array):
+		Client.send_command(components[0].uuid, "serialize").then(func (data: Dictionary):
+			set_output(data)
+		)
+	, "")
+
+## Gets a Serialized Component, local
+func _on_get_serialized_component_local_pressed() -> void:
+	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (components: Array):
+		set_output(components[0].serialize())
+	, "")
+
+
+func _on_send_message_to_server_pressed() -> void:
+	var args: Variant = str_to_var(message_args.text)
+	
+	if args is Array:
+		if local_remote_option.get_selected_id():
+			var component: EngineComponent = ComponentDB.get_component(message_for.text)
+			
+			if component and component.has_method(message_method.text):
+				var method: Callable = component.get(message_method.text)
+				
+				if method.get_argument_count() == len(args):
+					set_output(method.callv(args))
+		
+		else:
+			Client.send_command(
+				message_for.text,
+				message_method.text,
+				args
+			).then(func (result: Variant = null):
+				set_output(result)
+			)
+
+
+## Saves this panel into a dictonary
+func _save() -> Dictionary:
+	return {
+		"message": {
+			"for": message_for.text,
+			"method": message_method.text,
+			"args": message_args.text
+		}
+	}
+
+
+## Loads this panel from a dictonary
+func _load(saved_data: Dictionary) -> void:
+	var message: Dictionary = saved_data.get_or_add("message", {})
+	
+	message_for.text = message.get("for", "")
+	message_method.text = message.get("method", "")
+	message_args.text = message.get("args", "")

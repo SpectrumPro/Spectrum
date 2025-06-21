@@ -61,12 +61,10 @@ func _update_container_size() -> void:
 	var current: int = len(_items)
 	
 	if total == current:
-		print("No change needed")
 		return
 	
 	elif total < current:
 		var needed: int = current - total
-		print("Items needed is less then total current, adding: ", needed)
 		
 		for i in range(needed + 1):
 			var new_item: PaletteItemComponent = PaletteItemComponent.new()
@@ -78,7 +76,6 @@ func _update_container_size() -> void:
 	
 	elif total > current:
 		var to_remove: Array[PaletteItemComponent] = _items.slice(total - 1)
-		print("Items needed exceeds total current items, removing: ", len(to_remove))
 		
 		for item: PaletteItemComponent in to_remove:
 			_grid_container.remove_child(item)

@@ -16,3 +16,12 @@ class_name UIPanelEditControls extends Control
 
 ## The move and resize handle
 @export var move_resize_handle: TextureRect
+
+## Sets the visibility of the edit button
+@export var show_edit: bool = true
+
+## Sets the visibility of the settings button
+@export var show_settings: bool = true
+
+## Sets the visibility of the close button
+@export var show_close: bool = false

@@ -8,7 +8,7 @@ class_name AddShortcutButton extends Control
 
 
 ## Emitted when the shortcut is changed
-signal on_shortcut_changed(input_event:InputEvent)
+signal shortcut_changed(input_event: InputEvent)
 
 
 ## The BaseButton node this AddShortcutButton controls
@@ -119,7 +119,6 @@ func load(serialized_data: Dictionary) -> void:
 
 ## Called when a gui input has happened
 func _on_gui_input(p_event: InputEvent) -> void:
-	print(not p_event.get_class() in _not_allowed_events and (p_event.is_released() or not unpress_required))
 	if not p_event.get_class() in _not_allowed_events and (p_event.is_released() or not unpress_required):
 		if p_event is InputEventKey:
 			match p_event.keycode:
@@ -131,12 +130,11 @@ func _on_gui_input(p_event: InputEvent) -> void:
 					set_listning(false)
 				_:
 					set_event(p_event)
-					on_shortcut_changed.emit(event)
+					shortcut_changed.emit(event)
 				
 		else:
-			print("Setting Event")
 			set_event(p_event)
-			on_shortcut_changed.emit(event)
+			shortcut_changed.emit(event)
 
 
 ## Called when the button is pressed

@@ -102,11 +102,12 @@ func add_panel(panel: Control, new_position: Vector2 = _just_deleted_pos, new_si
 	return new_node
 
 
+## Opens the settings on the given nodes
 func open_settings(node: DeskItemContainer = null) -> void:
 	if _selected_items or node:
 		var panel: UIPanel = _selected_items[0].get_panel() if not node else node.get_panel()
 		
-		panel.set_show_settings(true)
+		panel.show_settings()
 
 
 ## Returns a dictionary containing all the panels, there position, sizes, and setting for this desk
@@ -204,10 +205,10 @@ func _on_item_clicked(item: Control) -> void:
 ## Called when the container has a input event, checks to see if it is a mouse click, if so will show or hide the object picker
 func _on_container_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.is_pressed() and edit_mode:
+		if event.is_pressed() and _edit_mode:
 			select_none()
 		
-		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed() and edit_mode:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed() and _edit_mode:
 			Interface.show_panel_picker().then(func (panel: PackedScene):
 				add_panel(panel.instantiate())
 			)

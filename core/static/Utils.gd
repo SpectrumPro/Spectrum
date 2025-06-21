@@ -16,6 +16,19 @@ class_name Utils extends Object
 static var _signal_connections: Dictionary
 
 
+## Custom Types:
+const TYPE_STRING := "STRING"
+const TYPE_IP := "IP"
+const TYPE_BOOL := "BOOL"
+const TYPE_INT := "INT"
+const TYPE_FLOAT := "FLOAT"
+const TYPE_ENUM := "ENUM"
+const TYPE_NULL := "NULL"
+const TYPE_CUSTOM := "CUSTOM"
+const TYPE_CID := "CID"
+const TYPE_INPUTEVENTKEY := "INPUTEVENTKEY"
+
+
 ## Saves a JSON valid dictonary to a file, creates the file and folder if it does not exist
 static func save_json_to_file(file_path: String, file_name: String, json: Dictionary) -> Error:
 	
@@ -39,7 +52,7 @@ static func objects_to_uuids(data: Variant) -> Variant:
 		TYPE_OBJECT:
 			return {
 					"_object_ref": str(data.get("uuid")),
-					#"_serialized_object": data.serialize(),
+					"_serialized_object": data.serialize() if ClassList.should_class_searlize(data.self_class_name if data is EngineComponent else "") else {},
 					"_class_name": data.get("self_class_name")
 				}
 		
@@ -70,8 +83,8 @@ static func uuids_to_objects(data: Variant, networked_objects: Dictionary):
 					return networked_objects[data._object_ref].get("object", null)
 					
 				elif "_class_name" in data.keys():
-					if data["_class_name"] in ClassList.global_class_table:
-						var initialized_object = ClassList.global_class_table[data["_class_name"]].new(data._object_ref)
+					if ClassList.has_class(data["_class_name"]):
+						var initialized_object = ClassList.get_class_script(data["_class_name"]).new(data._object_ref)
 						
 						if initialized_object.has_method("load") and "_serialized_object" in data.keys():
 							initialized_object.load(data._serialized_object)
@@ -120,6 +133,16 @@ static func get_htp_color(color_1: Color, color_2: Color) -> Color:
 	return result_color
 
 
+## Blends two colors
+static func blend_color_additive(color_a: Color, color_b: Color) -> Color:
+	return Color(
+		clamp(color_a.r + color_b.r, 0.0, 1.0),
+		clamp(color_a.g + color_b.g, 0.0, 1.0),
+		clamp(color_a.b + color_b.b, 0.0, 1.0),
+		clamp(color_a.a + color_b.a, 0.0, 1.0)
+	)
+
+
 ## Gets the most common variant in an array
 static func get_most_common_value(arr: Array) -> Variant:
 	var count_dict := {}
@@ -151,6 +174,40 @@ static func sum_array(array: Array) -> Variant:
 		sum += element
 	
 	return sum
+
+
+## Sorts all the text in an array
+static func sort_text(arr: Array) -> Array:
+	arr.sort_custom(func(a, b): return a.naturalnocasecmp_to(b) < 0)
+	return arr
+
+
+## Sorts all the text in an array, with numbers
+static func sort_text_and_numbers(arr: Array) -> Array:
+	arr.sort_custom(func(a, b): return _split_sort_key(a) < _split_sort_key(b))
+	return arr
+
+
+## Helper function for sort_text_and_numbers
+static func _split_sort_key(s: String) -> Array:
+	var regex = RegEx.new()
+	regex.compile(r"\d+|\D+")
+	
+	var parts = []
+	for match in regex.search_all(s):
+		var sub = match.get_string()
+		parts.append(int(sub) if sub.is_valid_int() else sub)
+	
+	return parts
+
+
+## Moves an item to the start of an array
+static func array_move_to_start(arr: Array, item) -> Array:
+	var i = arr.find(item)
+	if i > 0:  # Ensures "root" is found and isn't already at index 0
+		arr.remove_at(i)
+		arr.insert(0, item)
+	return arr
 
 
 ## Connects all the callables to the signals in the dictionary. Stored as {"SignalName": Callable}
@@ -199,3 +256,28 @@ static func disconnect_signals_with_bind(signals: Dictionary, object: Object) ->
 			
 			_signal.disconnect(bound_callable)
 			connections.erase(callable_name)
+
+
+## Seralizes an array of EngineComponents
+static func seralise_component_array(array: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary]
+
+	for component: Variant in array:
+		if component is EngineComponent:
+			result.append(component.serialize())
+
+	return result
+
+
+## Deseralizes an array of seralized EngineComponents
+static func deseralise_component_array(array: Array) -> Array[EngineComponent]:
+	var result: Array[EngineComponent]
+
+	for seralized_component: Variant in array:
+		if seralized_component is Dictionary and seralized_component.has("class_name"):
+			var component: EngineComponent = ClassList.get_class_script(seralized_component.class_name).new()
+
+			component.load(seralized_component)
+			result.append(component)
+
+	return result
