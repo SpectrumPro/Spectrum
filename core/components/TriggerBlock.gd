@@ -11,6 +11,9 @@ signal trigger_added(component: EngineComponent, id: String, name: String, row: 
 ## Emitted when a trigger is added
 signal trigger_removed(row: int, column: int)
 
+## Emitted when a column is reset
+signal column_reset(column: int)
+
 ## Emitted when a trigger name is changes
 signal trigger_name_changed(row: int, column: int, name: String)
 
@@ -32,6 +35,7 @@ func _component_ready() -> void:
 	
 	register_callback("on_trigger_added", _add_trigger)
 	register_callback("on_trigger_removed", _remove_trigger)
+	register_callback("on_column_reset", _reset_column)
 	register_callback("on_trigger_name_changed", _rename_trigger)
 	register_callback("on_trigger_up", _call_trigger_up)
 	register_callback("on_trigger_down", _call_trigger_down)
@@ -45,6 +49,11 @@ func add_trigger(p_component: EngineComponent, p_id: String, p_name: String, p_r
 ## Removes a trigger
 func remove_trigger(p_row: int, p_column: int) -> Promise:
 	return rpc("remove_trigger", [p_row, p_column])
+
+
+## Resets a whole column
+func reset_column(p_column: int) -> Promise:
+	return rpc("reset_column", [p_column])
 
 
 ## Removes a trigger
@@ -95,6 +104,15 @@ func _remove_trigger(p_row: int, p_column: int, no_signal: bool = false) -> bool
 		trigger_removed.emit(p_row, p_column)
 	
 	return true
+
+
+## Internal Resets a whole column
+func _reset_column(p_column: int) -> void:
+	for row: int in _triggers:
+		if p_column in _triggers[row]:
+			_remove_trigger(row, p_column, true)
+	
+	column_reset.emit(p_column)
 
 
 ## Renames a trigger

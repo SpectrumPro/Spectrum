@@ -159,7 +159,7 @@ func _erase_item(p_item: ContainerItem, no_signal: bool = false) -> bool:
 	_fixture[p_item.get_fixture()][p_item.get_zone()].erase(p_item.get_parameter())
 
 	if not no_signal:
-		items_erased.emit(p_item)
+		items_erased.emit([p_item])
 	
 	return true
 

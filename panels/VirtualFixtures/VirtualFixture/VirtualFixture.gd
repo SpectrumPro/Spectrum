@@ -143,23 +143,23 @@ func set_label_name(p_name: String) -> void:
 
 
 ## Called when a parameter is changed on a fixture
-func _on_parameter_changed(parameter: String, function: String, value: Variant, zone: String) -> void:
+func _on_parameter_changed(zone: String, parameter: String, function: String, value: Variant) -> void:
 	render_color()
 
 
 ## Called when a parameter is eraced on a fixture
-func _on_parameter_eraced(parameter: String, zone: String) -> void:
+func _on_parameter_eraced(zone: String, parameter: String) -> void:
 	render_color()
 
 
 ## Called when a override value is changed on a fixture
-func _on_override_value_changed(parameter: String, function: String, value: Variant, zone: String) -> void: 
+func _on_override_value_changed(zone: String, parameter: String, function: String, value: Variant) -> void: 
 	$Override.show()
 	render_color()
 
 
 ## Called when an override value is removed from the fixture
-func _on_override_value_erased(parameter: String = "", zone: String = "") -> void:
+func _on_override_value_erased(zone: String = "", parameter: String = "") -> void:
 	if not _fixture.has_overrides():
 		$Override.hide()
 	

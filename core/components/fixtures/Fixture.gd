@@ -6,16 +6,16 @@ class_name Fixture extends EngineComponent
 
 
 ## Emitted when parameters are changed
-signal parameter_changed(parameter: String, function: String, value: Variant, zone: String)
+signal parameter_changed(zone: String, parameter: String, function: String, value: Variant)
 
 ## Emitted when a parameter is erased
-signal parameter_erased(parameter: String, zone: String)
+signal parameter_erased(zone: String, parameter: String)
 
 ## Emited when a parameter override is changed or added
-signal override_changed(parameter: String, function: String, value: Variant, zone: String)
+signal override_changed(zone: String, parameter: String, function: String, value: Variant)
 
 ## Emitted when a parameter override is removed
-signal override_erased(parameter: String, zone: String)
+signal override_erased(zone: String, parameter: String)
 
 ## Emitted when all overrides are removed
 signal all_override_removed()
@@ -144,20 +144,20 @@ func function_can_fade(p_zone: String, p_parameter: String, p_function: String) 
 
 
 ## Internal: Sets a parameter to a float value
-func _set_parameter(p_parameter: String, p_function: String, p_value: Variant, p_zone: String) -> void:
+func _set_parameter(p_zone: String, p_parameter: String, p_function: String, p_value: Variant) -> void:
 	return 
 
 
 ## Internal: Erases the parameter on the given layer
-func _erase_parameter(p_parameter: String, p_zone: String) -> void:
+func _erase_parameter(p_zone: String, p_parameter: String) -> void:
 	return 
 
 
 ## Internal: Sets a parameter override to a float value
-func _set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> void:
+func _set_override(p_zone: String, p_parameter: String, p_function: String, p_value: float) -> void:
 	return
 
 
 ## Internal: Erases the parameter override 
-func _erase_override(p_parameter: String, p_zone: String = "root") -> void:
+func _erase_override(p_zone: String, p_parameter: String) -> void:
 	return

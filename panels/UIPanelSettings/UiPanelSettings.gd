@@ -9,11 +9,20 @@ class_name UIPanelSettings extends UIPanel
 signal panel_changed(panel)
 
 
+## UIPanelSettingsShortcuts Settings Page
+@export var _shortcuts: UIPanelSettingsShortcuts
+
+
 ## The current UIPanel
 var _panel: UIPanel
 
 
-## Sets the panel
+## Sets the panelvvc
 func set_panel(panel: UIPanel) -> void:
 	_panel = panel
 	panel_changed.emit(panel)
+
+
+## Gets the UIPanelSettingsShortcuts Settings page
+func get_shortcut_settings() -> UIPanelSettingsShortcuts:
+	return _shortcuts

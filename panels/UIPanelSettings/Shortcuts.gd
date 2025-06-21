@@ -46,6 +46,20 @@ func set_panel(panel: UIPanel) -> void:
 	_load_buttons()
 
 
+## Sets the current button
+func set_buton(button: Button) -> void:
+	_selected_button = button
+	_add_action_button.set_disabled(false)
+	
+	_action_tree.clear()
+	_action_tree.create_item()
+	for action: InputAction in _panel.get_button_actions(_selected_button):
+		var tree_item: TreeItem = _action_tree.create_item()
+		tree_item.set_text(0, action.get_name())
+		
+		_actions.map(action, tree_item)
+
+
 ## Loads and displays all buttons from the UIPanel
 func _load_buttons() -> void:
 	for button in _panel.buttons:
@@ -57,16 +71,7 @@ func _load_buttons() -> void:
 
 ## Called when an item is selected in the button tree
 func _on_button_list_item_selected() -> void:
-	_selected_button = _button_items.right(_button_tree.get_selected())
-	_add_action_button.set_disabled(false)
-	
-	_action_tree.clear()
-	_action_tree.create_item()
-	for action: InputAction in _panel.get_button_actions(_selected_button):
-		var tree_item: TreeItem = _action_tree.create_item()
-		tree_item.set_text(0, action.get_name())
-		
-		_actions.map(action, tree_item)
+	set_buton(_button_items.right(_button_tree.get_selected()))
 
 
 ## Called when the AddAction button is pressed

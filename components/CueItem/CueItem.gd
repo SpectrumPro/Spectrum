@@ -70,8 +70,8 @@ func _ready() -> void:
 
 ## Sets the cue represented by this CueItem
 func set_cue(cue: Cue, cue_list: CueList) -> void:
-	Utils.disconnect_signals(_cue_signals, cue)
-	Utils.disconnect_signals(_cue_list_signals, cue_list)
+	Utils.disconnect_signals(_cue_signals, _cue)
+	Utils.disconnect_signals(_cue_list_signals, _cue_list)
 	
 	_cue = cue
 	_cue_list = cue_list
@@ -146,21 +146,23 @@ func set_trigger_mode(trigger_mode: Cue.TriggerMode) -> void:
 ## Called when the CueList cue number changes
 func _on_active_cue_changed(cue: Cue) -> void:
 	if cue == _cue:
-		set_status_bar(true, _cue.get_fade_time())
+		set_status_bar(true, _cue_list.get_global_fade_speed() if _cue_list.get_global_fade_state() else _cue.get_fade_time())
+		$Selected.show()
 	
 	elif _is_enabled: 
 		var fade_time: float = 0
-		fade_time = cue.get_fade_time()
+		fade_time = _cue_list.get_global_fade_speed() if _cue_list.get_global_fade_state() else _cue.get_fade_time()
 		
 		set_status_bar(false, fade_time)
+		$Selected.hide()
 
 
 ## Called when the CueList's transport state is changed
 func _on_transport_state_changed(transport_state: Function.TransportState) -> void:
-	if transport_state and _current_tween:
+	if transport_state and _current_tween and _current_tween.is_valid():
 		_current_tween.play()
 	
-	elif _current_tween:
+	elif _current_tween and _current_tween.is_valid():
 		_current_tween.pause()
 
 
@@ -172,6 +174,7 @@ func _on_active_state_changed(active_state: Function.ActiveState) -> void:
 		
 		_is_enabled = false
 		_status_bar.set_value_no_signal(0)
+		$Selected.hide()
 
 
 ## Called when store mode is changed

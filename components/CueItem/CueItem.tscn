@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://owx4rxrtg50d"]
+[gd_scene load_steps=16 format=3 uid="uid://owx4rxrtg50d"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_t3b7b"]
 [ext_resource type="Texture2D" uid="uid://cxtdx7cj44nk" path="res://assets/icons/Touch.svg" id="1_yeptw"]
@@ -38,6 +38,19 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_osi16"]
+bg_color = Color(1, 1, 1, 0.156863)
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+
 [sub_resource type="LabelSettings" id="LabelSettings_odw3y"]
 font_color = Color(0.707967, 0.707967, 0.707967, 1)
 
@@ -74,6 +87,12 @@ visible = false
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_vgny8")
+
+[node name="Selected" type="Panel" parent="."]
+visible = false
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_osi16")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

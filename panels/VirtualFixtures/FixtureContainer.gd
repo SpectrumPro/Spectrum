@@ -494,6 +494,22 @@ func _on_grid_width_value_changed(value: float) -> void:
 	grid_align()
 
 
+## Called when the SelectAll button is pressed
+func _on_select_all_pressed() -> void:
+	Values.set_selection_value("selected_fixtures", fixture_group.get_fixtures())
+
+
+##  Called when the DeSelect random button is pressed
+func _on_de_select_random_pressed() -> void:
+	var selected: Array = Values.get_selection_value("selected_fixtures")
+	
+	selected = selected.filter(func (fixture: Fixture):
+		return bool(randi_range(0, 1))
+	)
+	
+	Values.set_selection_value("selected_fixtures", selected)
+
+
 func _on_fixture_group_name_pressed() -> void:
 	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (objects: Array):
 		if objects[0] is FixtureGroup:

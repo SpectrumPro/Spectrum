@@ -90,6 +90,11 @@ func cid() -> int:
 	return _cid
 
 
+## Gets the class tree
+func get_class_tree() -> Array[String]:
+	return class_tree.duplicate()
+
+
 ## Calls a method on the remote object.
 func rpc(p_method_name: String, p_args: Array = []) -> Promise:
 	return Client.send_command(uuid, p_method_name, p_args)

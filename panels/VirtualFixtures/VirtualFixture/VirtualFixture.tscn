@@ -22,7 +22,6 @@ corner_radius_bottom_left = 3
 font_size = 10
 
 [sub_resource type="LabelSettings" id="LabelSettings_6gdxf"]
-font_size = 11
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
@@ -103,5 +102,6 @@ text = "Name"
 label_settings = SubResource("LabelSettings_6gdxf")
 horizontal_alignment = 1
 vertical_alignment = 1
+clip_text = true
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

@@ -248,7 +248,9 @@ func _on_udp_message_receved(message: Variant) -> void:
 			# Check if the function still exists, in case it is no longer valid
 			if network_config.get("callbacks", {}).has(object_array[1]):
 				var method: Callable = network_config.callbacks[object_array[1]]
-				method.callv(message[object_array])
+				for args: Array in message[object_array]:
+					method.callv(args)
+				
 			else:
 				print("You broke it!")
 

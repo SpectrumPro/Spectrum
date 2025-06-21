@@ -55,10 +55,11 @@ var _input_triggers_types: Dictionary[String, Script] = {
 
 func _ready() -> void:
 	OS.open_midi_inputs()
+	Core.resetting.connect(_reset)
 
 
 ## Called for every InputEvent
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMIDI: 
 		_handle_midi_input(event)
 	
@@ -67,11 +68,17 @@ func _input(event: InputEvent) -> void:
 			_internal_actions[action].call()
 	
 	for input_action: InputAction in _input_actions.get_left():
-		if Input.is_action_just_pressed(input_action.uuid()):
+		if event.is_action_pressed(input_action.uuid()):
 			input_action.activate()
 			
-		elif Input.is_action_just_released(input_action.uuid()):
+		elif event.is_action_released(input_action.uuid()):
 			input_action.deactivate()
+
+
+## Resets to a default state
+func _reset() -> void:
+	for action: InputAction in _input_actions.get_left():
+		remove_input_action(action)
 
 
 ## Gets all current InputActions

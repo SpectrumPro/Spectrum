@@ -17,6 +17,13 @@ signal action_trigger_added(action_trigger: ActionTrigger)
 ## Emitted when an ActionTrigger is removed
 signal action_trigger_removed(action_trigger: ActionTrigger)
 
+## Emitted when the ButtonPressMode is changed
+signal button_press_mode_changed(button_press_mode: ButtonPressMode)
+
+
+## Press mode for butons
+enum ButtonPressMode {UP, DOWN}
+
 
 ## All InputTriggers in this InputAction
 var _input_triggers: Array[InputTrigger]
@@ -27,29 +34,51 @@ var _action_triggers: Array[ActionTrigger]
 ## Conects a Button to this action
 var _buttons: Array[Button]
 
+## Current button press mode
+var _button_press_mode: ButtonPressMode = ButtonPressMode.UP
+
+## Active state
+var _active_state: bool = false
+
 
 ## Ready
 func _component_ready() -> void:
 	_set_class_name("InputAction")
+	register_setting_enum("call_press_on_button", set_button_press_mode, get_button_press_mode, button_press_mode_changed, ButtonPressMode)
 
 
 ## Activates this InputAction
 func activate() -> void:
+	if _active_state:
+		return
+	
 	for button: Button in _buttons:
 		if button.toggle_mode:
 			button.set_pressed(true)
 		else:
 			button.button_down.emit()
+			
+			if _button_press_mode == ButtonPressMode.DOWN:
+				button.pressed.emit()
+	
+	_active_state = true
 
 
 ## Deactivates this InputAction
 func deactivate() -> void:
+	if not _active_state:
+		return
+	
 	for button: Button in _buttons:
 		if button.toggle_mode:
 			button.set_pressed(false)
 		else:
 			button.button_up.emit()
-			button.pressed.emit()
+			
+			if _button_press_mode == ButtonPressMode.UP:
+				button.pressed.emit()
+	
+	_active_state = false
 
 
 ## Connects a button to this InputAction
@@ -67,6 +96,16 @@ func disconnect_button(p_button: Button) -> bool:
 		return false
 	
 	_buttons.erase(p_button)
+	return true
+
+
+## Sets the button press mode
+func set_button_press_mode(p_button_press_mode: ButtonPressMode) -> bool:
+	if p_button_press_mode == _button_press_mode:
+		return false
+	
+	_button_press_mode = p_button_press_mode
+	button_press_mode_changed.emit(_button_press_mode)
 	return true
 
 
@@ -162,6 +201,11 @@ func get_action_triggers() -> Array[ActionTrigger]:
 	return _action_triggers.duplicate()
 
 
+## Gets the ButtonPressMode
+func get_button_press_mode() -> ButtonPressMode:
+	return _button_press_mode
+
+
 ## Override this to provide a save function to your ClientComponent
 func _save() -> Dictionary:
 	var saved_input_triggers: Array[Dictionary]
@@ -175,7 +219,8 @@ func _save() -> Dictionary:
 	
 	return {
 		"input_triggers": saved_input_triggers,
-		"action_triggers": saved_action_triggers
+		"action_triggers": saved_action_triggers,
+		"button_press_mode": _button_press_mode
 	}
 
 
@@ -197,3 +242,5 @@ func _load(saved_data: Dictionary) -> void:
 			action_trigger.load(saved_action)
 			
 			add_action_trigger(action_trigger)
+	
+	_button_press_mode = type_convert(saved_data.get("button_press_mode"), TYPE_INT)

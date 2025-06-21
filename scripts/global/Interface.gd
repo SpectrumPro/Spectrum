@@ -548,7 +548,12 @@ func get_class_icon(classname: String) -> Texture2D:
 		icon = icon_class_list.get(ClassList.get_custon_classes()[classname][-2])
 	
 	return icon
- 
+
+
+## Gets the panels settings
+func get_panel_settings() -> UIPanelSettings:
+	return _ui_panel_settings
+
 
 ## Saves the current ui layout to a file
 func save_to_file():

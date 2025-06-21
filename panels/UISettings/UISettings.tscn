@@ -107,6 +107,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 3
 hide_root = true
+select_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/InputActions/HSplitContainer/VBoxContainer"]
 layout_mode = 2
@@ -133,6 +134,6 @@ layout_mode = 2
 [connection signal="toggled" from="VBoxContainer/TitleBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/SettingsTab" to="VBoxContainer/Settings" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/TitleBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/ShortcutsTab" to="VBoxContainer/InputActions" method="set_visible"]
 [connection signal="empty_clicked" from="VBoxContainer/InputActions/HSplitContainer/VBoxContainer/InputActionTree" to="VBoxContainer/InputActions" method="_on_item_list_empty_clicked"]
-[connection signal="item_selected" from="VBoxContainer/InputActions/HSplitContainer/VBoxContainer/InputActionTree" to="VBoxContainer/InputActions" method="_on_item_list_item_selected"]
+[connection signal="multi_selected" from="VBoxContainer/InputActions/HSplitContainer/VBoxContainer/InputActionTree" to="VBoxContainer/InputActions" method="_on_input_action_tree_multi_selected"]
 [connection signal="pressed" from="VBoxContainer/InputActions/HSplitContainer/VBoxContainer/PanelContainer/HBoxContainer/AddInputAction" to="VBoxContainer/InputActions" method="_on_add_input_action_pressed"]
 [connection signal="pressed" from="VBoxContainer/InputActions/HSplitContainer/VBoxContainer/PanelContainer/HBoxContainer/RemoveInputAction" to="VBoxContainer/InputActions" method="_on_remove_input_action_pressed"]

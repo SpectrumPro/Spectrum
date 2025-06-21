@@ -119,6 +119,9 @@ func set_function(function: Function) -> void:
 		if cues:
 			_set_container(cues[0])
 		
+		else:
+			_set_container(null)
+			
 	else:
 		_set_container(_function.get_data_container())
 
@@ -129,6 +132,10 @@ func _set_container(p_container: DataContainer) -> void:
 	
 	Utils.disconnect_signals(_container_signal_connections, _container)
 	_container = p_container
+	
+	if not _container:
+		return
+	
 	Utils.connect_signals(_container_signal_connections, _container)
 	
 	_columns = {"Fixture": 0, "CID": 1}
@@ -173,6 +180,8 @@ func _reset() -> void:
 	_selected_containerless_items.clear()
 	_container_items.clear()
 	_tree_items.clear()
+	
+	selection_reset.emit()
 
 
 ## Sets the data view mode
@@ -433,7 +442,7 @@ func _on_cue_list_active_cue_changed(cue: Cue) -> void:
 
 ## Called when a column title is clicked
 func _on_tree_column_title_clicked(column: int, mouse_button_index: int) -> void:
-	if mouse_button_index == MOUSE_BUTTON_LEFT:
+	if mouse_button_index == MOUSE_BUTTON_LEFT and _container:
 		if not Input.is_key_pressed(KEY_SHIFT):
 			_clear_selection()
 		

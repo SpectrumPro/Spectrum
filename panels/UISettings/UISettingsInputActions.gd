@@ -18,6 +18,9 @@ class_name UISettingsInputActions extends PanelContainer
 ## All current input action
 var _input_actions: RefMap = RefMap.new()
 
+## All current selected input action
+var _selected_actions: Array[InputAction]
+
 
 ## Loads the input items into the list
 func _ready() -> void:
@@ -46,6 +49,7 @@ func _add_input_action(p_action: InputAction) -> void:
 func _remove_input_action(p_action: InputAction) -> void:
 	_input_actions.left(p_action).free()
 	_input_actions.erase_left(p_action)
+	_selected_actions.erase(p_action)
 	_remove_action_button.set_disabled(true)
 	_input_action_settings.set_input_action(null)
 
@@ -57,14 +61,24 @@ func _on_add_input_action_pressed() -> void:
 
 ## Called when the RemoveInputAction button is pressed
 func _on_remove_input_action_pressed() -> void:
-	var tree_item: TreeItem = _input_action_tree.get_selected()
-	InputServer.remove_input_action(_input_actions.right(tree_item))
+	for action: InputAction in _selected_actions.duplicate():
+		InputServer.remove_input_action(action)
 
 
 ## Called when an item is selected in the ItemList
-func _on_item_list_item_selected() -> void:
-	_remove_action_button.set_disabled(false)
-	_input_action_settings.set_input_action(_input_actions.right(_input_action_tree.get_selected()))
+func _on_input_action_tree_multi_selected(item: TreeItem, column: int, selected: bool) -> void:
+	var action: InputAction = _input_actions.right(item)
+	
+	if selected and action not in _selected_actions:
+		_selected_actions.append(action)
+	
+	elif not selected and action in _selected_actions:
+		_selected_actions.erase(action)
+		
+	_remove_action_button.set_disabled(not len(_selected_actions))
+	
+	if selected:
+		_input_action_settings.set_input_action(action)
 
 
 ## Called when nothing is selected in the ItemList
@@ -72,4 +86,3 @@ func _on_item_list_empty_clicked(at_position: Vector2, mouse_button_index: int) 
 	_input_action_tree.deselect_all()
 	_remove_action_button.set_disabled(true)
 	_input_action_settings.set_input_action(null)
-	

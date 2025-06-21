@@ -148,36 +148,35 @@ func _set_manifest(p_manifest: FixtureManifest, p_mode: String) -> void:
 
 
 ## Internal: Sets a parameter to a float value
-func _set_parameter(p_parameter: String, p_function: String, p_value: Variant, p_zone: String) -> void:
+func _set_parameter(p_zone: String, p_parameter: String, p_function: String, p_value: Variant) -> void:
 	_active_values.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
-	parameter_changed.emit(p_parameter, p_function, p_value, p_zone)
+	parameter_changed.emit(p_zone, p_parameter, p_function, p_value)
 
 
 ## Internal: Erases the parameter on the given layer
-func _erase_parameter(p_parameter: String, p_zone: String) -> void:
+func _erase_parameter(p_zone: String, p_parameter: String) -> void:
 	_active_values.get_or_add(p_zone, {}).erase(p_parameter)
 	parameter_erased.emit(p_parameter, p_zone)
 
 
 ## Internal: Sets a parameter override to a float value
-func _set_override(p_parameter: String, p_function: String, p_value: float, p_zone: String = "root") -> void:
+func _set_override(p_zone: String, p_parameter: String, p_function: String, p_value: float) -> void:
 	_raw_override_layers.get_or_add(p_zone, {})[p_parameter] = {"value": p_value, "function": p_function}
-	override_changed.emit(p_parameter, p_function, p_value, p_zone)
+	override_changed.emit(p_zone, p_parameter, p_function, p_value)
 
 
 ## Internal: Erases the parameter override 
-func _erase_override(p_parameter: String, p_zone: String = "root") -> void:
+func _erase_override(p_zone: String, p_parameter: String) -> void:
 	if _raw_override_layers.get_or_add(p_zone, {}).erase(p_parameter) and not _raw_override_layers[p_zone]:
 		_raw_override_layers.erase(p_zone)
 		
-	override_erased.emit(p_parameter, p_zone)
+	override_erased.emit(p_zone, p_parameter)
 
 
 ## Internal: Erases all overrides
 func _erase_all_overrides() -> void:
 	_raw_override_layers.clear()
 	all_override_removed.emit()
-
 
 
 ## Saves this DMXFixture to a dictonary
