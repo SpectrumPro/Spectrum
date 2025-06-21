@@ -1,4 +1,4 @@
-name: Export and Release Godot 4.4.1 Game
+name: Build and Release Spectrum Client
 
 on:
   push:
@@ -6,14 +6,10 @@ on:
       - "v*"
 
 jobs:
-  export_game:
-    name: Export Game
+  export_spectrum:
+    name: Build Spectrum Client
     runs-on: ubuntu-latest
     permissions: write-all
-
-    strategy:
-      matrix:
-        platform: [Windows, Linux, macOS, Android]
 
     steps:
       - name: Checkout repository
@@ -21,18 +17,17 @@ jobs:
         with:
           lfs: true
 
-      - name: Export game
+      - name: Export Spectrum
         id: export
         uses: firebelley/godot-export@v6.0.0
         with:
           godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_linux.x86_64.zip
           godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz
           relative_project_path: ./
-          export_platforms: ${{ matrix.platform }}
-          archive_output: true  # ZIP the builds
-          use_cache: true
+          archive_output: true
+          presets_to_export: Windows, Linux, macOS, Android
 
-      - name: Upload build to release
+      - name: Create GitHub Release
         uses: ncipollo/release-action@v1.14.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
