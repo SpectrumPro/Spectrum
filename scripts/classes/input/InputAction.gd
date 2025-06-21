@@ -53,6 +53,9 @@ func activate() -> void:
 		return
 	
 	for button: Button in _buttons:
+		if button.is_disabled():
+			return
+		
 		if button.toggle_mode:
 			button.set_pressed(true)
 		else:
@@ -70,6 +73,9 @@ func deactivate() -> void:
 		return
 	
 	for button: Button in _buttons:
+		if button.is_disabled():
+			return
+		
 		if button.toggle_mode:
 			button.set_pressed(false)
 		else:
