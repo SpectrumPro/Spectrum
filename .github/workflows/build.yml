@@ -22,7 +22,7 @@ jobs:
           preset: ${{ matrix.platform }}
           debugMode: "false"
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Spectrum - ${{ matrix.platform }}
           path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
