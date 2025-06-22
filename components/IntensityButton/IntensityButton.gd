@@ -15,19 +15,23 @@ class_name IntensityButton extends Button
 ## The function to control
 var function: Function = null : set = set_function
 
-
 ## The last value used
 var _last_value: float = 0
 
 
 ## Disable the process at startup
-func _ready() -> void: set_process(false)
+func _ready() -> void: 
+	set_process(false)
 
 
 ## Sets the function
 func set_function(p_function: Function) -> void:
-	if is_instance_valid(function): function.intensity_changed.disconnect(_on_function_intensity_changed)
+	if is_instance_valid(function): 
+		function.intensity_changed.disconnect(_on_function_intensity_changed)
+	
 	function = p_function
+	disabled = not is_instance_valid(function)
+	
 	if is_instance_valid(function): 
 		function.intensity_changed.connect(_on_function_intensity_changed)
 		$ProgressBar.value = function.get_intensity()

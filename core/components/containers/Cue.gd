@@ -93,6 +93,7 @@ func set_tracking_mode(p_tracking_mode: TrackingMode) -> Promise:
 func get_qid() -> String:
 	return _qid
 
+
 ## Returns the fade time in seconds
 func get_fade_time() -> float:
 	return _fade_time

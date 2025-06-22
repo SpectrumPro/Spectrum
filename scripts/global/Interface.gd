@@ -41,6 +41,7 @@ var panels: Dictionary = {
 	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
 	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
 	"CueListTable": load("res://panels/CueListTable/CueListTable.tscn"),
+	"CueSheet": load("res://panels/CueSheet/CueSheet.tscn"),
 	"DataEditor": load("res://panels/DataEditor/DataEditor.tscn"),
 	"Clock": load('res://panels/Clock/Clock.tscn'),
 	"Debug": load("res://panels/Debug/Debug.tscn"),
@@ -68,7 +69,7 @@ var panels: Dictionary = {
 ## Panels sorted into categories
 var sorted_panels: Dictionary = {
 	"Playbacks": ["CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
-	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataEditor"],
+	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataEditor", "CueSheet"],
 	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "UISettings"],
 	"Visualization": ["VirtualFixtures"],
 	"Widgets": ["Clock", "ColorBlock", "Image"],
@@ -134,6 +135,9 @@ var ui_library_location: String = "user://UILibrary"
 
 ## Confirmation prompt text for deleting a component
 const COMPONENT_DELETE_TEXT: String = "Are you sure you want to delete component: $name?"
+
+## Confirmation prompt text for deleting mutiple components
+const MULTI_COMPONENT_DELETE_TEXT: String = "Are you sure you want to delete $count components?"
 
 
 ## The main object picker
@@ -451,6 +455,15 @@ func show_delete_confirmation(title: String = "", source: Variant = null) -> Con
 func confirm_and_delete_component(component: EngineComponent, source: Variant = null) -> ConfirmationBox:
 	return show_delete_confirmation(COMPONENT_DELETE_TEXT.replace("$name", component.get_name()), source).then(func ():
 		component.delete()
+	)
+
+
+## Shows a confirmation, and then deletes mutiple components if the user accepts
+func confirm_and_delete_components(components: Array, source: Variant = null) -> ConfirmationBox:
+	return show_delete_confirmation(MULTI_COMPONENT_DELETE_TEXT.replace("$count", str(len(components))), source).then(func ():
+		for component: Variant in components:
+			if component is EngineComponent:
+				component.delete()
 	)
 
 

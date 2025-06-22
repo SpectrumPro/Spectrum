@@ -128,7 +128,7 @@ func _store_item(p_item: ContainerItem, no_signal: bool = false) -> bool:
 	_items.append(p_item)
 	_fixture.get_or_add(p_item.get_fixture(), {}).get_or_add(p_item.get_zone(), {})[p_item.get_parameter()] = p_item
 
-	ComponentDB.register_component(p_item)
+	#ComponentDB.register_component(p_item)
 	p_item.delete_requested.connect(_erase_item.bind(p_item))
 
 	if not no_signal:

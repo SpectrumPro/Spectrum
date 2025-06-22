@@ -29,6 +29,7 @@ var _signal_connections: Dictionary = {
 	"cues_added": _reload_cues,
 	"cues_removed": _reload_cues,
 	"active_cue_changed": _scroll_to_cue,
+	"cue_order_changed": _move_cue_to,
 	"delete_request": set_cue_list.bind(null)
 }
 
@@ -67,6 +68,12 @@ func _reload_cues(arg1=null) -> void:
 func _scroll_to_cue(p_cue: Cue) -> void:
 	var cue_item: CueItem = _cues[p_cue.uuid]
 	_cue_container.get_parent_control().scroll_vertical = cue_item.position.y - cue_item.size.y
+
+
+## Moves a given cue to a given position
+func _move_cue_to(p_cue: Cue, p_position: int) -> void:
+	var cue_item: CueItem = _cues[p_cue.uuid]
+	_cue_container.move_child(cue_item, p_position)
 
 
 ## Called when the Go Previous button is pressed

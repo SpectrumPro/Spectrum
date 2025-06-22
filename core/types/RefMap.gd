@@ -12,6 +12,11 @@ var _left: Dictionary = {}
 var _right: Dictionary = {}
 
 
+## Init
+func _init(left_type: Variant = null, right_type: Variant = null) -> void:
+	pass
+
+
 ## Maps 2 items, returning false if the map failed
 func map(left: Variant, right: Variant) -> void:
 	_left[left] = right
