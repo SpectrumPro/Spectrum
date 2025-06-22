@@ -8,6 +8,9 @@ class_name UIFunctions extends UIPanel
 ## The Delete button
 @export var _delete_button: Button
 
+## The Duplicate Button
+@export var _duplicate_button: Button
+
 ## The ComponentList
 @export var _component_list: ComponentList
 
@@ -22,6 +25,15 @@ func _on_delete_pressed() -> void:
 	Interface.confirm_and_delete_component(_component_list.get_selected())
 
 
+## Called when the Duplicate button is pressed
+func _on_duplicate_pressed() -> void:
+	Core.duplicate_component(_component_list.get_selected()).then(func (component: EngineComponent):
+		if component:
+			Interface.show_name_prompt(component)
+	)
+
+
 ## Called when an item is selected
 func _on_component_list_selected(component: EngineComponent) -> void:
 	_delete_button.disabled = component == null
+	_duplicate_button.disabled = component == null
