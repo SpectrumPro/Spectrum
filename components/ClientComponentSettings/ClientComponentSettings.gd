@@ -9,14 +9,18 @@ class_name ClientComponentSettings extends PanelContainer
 @export var _settings_module_container: VBoxContainer
 
 ## The current component
-var _component: ClientComponent = null
+var _component: Object = null
 
 
 ## Sets the component
-func set_component(component: ClientComponent) -> void:
+func set_component(component: Object) -> void:
 	for old_module: ClientClassSettingsModule in _settings_module_container.get_children():
 		old_module.queue_free()
 		_settings_module_container.remove_child(old_module)
+	
+	if not (component is ClientComponent or component is UIBase):
+		_component = null
+		return
 	
 	_component = component
 	if not is_instance_valid(component):

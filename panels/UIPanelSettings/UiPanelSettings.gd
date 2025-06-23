@@ -10,7 +10,10 @@ signal panel_changed(panel)
 
 
 ## UIPanelSettingsShortcuts Settings Page
-@export var _shortcuts: UIPanelSettingsShortcuts
+@export var _shortcuts_panel: UIPanelSettingsShortcuts
+
+## The ClientComponentSettings for settings
+@export var _settings_panel: ClientComponentSettings
 
 
 ## The current UIPanel
@@ -20,9 +23,10 @@ var _panel: UIPanel
 ## Sets the panelvvc
 func set_panel(panel: UIPanel) -> void:
 	_panel = panel
-	panel_changed.emit(panel)
+	_settings_panel.set_component(_panel)
+	panel_changed.emit(_panel)
 
 
 ## Gets the UIPanelSettingsShortcuts Settings page
 func get_shortcut_settings() -> UIPanelSettingsShortcuts:
-	return _shortcuts
+	return _shortcuts_panel

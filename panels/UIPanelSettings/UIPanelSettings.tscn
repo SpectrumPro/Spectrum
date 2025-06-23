@@ -1,18 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://cgkb6rh0joakn"]
+[gd_scene load_steps=11 format=3 uid="uid://cgkb6rh0joakn"]
 
 [ext_resource type="Script" uid="uid://ddcbvxctik0tr" path="res://panels/UIPanelSettings/UiPanelSettings.gd" id="1_4hx28"]
 [ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/SolidPanelPopup.tres" id="1_i7um0"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="2_gjdbe"]
 [ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="4_1jyub"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/UIPanel/EditControls.tscn" id="5_33jeb"]
+[ext_resource type="PackedScene" uid="uid://bwj2kgbjtdg17" path="res://components/ClientComponentSettings/ClientComponentSettings.tscn" id="6_a0kig"]
 [ext_resource type="Script" uid="uid://c20borh60xiu1" path="res://panels/UIPanelSettings/Shortcuts.gd" id="6_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_i3a75"]
 [ext_resource type="Texture2D" uid="uid://f8q8t2pxjmkl" path="res://assets/icons/remove_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="8_ct4k6"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_i7um0"]
 
-[node name="UiPanelSettings" type="PanelContainer" node_paths=PackedStringArray("_shortcuts", "edit_controls")]
-visible = false
+[node name="UiPanelSettings" type="PanelContainer" node_paths=PackedStringArray("_shortcuts_panel", "_settings_panel", "edit_controls")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -26,7 +26,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_i7um0")
 script = ExtResource("1_4hx28")
-_shortcuts = NodePath("VBoxContainer/Shortcuts")
+_shortcuts_panel = NodePath("VBoxContainer/Shortcuts")
+_settings_panel = NodePath("VBoxContainer/Settings/ClientComponentSettings")
 edit_controls = NodePath("VBoxContainer/TitleBar/HBoxContainer/EditControls")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -71,6 +72,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 toggle_mode = true
+button_pressed = true
 button_group = SubResource("ButtonGroup_i7um0")
 text = "Settings"
 
@@ -78,7 +80,6 @@ text = "Settings"
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 toggle_mode = true
-button_pressed = true
 button_group = SubResource("ButtonGroup_i7um0")
 text = "Shortcuts"
 
@@ -88,11 +89,15 @@ show_edit = false
 show_settings = false
 
 [node name="Settings" type="PanelContainer" parent="VBoxContainer"]
-visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ClientComponentSettings" parent="VBoxContainer/Settings" instance=ExtResource("6_a0kig")]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Shortcuts" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_button_tree", "_action_tree", "_add_action_button", "_remove_action_button")]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("6_ct4k6")

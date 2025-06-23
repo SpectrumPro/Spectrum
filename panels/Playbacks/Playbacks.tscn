@@ -80,7 +80,6 @@ icon = ExtResource("8_5st74")
 
 [node name="EditControls" parent="VBoxContainer/PanelContainer3/HBoxContainer" instance=ExtResource("6_ms2qx")]
 layout_mode = 2
-show_settings = false
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2

@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name UIPanel extends Control
+class_name UIPanel extends UIBase
 ## Base class for all UI Panels
 
 
@@ -55,11 +55,10 @@ var _mouse_warp: Vector2
 
 
 func _init() -> void:
-	set_edit_mode.call_deferred(false)
-	
+	_set_class_name("UIPanel")
 	await ready
-	set_settings_node(settings_node)
 	
+	set_edit_mode(false)
 	for button: Button in buttons:
 		_buttons_map.map(button, button.name)
 		_button_actions[button] = []
@@ -86,23 +85,6 @@ func set_edit_controls(p_edit_controls: UIPanelEditControls) -> void:
 		edit_controls.close_button.visible = edit_controls.show_close
 
 
-## Sets the settings node
-func set_settings_node(node: Control) -> void:
-	if is_instance_valid(settings_node):
-		Interface.remove_custom_popup(settings_node)
-		settings_node = null
-	
-	if is_instance_valid(node):
-		settings_node = node
-		settings_node.get_parent_control().remove_child(settings_node)
-		settings_node.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
-		
-		Interface.add_custom_popup(settings_node)
-		
-		if is_instance_valid(edit_controls):
-			edit_controls.settings_button.disabled = false
-
-
 ## Sets the display mode
 func set_display_mode(mode: DisplayMode) -> void:
 	_display_mode = mode
@@ -122,21 +104,6 @@ func set_edit_mode(state: bool) -> void:
 	edit_mode_toggled.emit(_edit_mode)
 
 
-## Gets the edit mode state
-func get_edit_mode() -> bool:
-	return _edit_mode
-
-
-## Override this function to change state when edit mode is toggled
-func _edit_mode_toggled(state: bool) -> void:
-	pass
-
-
-## Shows or hides the panels settings
-func show_settings() -> void:
-	Interface.show_panel_settings(self)
-
-
 ## Disables or enabled edit mode
 func set_edit_mode_disabled(disabled: bool) -> void:
 	if _edit_mode:
@@ -146,6 +113,26 @@ func set_edit_mode_disabled(disabled: bool) -> void:
 	
 	if is_instance_valid(edit_controls):
 		edit_controls.edit_button.disabled = _edit_mode_disabled
+
+
+## Gets the current DisplayMode
+func get_display_mode() -> DisplayMode:
+	return _display_mode
+
+
+## Gets the edit mode state
+func get_edit_mode() -> bool:
+	return _edit_mode
+
+
+## Gets the EditMode disabled state
+func get_edit_mode_disabled() -> bool:
+	return _edit_mode_disabled
+
+
+## Shows or hides the panels settings
+func show_settings() -> void:
+	Interface.show_panel_settings(self)
 
 
 ## Disables all the buttons in the given array
@@ -158,6 +145,33 @@ func disable_button_array(buttons: Array[Button]) -> void:
 func enable_button_array(buttons: Array[Button]) -> void:
 	for button: Button in buttons:
 		button.disabled = false
+
+
+## Adds a button to allow shortcuts to be added
+func add_button(button: Button) -> bool:
+	if _buttons_map.has_left(button):
+		return false
+	
+	_buttons_map.map(button, button.name)
+	_button_actions[button] = []
+	return true
+
+
+## Removes a button
+func remove_button(button: Button) -> bool:
+	if not _buttons_map.has_left(button):
+		return false
+	
+	remove_all_button_actions(button)
+	_buttons_map.erase_left(button)
+	_button_actions.erase(button)
+	
+	return true
+
+
+## Gets all the buttons
+func get_buttons() -> Array:
+	return _buttons_map.get_left()
 
 
 ## Asigned an InputAction to a button
@@ -182,9 +196,25 @@ func remove_button_action(button: Button, action: InputAction) -> bool:
 	return action.disconnect_button(button)
 
 
+## Removes all the actions from a button
+func remove_all_button_actions(button: Button) -> bool:
+	if button not in _button_actions:
+		return false
+	
+	for action: InputAction in _button_actions[button]:
+		action.disconnect_button(button)
+	
+	return true
+
+
 ## Gets all the InputActions asigned to a button
 func get_button_actions(button: Button) -> Array:
 	return _button_actions.get(button, [])
+
+
+## Override this function to change state when edit mode is toggled
+func _edit_mode_toggled(state: bool) -> void:
+	pass
 
 
 ## Called for GUI inputs on the move resize handle
@@ -231,7 +261,7 @@ func _on_close_button_pressed() -> void:
 func save() -> Dictionary:
 	var button_actions: Dictionary[String, Array]
 	
-	for button: Button in buttons:
+	for button: Button in _buttons_map.get_left():
 		var actions: Array[String]
 		for action: InputAction in get_button_actions(button):
 			actions.append(action.uuid())
@@ -250,6 +280,8 @@ func _save() -> Dictionary:
 
 ## Loads this UIPanel from dictionary
 func load(saved_data: Dictionary) -> void: 
+	_load(saved_data)
+	
 	var button_actions: Dictionary = type_convert(saved_data.get("button_actions"), TYPE_DICTIONARY)
 	
 	for button_name: Variant in button_actions.keys():
@@ -262,7 +294,6 @@ func load(saved_data: Dictionary) -> void:
 					if action:
 						asign_button_action(button, action)
 	
-	_load(saved_data)
 
 
 ## Override to provide load function to your panel

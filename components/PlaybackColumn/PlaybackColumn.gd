@@ -103,6 +103,7 @@ func set_component(component: EngineComponent, no_remove: bool = false) -> void:
 	
 	_set_disalbed(component == null)
 	title_button.text = component.get_name()
+	title_button.tooltip_text = component.get_name()
 	
 	if not no_remove and _trigger_block:
 		_trigger_block.reset_column(_column)
@@ -148,6 +149,7 @@ func set_row_name(row: int, p_name: String) -> void:
 ## Resets this PlaybackColumn
 func reset() -> void:
 	title_button.set_text("Empty")
+	title_button.set_tooltip_text("")
 	slider.set_editable(false)
 	_component = null
 	
@@ -170,6 +172,7 @@ func _set_disalbed(disabled: bool) -> void:
 ## Emitted when the component's name is changed
 func _on_component_name_changed(new_name: String) -> void:
 	title_button.set_text(new_name)
+	title_button.set_tooltip_text(new_name)
 
 
 ## Called when the Title Button is pressed

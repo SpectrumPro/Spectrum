@@ -30,7 +30,6 @@ icon = ExtResource("1_x4jel")
 
 [node name="Settings" type="Button" parent="HBoxContainer"]
 layout_mode = 2
-disabled = true
 icon = ExtResource("2_1xcge")
 
 [node name="Close" type="Button" parent="HBoxContainer"]
