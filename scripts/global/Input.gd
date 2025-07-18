@@ -31,7 +31,7 @@ var _internal_actions: Dictionary[String, Callable] = {
 
 ## Allowed input events for shortcuts
 var _allowed_events: Array[String] = [
-	"InputEventKey"
+	"InputEventKey",
 ]
 
 

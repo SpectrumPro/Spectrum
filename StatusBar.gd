@@ -17,7 +17,7 @@ var _quick_access_config: Array = [
 	{
 		"panel": Interface.panels.Programmer,
 		"icon": load("res://assets/icons/Programmer.svg"),
-		"size": Vector2.ZERO
+		"size": Vector2.ZERO,
 	},
 	{
 		"panel": Interface.panels.Fixtures,
