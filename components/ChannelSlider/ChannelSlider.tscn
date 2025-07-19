@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://cbtm8eq5rbugv"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_jnmjo"]
-[ext_resource type="Script" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
+[ext_resource type="Script" uid="uid://bl588qkabbmox" path="res://components/ChannelSlider/ChannelSlider.gd" id="2_adqf8"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="3_tt50p"]
 [ext_resource type="Texture2D" uid="uid://c0lqh3h58ht3c" path="res://assets/icons/Random.svg" id="4_oirfb"]
 
@@ -23,15 +23,15 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="Gradient" id="Gradient_41b75"]
+[sub_resource type="Gradient" id="Gradient_tyemh"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ypxwm"]
-gradient = SubResource("Gradient_41b75")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s03ky"]
+gradient = SubResource("Gradient_tyemh")
 fill_from = Vector2(0, 1)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hqyqa"]
-texture = SubResource("GradientTexture2D_ypxwm")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7xdlo"]
+texture = SubResource("GradientTexture2D_s03ky")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_q5lbv"]
 
@@ -64,7 +64,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_y34yv")
 
 [node name="GraidentBG" type="PanelContainer" parent="GraidentContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_hqyqa")
+theme_override_styles/panel = SubResource("StyleBoxTexture_7xdlo")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2

@@ -125,9 +125,10 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, p_type: 
 			p_signal.connect(spin_box.set_value_no_signal)
 			control = spin_box
 		
-		Utils.TYPE_INPUTEVENTKEY:
+		Utils.TYPE_INPUTEVENTKEY, Utils.TYPE_INPUTEVENTJOYBUTTON:
 			var button: Button = Button.new()
-			var event: InputEventKey = getter.call()
+			var event: InputEvent = getter.call()
+			
 			button.text = event.as_text()
 			button.toggle_mode = true
 			button.toggled.connect(func (state: bool) -> void:
@@ -136,16 +137,30 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, p_type: 
 				else:
 					button.text = getter.call().as_text()
 			)
-			button.gui_input.connect(func (event: InputEvent):
-				if event is InputEventKey and button.button_pressed:
-					print(event.keycode)
-					if InputServer.is_key_allowed(event.keycode):
-						if event.is_pressed():
-							button.text = event.as_text()
-							setter.call(event)
-					elif event.keycode == KEY_ESCAPE:
+			
+			button.gui_input.connect(func (p_event: InputEvent):
+				if p_event.get_class() != event.get_class() or not button.button_pressed:
+					return
+				
+				if p_event is InputEventKey:
+					if InputServer.is_key_allowed(p_event.keycode):
+						if p_event.is_pressed():
+							button.text = p_event.as_text()
+							setter.call(p_event)
+						
+					elif p_event.keycode == KEY_ESCAPE:
 						button.set_pressed(false)
+				
+				elif p_event is InputEventJoypadButton:
+					if InputServer.is_joy_button_allowed(p_event.button_index):
+						if p_event.is_pressed():
+							button.text = p_event.as_text()
+							setter.call(p_event)
+						
+						elif p_event.button_index == JOY_BUTTON_BACK:
+							button.set_pressed(false)
 			)
+			
 			control = button
 		
 		Utils.TYPE_NULL:

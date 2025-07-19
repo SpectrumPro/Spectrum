@@ -198,6 +198,11 @@ var _panel_stylebox: StyleBoxFlat = load("res://assets/styles/SolidPanelPopup.tr
 func _ready() -> void:
 	OS.set_low_processor_usage_mode(true)
 	
+	
+	if OS.get_cmdline_args().has("--uiv3"):
+		get_tree().root.get_node("Main").queue_free()
+		get_tree().root.add_child.call_deferred(load("res://UIv3.tscn").instantiate())
+	
 	if not DirAccess.dir_exists_absolute(ui_library_location):
 		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
 	
@@ -211,6 +216,7 @@ func _ready() -> void:
 	_try_auto_load.call_deferred()
 	_set_up_custom_popups()
 	_set_up_custom_pickers()
+
 
 
 ## Called for all notifications

@@ -30,6 +30,9 @@ signal close_request()
 ## All buttons that can have a shortcut asigned to them
 @export var buttons: Array[Button]
 
+## The menu mar
+@export var menu_bar: PanelContainer
+
 
 ## Display mode for this panel
 enum DisplayMode {Panel, Popup}
@@ -128,6 +131,12 @@ func get_edit_mode() -> bool:
 ## Gets the EditMode disabled state
 func get_edit_mode_disabled() -> bool:
 	return _edit_mode_disabled
+
+
+## Sets the menu bar visable state
+func set_menu_bar_visable(p_visable: bool) -> void:
+	if menu_bar:
+		menu_bar.visible = p_visable
 
 
 ## Shows or hides the panels settings
@@ -293,7 +302,6 @@ func load(saved_data: Dictionary) -> void:
 					
 					if action:
 						asign_button_action(button, action)
-	
 
 
 ## Override to provide load function to your panel
