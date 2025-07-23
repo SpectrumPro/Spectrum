@@ -52,24 +52,25 @@ func _ready() -> void:
 ## Starts the server on the given port, 
 func connect_to_server(p_ip: String = ip_address, p_websocket_port: int = websocket_port, p_udp_port: int = udp_port):
 	print("Connecting to websocket server")
-
-	var err = MainSocketClient.connect_to_url("ws://" + p_ip + ":" + str(p_websocket_port))
-	if err != OK:
-		print("Error connecting to websocket server | errorcode: ", error_string(err))
+	var tcp_error: Error = MainSocketClient.connect_to_url("ws://" + p_ip + ":" + str(p_websocket_port))
+	
+	if tcp_error:
+		print("Error connecting to websocket server | errorcode: ", error_string(tcp_error))
 		return
 	
-	print("Websocket connected to: ws://", p_ip, ":", p_websocket_port)
-
+	else: 
+		print("Websocket connected to: ws://", p_ip, ":", p_websocket_port)
+	
 	print()
-
 	print("Connecting to UDP server")
-
-	err = MainUDPSocketClient.connect_to_host(p_ip, p_udp_port)
-	if err != OK:
-		print("Error connecting to UDP server | errorcode: ", error_string(err))
+	var udp_error: Error = MainUDPSocketClient.connect_to_host(p_ip, p_udp_port)
+	
+	if udp_error:
+		print("Error connecting to UDP server | errorcode: ", error_string(udp_error))
 		return
 	
-	print("UDP client connected to: ", p_ip, ":", p_udp_port)
+	else:
+		print("UDP client connected to: ", p_ip, ":", p_udp_port)
 	
 	print()
 
