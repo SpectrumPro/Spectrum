@@ -95,7 +95,10 @@ func get_component(uuid: String) -> EngineComponent:
 
 
 ## Use this method if you need to call a function once a component is added to the engine. This will only be called once
-func request_component(uuid: String, callback) -> void:
+func request_component(uuid: String, callback: Callable) -> void:
+	if not uuid:
+		return
+	
 	if uuid in components:
 		callback.call(components[uuid])
 		

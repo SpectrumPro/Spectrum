@@ -30,8 +30,14 @@ signal selection_reset()
 ## The RemoveItems button
 @export var _remove_item_button: Button
 
+## The DeSelectRandom Button
+@export var _deselect_random_button: Button
+
 ## The ObjectPickerButton
 @export var _object_picker_button: ObjectPickerButton
+
+## Drag deadzone in px
+@export var _drag_deadzone: int = 20
 
 
 ## Data View Mode
@@ -76,6 +82,9 @@ var _tree_items: Dictionary[ContainerItem, Dictionary]
 ## Dragging state
 var _is_dragging: bool = false
 
+## True if a drag about to start, but hadent passed the deadzone yet
+var _pending_drag: bool = false
+
 ## Drag start point
 var _drag_start_point: Vector2 = Vector2.ZERO
 
@@ -103,6 +112,18 @@ var _container_signal_connections: Dictionary[String, Callable] = {
 func _ready() -> void:
 	for view_mode: String in DataViewMode.keys():
 		_data_view_mode_option.add_item(view_mode.capitalize())
+
+
+## Sets the data view mode
+func set_data_view_mode(data_view_mode: DataViewMode) -> void:
+	if not _container or not _function or data_view_mode == _data_view_mode:
+		return
+	
+	_data_view_mode = data_view_mode
+	_data_view_mode_option.select(_data_view_mode)
+	
+	for container_item: ContainerItem in _tree_items:
+		_load_item_column_data(_tree_items[container_item].item, container_item,  _tree_items[container_item].column)
 
 
 ## Called when an Function is selected
@@ -182,18 +203,6 @@ func _reset() -> void:
 	_tree_items.clear()
 	
 	selection_reset.emit()
-
-
-## Sets the data view mode
-func set_data_view_mode(data_view_mode: DataViewMode) -> void:
-	if not _container or not _function or data_view_mode == _data_view_mode:
-		return
-	
-	_data_view_mode = data_view_mode
-	_data_view_mode_option.select(_data_view_mode)
-	
-	for container_item: ContainerItem in _tree_items:
-		_load_item_column_data(_tree_items[container_item].item, container_item,  _tree_items[container_item].column)
 
 
 ## Loads all the data from the container
@@ -348,6 +357,8 @@ func _add_to_selection(item: TreeItem, column: int, selected: bool) -> void:
 				_selected_containerless_items.erase(item)
 
 		_add_item_button.disabled = _selected_containerless_items == {}
+	
+	_deselect_random_button.set_disabled(_selected_fixtures == {})
 
 
 ## Selects a whole row
@@ -366,6 +377,7 @@ func _clear_selection() -> void:
 	
 	_remove_item_button.disabled = true
 	_add_item_button.disabled = true
+	_deselect_random_button.disabled = true
 	
 	selection_reset.emit()
 
@@ -462,15 +474,17 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				_is_dragging = true
+				_pending_drag = true
 				_drag_start_point = _tree.get_local_mouse_position()
-				
+
 				_select_box.size = Vector2.ZERO
 				_select_box.position = _drag_start_point
-				_select_box.show()
-				
+
 			else:
+				if _is_dragging:
+					get_viewport().set_input_as_handled()
 				_is_dragging = false
+				_pending_drag = false
 				_select_box.hide()
 		
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
@@ -492,8 +506,15 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 				_:
 					_tree.edit_selected()
 	
-	if event is InputEventMouseMotion and _is_dragging:
-		_handle_drag_selection(event)
+	if event is InputEventMouseMotion:
+		if _pending_drag and event.position.distance_to(_drag_start_point) >= _drag_deadzone:
+			_is_dragging = true
+			_pending_drag = false
+
+		if _is_dragging or _select_box.visible:
+			get_viewport().set_input_as_handled()
+			_select_box.show()
+			_handle_drag_selection(event)
 
 
 ## Called during drag selection
@@ -597,6 +618,22 @@ func _on_add_item_pressed() -> void:
 ## Called when the RemoveItems button is pressed
 func _on_remove_item_pressed() -> void:
 	_container.erase_items(_selected_items)
+
+
+## Called when the DeSelectRandom button is pressed
+func _on_de_select_random_pressed() -> void:
+	var selected_fixtures: Dictionary[Fixture, Array] = _selected_fixtures.duplicate(true)
+	
+	for fixture: Fixture in selected_fixtures:
+		if randi_range(0, 1):
+			continue
+		
+		else:
+			var item: TreeItem = _fixture_items.left(fixture)
+			
+			for column: int in selected_fixtures[fixture]:
+				item.deselect(column)
+				_add_to_selection(item, column, false)
 
 
 ## Saves this into a dict

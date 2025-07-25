@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
 
-class_name CoreUIStatusBar extends PanelContainer
+class_name UICoreStatusBar extends PanelContainer
 ## Core UI script for the main status bar
 
 
@@ -17,7 +17,7 @@ var _quick_access_config: Array = [
 	{
 		"panel": Interface.panels.Programmer,
 		"icon": load("res://assets/icons/Programmer.svg"),
-		"size": Vector2.ZERO
+		"size": Vector2.ZERO,
 	},
 	{
 		"panel": Interface.panels.Fixtures,

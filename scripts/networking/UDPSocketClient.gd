@@ -19,6 +19,14 @@ func connect_to_host(ip: String, port: int) -> Error:
 	# Send a message back to the server, this will tell the server that we are listning and to start sending data. 
 	# This message can say anything, as the contence is not read
 	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
+	_connection.put_var("Hello, UDP!")
 	
 	return err_code
 

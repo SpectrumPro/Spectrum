@@ -151,7 +151,7 @@ func _on_active_cue_changed(cue: Cue) -> void:
 	
 	elif _is_enabled: 
 		var fade_time: float = 0
-		fade_time = _cue_list.get_global_fade_speed() if _cue_list.get_global_fade_state() else _cue.get_fade_time()
+		fade_time = _cue_list.get_global_fade_speed() if _cue_list.get_global_fade_state() else cue.get_fade_time()
 		
 		set_status_bar(false, fade_time)
 		$Selected.hide()

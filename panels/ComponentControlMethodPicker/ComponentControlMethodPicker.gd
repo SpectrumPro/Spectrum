@@ -33,9 +33,19 @@ func set_component(component: EngineComponent) -> void:
 		_list.add_item(control_name)
 
 
-## Called when the confirm button is pressed
-func _on_confirm_pressed() -> void:
+## Confirms the current selection
+func _confirm_selection() -> void:
 	var selected: int = _list.get_selected_items()[0]
 	var control_name: String = _controls.keys()[selected - 1] if selected else ""
 	
 	method_chosen.emit(control_name)
+
+
+## Called when the confirm button is pressed
+func _on_confirm_pressed() -> void:
+	_confirm_selection()
+
+
+## Called when an item is dubble clicked in the tree
+func _on_list_item_activated(index: int) -> void:
+	_confirm_selection()

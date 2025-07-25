@@ -184,6 +184,11 @@ func create_component(classname: String, name: String = "") -> Promise:
 	return Client.send_command("engine", "create_component", [classname, name])
 
 
+## Duplicates a component
+func duplicate_component(p_component: EngineComponent) -> Promise: 
+	return Client.send_command("engine", "duplicate_component", [p_component])
+
+
 ## Server: Adds a component to the engine
 func add_component(component: EngineComponent) -> void: Client.send_command("engine", "add_component", [component])
 

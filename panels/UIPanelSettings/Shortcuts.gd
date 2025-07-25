@@ -48,6 +48,13 @@ func set_panel(panel: UIPanel) -> void:
 
 ## Sets the current button
 func set_buton(button: Button) -> void:
+	if not _button_items.has_left(button):
+		return
+	
+	var button_item: TreeItem = _button_items.left(button)
+	button_item.select(0)
+	_button_tree.scroll_to_item(button_item)
+	
 	_selected_button = button
 	_add_action_button.set_disabled(false)
 	
@@ -62,7 +69,7 @@ func set_buton(button: Button) -> void:
 
 ## Loads and displays all buttons from the UIPanel
 func _load_buttons() -> void:
-	for button in _panel.buttons:
+	for button in _panel.get_buttons():
 		var item: TreeItem = _button_tree.create_item()
 		
 		item.set_text(0, button.get_name())

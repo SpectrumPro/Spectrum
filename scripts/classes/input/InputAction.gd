@@ -131,10 +131,10 @@ func add_input_trigger(p_input_trigger: InputTrigger, no_signal: bool = false) -
 	if _input_triggers.has(p_input_trigger):
 		return false
 	
-	_input_triggers.append(p_input_trigger)
+	_input_triggers.append(p_input_trigger) 
 	
 	match p_input_trigger.get_class_name():
-		"InputTriggerKey":
+		"InputTriggerKey", "InputTriggerJoyKey":
 			InputMap.action_add_event(uuid(), p_input_trigger.get_input_event())
 	
 	if not no_signal:

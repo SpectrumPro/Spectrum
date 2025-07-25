@@ -81,7 +81,7 @@ func _component_ready() -> void:
 	register_callback("on_loop_mode_changed", _set_loop_mode)
 	register_callback("on_cues_added", _add_cues)
 	register_callback("on_cues_removed", _remove_cues)
-	register_callback("cue_order_changed", _set_cue_position)
+	register_callback("on_cue_order_changed", _set_cue_position)
 	
 	register_control_method("go_previous", go_previous)
 	register_control_method("go_next", go_next)
@@ -153,6 +153,11 @@ func get_loop_mode() -> LoopMode:
 	return _loop_mode
 
 
+## Gets the position of a cue
+func get_cue_position(p_cue: Cue) -> int:
+	return _cues.find(p_cue)
+
+
 ## Gets whether triggered cues can loop back to the start
 func get_allow_triggered_looping() -> bool:
 	return _allow_triggered_looping
@@ -176,6 +181,11 @@ func get_global_fade_speed() -> float:
 ## Gets the global pre wait speed
 func get_global_pre_wait_speed() -> float:
 	return _global_pre_wait
+
+
+## Gets the active cue, or null
+func get_active_cue() -> Cue:
+	return _active_cue
 
 
 ## Server: Seeks to the next cue in the list
@@ -247,15 +257,15 @@ func _remove_cues(p_cues: Array) -> void:
 
 
 ## Internal: Sets the position of a cue in the list
-func _set_cue_position(cue: Cue, position: int) -> void:
-	if cue not in _cues:
+func _set_cue_position(p_cue: Cue, p_position: int) -> void:
+	if p_cue not in _cues or p_position > len(_cues):
 		return
 	
-	var old_index: int = _cues.find(cue)
-	_cues.insert(position, cue)
+	var old_index: int = _cues.find(p_cue)
 	_cues.remove_at(old_index)
+	_cues.insert(p_position, p_cue)
 
-	cue_order_changed.emit(cue, position)
+	cue_order_changed.emit(p_cue, p_position)
 
 
 ## Internal: Sets whether triggered cues can loop back to the start
@@ -339,8 +349,13 @@ func _load_request(serialized_data: Dictionary) -> void:
 	_global_pre_wait = type_convert(serialized_data.get("global_pre_wait", _global_pre_wait), TYPE_FLOAT)
 	_allow_triggered_looping = type_convert(serialized_data.get("allow_triggered_looping", _allow_triggered_looping), TYPE_BOOL)
 	_loop_mode = type_convert(serialized_data.get("loop_mode", _loop_mode), TYPE_INT)
-
+	
 	_add_cues(Utils.deseralise_component_array(type_convert(serialized_data.get("cues", []), TYPE_ARRAY)))
+	
+	var active_cue: EngineComponent = ComponentDB.get_component(type_convert(serialized_data.get("active_cue_uuid", ""), TYPE_STRING))
+	
+	if _cues.has(active_cue):
+		_active_cue = active_cue
 
 
 ## Called when this CueList is to be deleted

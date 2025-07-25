@@ -75,4 +75,5 @@ size_flags_horizontal = 3
 text = "Confirm"
 icon = ExtResource("5_uhjji")
 
+[connection signal="item_activated" from="VBoxContainer/HBoxContainer/PanelContainer/VBoxContainer/List" to="." method="_on_list_item_activated"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Confirm" to="." method="_on_confirm_pressed"]

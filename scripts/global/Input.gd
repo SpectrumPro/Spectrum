@@ -31,7 +31,8 @@ var _internal_actions: Dictionary[String, Callable] = {
 
 ## Allowed input events for shortcuts
 var _allowed_events: Array[String] = [
-	"InputEventKey"
+	"InputEventKey",
+	"InputEventJoypadButton",
 ]
 
 
@@ -42,6 +43,14 @@ var _keycode_block_list: Array[Key] = [
 	KEY_ESCAPE,
 ]
 
+## Blocklist for joy buttons
+var _joy_button_block_list: Array[JoyButton] = [
+	JOY_BUTTON_INVALID,
+	JOY_BUTTON_BACK,
+	JOY_BUTTON_GUIDE,
+	JOY_BUTTON_START,
+]
+
 ## All Action Triggers
 var _action_triggers_types: Dictionary[String, Script] = {
 	"ActionTriggerComponent": ActionTriggerComponent
@@ -49,7 +58,8 @@ var _action_triggers_types: Dictionary[String, Script] = {
 
 ## All Action Triggers
 var _input_triggers_types: Dictionary[String, Script] = {
-	"InputTriggerKey": InputTriggerKey
+	"InputTriggerKey": InputTriggerKey,
+	"InputTriggerJoyKey": InputTriggerJoyKey,
 }
 
 
@@ -177,6 +187,11 @@ func is_event_allowed(event: InputEvent) -> bool:
 ## Checks if a key is allowed
 func is_key_allowed(key: Key) -> bool:
 	return key not in _keycode_block_list
+
+
+## Checks if a joybutton is allowed
+func is_joy_button_allowed(button: JoyButton) -> bool:
+	return button not in _joy_button_block_list
 
 
 ## Handles Midi input events
