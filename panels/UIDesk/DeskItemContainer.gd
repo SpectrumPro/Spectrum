@@ -35,7 +35,7 @@ signal right_clicked
 
 
 ## Animation speed for position and scale
-const AnimationSpeed: float = 8
+const AnimationSpeed: float = 0.08
 
 
 ## The background color of this desk item when it is selected
@@ -71,12 +71,11 @@ func _process(delta: float) -> void:
 	var pos_speed: float = max(position.distance_to(_target_position) / AnimationSpeed, 0.1)
 	var size_speed: float = max(size.distance_to(_target_size) / AnimationSpeed, 0.1)
 	
-	position = position.move_toward(_target_position, pos_speed)
-	size = size.move_toward(_target_size, size_speed)
+	position = position.move_toward(_target_position, pos_speed * delta)
+	size = size.move_toward(_target_size, size_speed * delta)
 	
 	if position == _target_position and size == _target_size:
 		set_process(false)
-		print("stopped")
 
 
 ## Shows or hides the position/size controls

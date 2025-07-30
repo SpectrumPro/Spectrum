@@ -32,7 +32,7 @@ enum DisplayMode {GRID_MODE_LINE, GRID_MODE_DOT, GRID_MODE_DOT_LINE}
 const PointSize: Vector2 = Vector2(10, 10)
 
 ## Animation speed of the point
-const PointAnimationSpeed: float = 10
+const PointAnimationSpeed: float = 0.08
 
 
 ## The Point
@@ -72,8 +72,8 @@ func _ready() -> void:
 
 ## Process
 func _process(delta: float) -> void:
-	var speed: float = max(_point.position.distance_to(_point_target_position) / PointAnimationSpeed, 0.1)
-	_point.position = _point.position.move_toward(_point_target_position, speed)
+	var speed: float = max(_point.position.distance_to(_point_target_position) / PointAnimationSpeed, 0.001)
+	_point.position = _point.position.move_toward(_point_target_position, speed * delta)
 	
 	if _point.position.is_equal_approx(_point_target_position):
 		set_process(false)
