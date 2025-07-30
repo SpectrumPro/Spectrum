@@ -19,11 +19,11 @@ signal edit_mode_toggled(state: bool)
 signal close_request()
 
 
-## Display mode for this panel
-@export var display_mode: DisplayMode = DisplayMode.Panel : set = set_display_mode
-
 ## The move and resize handle, used by UIPanel
 @export var edit_controls: UIPanelEditControls = null : set = set_edit_controls
+
+## Display mode for this panel
+@export var display_mode: DisplayMode = DisplayMode.Panel : set = set_display_mode
 
 ## All the nodes whos visibility should be toggled with edit mode
 @export var edit_mode_nodes: Array[Control] = []
@@ -94,6 +94,8 @@ func set_edit_controls(p_edit_controls: UIPanelEditControls) -> void:
 		edit_controls.edit_button.toggled.connect(_on_edit_button_toggled)
 		edit_controls.settings_button.pressed.connect(_on_settings_button_pressed)
 		edit_controls.close_button.pressed.connect(_on_close_button_pressed)
+		
+		edit_controls.show_close = (display_mode == DisplayMode.Popup)
 
 
 ## Sets the display mode
@@ -101,10 +103,9 @@ func set_display_mode(p_dispaly_mode: DisplayMode) -> void:
 	display_mode = p_dispaly_mode
 	
 	if is_instance_valid(edit_controls):
-		edit_controls.close_button.visible = (p_dispaly_mode == DisplayMode.Popup)
+		edit_controls.show_close = (display_mode == DisplayMode.Popup)
 	
-	print(ThemeManager.StyleBoxes.UIPanelPopup if (p_dispaly_mode == DisplayMode.Popup) else ThemeManager.StyleBoxes.UIPanelBase)
-	add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelPopup if (p_dispaly_mode == DisplayMode.Popup) else ThemeManager.StyleBoxes.UIPanelBase)
+	add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelPopup if (display_mode == DisplayMode.Popup) else ThemeManager.StyleBoxes.UIPanelBase)
 
 
 ## Sets the edit mode state
@@ -152,7 +153,7 @@ func set_menu_bar_visable(p_visable: bool) -> void:
 
 ## Shows or hides the panels settings
 func show_settings() -> void:
-	Interface.show_panel_settings(self)
+	Interface.prompt_panel_settings(self, self)
 
 
 ## Detaches the menu bar

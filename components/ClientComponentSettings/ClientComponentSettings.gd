@@ -27,7 +27,7 @@ func set_component(component: Object) -> void:
 		return
 	
 	for classname: String in component.get_class_tree():
-		var new_module: ClientClassSettingsModule = load("res://components/ClientComponentSettings/ClassSettingsModule/ClassSettingsModule.tscn").instantiate()
+		var new_module: ClientClassSettingsModule = load("uid://cib03nuq5ktul").instantiate()
 		new_module.set_title(classname)
 		
 		var settings: Array = component.get_settings(classname).values()

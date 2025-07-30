@@ -2,8 +2,7 @@
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
 # See the LICENSE file for details.
 
-
-class_name UiCore extends UIPanel
+class_name UICore extends UIPanel
 ## CoreUI panel for specturm UIV3
 
 

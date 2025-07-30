@@ -1,12 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://ds42t8h4nusm4"]
+[gd_scene load_steps=3 format=3 uid="uid://ds42t8h4nusm4"]
 
 [ext_resource type="PackedScene" uid="uid://bojo5mnmadf4j" path="res://panels/popups/UIPopupPanelPicker/UIPopupPanelPicker.tscn" id="1_e0vty"]
+[ext_resource type="PackedScene" uid="uid://cgkb6rh0joakn" path="res://panels/UIPanelSettings/UIPanelSettings.tscn" id="2_m68sf"]
 
 [node name="WindowPopups" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -18,8 +20,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -361.0
-offset_top = -379.0
-offset_right = 361.0
-offset_bottom = 379.0
+offset_left = -366.0
+offset_top = -372.0
+offset_right = 366.0
+offset_bottom = 372.0
+display_mode = 1
+
+[node name="UIPanelSettings" parent="." instance=ExtResource("2_m68sf")]
+layout_mode = 1
 display_mode = 1

@@ -20,6 +20,12 @@ signal panel_changed(panel)
 var _panel: UIPanel
 
 
+## Init
+func _init() -> void:
+	super._init()
+	_set_class_name("UIPanelSettings")
+
+
 ## Sets the panelvvc
 func set_panel(panel: UIPanel) -> void:
 	_panel = panel

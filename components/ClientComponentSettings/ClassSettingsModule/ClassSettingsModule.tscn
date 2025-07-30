@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_p83vn"]
 [ext_resource type="StyleBox" uid="uid://bxwylw4uk8cyk" path="res://assets/styles/ClassSettingsBG.tres" id="2_1bhjg"]
-[ext_resource type="Script" uid="uid://dfg36ug66y5pk" path="res://components/TO_BE_SORTED/ClientComponentSettings/ClassSettingsModule/ClassSettingsModule.gd" id="3_p83vn"]
+[ext_resource type="Script" uid="uid://dfg36ug66y5pk" path="res://components/ClientComponentSettings/ClassSettingsModule/ClassSettingsModule.gd" id="3_p83vn"]
 [ext_resource type="Texture2D" uid="uid://dj7k0od8o16ok" path="res://assets/icons/UnfoldLess.svg" id="4_y2g0x"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hbu47"]

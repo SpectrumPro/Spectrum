@@ -34,7 +34,8 @@ enum ResolveHint {
 
 ## Enum for all WindowPopups
 enum WindowPopup {
-	PANEL_PICKER	## PanelPicker class for selecting UIPanels
+	PANEL_PICKER,	## PanelPicker class for selecting UIPanels
+	PANEL_SETTINGS	## PanelPicker class for selecting UIPanels
 }
 
 
@@ -47,7 +48,7 @@ class PopupConfig:
 	var setter: String = ""
 	
 	## Maps each window to its associated node
-	var nodes: Dictionary[Window, UIPopup]
+	var nodes: Dictionary[Window, UIBase]
 	
 	## Maps each window to its setter callable
 	var setter_callables: Dictionary[Window, Callable]
@@ -81,7 +82,8 @@ var _resolve_hint_colors: Dictionary[ResolveHint, Color] = {
 
 ## Stores configuration for each WindowPopup that will be instanced on each window
 var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
-	WindowPopup.PANEL_PICKER: PopupConfig.new("PanelPicker", "")
+	WindowPopup.PANEL_PICKER: PopupConfig.new("PanelPicker", ""),
+	WindowPopup.PANEL_SETTINGS: PopupConfig.new("UIPanelSettings", "set_panel")
 }
 
 ## The WindowPopups scene to be instanced on each window
@@ -103,10 +105,10 @@ func _ready() -> void:
 func _register_window_popups(p_window_popups: Control, p_window: Window) -> void:
 	for window_popup: WindowPopup in _window_popup_config.keys():
 		var config: PopupConfig = _window_popup_config[window_popup]
-		var popup: UIPopup = p_window_popups.get_node(config.node_name)
+		var popup: UIBase = p_window_popups.get_node(config.node_name)
 		var setter: Callable
-		var resolve_signal: Signal = popup.get_custom_signal_or_default()
-		var reject_signal: Signal = popup.canceled
+		var resolve_signal: Signal = popup.get_custom_signal_or_default() if popup is UIPopup else Signal()
+		var reject_signal: Signal = popup.canceled if popup is UIPopup else popup.close_request
 		var promise: Promise = Promise.new()
 		
 		if config.setter:
@@ -152,7 +154,7 @@ func _show_window_popup(p_popup_type: WindowPopup, p_source: Node, p_setter_arg:
 		config.promises[window].clear()
 	
 	if p_setter_arg:
-		config.setters[window].call(p_setter_arg)
+		config.setter_callables[window].call(p_setter_arg)
 	
 	config.active_state[window] = true
 	
@@ -172,6 +174,11 @@ func _hide_window_popup(p_popup_type: WindowPopup, p_window: Window) -> void:
 ## Prompts the user to select a UIPanel
 func prompt_panel_picker(p_source: Node) -> Promise:
 	return _show_window_popup(WindowPopup.PANEL_PICKER, p_source, null)
+
+
+## Promps the user with UIPaneSettings
+func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
+	return _show_window_popup(WindowPopup.PANEL_SETTINGS, p_source, p_panel)
 
 
 ## Fades a property of an object and handles animation cleanup

@@ -16,7 +16,8 @@ class_name UIFunctions extends UIPanel
 
 
 ## Init
-func _component_ready() -> void:
+func _init() -> void:
+	super._init()
 	_set_class_name("UIFunctions")
 
 

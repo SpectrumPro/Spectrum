@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://ck1cwcj8lktak" path="res://components/TO_BE_SORTED/InputTriggerSettings/InputTriggerSettings.gd" id="2_tc8uv"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="3_tc8uv"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="4_h3cm7"]
-[ext_resource type="PackedScene" uid="uid://bwj2kgbjtdg17" path="res://components/TO_BE_SORTED/ClientComponentSettings/ClientComponentSettings.tscn" id="5_bkntp"]
+[ext_resource type="PackedScene" uid="uid://bwj2kgbjtdg17" path="res://components/ClientComponentSettings/ClientComponentSettings.tscn" id="5_bkntp"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_1vksa"]
 
