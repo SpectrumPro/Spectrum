@@ -1,0 +1,97 @@
+[gd_scene load_steps=7 format=3 uid="uid://cebqk3au5iwx0"]
+
+[ext_resource type="Script" uid="uid://cj6rjtd8yhtck" path="res://panels/UIDesk/DeskItemContainer.gd" id="1_u1i3e"]
+[ext_resource type="Texture2D" uid="uid://bi6l77hvjlekh" path="res://assets/icons/Resize.svg" id="2_gw62f"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="3_70702"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q375a"]
+bg_color = Color(0.199988, 0.199988, 0.199988, 0.760784)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h550r"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
+bg_color = Color(0.0627451, 0.0627451, 0.0627451, 0.537255)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_burcd"]
+font = ExtResource("3_70702")
+
+[node name="DeskItemContainer" type="Control" node_paths=PackedStringArray("_label_node", "_background", "_handles_container")]
+clip_contents = true
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 160.0
+offset_bottom = 160.0
+script = ExtResource("1_u1i3e")
+_label_node = NodePath("Handles/PanelContainer/Label")
+_background = NodePath("Handles/Background")
+_handles_container = NodePath("Handles")
+
+[node name="Handles" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="Handles"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 6
+theme_override_styles/panel = SubResource("StyleBoxFlat_q375a")
+
+[node name="Handle" type="TextureRect" parent="Handles"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -31.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("2_gw62f")
+expand_mode = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="Handles"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -21.5
+offset_right = 48.0
+offset_bottom = 21.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_h550r")
+
+[node name="Label" type="Label" parent="Handles/PanelContainer"]
+layout_mode = 2
+text = "W:0 H:0
+X:0 Y:0"
+label_settings = SubResource("LabelSettings_burcd")
+horizontal_alignment = 1
+
+[connection signal="resized" from="Handles" to="Handles" method="_on_resized"]
+[connection signal="gui_input" from="Handles/Background" to="." method="_on_background_gui_input"]
+[connection signal="gui_input" from="Handles/Handle" to="." method="_on_br_handle_gui_input"]

@@ -14,31 +14,31 @@ class_name UICoreStatusBar extends PanelContainer
 
 ## Config for quick access buttons
 var _quick_access_config: Array = [
-	{
-		"panel": Interface.panels.Programmer,
-		"icon": load("res://assets/icons/Programmer.svg"),
-		"size": Vector2.ZERO,
-	},
-	{
-		"panel": Interface.panels.Fixtures,
-		"icon": load("res://assets/icons/Fixture.svg"),
-		"size": Vector2(800, 500)
-	},
-	{
-		"panel": Interface.panels.Functions,
-		"icon": load("res://assets/icons/Functions.svg"),
-		"size": Vector2(800, 500)
-	},
-	{
-		"panel": Interface.panels.Settings,
-		"icon": load("res://assets/icons/Settings.svg"),
-		"size": Vector2.ZERO
-	},
-	{
-		"panel": Interface.panels.SaveLoad,
-		"icon": load("res://assets/icons/Storage.svg"),
-		"size": Vector2(1200, 800)
-	},
+	#{
+		#"panel": Interface.panels.Programmer,
+		#"icon": load("res://assets/icons/Programmer.svg"),
+		#"size": Vector2.ZERO,
+	#},
+	#{
+		#"panel": Interface.panels.Fixtures,
+		#"icon": load("res://assets/icons/Fixture.svg"),
+		#"size": Vector2(800, 500)
+	#},
+	#{
+		#"panel": Interface.panels.Functions,
+		#"icon": load("res://assets/icons/Functions.svg"),
+		#"size": Vector2(800, 500)
+	#},
+	#{
+		#"panel": Interface.panels.Settings,
+		#"icon": load("res://assets/icons/Settings.svg"),
+		#"size": Vector2.ZERO
+	#},
+	#{
+		#"panel": Interface.panels.SaveLoad,
+		#"icon": load("res://assets/icons/Storage.svg"),
+		#"size": Vector2(1200, 800)
+	#},
 ]
 
 

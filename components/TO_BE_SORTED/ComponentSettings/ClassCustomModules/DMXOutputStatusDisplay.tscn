@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://cx2fhdc52ft54"]
+
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_l6ycl"]
+[ext_resource type="Script" uid="uid://cobayumnfokx0" path="res://components/TO_BE_SORTED/ComponentSettings/ClassCustomModules/DmxOutputStatusDisplay.gd" id="1_oxcgw"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="2_iltl1"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wu1ck"]
+font = ExtResource("2_iltl1")
+font_size = 24
+
+[node name="DmxOutputStatusDisplay" type="PanelContainer" node_paths=PackedStringArray("_status_label")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("1_l6ycl")
+script = ExtResource("1_oxcgw")
+_status_label = NodePath("ConnectionState")
+
+[node name="ConnectionState" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "DISCONNEDTED"
+label_settings = SubResource("LabelSettings_wu1ck")

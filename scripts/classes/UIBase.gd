@@ -1,8 +1,9 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name UIBase extends Control
-## Client Component base class for Names
+## Client Component base class for all UI elements
 
 
 ## UUID of this UIBase
@@ -17,15 +18,6 @@ var _self_class_name: String = "UIBase"
 ## Settings for this component
 var _settings: Dictionary = {}
 
-
-## Init
-func _init() -> void:
-	_component_ready()
-
-
-## Override this for a ready function
-func _component_ready() -> void:
-	pass
 
 
 ## Gets the classname

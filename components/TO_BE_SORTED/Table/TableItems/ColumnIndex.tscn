@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bovubrxilvgt"]
+
+[ext_resource type="Script" uid="uid://cqa7e6i7cfixv" path="res://components/TO_BE_SORTED/Table/TableItems/ColumnIndex.gd" id="1_6v7yf"]
+
+[node name="ColumnIndex" type="PanelContainer"]
+custom_minimum_size = Vector2(120, 50)
+script = ExtResource("1_6v7yf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "
+"
+horizontal_alignment = 1
+text_overrun_behavior = 3

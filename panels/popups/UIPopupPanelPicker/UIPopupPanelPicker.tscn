@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://bojo5mnmadf4j"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_cugcc"]
+[ext_resource type="Script" uid="uid://bvdp5eir5pi2" path="res://panels/popups/UIPopupPanelPicker/UIPopupPanelPicker.gd" id="2_ktnxn"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_xgsr8"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="4_cqs6b"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="5_xgsr8"]
+[ext_resource type="Script" uid="uid://rcg26r86qsdg" path="res://scripts/ui/Tabs.gd" id="6_fkf3r"]
+
+[node name="PanelPicker" type="PanelContainer" node_paths=PackedStringArray("_tab_container", "edit_controls")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_cugcc")
+theme_override_styles/panel = ExtResource("2_xgsr8")
+script = ExtResource("2_ktnxn")
+_tab_container = NodePath("VBoxContainer/TabContainer")
+edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("4_cqs6b")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Choose A Panel:"
+
+[node name="TabBar" type="TabBar" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tab_alignment = 1
+
+[node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("5_xgsr8")]
+layout_mode = 2
+show_edit = false
+show_settings = false
+show_close = true
+
+[node name="TabContainer" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_tab_bar")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("6_fkf3r")
+_tab_bar = NodePath("../PanelContainer/HBoxContainer/TabBar")

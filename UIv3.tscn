@@ -1,6 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://d00fmrh7nbaua"]
+[gd_scene load_steps=19 format=3 uid="uid://d00fmrh7nbaua"]
 
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="1_17i08"]
+[ext_resource type="Script" uid="uid://cjbnp24htiy3i" path="res://UICore.gd" id="1_52cs4"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="1_aoeir"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="1_py1vl"]
 [ext_resource type="Script" uid="uid://5twbcqrk7as1" path="res://StatusBar.gd" id="2_pj23w"]
@@ -59,6 +60,19 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52cs4"]
+bg_color = Color(1, 1, 1, 0.156863)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="FontVariation" id="FontVariation_aoeir"]
 base_font = ExtResource("3_opnnr")
 variation_embolden = 0.94
@@ -67,13 +81,15 @@ variation_embolden = 0.94
 font = SubResource("FontVariation_aoeir")
 font_color = Color(0.789062, 0.789062, 0.789062, 1)
 
-[node name="UICore" type="PanelContainer"]
+[node name="Main" type="PanelContainer" node_paths=PackedStringArray("_side_bar")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opnnr")
+script = ExtResource("1_52cs4")
+_side_bar = NodePath("VBoxContainer/HBoxContainer/UICorePrimarySideBar")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -83,7 +99,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="UICorePrimarySideBar" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_tab_button_container", "_tab_button_scroll", "_tab_control_container", "_menu_button", "_edit_button", "_panel_type_option")]
+[node name="UICorePrimarySideBar" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_tab_button_container", "_tab_button_scroll", "_tab_control_container", "_overlay_container", "_menu_button", "_edit_button", "_panel_type_option")]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_aoeir")
@@ -92,10 +108,11 @@ tab_button_modulate = Color(0.509804, 0.509804, 0.509804, 1)
 disabled_tab_button_modulate = Color(0.682353, 0.682353, 0.682353, 1)
 _tab_button_container = NodePath("VBoxContainer/ScrollContainer/TabButtonContainer")
 _tab_button_scroll = NodePath("VBoxContainer/ScrollContainer")
-_tab_control_container = NodePath("../Container/TabControlContainer")
+_tab_control_container = NodePath("../MainContent/TabControlContainer")
+_overlay_container = NodePath("../MainContent/OverlayContainer")
 _menu_button = NodePath("VBoxContainer/Menu")
 _edit_button = NodePath("VBoxContainer/Edit")
-_panel_type_option = NodePath("../Container/PanelTypeOption")
+_panel_type_option = NodePath("../MainContent/OverlayContainer/PanelTypeOption")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar"]
 layout_mode = 2
@@ -128,11 +145,11 @@ size_flags_vertical = 8
 toggle_mode = true
 icon = ExtResource("1_aoeir")
 
-[node name="Container" type="Control" parent="VBoxContainer/HBoxContainer"]
+[node name="MainContent" type="Control" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Container"]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/MainContent"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -149,7 +166,7 @@ size_flags_horizontal = 4
 text = "SPECTRUM"
 label_settings = SubResource("LabelSettings_tdt00")
 
-[node name="TabControlContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Container"]
+[node name="TabControlContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -158,28 +175,40 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="PanelTypeOption" type="PanelContainer" parent="VBoxContainer/HBoxContainer/Container"]
-visible = false
+[node name="OverlayContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelTypeOption" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -107.0
-offset_top = -55.0
-offset_right = 107.0
-offset_bottom = 55.0
+offset_left = -114.0
+offset_top = -62.0
+offset_right = 114.0
+offset_bottom = 62.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_tdt00")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/Container/PanelTypeOption"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption"]
 layout_mode = 2
 
-[node name="AddDesk" type="Button" parent="VBoxContainer/HBoxContainer/Container/PanelTypeOption/HBoxContainer"]
+[node name="AddDesk" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
@@ -193,7 +222,7 @@ icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
 
-[node name="AddCustom" type="Button" parent="VBoxContainer/HBoxContainer/Container/PanelTypeOption/HBoxContainer"]
+[node name="AddCustom" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
@@ -206,6 +235,152 @@ flat = true
 icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -346.0
+offset_top = -104.0
+offset_right = 346.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pj23w")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Select" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Select"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Select"]
+modulate = Color(0.0235294, 0.713726, 0.831373, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Asign" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Asign"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Asign"]
+modulate = Color(0.0235294, 0.713726, 0.831373, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Button3" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Store"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Button3"]
+modulate = Color(0.133333, 0.772549, 0.368627, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Button4" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Edit"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Button4"]
+modulate = Color(0.133333, 0.772549, 0.368627, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Button5" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Rename"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Button5"]
+modulate = Color(0.917647, 0.701961, 0.0313726, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Button6" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Execute"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Button6"]
+modulate = Color(0.917647, 0.701961, 0.0313726, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Button7" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Stop"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Button7"]
+modulate = Color(0.937255, 0.266667, 0.266667, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
+
+[node name="Button8" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+text = "Delete"
+
+[node name="StoreMode" type="Panel" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelContainer/HBoxContainer/Button8"]
+modulate = Color(0.937255, 0.266667, 0.266667, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52cs4")
 
 [node name="UICoreStatusBar" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_version_label", "_quick_access_container")]
 layout_mode = 2
@@ -225,6 +400,7 @@ theme_override_constants/separation = 6
 custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer"]
 layout_mode = 2
@@ -235,6 +411,7 @@ text = "Info: Set ActiveMode on \"NGH Show\""
 label_settings = SubResource("LabelSettings_7y6be")
 
 [node name="VersionLabel" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Version"
@@ -242,4 +419,5 @@ label_settings = ExtResource("3_pj23w")
 
 [connection signal="resized" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/ScrollContainer" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="match_visable_to_size"]
 [connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Edit" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="set_tab_edit_mode"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Container/PanelTypeOption/HBoxContainer/AddDesk" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="create_desk"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer/AddDesk" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="create_custom" binds= ["UIDesk"]]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer/AddCustom" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_add_custom_pressed"]
