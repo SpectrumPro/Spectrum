@@ -115,26 +115,28 @@ func _register_window_popups(p_window_popups: Control, p_window: Window) -> void
 			setter = Callable(popup, config.setter)
 		
 		## TEMP workaround untill Godot 4.5's vararg functions are avaibal
-		resolve_signal.connect(func (arg1: Variant = null, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null, arg6: Variant = null, arg7: Variant = null, arg8: Variant = null):
-			var args: Array = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
-			
-			promise.resolve(args.filter(func (arg):
-				return not (arg == null)
-			))
-			
-			_hide_window_popup(window_popup, p_window)
-		)
+		if not resolve_signal.is_null():
+			resolve_signal.connect(func (arg1: Variant = null, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null, arg6: Variant = null, arg7: Variant = null, arg8: Variant = null):
+				var args: Array = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
+				
+				promise.resolve(args.filter(func (arg):
+					return not (arg == null)
+				))
+				
+				_hide_window_popup(window_popup, p_window)
+			)
 		
 		## TEMP workaround untill Godot 4.5's vararg functions are avaibal
-		reject_signal.connect(func (arg1: Variant = null, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null, arg6: Variant = null, arg7: Variant = null, arg8: Variant = null):
-			var args: Array = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
-			
-			promise.reject(args.filter(func (arg):
-				return not (arg == null)
-			))
-			
-			_hide_window_popup(window_popup, p_window)
-		)
+		if not reject_signal.is_null():
+			reject_signal.connect(func (arg1: Variant = null, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null, arg6: Variant = null, arg7: Variant = null, arg8: Variant = null):
+				var args: Array = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
+				
+				promise.reject(args.filter(func (arg):
+					return not (arg == null)
+				))
+				
+				_hide_window_popup(window_popup, p_window)
+			)
 		
 		config.nodes[p_window] = popup
 		config.setter_callables[p_window] = setter

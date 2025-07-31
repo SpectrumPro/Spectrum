@@ -55,6 +55,9 @@ layout_mode = 2
 disabled = true
 icon = ExtResource("4_0odo6")
 
+[node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+show_settings = true
+
 [node name="HBoxContainer" type="HSplitContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

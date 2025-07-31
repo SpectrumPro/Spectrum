@@ -37,3 +37,5 @@ class StyleBoxes:
 class Constants:
 	class Times:
 		static var InterfaceFadeTime 	= 0.15
+		static var DeskItemMoveTime		= 0.1
+		static var SelectBoxMoceTime	= 0.06

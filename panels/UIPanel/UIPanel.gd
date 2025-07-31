@@ -60,6 +60,8 @@ var _mouse_warp: Vector2
 func _init() -> void:
 	_set_class_name("UIPanel")
 	
+	register_setting_bool("show_menu_bar", set_menu_bar_visible, get_menu_bar_visible, Signal())
+	
 	await ready
 	set_edit_mode(false)
 	for button: Button in buttons:
@@ -130,6 +132,12 @@ func set_edit_mode_disabled(disabled: bool) -> void:
 		edit_controls.edit_button.disabled = _edit_mode_disabled
 
 
+## Sets the menu bar visible state
+func set_menu_bar_visible(p_visable: bool) -> void:
+	if menu_bar:
+		menu_bar.visible = p_visable
+
+
 ## Gets the current DisplayMode
 func get_display_mode() -> DisplayMode:
 	return display_mode
@@ -145,10 +153,12 @@ func get_edit_mode_disabled() -> bool:
 	return _edit_mode_disabled
 
 
-## Sets the menu bar visable state
-func set_menu_bar_visable(p_visable: bool) -> void:
-	if menu_bar:
-		menu_bar.visible = p_visable
+## Gets the menu bars visible state
+func get_menu_bar_visible() -> bool:
+	if is_instance_valid(menu_bar):
+		return menu_bar.visible
+	else:
+		return false
 
 
 ## Shows or hides the panels settings

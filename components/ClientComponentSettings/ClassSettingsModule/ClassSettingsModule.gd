@@ -75,11 +75,13 @@ func show_setting(setter: Callable, getter: Callable, p_signal: Signal, p_type: 
 			check_button.text = "TRUE" if check_button.button_pressed else "FALSE"
 			
 			check_button.toggled.connect(setter)
-			p_signal.connect((func (state: bool, button: CheckButton):
-				button.set_pressed_no_signal(state)
-				button.text = "TRUE" if state else "FALSE"
-			).bind(check_button))
 			control = check_button
+			
+			if not p_signal.is_null():
+				p_signal.connect((func (state: bool, button: CheckButton):
+					button.set_pressed_no_signal(state)
+					button.text = "TRUE" if state else "FALSE"
+				).bind(check_button))
 		
 		Utils.TYPE_INT:
 			var spin_box: SpinBox = SpinBox.new()

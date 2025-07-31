@@ -34,10 +34,6 @@ signal right_clicked
 @onready var _target_position: Vector2 = position
 
 
-## Animation speed for position and scale
-const AnimationSpeed: float = 0.08
-
-
 ## The background color of this desk item when it is selected
 var _selected_color: Color = ThemeManager.Colors.Selections.SelectedGray
 
@@ -68,8 +64,8 @@ func _ready() -> void:
 
 ## Process
 func _process(delta: float) -> void:
-	var pos_speed: float = max(position.distance_to(_target_position) / AnimationSpeed, 0.1)
-	var size_speed: float = max(size.distance_to(_target_size) / AnimationSpeed, 0.1)
+	var pos_speed: float = max(position.distance_to(_target_position) / ThemeManager.Constants.Times.DeskItemMoveTime, 0.1)
+	var size_speed: float = max(size.distance_to(_target_size) / ThemeManager.Constants.Times.DeskItemMoveTime, 0.1)
 	
 	position = position.move_toward(_target_position, pos_speed * delta)
 	size = size.move_toward(_target_size, size_speed * delta)
@@ -180,7 +176,7 @@ func _on_br_handle_gui_input(p_event: InputEvent) -> void:
 		_new_size += p_event.relative
 		_new_size = _new_size.abs()
 		
-		_target_size = _new_size.snapped(_snapping_distance)
+		_target_size = _new_size.snapped(_snapping_distance).clamp(_snapping_distance, Vector2.INF)
 		update_label()
 		_update_transform()
 
@@ -194,7 +190,7 @@ func _on_panel_request_resize(p_by: Vector2) -> void:
 		p_by *= 4
 	_new_size += p_by
 	
-	_target_size = abs(snapped(_new_size, _snapping_distance))
+	_target_size = _new_size.snapped(_snapping_distance).clamp(_snapping_distance, Vector2.INF)
 	move_to_front()
 	_update_transform()
 

@@ -194,7 +194,7 @@ static func _split_sort_key(s: String) -> Array:
 	var regex = RegEx.new()
 	regex.compile(r"\d+|\D+")
 	
-	var parts = []
+	var parts: Array = []
 	for match in regex.search_all(s):
 		var sub = match.get_string()
 		parts.append(int(sub) if sub.is_valid_int() else sub)

@@ -19,6 +19,15 @@ signal selection_updated(selection: Rect2)
 ## The Control node to listen to GUI events from
 @export var event_control: Control : set = set_event_control
 
+## Snapping Distance
+@export var snapping_distance: Vector2 = Vector2.ZERO
+
+## Target pos to animate to
+@onready var _target_position: Vector2 = position
+
+## Target scale to animate to
+@onready var _target_size: Vector2 = size
+
 
 ## Selection state
 var _is_selecting: bool = false
@@ -31,6 +40,21 @@ var _selection_size: Vector2 = Vector2.ZERO
 
 ## The most recent selection
 var _current_selection: Rect2
+
+## Has the selection stated in this frame
+var _selection_started: bool = false
+
+
+## Process
+func _process(delta: float) -> void:
+	var pos_speed: float = max(position.distance_to(_target_position) / ThemeManager.Constants.Times.SelectBoxMoceTime, 0.1)
+	var size_speed: float = max(size.distance_to(_target_size) / ThemeManager.Constants.Times.SelectBoxMoceTime, 0.1)
+	
+	position = position.move_toward(_target_position, pos_speed * delta)
+	size = size.move_toward(_target_size, size_speed * delta)
+	
+	if position == _target_position and size == _target_size:
+		set_process(false)
 
 
 ## Sets the event control
@@ -60,13 +84,15 @@ func _on_event_control_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and event.button_mask == MOUSE_BUTTON_MASK_LEFT:
 		if not _is_selecting:
 			_is_selecting = true
-			_selection_start_pos = event_control.get_local_mouse_position()
+			_selection_started = true
+			
+			_selection_start_pos = event_control.get_local_mouse_position().snapped(snapping_distance)
 			_selection_size = Vector2.ZERO
 			
 			Interface.show(self)
 			pressed.emit()
 		
-		_selection_size = event_control.get_local_mouse_position() - _selection_start_pos
+		_selection_size = event_control.get_local_mouse_position().snapped(snapping_distance) - _selection_start_pos
 		_update_selection_box()
 	
 	elif event is InputEventMouseButton:
@@ -86,8 +112,16 @@ func _update_selection_box() -> void:
 	start = start.clamp(Vector2.ZERO, end)
 	
 	var rect: Rect2 = Rect2(start, end - start)
-	position = rect.position
-	size = rect.size
+	
+	if _selection_started:
+		position = rect.position
+		size = rect.size
+		_selection_started = false
+	
+	_target_position = rect.position
+	_target_size = rect.size
+	
+	set_process(true)
 	
 	_current_selection = rect
 	selection_updated.emit(_current_selection)

@@ -23,7 +23,7 @@ signal snapping_distance_changed(snapping_distance: Vector2)
 var _snapping_enabled: bool = true
 
 ## The snapping distance of desk items in px
-var _snapping_distance: Vector2 = Vector2(20, 20)
+var _snapping_distance: Vector2 = Vector2(80, 80)
 
 ## The selected panels
 var _selected_items: Array[UIDeskItemContainer] = []
@@ -37,6 +37,7 @@ var _just_deleted_size: Vector2 = Vector2(100, 100)
 
 ## Init
 func _init() -> void:
+	super._init()
 	_set_class_name("UIDesk")
 
 
@@ -82,7 +83,7 @@ func set_snapping_enabled(p_enabled: bool) -> void:
 ## Sets the snapping distance of this desk
 func set_snapping_distance(p_distance: Vector2) -> void:
 	_snapping_distance = p_distance
-	_container_node.grid_size = _snapping_distance * 2
+	_container_node.grid_size = _snapping_distance
 	snapping_distance_changed.emit(_snapping_distance)
 
 
@@ -101,9 +102,10 @@ func add_panel(p_panel: UIPanel, p_position: Vector2 = _just_deleted_pos, p_size
 	# Add the new panel
 	new_node.set_panel(p_panel)
 	new_node.set_edit_mode(get_edit_mode())
-
+	new_node.set_snapping_distance(_snapping_distance)
+	
 	new_node.position = p_position
-	new_node.size = p_size
+	new_node.size = p_size.clamp(_snapping_distance, Vector2.INF)
 	_container_node.add_child(new_node, true)
 	
 	new_node.hide()

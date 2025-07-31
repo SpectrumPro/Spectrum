@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cgkb6rh0joakn"]
+[gd_scene load_steps=11 format=3 uid="uid://cgkb6rh0joakn"]
 
 [ext_resource type="Script" uid="uid://ddcbvxctik0tr" path="res://panels/UIPanelSettings/UIPanelSettings.gd" id="1_4hx28"]
 [ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/UIPanelPopup.tres" id="1_i7um0"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="3_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="4_1jyub"]
+[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="5_a0kig"]
 [ext_resource type="PackedScene" uid="uid://bwj2kgbjtdg17" path="res://components/ClientComponentSettings/ClientComponentSettings.tscn" id="6_a0kig"]
 [ext_resource type="Script" uid="uid://c20borh60xiu1" path="res://panels/UIPanelSettings/Shortcuts.gd" id="6_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_i3a75"]
@@ -62,6 +63,14 @@ layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_i7um0")
 text = "Shortcuts"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "Close Panel"
+icon = ExtResource("5_a0kig")
 
 [node name="Settings" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

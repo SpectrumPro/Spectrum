@@ -148,7 +148,7 @@ func set_panel(p_panel: UIPanel, p_tab: int) -> void:
 	if _tab_controls.has_left(p_tab):
 		_tab_controls.left(p_tab).queue_free()
 	
-	p_panel.set_menu_bar_visable(false)
+	p_panel.set_menu_bar_visible(false)
 	
 	var menu_bar: PanelMenuBar = p_panel.detatch_menu_bar()
 	_menu_bars.map(p_panel, menu_bar)
