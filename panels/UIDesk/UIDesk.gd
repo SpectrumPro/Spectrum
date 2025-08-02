@@ -83,7 +83,10 @@ func set_snapping_enabled(p_enabled: bool) -> void:
 ## Sets the snapping distance of this desk
 func set_snapping_distance(p_distance: Vector2) -> void:
 	_snapping_distance = p_distance
+	
 	_container_node.grid_size = _snapping_distance
+	_select_box.snapping_distance = _snapping_distance
+	
 	snapping_distance_changed.emit(_snapping_distance)
 
 
@@ -97,7 +100,7 @@ func add_panel(p_panel: UIPanel, p_position: Vector2 = _just_deleted_pos, p_size
 	snapping_distance_changed.connect(new_node.set_snapping_distance)
 
 	new_node.clicked.connect(_on_item_clicked.bind(new_node))
-	new_node.right_clicked.connect(open_settings.bind(new_node))
+	new_node.right_clicked.connect(_on_item_right_clicked.bind(new_node))
 
 	# Add the new panel
 	new_node.set_panel(p_panel)
@@ -216,6 +219,13 @@ func _on_item_clicked(p_item: Control) -> void:
 		select_none()
 	
 	select_item(p_item)
+
+
+## Called when a panel is right clicked in edit mode
+func _on_item_right_clicked(p_item: UIDeskItemContainer) -> void:
+	select_none()
+	select_item(p_item)
+	open_settings(p_item)
 
 
 ## Called when the container receives an input event. Handles selection and object picker display.

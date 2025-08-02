@@ -10,10 +10,6 @@ class_name PanelMenuBar extends UIComponent
 var _popup_style: bool = false
 
 
-func _gui_input(event: InputEvent) -> void:
-	pass
-
-
 ## Sets the popup style state
 func set_popup_style(p_popup_style: bool) -> bool:
 	if p_popup_style == _popup_style:

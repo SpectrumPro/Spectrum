@@ -25,7 +25,8 @@ var _input_actions: RefMap = RefMap.new()
 var _internal_actions: Dictionary[String, Callable] = {
 	"reload": Client.connect_to_server,
 	"clear_programmer": Programmer.clear,
-	"store_mode": _handle_store_mode_action
+	"store_mode": _handle_store_mode_action,
+	"ui_cancel": Interface.hide_all_popup_panels,
 
 }
 

@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3 uid="uid://baortk0rwrhup"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_fpd1u"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_rmybk"]
+[ext_resource type="Script" uid="uid://bmu8b4eaoouxa" path="res://panels/UIPlaybacks/UIPlaybacks.gd" id="3_rij1d"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="4_5ou05"]
+[ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/TO_BE_SORTED/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="5_m7n37"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_os0li"]
+[ext_resource type="Texture2D" uid="uid://f8q8t2pxjmkl" path="res://assets/icons/remove_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="7_l4k0t"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="8_5a8nk"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ahq5b"]
+
+[node name="UIPlaybacks" type="PanelContainer" node_paths=PackedStringArray("_container", "_object_picker_button", "edit_controls", "menu_bar")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_fpd1u")
+theme_override_styles/panel = ExtResource("2_rmybk")
+script = ExtResource("3_rij1d")
+_container = NodePath("VBoxContainer/ScrollContainer/HBoxContainer")
+_object_picker_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ObjectPickerButton")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("4_5ou05")]
+layout_mode = 2
+
+[node name="ObjectPickerButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0" instance=ExtResource("5_m7n37")]
+layout_mode = 2
+text = "Function Group"
+flat = true
+filter = "TriggerBlock"
+
+[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="1"]
+visible = false
+
+[node name="Mode" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/Mode"]
+layout_mode = 2
+
+[node name="Asign" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/Mode/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_ahq5b")
+icon = ExtResource("6_os0li")
+
+[node name="Delete" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/Mode/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ahq5b")
+icon = ExtResource("7_l4k0t")
+
+[node name="Edit" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/Mode/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ahq5b")
+icon = ExtResource("8_5a8nk")
+
+[node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="4"]
+show_edit = true
+show_settings = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="object_selected" from="VBoxContainer/PanelMenuBar/HBoxContainer/ObjectPickerButton" to="." method="_on_object_picker_button_object_selected"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

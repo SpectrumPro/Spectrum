@@ -12,7 +12,8 @@ signal resolve_requested(type: ResolveType, hint: ResolveHint, classname: String
 
 ## Enum for ResolveTypes
 enum ResolveType {
-	DISABLE,		## Disables resolve mode
+	NONE,			## Disables resolve mode
+	ANY,			## Resolves anything
 	COMPONENT,		## Resolves an EngineComponent
 	UIPANEL			## Resolves a UIPanel
 }
@@ -65,6 +66,21 @@ class PopupConfig:
 		node_name = p_node_name
 		setter = p_setter
 
+
+## The current resolve hint, if any
+var _current_resolve_hint: ResolveHint = ResolveHint.NONE
+
+## The current resolve mode, if any
+var _current_resolve_type: ResolveType = ResolveType.NONE
+
+## The current resolve classname
+var _current_resolve_classname: String = ""
+
+## The current resolve color
+var  _current_resolve_color: Color = Color.TRANSPARENT
+
+## The resolve Promise
+var _resolve_promise: Promise = Promise.new()
 
 ## Colors for each resolve hint
 var _resolve_hint_colors: Dictionary[ResolveHint, Color] = {
@@ -159,14 +175,18 @@ func _show_window_popup(p_popup_type: WindowPopup, p_source: Node, p_setter_arg:
 		config.setter_callables[window].call(p_setter_arg)
 	
 	config.active_state[window] = true
-	
 	show_and_fade(popup)
+	popup.move_to_front()
+	
 	return promise
 
 
 ## Hides and active window popup
 func _hide_window_popup(p_popup_type: WindowPopup, p_window: Window) -> void:
 	var config: PopupConfig = _window_popup_config[p_popup_type]
+	
+	if not config.active_state[p_window]:
+		return
 	
 	config.active_state[p_window] = false
 	fade_and_hide(config.nodes[p_window])
@@ -183,11 +203,15 @@ func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
 	return _show_window_popup(WindowPopup.PANEL_SETTINGS, p_source, p_panel)
 
 
+## Hides all popup panels
+func hide_all_popup_panels() -> void:
+	for popup_type: WindowPopup in _window_popup_config:
+		_hide_window_popup(popup_type, get_window())
+
+
 ## Fades a property of an object and handles animation cleanup
 func fade_property(p_object: Object, p_property: String, p_to: Variant, p_callback: Callable = Callable(), p_time: float = ThemeManager.Constants.Times.InterfaceFadeTime) -> void:
-	if _active_fade_animations.get(p_object, {}).has(p_property):
-		_active_fade_animations[p_object][p_property].kill()
-	
+	kill_fade(p_object, p_property)
 	var tween: Tween = get_tree().create_tween()
 	
 	tween.tween_property(p_object, p_property, p_to, p_time).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
@@ -257,3 +281,53 @@ func hide(p_control: Control) -> void:
 	kill_fade(p_control, "modulate")
 	p_control.modulate = Color.WHITE
 	p_control.hide()
+
+
+## Gets the current ResolveHint
+func get_current_resolve_hint() -> ResolveHint:
+	return _current_resolve_hint
+
+
+## Gets the current ResolveType
+func get_current_resolve_type() -> ResolveType:
+	return _current_resolve_type
+
+
+## Gets the current resolve classname
+func get_current_resolve_classname() -> String:
+	return _current_resolve_classname
+
+
+## Gets the current resolve color
+func get_current_resolve_color() -> Color:
+	return _current_resolve_color
+
+
+## Gets the color for a resolve hint
+func get_resolve_color(p_resolve_hint: ResolveHint) -> Color:
+	return _resolve_hint_colors[p_resolve_hint]
+
+
+## Enables the ResolveMode
+func enter_resolve_mode(p_resolve_type: ResolveType, p_resolve_hint: ResolveHint, p_classname: String) -> Promise:
+	_current_resolve_type = p_resolve_type
+	_current_resolve_hint = p_resolve_hint
+	_current_resolve_classname = p_classname
+	_current_resolve_color = get_resolve_color(_current_resolve_hint)
+	
+	resolve_requested.emit(_current_resolve_type, _current_resolve_hint, _current_resolve_classname, _current_resolve_color)
+	return _resolve_promise
+
+
+## Exits resolve mode
+func exit_resolve_mode() -> bool:
+	if _current_resolve_type == ResolveType.NONE:
+		return false
+	
+	_current_resolve_type = ResolveType.NONE
+	_current_resolve_hint = ResolveHint.NONE
+	_current_resolve_classname = "p_classname"
+	_current_resolve_color = Color.TRANSPARENT
+	
+	resolve_requested.emit(_current_resolve_type, _current_resolve_hint, _current_resolve_classname, _current_resolve_color)
+	return true

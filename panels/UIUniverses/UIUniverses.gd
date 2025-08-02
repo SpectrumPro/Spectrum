@@ -63,6 +63,13 @@ var _fixture_channels: Dictionary
 var _old_fixture_channels: Dictionary
 
 
+## Init
+func _init() -> void:
+	super._init()
+	_set_class_name("UIUniverses")
+
+
+## Ready
 func _ready() -> void:
 	_fixture_tree.set_column_title(0, "Fixture")
 	_fixture_tree.set_column_title(1, "Channel")

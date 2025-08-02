@@ -3,18 +3,7 @@
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_v13eq"]
 [ext_resource type="Texture2D" uid="uid://c8ia6s2pwy1wm" path="res://assets/icons/Component.svg" id="2_e806p"]
 [ext_resource type="Script" uid="uid://bxjitmk4p5amp" path="res://components/TO_BE_SORTED/ObjectPicker/ObjectPickerButton/ObjectPickerButton.gd" id="3_2ralu"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8dld"]
-bg_color = Color(1, 1, 1, 0.156863)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+[ext_resource type="StyleBox" uid="uid://yvrvbisemb20" path="res://assets/styles/ResolveBoxStyle.tres" id="4_bdiso"]
 
 [node name="ObjectPickerButton" type="Button"]
 custom_minimum_size = Vector2(150, 0)
@@ -29,7 +18,7 @@ icon = ExtResource("2_e806p")
 text_overrun_behavior = 3
 script = ExtResource("3_2ralu")
 
-[node name="StoreMode" type="Panel" parent="."]
+[node name="ResolveBox" type="Panel" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -38,6 +27,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_n8dld")
+theme_override_styles/panel = ExtResource("4_bdiso")
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]

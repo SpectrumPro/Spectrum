@@ -5,6 +5,11 @@ class_name UICoreStatusBar extends PanelContainer
 ## Core UI script for the main status bar
 
 
+## The UICoreResolveButtons node
+@export var resolve_button_container: UICoreResolveButtons
+
+@export_group("Nodes")
+
 ## The VersionLabel
 @export var _version_label: Label
 
@@ -77,3 +82,8 @@ func _reload_quick_access() -> void:
 		
 		_quick_access_container.add_child(new_button)
 		Interface.add_custom_popup(new_panel)
+
+
+## Called when the quick action button is toggled
+func _on_action_button_toggled(toggled_on: bool) -> void:
+	Interface.set_visible_and_fade(resolve_button_container, toggled_on)

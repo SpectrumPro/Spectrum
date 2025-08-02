@@ -30,7 +30,7 @@ const _change_column_count_text: String = "Are you sure you want to change the c
 var _trigger_block: TriggerBlock
 
 ## All UI columns
-var _columns: Dictionary[int, PlaybackColumn]
+var _columns: Dictionary[int, UIPlaybackColumn]
 
 ## Flag for if columns have been loaded from _load()
 var _columns_set_from_load: bool = false
@@ -50,9 +50,14 @@ var _trigger_block_connections: Dictionary[String, Callable] = {
 }
 
 
+## Init
+func _init() -> void:
+	super._init()
+	_set_class_name("UIPlaybacks")
+
+
 ## Load Default Columns
 func _ready() -> void:
-	_set_class_name("UIPlaybacks")
 	set_edit_mode_disabled(true)
 	
 	register_setting_int("columns", set_columns_ui, get_columns, columns_changed, 0, 100)
@@ -72,7 +77,7 @@ func set_trigger_block(trigger_block: TriggerBlock) -> void:
 	
 	set_edit_mode_disabled(false)
 	
-	for playback: PlaybackColumn in _columns.values():
+	for playback: UIPlaybackColumn in _columns.values():
 		playback.set_trigger_block(_trigger_block)
 		
 	var triggers: Dictionary[int, Dictionary] = _trigger_block.get_triggers()
@@ -91,7 +96,7 @@ func set_trigger_block(trigger_block: TriggerBlock) -> void:
 func set_mode(p_mode: Mode) -> void:
 	_mode = p_mode
 	
-	for column: PlaybackColumn in _columns.values():
+	for column: UIPlaybackColumn in _columns.values():
 		column.set_mode(_mode)
 
 
@@ -128,7 +133,7 @@ func _edit_mode_toggled(state: bool) -> void:
 	if not _trigger_block:
 		return
 	
-	for column: PlaybackColumn in _columns.values():
+	for column: UIPlaybackColumn in _columns.values():
 		column.set_edit_mode(state)
 
 
@@ -161,7 +166,7 @@ func _rename_trigger(row: int, column: int, name: String) -> void:
 func _set_columns(p_columns: int) -> void:
 	if p_columns > _columns.size():
 		for column: int in range(_columns.size(), p_columns):
-			var new_column: PlaybackColumn = load("res://components/PlaybackColumn/PlaybackColumn.tscn").instantiate()
+			var new_column: UIPlaybackColumn = load("uid://clead72nsry6n").instantiate()
 			
 			new_column.set_column(column)
 			new_column.set_trigger_block(_trigger_block)
@@ -177,10 +182,10 @@ func _set_columns(p_columns: int) -> void:
 					add_button(button)
 	
 	elif p_columns < _columns.size():
-		var columns: Dictionary[int, PlaybackColumn] = _columns.duplicate()
+		var columns: Dictionary[int, UIPlaybackColumn] = _columns.duplicate()
 		
 		for column: int in range(p_columns, _columns.size()):
-			var column_item: PlaybackColumn = columns[column]
+			var column_item: UIPlaybackColumn = columns[column]
 			_columns.erase(column)
 			
 			for button: Button in column_item.get_buttons():

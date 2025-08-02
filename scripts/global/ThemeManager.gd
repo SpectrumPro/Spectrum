@@ -31,6 +31,8 @@ class StyleBoxes:
 	static var PanelMenuBarPopup		= load("res://assets/styles/PanelMenuBarPopup.tres") ## Popup style for PanelManuBar Popup mode
 	static var SelectBoxBackground		= load("res://assets/styles/SelectBoxBackground.tres") ## Stylebox for the SelectBox component
 	static var GridPoint				= load("res://assets/styles/GridPoint.tres") ## Stylebox for the grid Point
+	static var ResolveBoxStyle			= load("res://assets/styles/ResolveBoxStyle.tres") ## Stylebox for the ResolveBoxStyle
+	static var ResolveBoxBGLess			= load("res://assets/styles/ResolveBoxBGLess.tres") ## Stylebox for the ResolveBox Background less
 
 
 ## Constants
@@ -39,3 +41,4 @@ class Constants:
 		static var InterfaceFadeTime 	= 0.15
 		static var DeskItemMoveTime		= 0.1
 		static var SelectBoxMoceTime	= 0.06
+		static var EditControlResolve	= 0.3

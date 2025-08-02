@@ -46,6 +46,9 @@ var _snapping_distance: Vector2 = Vector2(20, 20) : set = set_snapping_distance
 ## The panel node
 var _panel: UIPanel = null
 
+## Mouse move on right click state
+var _has_moved_on_right_click: bool = false
+
 
 ## Init
 func _init() -> void:
@@ -152,33 +155,53 @@ func _update_transform() -> void:
 		set_process(true)
 
 
+## Updates the size of this panel from an InputEvent
+func _update_size_from_event(p_event: InputEventMouse) -> void:
+	_new_size += p_event.relative
+	_new_size = _new_size.abs()
+	
+	_target_size = _new_size.snapped(_snapping_distance).clamp(_snapping_distance, Vector2.INF)
+	update_label()
+	_update_transform()
+
+
+## Updates the position of this panel from an InputEvent
+func _update_position_from_event(p_event: InputEventMouse) -> void:
+	_new_position += p_event.relative
+	_new_position = _new_position.abs()
+	
+	_target_position = _new_position.snapped(_snapping_distance)
+	update_label()
+	_update_transform()
+
+
 ## Handles drag motion on the background to move the item
 func _on_background_gui_input(p_event: InputEvent) -> void:
-	if p_event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		_new_position += p_event.relative
-		_new_position = _new_position.abs()
+	if p_event is InputEventMouseMotion:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_update_position_from_event(p_event)
 		
-		_target_position = _new_position.snapped(_snapping_distance)
-		update_label()
-		_update_transform()
+		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+			_has_moved_on_right_click = true
+			_update_size_from_event(p_event)
 	
-	if p_event is InputEventMouseButton and p_event.is_pressed():
+	if p_event is InputEventMouseButton:
 		match p_event.button_index:
 			MOUSE_BUTTON_LEFT:
 				clicked.emit()
 			MOUSE_BUTTON_RIGHT:
-				right_clicked.emit()
+				if p_event.is_released():
+					if _has_moved_on_right_click:
+						_has_moved_on_right_click = false
+					
+					else:
+						right_clicked.emit()
 
 
 ## Handles drag motion on the resize handle to resize the item
 func _on_br_handle_gui_input(p_event: InputEvent) -> void:
-	if p_event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		_new_size += p_event.relative
-		_new_size = _new_size.abs()
-		
-		_target_size = _new_size.snapped(_snapping_distance).clamp(_snapping_distance, Vector2.INF)
-		update_label()
-		_update_transform()
+	if p_event is InputEventMouseMotion and (p_event.button_mask == MOUSE_BUTTON_MASK_LEFT or p_event.button_mask == MOUSE_BUTTON_MASK_RIGHT):
+		_update_size_from_event(p_event)
 
 	if p_event is InputEventMouseButton and p_event.is_pressed():
 		clicked.emit()

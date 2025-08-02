@@ -33,7 +33,7 @@ driver/enable_input=true
 
 ClassList="*res://core/global/ClassList.gd"
 ComponentDB="*res://core/global/ComponentDB.gd"
-UIDB="*res://scripts/global/PanelDB.gd"
+UIDB="*res://scripts/global/UIDB.gd"
 Programmer="*res://core/global/Programmer.gd"
 FixtureLibrary="*res://core/global/FixtureLibrary.gd"
 ThemeManager="*res://scripts/global/ThemeManager.gd"

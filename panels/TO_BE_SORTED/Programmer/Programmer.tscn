@@ -1,29 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://dnyj8vnwwbi2v"]
+[gd_scene load_steps=10 format=3 uid="uid://dnyj8vnwwbi2v"]
 
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_kpx20"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_j8af0"]
 [ext_resource type="Script" uid="uid://ckvl7eb5awy56" path="res://panels/TO_BE_SORTED/Programmer/Programmer.gd" id="3_vqepl"]
 [ext_resource type="Texture2D" uid="uid://dt0khkr0ltw70" path="res://assets/icons/Programmer.svg" id="4_5886v"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="4_kpyfu"]
 [ext_resource type="Texture2D" uid="uid://dlikb8or3xepr" path="res://assets/icons/Reset.svg" id="5_rgg0j"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="5_uwux3"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="7_recjq"]
 [ext_resource type="Texture2D" uid="uid://cjx13jidaqjyf" path="res://assets/icons/Scene.svg" id="8_aimxs"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_alch7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s20c8"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.205117, 0.205117, 0.205117, 1)
-border_color = Color(0.309804, 0.309804, 0.309804, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[node name="Programmer" type="PanelContainer" node_paths=PackedStringArray("_dimmer_tab_button", "_color_tab_button", "_gobo_tab_button", "_position_tab_button", "_beam_tab_button", "_focus_tab_button", "_shapers_tab_button", "_control_tab_button", "_parameter_container", "save_to_scene", "zone_select", "edit_controls")]
+[node name="Programmer" type="PanelContainer" node_paths=PackedStringArray("_dimmer_tab_button", "_color_tab_button", "_gobo_tab_button", "_position_tab_button", "_beam_tab_button", "_focus_tab_button", "_shapers_tab_button", "_control_tab_button", "_parameter_container", "save_to_scene", "zone_select", "edit_controls", "menu_bar")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -32,45 +20,43 @@ grow_vertical = 2
 theme = ExtResource("1_kpx20")
 theme_override_styles/panel = ExtResource("2_j8af0")
 script = ExtResource("3_vqepl")
-_dimmer_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/DimmerTabButton")
-_color_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ColorTabButton")
-_gobo_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/GoboTabButton")
-_position_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/PositionTabButton")
-_beam_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/BeamTabButton")
-_focus_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/FocusTabButton")
-_shapers_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ShapersTabButton")
-_control_tab_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/ControlTabButton")
+_dimmer_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/DimmerTabButton")
+_color_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/ColorTabButton")
+_gobo_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/GoboTabButton")
+_position_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/PositionTabButton")
+_beam_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/BeamTabButton")
+_focus_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/FocusTabButton")
+_shapers_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/ShapersTabButton")
+_control_tab_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer/ControlTabButton")
 _parameter_container = NodePath("VBoxContainer/ScrollContainer/HBoxContainer")
 button_group = SubResource("ButtonGroup_alch7")
 save_to_scene = NodePath("VBoxContainer/PanelContainer2/HBoxContainer/SaveToScene")
-zone_select = NodePath("VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/ZoneSelect")
-edit_controls = NodePath("VBoxContainer/PanelContainer/HBoxContainer/EditControls")
+zone_select = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer/ZoneSelect")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s20c8")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("4_kpyfu")]
 layout_mode = 2
 
-[node name="LineEdit" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-layout_mode = 2
+[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
 text = "Programmer"
 icon = ExtResource("4_5886v")
-flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TabButtons" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons"]
 layout_mode = 2
 
-[node name="DimmerTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="DimmerTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 toggle_mode = true
@@ -78,7 +64,7 @@ button_pressed = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Dimmer"
 
-[node name="ColorTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ColorTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -86,7 +72,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Color"
 
-[node name="GoboTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="GoboTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -94,7 +80,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Gobo"
 
-[node name="PositionTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="PositionTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -102,7 +88,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Position"
 
-[node name="BeamTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="BeamTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -110,7 +96,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Beam"
 
-[node name="FocusTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="FocusTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -119,7 +105,7 @@ button_group = SubResource("ButtonGroup_alch7")
 text = "Focus
 "
 
-[node name="ShapersTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ShapersTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -127,7 +113,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Shapers"
 
-[node name="ControlTabButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ControlTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/TabButtons/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 disabled = true
@@ -135,13 +121,13 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_alch7")
 text = "Control"
 
-[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ViewButtons" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons"]
 layout_mode = 2
 
-[node name="ZoneSelect" type="OptionButton" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+[node name="ZoneSelect" type="OptionButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -152,7 +138,7 @@ popup/item_0/text = "Zone"
 popup/item_0/id = 0
 popup/item_0/separator = true
 
-[node name="RandomMode" type="OptionButton" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+[node name="RandomMode" type="OptionButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Random Mode"
@@ -163,13 +149,12 @@ popup/item_0/id = 0
 popup/item_1/text = "Individual"
 popup/item_1/id = 1
 
-[node name="Erace" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+[node name="Erace" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer"]
 layout_mode = 2
 icon = ExtResource("5_rgg0j")
 
-[node name="EditControls" parent="VBoxContainer/PanelContainer/HBoxContainer" instance=ExtResource("5_uwux3")]
-layout_mode = 2
-show_edit = false
+[node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+show_settings = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -194,7 +179,9 @@ tooltip_text = "Save To Scene
 disabled = true
 icon = ExtResource("8_aimxs")
 
-[connection signal="item_selected" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/ZoneSelect" to="." method="_on_zone_select_item_selected"]
-[connection signal="item_selected" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/RandomMode" to="." method="_on_random_mode_item_selected"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/PanelContainer2/HBoxContainer/Erace" to="." method="_on_erace_pressed"]
+[connection signal="item_selected" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer/ZoneSelect" to="." method="_on_zone_select_item_selected"]
+[connection signal="item_selected" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer/RandomMode" to="." method="_on_random_mode_item_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/ViewButtons/HBoxContainer/Erace" to="." method="_on_erace_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer2/HBoxContainer/SaveToScene" to="." method="_on_save_to_scene_pressed"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

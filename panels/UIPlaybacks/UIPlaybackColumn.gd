@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Liam Sherwin, All rights reserved.
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
 
-class_name PlaybackColumn extends PanelContainer
+class_name UIPlaybackColumn extends UIComponent
 ## The playback column container used in the playbacks panel
 
 
@@ -15,8 +15,7 @@ signal control_pressed_edit_mode(control: Control)
 ## Button 1
 @export var button1: Button
 
-## Button 2gerBlock
-
+## Button 2
 @export var button2: Button
 
 ## Button 3
@@ -66,6 +65,13 @@ var _auto_config: Dictionary[String, Array] = {
 var _component_signal_connections: Dictionary[String, Callable] = {
 	"name_changed": _on_component_name_changed
 }
+
+
+## Init
+func _init() -> void:
+	super._init()
+	_set_class_name("UIPlaybackColumn")
+
 
 ## Bind Signals
 func _ready() -> void:

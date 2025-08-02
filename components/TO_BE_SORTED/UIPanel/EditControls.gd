@@ -35,6 +35,9 @@ class_name UIPanelEditControls extends Control
 ## Reference to the move/resize handle
 @export var move_resize_handle: Control = null
 
+## The Control to be used for resolves
+@export var resolve_box: Control
+
 
 ## Ready
 func _ready() -> void:
@@ -42,6 +45,9 @@ func _ready() -> void:
 	set_show_settings(show_settings)
 	set_show_close(show_close)
 	set_show_handle(show_handle)
+	
+	Interface.resolve_requested.connect(_handle_resolve_request)
+	_handle_resolve_request(Interface.get_current_resolve_type(), Interface.get_current_resolve_hint(), Interface.get_current_resolve_classname(), Interface.get_current_resolve_color())
 
 
 ## Sets the visibility of the edit button
@@ -74,3 +80,16 @@ func set_show_handle(p_show_handle: bool) -> void:
 	
 	if move_resize_handle:
 		move_resize_handle.visible = show_handle
+
+
+## Called when Interface.enter_resolve() is called
+func _handle_resolve_request(p_type: Interface.ResolveType, p_hint: Interface.ResolveHint, p_classname: String, p_color_hint: Color):
+	if p_type in [Interface.ResolveType.ANY, Interface.ResolveType.UIPANEL]:
+		if not resolve_box.visible:
+			resolve_box.show()
+			resolve_box.modulate = Color.TRANSPARENT
+		
+		Interface.fade_property(resolve_box, "modulate", p_color_hint, Callable(), ThemeManager.Constants.Times.EditControlResolve)
+	
+	else:
+		Interface.fade_property(resolve_box, "modulate", Color.TRANSPARENT, resolve_box.hide, ThemeManager.Constants.Times.EditControlResolve)

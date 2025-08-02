@@ -15,7 +15,8 @@ const UI_POPUP_LOCATION: String = "res://panels/popups/"
 ## All UIPanels
 var _panels: Dictionary[String, PackedScene] = {
 	"UIDesk": load(_p("UIDesk")),
-	"UIFunctions": load(_p("UIFunctions"))
+	"UIFunctions": load(_p("UIFunctions")),
+	"UIPlaybacks": load(_p("UIPlaybacks")),
 }
 
 
@@ -23,7 +24,8 @@ var _panels: Dictionary[String, PackedScene] = {
 var _panels_by_category: Dictionary[String, Array] = {
 	"Panels": [
 		"UIDesk",
-		"UIFunctions"
+		"UIFunctions",
+		"UIPlaybacks"
 	],
 }
 

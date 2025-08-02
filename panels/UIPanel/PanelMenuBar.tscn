@@ -23,7 +23,6 @@ icon = ExtResource("3_kaite")
 flat = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_scroll_mode = 3

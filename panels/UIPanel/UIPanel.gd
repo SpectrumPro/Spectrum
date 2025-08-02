@@ -38,6 +38,9 @@ signal close_request()
 ## Display mode for this panel
 enum DisplayMode {Panel, Popup}
 
+## Min size for UIPanels
+const MinSize: Vector2 = Vector2(240, 160)
+
 
 ## Edit mode state
 var _edit_mode: bool = false
@@ -67,6 +70,9 @@ func _init() -> void:
 	for button: Button in buttons:
 		_buttons_map.map(button, button.name)
 		_button_actions[button] = []
+	
+	if custom_minimum_size != Vector2.ZERO:
+		custom_minimum_size = MinSize
 
 
 ## Disables all the buttons in the given array
@@ -301,6 +307,7 @@ func _on_move_resize_gui_input(event: InputEvent) -> void:
 				if display_mode == DisplayMode.Popup:
 					position.x = clamp(position.x + relative.x, 0, get_parent_control().size.x - size.x)
 					position.y = clamp(position.y + relative.y, 0, get_parent_control().size.y - size.y)
+					move_to_front()                                                                                                                        
 			
 			MOUSE_BUTTON_MASK_RIGHT:
 				request_resize.emit(relative)
@@ -312,6 +319,8 @@ func _on_move_resize_gui_input(event: InputEvent) -> void:
 					if gp.y <= 0:
 						_mouse_warp = Vector2(0, edit_controls.move_resize_handle.global_position.y)
 						Input.warp_mouse(Vector2(gp.x, _mouse_warp.y))
+					
+					move_to_front()                                                                                                                        
 
 
 ## Called when the edit mode button is toggled
