@@ -36,7 +36,10 @@ enum ResolveHint {
 ## Enum for all WindowPopups
 enum WindowPopup {
 	PANEL_PICKER,	## PanelPicker class for selecting UIPanels
-	PANEL_SETTINGS	## PanelPicker class for selecting UIPanels
+	PANEL_SETTINGS,	## PanelPicker class for selecting UIPanels
+	MAIN_MENU,		## UI Main Menu
+	SETTINGS,		## UISettings
+	SAVE_LOAD,		## UISaveLoad
 }
 
 
@@ -99,7 +102,10 @@ var _resolve_hint_colors: Dictionary[ResolveHint, Color] = {
 ## Stores configuration for each WindowPopup that will be instanced on each window
 var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
 	WindowPopup.PANEL_PICKER: PopupConfig.new("PanelPicker", ""),
-	WindowPopup.PANEL_SETTINGS: PopupConfig.new("UIPanelSettings", "set_panel")
+	WindowPopup.PANEL_SETTINGS: PopupConfig.new("UIPanelSettings", "set_panel"),
+	WindowPopup.MAIN_MENU: PopupConfig.new("UIMainMenu", ""),
+	WindowPopup.SETTINGS: PopupConfig.new("UISettings", ""),
+	WindowPopup.SAVE_LOAD: PopupConfig.new("UISaveLoad", ""),
 }
 
 ## The WindowPopups scene to be instanced on each window
@@ -203,10 +209,31 @@ func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
 	return _show_window_popup(WindowPopup.PANEL_SETTINGS, p_source, p_panel)
 
 
+## Sets the visability of a WindowPopup
+func set_popup_visable(p_popup_type: WindowPopup, p_source: Node, p_visible: bool) -> UIBase:
+	if p_visible:
+		_show_window_popup(p_popup_type, p_source, null)
+	else:
+		_hide_window_popup(p_popup_type, p_source.get_window())
+	
+	return get_window_popup(p_popup_type, p_source)
+
+
 ## Hides all popup panels
 func hide_all_popup_panels() -> void:
 	for popup_type: WindowPopup in _window_popup_config:
 		_hide_window_popup(popup_type, get_window())
+
+
+## Gets the WindowPopup for the window containing the p_source node
+func get_window_popup(p_window_popup: WindowPopup, p_source: Node) -> UIBase:
+	if not _window_popup_config.has(p_window_popup):
+		return null
+	
+	var window: Window = p_source.get_window()
+	var config: PopupConfig = _window_popup_config[p_window_popup]
+	
+	return config.nodes.get(window, null)
 
 
 ## Fades a property of an object and handles animation cleanup

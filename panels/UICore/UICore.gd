@@ -10,9 +10,6 @@ class_name UICore extends UIPanel
 @export var _side_bar: UICorePrimarySideBar
 
 
-func _ready() -> void:
-	print(CameraServer.feeds()[0].get_id())
-
 ## Saves all the tabs
 func _save() -> Dictionary:
 	return {

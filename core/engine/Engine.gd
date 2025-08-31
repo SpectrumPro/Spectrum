@@ -76,9 +76,11 @@ var EngineConfig = {
 func _ready() -> void:
 	Details.print_startup_detils()
 	
+	Network.start_all()
+	
 	_add_auto_network_classes.call_deferred()
 	MainSocketClient.connected_to_server.connect(_on_connected_to_server)
-	Client.connect_to_server()
+	#Client.connect_to_server()
 
 
 ## Adds network objects as specifyed in EngineConfig

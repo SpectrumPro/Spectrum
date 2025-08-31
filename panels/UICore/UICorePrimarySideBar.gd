@@ -2,7 +2,6 @@
 # This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
 # See the LICENSE file for details.
 
-
 class_name UICorePrimarySideBar extends Control
 ## The primary side bar for UICore
 
@@ -74,6 +73,9 @@ var _current_visable_panel: UIPanel
 ## The Button Group to asign all tab buttons to
 var _button_group: ButtonGroup = ButtonGroup.new()
 
+## The UIMainMenu of this window
+var _main_menu: UIMainMenu
+
 
 func _ready() -> void:
 	_load_default_buttons()
@@ -82,6 +84,11 @@ func _ready() -> void:
 	create_custom("UIDesk")
 	
 	_tab_button_container.add_theme_constant_override("separation", button_separation)
+	
+	_main_menu = Interface.get_window_popup(Interface.WindowPopup.MAIN_MENU, self)
+	_main_menu.visibility_changed.connect(func ():
+		_menu_button.set_pressed_no_signal(_main_menu.visible)
+	)
 
 
 ## Changes to a tab
@@ -293,3 +300,8 @@ func _on_add_custom_pressed() -> void:
 	Interface.prompt_panel_picker(self).then(func (p_panel_class: String):
 		set_panel(UIDB.instance_panel(p_panel_class), current_tab)
 	)
+
+
+## Called when the MenuButton is toggled
+func _on_menu_toggled(toggled_on: bool) -> void:
+	Interface.set_popup_visable(Interface.WindowPopup.MAIN_MENU, self, toggled_on)

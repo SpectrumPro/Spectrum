@@ -39,6 +39,7 @@ FixtureLibrary="*res://core/global/FixtureLibrary.gd"
 ThemeManager="*res://scripts/global/ThemeManager.gd"
 Interface="*res://scripts/global/Interface.gd"
 CIDManager="*res://core/global/CIDManager.gd"
+Network="*res://core/engine/NetworkManager.gd"
 Core="*res://core/engine/Engine.gd"
 MainSocketClient="*res://scripts/networking/WebSocketClient.gd"
 MainUDPSocketClient="*res://scripts/networking/UDPSocketClient.gd"
@@ -78,10 +79,6 @@ movie_writer/movie_file="/Users/liam/Documents/Repos/SpectrumPro/Spectrum/record
 movie_writer/fps=30
 naming/scene_name_casing=1
 naming/script_name_casing=1
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/wakatime/plugin.cfg")
 
 [gui]
 

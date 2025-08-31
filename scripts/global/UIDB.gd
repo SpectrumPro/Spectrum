@@ -18,6 +18,8 @@ var _panels: Dictionary[String, PackedScene] = {
 	"UIFunctions": load(_p("UIFunctions")),
 	"UIPlaybacks": load(_p("UIPlaybacks")),
 	"UIUniverses": load(_p("UIUniverses")),
+	"UISettings": load(_p("UISettings")),
+	"UISaveLoad": load(_p("UISaveLoad")),
 }
 
 
@@ -27,7 +29,9 @@ var _panels_by_category: Dictionary[String, Array] = {
 		"UIDesk",
 		"UIFunctions",
 		"UIPlaybacks",
-		"UIUniverses"
+		"UIUniverses",
+		"UISettings",
+		"UISaveLoad",
 	],
 }
 

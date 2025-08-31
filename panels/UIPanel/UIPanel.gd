@@ -54,7 +54,6 @@ var _buttons_map: RefMap = RefMap.new()
 ## Stores all buttons and thier InputAction connections
 var _button_actions: Dictionary[Button, Array]
 
-
 ## Mouse warp distance
 var _mouse_warp: Vector2
 
@@ -64,7 +63,7 @@ func _init() -> void:
 	_set_class_name("UIPanel")
 	
 	register_setting_bool("show_menu_bar", set_menu_bar_visible, get_menu_bar_visible, Signal())
-	
+
 	await ready
 	set_edit_mode(false)
 	for button: Button in buttons:

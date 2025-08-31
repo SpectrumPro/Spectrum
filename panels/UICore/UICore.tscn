@@ -1,18 +1,18 @@
 [gd_scene load_steps=21 format=3 uid="uid://d00fmrh7nbaua"]
 
-[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="1_17i08"]
-[ext_resource type="Script" uid="uid://cjbnp24htiy3i" path="res://UICore.gd" id="1_52cs4"]
-[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="1_aoeir"]
-[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="1_py1vl"]
-[ext_resource type="Script" uid="uid://5twbcqrk7as1" path="res://StatusBar.gd" id="2_pj23w"]
-[ext_resource type="Script" uid="uid://cpdu3qjv70rxp" path="res://UICorePrimarySideBar.gd" id="2_py1vl"]
-[ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="3_opnnr"]
-[ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="3_pj23w"]
-[ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="5_tdt00"]
-[ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="6_52cs4"]
-[ext_resource type="StyleBox" uid="uid://btn6vaav0vau3" path="res://assets/styles/PanelMenuBarPopup.tres" id="8_6xekm"]
-[ext_resource type="Script" uid="uid://comuawwwqayh3" path="res://UiCoreResolveButtons.gd" id="8_mrm81"]
-[ext_resource type="Texture2D" uid="uid://cbwmiekm47cot" path="res://assets/icons/Action.svg" id="11_4uhdk"]
+[ext_resource type="Script" uid="uid://cjbnp24htiy3i" path="res://panels/UICore/UICore.gd" id="1_febpr"]
+[ext_resource type="Script" uid="uid://cpdu3qjv70rxp" path="res://panels/UICore/UICorePrimarySideBar.gd" id="2_hksc6"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="3_prxic"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="4_avgbi"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="5_kdrkr"]
+[ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="6_g4gss"]
+[ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="7_s5yey"]
+[ext_resource type="StyleBox" uid="uid://btn6vaav0vau3" path="res://assets/styles/PanelMenuBarPopup.tres" id="8_x6rwm"]
+[ext_resource type="Script" uid="uid://comuawwwqayh3" path="res://panels/UICore/UiCoreResolveButtons.gd" id="9_h7bru"]
+[ext_resource type="Script" uid="uid://5twbcqrk7as1" path="res://panels/UICore/UICoreStatusBar.gd" id="10_00dbt"]
+[ext_resource type="Texture2D" uid="uid://cbwmiekm47cot" path="res://assets/icons/Action.svg" id="11_q5s34"]
+[ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="12_ucqqu"]
+[ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="13_c1is7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opnnr"]
 bg_color = Color(0.140447, 0.140447, 0.140447, 1)
@@ -35,7 +35,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_tdt00"]
-font = ExtResource("1_py1vl")
+font = ExtResource("5_kdrkr")
 font_size = 71
 font_color = Color(0, 0, 0, 0.105882)
 
@@ -64,21 +64,21 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="FontVariation" id="FontVariation_aoeir"]
-base_font = ExtResource("3_opnnr")
+base_font = ExtResource("12_ucqqu")
 variation_embolden = 0.94
 
 [sub_resource type="LabelSettings" id="LabelSettings_7y6be"]
 font = SubResource("FontVariation_aoeir")
 font_color = Color(0.789062, 0.789062, 0.789062, 1)
 
-[node name="Main" type="PanelContainer" node_paths=PackedStringArray("_side_bar")]
+[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opnnr")
-script = ExtResource("1_52cs4")
+script = ExtResource("1_febpr")
 _side_bar = NodePath("VBoxContainer/HBoxContainer/UICorePrimarySideBar")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -93,7 +93,7 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_aoeir")
-script = ExtResource("2_py1vl")
+script = ExtResource("2_hksc6")
 tab_button_modulate = Color(0.509804, 0.509804, 0.509804, 1)
 disabled_tab_button_modulate = Color(0.682353, 0.682353, 0.682353, 1)
 _tab_button_container = NodePath("VBoxContainer/ScrollContainer/TabButtonContainer")
@@ -110,7 +110,8 @@ layout_mode = 2
 [node name="Menu" type="Button" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-icon = ExtResource("1_17i08")
+toggle_mode = true
+icon = ExtResource("3_prxic")
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
 custom_minimum_size = Vector2(0, 4.77)
@@ -137,7 +138,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 toggle_mode = true
-icon = ExtResource("1_aoeir")
+icon = ExtResource("4_avgbi")
 
 [node name="MainContent" type="Control" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -168,6 +169,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="OverlayContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent"]
 layout_mode = 1
@@ -210,7 +212,7 @@ theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1
 theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
 theme_override_colors/icon_normal_color = Color(0.753984, 0.753984, 0.753984, 1)
 text = "Desk"
-icon = ExtResource("5_tdt00")
+icon = ExtResource("6_g4gss")
 flat = true
 icon_alignment = 1
 vertical_icon_alignment = 0
@@ -224,7 +226,7 @@ theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1
 theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
 theme_override_colors/icon_normal_color = Color(0.753984, 0.753984, 0.753984, 1)
 text = "Custom"
-icon = ExtResource("6_52cs4")
+icon = ExtResource("7_s5yey")
 flat = true
 icon_alignment = 1
 vertical_icon_alignment = 0
@@ -243,8 +245,8 @@ offset_top = -70.0
 offset_right = 5.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = ExtResource("8_6xekm")
-script = ExtResource("8_mrm81")
+theme_override_styles/panel = ExtResource("8_x6rwm")
+script = ExtResource("9_h7bru")
 _button_container = NodePath("HBoxContainer")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/UICoreResolveButtons"]
@@ -254,7 +256,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 61)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pj23w")
-script = ExtResource("2_pj23w")
+script = ExtResource("10_00dbt")
 resolve_button_container = NodePath("../HBoxContainer/MainContent/OverlayContainer/UICoreResolveButtons")
 _version_label = NodePath("HBoxContainer/VersionLabel")
 _quick_access_container = NodePath("HBoxContainer/QuickAccessContainer")
@@ -276,7 +278,7 @@ layout_mode = 2
 [node name="ActionButton" type="Button" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer2/HBoxContainer"]
 layout_mode = 2
 toggle_mode = true
-icon = ExtResource("11_4uhdk")
+icon = ExtResource("11_q5s34")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
 custom_minimum_size = Vector2(700, 0)
@@ -298,8 +300,9 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Version"
-label_settings = ExtResource("3_pj23w")
+label_settings = ExtResource("13_c1is7")
 
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Menu" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_menu_toggled"]
 [connection signal="resized" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/ScrollContainer" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="match_visable_to_size"]
 [connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Edit" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="set_tab_edit_mode"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer/AddDesk" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="create_custom" binds= ["UIDesk"]]
