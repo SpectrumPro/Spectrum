@@ -4,6 +4,8 @@
 class_name NetworkNode extends Node
 ## Base class for all NetworkNodes
 
+@warning_ignore_start("unused_signal")
+@warning_ignore_start("unused_private_class_variable")
 
 ## Emitted when the connection state is changed
 signal connection_state_changed(connection_state: ConnectionState)

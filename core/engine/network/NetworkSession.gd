@@ -4,6 +4,7 @@
 class_name NetworkSession extends Node
 ## Base class for all NetworkSessions
 
+@warning_ignore_start("unused_signal")
 
 ## Emitted when a node joins the session
 signal node_joined(node: NetworkNode)

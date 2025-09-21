@@ -15,7 +15,6 @@ signal command_recieved(command: ConstaNetCommand)
 signal node_ip_changed(ip: String)
 
 
-
 ## MessageType
 const MessageType: ConstaNetHeadder.Type = ConstaNetHeadder.Type
 
@@ -24,6 +23,13 @@ const Flags: ConstaNetHeadder.Flags = ConstaNetHeadder.Flags
 
 ## NetworkRole
 const RoleFlags: ConstaNetHeadder.RoleFlags = ConstaNetHeadder.RoleFlags
+
+## Enum for TransportModes
+enum TransportMode {
+	TCP,			## Use TCP for sending data
+	UDP,			## Use UDP for sending data
+	AUTO			## Use TCP if connected, else UDP
+}
 
 
 ## The Constellation NetworkHandler
@@ -213,6 +219,22 @@ func update_from_discovery(p_discovery: ConstaNetDiscovery) -> void:
 		_udp_socket.connect_to_host(_node_ip, _node_udp_port)
 
 
+## Sends a message to the remote node
+func send_message(p_message: ConstaNetHeadder, p_transport_mode: TransportMode = TransportMode.AUTO) -> void:
+	match TransportMode:
+		TransportMode.TCP:
+			send_message_tcp(p_message)
+		
+		TransportMode.UDP:
+			send_message_udp(p_message)
+		
+		TransportMode.AUTO:
+			if _connection_state == ConnectionState.CONNECTED:
+				send_message_tcp(p_message)
+			else:
+				send_message_udp(p_message)
+
+
 ## Sends a message via UDP to the remote node
 func send_message_udp(p_message: ConstaNetHeadder) -> Error:
 	if _udp_socket.is_socket_connected():
@@ -371,7 +393,7 @@ func set_node_name(p_name: String) -> void:
 	set_attribute.value = p_name
 	
 	if is_local() and _set_node_name(p_name):
-		_network.send_message_broadcast(set_attribute)
+		_network._send_message_broadcast(set_attribute)
 	else:
 		send_message_udp(set_attribute)
 

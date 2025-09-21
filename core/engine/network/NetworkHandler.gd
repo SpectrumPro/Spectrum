@@ -4,6 +4,7 @@
 class_name NetworkHandler extends Node
 ## Base class for all NetworkHandlers
 
+@warning_ignore_start("unused_signal")
 
 ## Emitted when a NetworkNode is found
 signal node_found(node: NetworkNode)
