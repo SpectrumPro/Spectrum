@@ -25,10 +25,10 @@ var _previous_note: String = ""
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	_set_self_class("DMXOutput")
 	
-	register_custom_panel("DMXOutput", "connection_status", "set_output", load("res://components/ComponentSettings/ClassCustomModules/DMXOutputStatusDisplay.tscn"))
-	register_setting("DMXOutput", "start", start, Callable(), Signal(), Utils.TYPE_NULL, 0, "Start")
-	register_setting("DMXOutput", "stop", stop, Callable(), Signal(), Utils.TYPE_NULL, 0, "Stop")
-	register_setting("DMXOutput", "auto_start", set_auto_start, get_auto_start, auto_start_changed, Utils.TYPE_BOOL, 1, "Auto Start")
+	#register_custom_panel("DMXOutput", "connection_status", "set_output", load("res://components/ComponentSettings/ClassCustomModules/DMXOutputStatusDisplay.tscn"))
+	#register_setting("DMXOutput", "start", start, Callable(), Signal(), Utils.TYPE_NULL, 0, "Start")
+	#register_setting("DMXOutput", "stop", stop, Callable(), Signal(), Utils.TYPE_NULL, 0, "Stop")
+	#register_setting("DMXOutput", "auto_start", set_auto_start, get_auto_start, auto_start_changed, Utils.TYPE_BOOL, 1, "Auto Start")
 	
 	register_callback("on_connection_state_changed", _on_connection_state_changed)
 	register_callback("on_auto_start_changed", _set_auto_start)

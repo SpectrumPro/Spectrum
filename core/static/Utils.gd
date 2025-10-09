@@ -17,19 +17,6 @@ class_name Utils extends Object
 static var _signal_connections: Dictionary
 
 
-## Custom Types:
-const TYPE_STRING := "STRING"
-const TYPE_IP := "IP"
-const TYPE_BOOL := "BOOL"
-const TYPE_INT := "INT"
-const TYPE_FLOAT := "FLOAT"
-const TYPE_ENUM := "ENUM"
-const TYPE_NULL := "NULL"
-const TYPE_CUSTOM := "CUSTOM"
-const TYPE_CID := "CID"
-const TYPE_INPUTEVENTKEY := "INPUTEVENTKEY"
-const TYPE_INPUTEVENTJOYBUTTON := "INPUTEVENTJOYBUTTON"
-
 
 ## Saves a JSON valid dictonary to a file, creates the file and folder if it does not exist
 static func save_json_to_file(file_path: String, file_name: String, json: Dictionary) -> Error:

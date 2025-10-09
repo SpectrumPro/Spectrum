@@ -38,6 +38,9 @@ enum NodeFilter {
 }
 
 
+## The SettingsManager for this 
+var settings_manager: SettingsManager = SettingsManager.new()
+
 ## The current SessionMaster
 var _session_master: NetworkNode
 

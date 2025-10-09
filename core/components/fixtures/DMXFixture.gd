@@ -34,7 +34,7 @@ func _component_ready() -> void:
 	_set_self_class("DMXFixture")
 	
 	register_callback("on_channel_changed", _set_channel)
-	register_setting("DMXFixture", "channel", set_channel, get_channel, channel_changed, Utils.TYPE_INT, 0, "Channel", 1, 512)
+	#register_setting("DMXFixture", "channel", set_channel, get_channel, channel_changed, Data.Type.INT, 0, "Channel", 1, 512)
 
 
 ## Gets the channel

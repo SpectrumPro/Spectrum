@@ -64,8 +64,8 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
 	uuid = p_uuid
 	name = p_name
 	
-	register_setting("EngineComponent", "name", set_name, get_name, name_changed, "STRING", 0, "Name")
-	register_setting("EngineComponent", "CID", CIDManager.set_component_id.bind(self), cid, cid_changed, Utils.TYPE_CID, 1, "CID")
+	register_setting("EngineComponent", "name", set_name, get_name, name_changed, Data.Type.STRING, 0, "Name")
+	register_setting("EngineComponent", "CID", CIDManager.set_component_id.bind(self), cid, cid_changed, Data.Type.CID, 1, "CID")
 	_component_ready()
 	
 	print_verbose("I am: ", name, " | ", uuid)
@@ -107,7 +107,7 @@ func register_callback(p_signal_name: String, p_callback: Callable) -> void:
 
 
 ## Registers a setting
-func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null, p_enum: Dictionary = {}) -> void:
+func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: Data.Type, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null, p_enum: Dictionary = {}) -> void:
 	_settings.get_or_add(p_classname, {})[p_key] = {
 			"setter": p_setter,
 			"getter": p_getter,
@@ -123,28 +123,28 @@ func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_
 
 ## Shorthand for register_setting() for a string value
 func register_setting_string(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_STRING, -1, p_key.capitalize())
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Data.Type.STRING, -1, p_key.capitalize())
 
 
 ## Shorthand for register_setting() for a float value
 func register_setting_bool(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_BOOL, -1, p_key.capitalize(), null, null)
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Data.Type.BOOL, -1, p_key.capitalize(), null, null)
 
 
 ## Shorthand for register_setting() for a float value
 func register_setting_float(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_min: float, p_max: float) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_FLOAT, -1, p_key.capitalize(), p_min, p_max)
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Data.Type.FLOAT, -1, p_key.capitalize(), p_min, p_max)
 
 
 ## Shorthand for register_setting() for a float value
 func register_setting_enum(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_enum: Dictionary) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_ENUM, -1, p_key.capitalize(), null, null, p_enum)
+	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Data.Type.ENUM, -1, p_key.capitalize(), null, null, p_enum)
 
 
 ## Registers a custom setting panel
 func register_custom_panel(p_classname: String, p_key: String, p_entry_point: String, p_custom_panel: PackedScene) -> void:
 	_settings.get_or_add(p_classname, {})[p_key] = {
-			"data_type": Utils.TYPE_CUSTOM,
+			"data_type": Data.Type.CUSTOMPANEL,
 			"entry_point": p_entry_point,
 			"custom_panel": p_custom_panel
 	}

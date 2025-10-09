@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="6_g4gss"]
 [ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="7_s5yey"]
 [ext_resource type="StyleBox" uid="uid://btn6vaav0vau3" path="res://assets/styles/PanelMenuBarPopup.tres" id="8_x6rwm"]
-[ext_resource type="Script" uid="uid://comuawwwqayh3" path="res://panels/UICore/UiCoreResolveButtons.gd" id="9_h7bru"]
+[ext_resource type="Script" uid="uid://comuawwwqayh3" path="res://panels/UICore/UICoreResolveButtons.gd" id="9_h7bru"]
 [ext_resource type="Script" uid="uid://5twbcqrk7as1" path="res://panels/UICore/UICoreStatusBar.gd" id="10_00dbt"]
 [ext_resource type="Texture2D" uid="uid://cbwmiekm47cot" path="res://assets/icons/Action.svg" id="11_q5s34"]
 [ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="12_ucqqu"]
@@ -207,10 +207,10 @@ layout_mode = 2
 [node name="AddDesk" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1)
-theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
 theme_override_colors/icon_normal_color = Color(0.753984, 0.753984, 0.753984, 1)
+theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
 text = "Desk"
 icon = ExtResource("6_g4gss")
 flat = true
@@ -221,10 +221,10 @@ expand_icon = true
 [node name="AddCustom" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1)
-theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
 theme_override_colors/icon_normal_color = Color(0.753984, 0.753984, 0.753984, 1)
+theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
 text = "Custom"
 icon = ExtResource("7_s5yey")
 flat = true

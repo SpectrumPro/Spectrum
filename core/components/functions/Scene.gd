@@ -24,12 +24,12 @@ var _fade_out_speed: float = 2
 func _component_ready() -> void:
 	_set_self_class("Scene")
 	
-	register_control_method("fade_in_speed", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, [TYPE_FLOAT])
-	register_control_method("fade_out_speed", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, [TYPE_FLOAT])
-	
-	register_setting("Scene", "fade_in", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, Utils.TYPE_FLOAT, 0, "Fade In Time", 0, INF)
-	register_setting("Scene", "fade_out", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, Utils.TYPE_FLOAT, 1, "Fade Out Time", 0, INF)
-	
+	#register_control_method("fade_in_speed", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, [TYPE_FLOAT])
+	#register_control_method("fade_out_speed", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, [TYPE_FLOAT])
+	##
+	#register_setting("Scene", "fade_in", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, Utils.TYPE_FLOAT, 0, "Fade In Time", 0, INF)
+	#register_setting("Scene", "fade_out", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, Utils.TYPE_FLOAT, 1, "Fade Out Time", 0, INF)
+	#
 	register_callback("on_fade_in_speed_changed", _set_fade_in_speed)
 	register_callback("on_fade_out_speed_changed", _set_fade_out_speed)
 

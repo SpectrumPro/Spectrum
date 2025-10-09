@@ -33,10 +33,10 @@ var _universe_number: int = 0
 func _component_ready():
 	_set_self_class("ArtNetOutput")
 	
-	register_setting("ArtNetOutput", "ip_address", set_ip, get_ip, ip_changed, Utils.TYPE_IP, 0, "IP Address")
-	register_setting("ArtNetOutput", "use_broadcast", set_use_broadcast, get_use_broadcast, broadcast_state_changed, Utils.TYPE_BOOL, 1, "Use Broadcast")
-	register_setting("ArtNetOutput", "universe_number", set_universe_number, get_universe_number, universe_number_changed, Utils.TYPE_INT, 2, "Universe Number")
-	
+	#register_setting("ArtNetOutput", "ip_address", set_ip, get_ip, ip_changed, Utils.TYPE_IP, 0, "IP Address")
+	#register_setting("ArtNetOutput", "use_broadcast", set_use_broadcast, get_use_broadcast, broadcast_state_changed, Utils.TYPE_BOOL, 1, "Use Broadcast")
+	#register_setting("ArtNetOutput", "universe_number", set_universe_number, get_universe_number, universe_number_changed, Utils.TYPE_INT, 2, "Universe Number")
+	#
 	register_callback("on_ip_changed", _set_ip)
 	register_callback("on_broadcast_state_changed", _set_use_broadcast)
 	register_callback("on_universe_number_changed", _set_universe_number)

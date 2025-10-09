@@ -7,10 +7,10 @@ class_name UIPopup extends UIPanel
 
 
 ## Emitted when the action of this popup is accepted
-signal accepted
+signal accepted()
 
 ## Emitted when the action of this popup is canceled
-signal canceled
+signal canceled()
 
 
 ## The signal emitted when the actions is accepted

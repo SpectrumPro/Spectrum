@@ -136,6 +136,9 @@ func _init() -> void:
 	set_process(false)
 	ConstellationConfig.load_config("res://ConstellaitionConfig.gd")
 	
+	_handler_name = "Constellation"
+	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, join_session, _local_node.get_session, [_local_node.session_changed]).set_class_filter(ConstellationSession)
+	
 	if not ConstellationConfig.disable_startup_details:
 		Details.print_startup_detils()
 	
@@ -355,8 +358,12 @@ func create_session(p_name: String) -> NetworkSession:
 
 ## Joins a pre-existing session on the network
 func join_session(p_session: NetworkSession) -> bool:
-	if _local_node.get_session() or not p_session:
+	if not p_session:
+		leave_session()
 		return false
+	
+	if _local_node.get_session():
+		leave_session()
 	
 	var message: ConstaNetSessionJoin = ConstaNetSessionJoin.new()
 	

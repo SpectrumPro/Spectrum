@@ -31,7 +31,7 @@ func set_component(component: EngineComponent) -> void:
 		if settings:
 			for setting: Dictionary in settings:
 				match setting.data_type:
-					Utils.TYPE_CUSTOM:
+					Data.Type.CUSTOMPANEL:
 						var panel: Control = setting.custom_panel.instantiate()
 						
 						if panel.has_method(setting.entry_point):

@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    sodipodi:docname="logo.svg"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@
      inkscape:cx="1003.3845"
      inkscape:cy="209.30361"
      inkscape:window-width="2560"
-     inkscape:window-height="1374"
+     inkscape:window-height="1360"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -50,15 +50,10 @@
        style="color-interpolation-filters:sRGB"
        id="filter1"
        inkscape:label="filter1"
-       x="-0.02311638"
-       y="-0.21501453"
-       width="1.0462328"
-       height="1.4300291">
-      <feGaussianBlur
-         stdDeviation="4.7033361486486482"
-         id="feGaussianBlur1"
-         result="result1" />
-    </filter>
+       x="0"
+       y="0"
+       width="1"
+       height="1" />
   </defs>
   <g
      inkscape:label="Layer 1"

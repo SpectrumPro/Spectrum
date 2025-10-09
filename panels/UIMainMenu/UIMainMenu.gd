@@ -61,6 +61,13 @@ func _on_all_settings_toggled(p_toggled_on: bool) -> void:
 	close_request.emit()
 
 
+## Called when the NetworkManager button is pressed
+func _on_network_manager_settings_pressed() -> void:
+	Interface.set_popup_visable(Interface.WindowPopup.SETTINGS, self, true)
+	_settings_panel.switch_to_tab(UISetting.Tab.NetworkManager)
+	close_request.emit()
+
+
 ## Called when the SaveLoad Button is toggled
 func _on_save_load_toggled(p_toggled_on: bool) -> void:
 	Interface.set_popup_visable(Interface.WindowPopup.SAVE_LOAD, self, p_toggled_on)

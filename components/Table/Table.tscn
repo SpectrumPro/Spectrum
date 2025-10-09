@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://bf3cbsyaotnnq"]
+
+[ext_resource type="Script" uid="uid://hmhku2rcmd4j" path="res://components/Table/Table.gd" id="1_bfqnh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfqnh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xi7fw"]
+
+[node name="Table" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bfqnh")
+
+[node name="Tree" type="Tree" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.886262, 0.886261, 0.886262, 1)
+theme_override_colors/font_selected_color = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 0
+theme_override_styles/cursor = SubResource("StyleBoxEmpty_bfqnh")
+theme_override_styles/cursor_unfocused = SubResource("StyleBoxEmpty_xi7fw")
+column_titles_visible = true
+hide_root = true
+select_mode = 2
+
+[connection signal="multi_selected" from="Tree" to="." method="_on_tree_multi_selected"]
+[connection signal="nothing_selected" from="Tree" to="." method="_on_tree_nothing_selected"]

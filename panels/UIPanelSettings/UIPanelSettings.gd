@@ -13,8 +13,8 @@ signal panel_changed(panel)
 ## UIPanelSettingsShortcuts Settings Page
 @export var _shortcuts_panel: UIPanelSettingsShortcuts
 
-## The ClientComponentSettings for settings
-@export var _settings_panel: ClientComponentSettings
+## The SettingsManagerView for settings
+@export var _settings_panel: SettingsManagerView
 
 
 ## The current UIPanel
@@ -30,7 +30,8 @@ func _init() -> void:
 ## Sets the panelvvc
 func set_panel(panel: UIPanel) -> void:
 	_panel = panel
-	_settings_panel.set_component(_panel)
+	_settings_panel.set_manager(_panel.settings_manager)
+	
 	panel_changed.emit(_panel)
 
 

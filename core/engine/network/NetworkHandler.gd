@@ -26,11 +26,17 @@ enum NetworkState {
 }
 
 
+## The SettingsManager for this 
+var settings_manager: SettingsManager = SettingsManager.new()
+
 ## The current NetworkState
 var _network_state: NetworkState = NetworkState.OFFLINE
 
 ## Previous error code of the NetworkState
 var _network_state_err_code: Error = FAILED
+
+## Human readable NetworkHandler name
+var _handler_name: String = "NetworkHandler"
 
 
 ## Starts the local node
@@ -86,3 +92,8 @@ func get_known_sessions() -> Array[NetworkSession]:
 ## Returns all unknown NetworkSessions
 func get_unknown_sessions() -> Array[NetworkSession]:
 	return []
+
+
+## Gets the name of this network handler
+func get_handler_name() -> String:
+	return _handler_name

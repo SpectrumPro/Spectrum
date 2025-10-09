@@ -13,6 +13,9 @@ signal connection_state_changed(connection_state: ConnectionState)
 ## Emitted when the name of the node is changed
 signal node_name_changed(node_name: String)
 
+## Emittes when the current session is changed, or left
+signal session_changed(session: NetworkSession)
+
 ## Emitted when the Node joins a NetworkSession
 signal session_joined(session: NetworkSession)
 
@@ -46,6 +49,9 @@ enum NodeFlags {
 	LOCAL_NODE			= 2 << 0,	## This node is a Local node
 }
 
+
+## The SettingsManager for this 
+var settings_manager: SettingsManager = SettingsManager.new()
 
 ## Current state of the remote node local connection
 var _connection_state: ConnectionState = ConnectionState.UNKNOWN

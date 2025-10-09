@@ -31,6 +31,9 @@ var _use_auto_resolve: bool = false
 ## Whether to auto-reject new callbacks
 var _use_auto_reject: bool = false
 
+## The object refernce this promise is for
+var _object_refernce: Object = null
+
 
 ## Resolves the promise and calls all registered `then()` callbacks
 func resolve(args: Array = []) -> void:
@@ -42,6 +45,10 @@ func resolve(args: Array = []) -> void:
 
 	resolved.emit(args)
 
+## Resolves the promise and calls all registered `then()` callbacks. VarArg function
+func resolvev(...args) -> void:
+	resolve(args)
+
 
 ## Rejects the promise and calls all registered `catch()` callbacks
 func reject(args: Array = []) -> void:
@@ -52,6 +59,11 @@ func reject(args: Array = []) -> void:
 			method.callv(args)
 
 	rejected.emit(args)
+
+
+## Rejects the promise and calls all registered `catch()` callbacks VarArg function
+func rejectv(...args) -> void:
+	reject(args)
 
 
 ## Enables auto-resolve for any new `then()` callbacks
@@ -100,3 +112,13 @@ func clear() -> void:
 
 	_use_auto_resolve = false
 	_use_auto_reject = false
+
+
+## Sets the object refernce
+func set_object_refernce(p_object_refernce: Object) -> void:
+	_object_refernce = p_object_refernce
+
+
+## Gets the object refernce
+func get_object_refernce() -> Object:
+	return _object_refernce

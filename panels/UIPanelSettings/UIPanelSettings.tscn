@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="3_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="4_1jyub"]
 [ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="5_a0kig"]
-[ext_resource type="PackedScene" uid="uid://bwj2kgbjtdg17" path="res://components/ClientComponentSettings/ClientComponentSettings.tscn" id="6_a0kig"]
+[ext_resource type="PackedScene" uid="uid://kjup3yrjifr5" path="res://components/SettingsManagerView/SettingsManagerView.tscn" id="6_a0kig"]
 [ext_resource type="Script" uid="uid://c20borh60xiu1" path="res://panels/UIPanelSettings/Shortcuts.gd" id="6_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_i3a75"]
 [ext_resource type="Texture2D" uid="uid://f8q8t2pxjmkl" path="res://assets/icons/remove_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" id="8_ct4k6"]
@@ -27,7 +27,7 @@ grow_vertical = 2
 theme_override_styles/panel = ExtResource("1_i7um0")
 script = ExtResource("1_4hx28")
 _shortcuts_panel = NodePath("VBoxContainer/Shortcuts")
-_settings_panel = NodePath("VBoxContainer/Settings/ClientComponentSettings")
+_settings_panel = NodePath("VBoxContainer/Settings/SettingsManagerView")
 edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
 menu_bar = NodePath("VBoxContainer/PanelMenuBar")
 
@@ -76,9 +76,8 @@ icon = ExtResource("5_a0kig")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ClientComponentSettings" parent="VBoxContainer/Settings" instance=ExtResource("6_a0kig")]
+[node name="SettingsManagerView" parent="VBoxContainer/Settings" instance=ExtResource("6_a0kig")]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Shortcuts" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_button_tree", "_action_tree", "_add_action_button", "_remove_action_button")]
 visible = false

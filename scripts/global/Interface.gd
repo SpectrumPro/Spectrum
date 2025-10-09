@@ -108,11 +108,17 @@ var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
 	WindowPopup.SAVE_LOAD: PopupConfig.new("UISaveLoad", ""),
 }
 
+## All WindowPopup scenes per window
+var _window_popups: Dictionary[Window, Control]
+
 ## The WindowPopups scene to be instanced on each window
 var _window_popups_scene: PackedScene = load("res://WindowPopups.tscn")
 
 ## All active fade animations
 var _active_fade_animations: Dictionary[Object, Dictionary]
+
+## All open UIPopupDialog refernced by the source node
+var _open_popup_dialogs: Dictionary[Node, UIPopupDialog]
 
 
 ## Init ClientInterface
@@ -121,50 +127,44 @@ func _ready() -> void:
 	
 	_register_window_popups(popups, get_tree().root)
 	get_tree().root.add_child.call_deferred(popups)
+	_window_popups[get_tree().root] = popups
 
 
 ## Registers all WindowPopups into the corrisponding PopupConfig class
 func _register_window_popups(p_window_popups: Control, p_window: Window) -> void:
 	for window_popup: WindowPopup in _window_popup_config.keys():
-		var config: PopupConfig = _window_popup_config[window_popup]
-		var popup: UIBase = p_window_popups.get_node(config.node_name)
-		var setter: Callable
-		var resolve_signal: Signal = popup.get_custom_signal_or_default() if popup is UIPopup else Signal()
-		var reject_signal: Signal = popup.canceled if popup is UIPopup else popup.close_request
-		var promise: Promise = Promise.new()
-		
-		if config.setter:
-			setter = Callable(popup, config.setter)
-		
-		## TEMP workaround untill Godot 4.5's vararg functions are avaibal
-		if not resolve_signal.is_null():
-			resolve_signal.connect(func (arg1: Variant = null, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null, arg6: Variant = null, arg7: Variant = null, arg8: Variant = null):
-				var args: Array = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
-				
-				promise.resolve(args.filter(func (arg):
-					return not (arg == null)
-				))
-				
-				_hide_window_popup(window_popup, p_window)
-			)
-		
-		## TEMP workaround untill Godot 4.5's vararg functions are avaibal
-		if not reject_signal.is_null():
-			reject_signal.connect(func (arg1: Variant = null, arg2: Variant = null, arg3: Variant = null, arg4: Variant = null, arg5: Variant = null, arg6: Variant = null, arg7: Variant = null, arg8: Variant = null):
-				var args: Array = [arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8]
-				
-				promise.reject(args.filter(func (arg):
-					return not (arg == null)
-				))
-				
-				_hide_window_popup(window_popup, p_window)
-			)
-		
-		config.nodes[p_window] = popup
-		config.setter_callables[p_window] = setter
-		config.active_state[p_window] = false
-		config.promises[p_window] = promise
-		popup.hide()
+		_register_popup(window_popup, p_window_popups, p_window)
+
+
+## Registers a WindowPopup on the given Window
+func _register_popup(p_window_popup: WindowPopup, p_window_popups: Control, p_window: Window) -> void:
+	var config: PopupConfig = _window_popup_config[p_window_popup]
+	var popup: UIBase = p_window_popups.get_node(config.node_name)
+	var setter: Callable
+	var resolve_signal: Signal = popup.get_custom_signal_or_default() if popup is UIPopup else Signal()
+	var reject_signal: Signal = popup.canceled if popup is UIPopup else popup.close_request
+	var promise: Promise = Promise.new()
+	
+	if config.setter:
+		setter = Callable(popup, config.setter)
+	
+	if not resolve_signal.is_null():
+		resolve_signal.connect(func (...p_args):
+			promise.resolve(p_args)
+			_hide_window_popup(p_window_popup, p_window)
+		)
+	
+	if not reject_signal.is_null():
+		reject_signal.connect(func (...p_args):
+			promise.reject(p_args)
+			_hide_window_popup(p_window_popup, p_window)
+		)
+	
+	config.nodes[p_window] = popup
+	config.setter_callables[p_window] = setter
+	config.active_state[p_window] = false
+	config.promises[p_window] = promise
+	popup.hide()
 
 
 ## Shows the given WindowPopup
@@ -207,6 +207,105 @@ func prompt_panel_picker(p_source: Node) -> Promise:
 ## Promps the user with UIPaneSettings
 func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
 	return _show_window_popup(WindowPopup.PANEL_SETTINGS, p_source, p_panel)
+
+
+## Promps the user with a confirm dialog
+func prompt_dialog_confirm(p_source: Node, p_title_text: String = "", p_label_text: String = "", p_button_text: String = "") -> Promise:
+	var promise: Promise = create_popup_dialog(p_source)
+	var new_dialog: UIPopupDialog = promise.get_object_refernce()
+	
+	if not new_dialog:
+		return promise
+	
+	new_dialog.set_mode(UIPopupDialog.Mode.CONFIRMATION)
+	
+	if p_title_text:
+		new_dialog.set_title_text(p_title_text)
+	
+	if p_label_text:
+		new_dialog.set_label_text(p_label_text)
+	
+	if p_button_text:
+		new_dialog.set_button_text(p_button_text)
+	
+	return promise
+
+
+## Promps the user with a confirm dialog
+func prompt_dialog_delete(p_source: Node, p_title_text: String = "", p_label_text: String = "", p_button_text: String = "") -> Promise:
+	var promise: Promise = create_popup_dialog(p_source)
+	var new_dialog: UIPopupDialog = promise.get_object_refernce()
+	
+	if not new_dialog:
+		return promise
+	
+	new_dialog.set_mode(UIPopupDialog.Mode.DELETE_CONFIRMATION)
+	
+	if p_title_text:
+		new_dialog.set_title_text(p_title_text)
+	
+	if p_label_text:
+		new_dialog.set_label_text(p_label_text)
+	
+	if p_button_text:
+		new_dialog.set_button_text(p_button_text)
+	
+	return promise
+
+
+## Promps the user with a string dialog
+func prompt_dialog_string(p_source: Node, p_title_text: String = "", p_label_text: String = "") -> Promise:
+	var promise: Promise = create_popup_dialog(p_source)
+	var new_dialog: UIPopupDialog = promise.get_object_refernce()
+	
+	if not new_dialog:
+		return promise
+	
+	new_dialog.set_mode(UIPopupDialog.Mode.STRING)
+	
+	if p_title_text:
+		new_dialog.set_title_text(p_title_text)
+	
+	if p_label_text:
+		new_dialog.set_label_text(p_label_text)
+	
+	return promise
+
+
+## Creates and adds a blank UIPopupDialog
+func create_popup_dialog(p_source: Node) -> Promise:
+	if _open_popup_dialogs.has(p_source):
+		var open_dialog: UIPopupDialog = _open_popup_dialogs[p_source]
+		
+		open_dialog.focus()
+		open_dialog.move_to_front()
+		open_dialog.flash()
+		
+		return Promise.new().auto_reject()
+	
+	var window_popups: Control = _window_popups[p_source.get_window()]
+	var new_dialog: UIPopupDialog = UIDB.instance_popup(UIPopupDialog)
+	var promise: Promise = Promise.new()
+	
+	new_dialog._custom_accepted_signal.connect(func (...p_args): 
+		promise.resolve(p_args)
+		fade_and_hide(new_dialog, new_dialog.queue_free)
+		_open_popup_dialogs.erase(p_source)
+	)
+	new_dialog.canceled.connect(func (): 
+		promise.reject()
+		fade_and_hide(new_dialog, new_dialog.queue_free)
+		_open_popup_dialogs.erase(p_source)
+	)
+	
+	promise.set_object_refernce(new_dialog)
+	window_popups.add_child(new_dialog)
+	new_dialog.hide()
+	show_and_fade(new_dialog, new_dialog.focus)
+	new_dialog.focus()
+	
+	_open_popup_dialogs[p_source] = new_dialog
+	return promise
 
 
 ## Sets the visability of a WindowPopup

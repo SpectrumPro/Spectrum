@@ -27,28 +27,28 @@ func set_component(component: Object) -> void:
 	if not is_instance_valid(component):
 		return
 	
-	for classname: String in component.get_class_tree():
-		var new_module: ClientClassSettingsModule = load("uid://cib03nuq5ktul").instantiate()
-		new_module.set_title(classname)
-		
-		var settings: Array = component.get_settings(classname).values()
-		if settings:
-			for setting: Dictionary in settings:
-				match setting.data_type:
-					Utils.TYPE_CUSTOM:
-						var panel: Control = setting.custom_panel.instantiate()
-						
-						if panel.has_method(setting.entry_point):
-							panel.ready.connect(panel.get(setting.entry_point).call.bind(component), CONNECT_ONE_SHOT)
-						
-						new_module.show_custom(panel)
-					
-					_:
-						new_module.show_setting(setting.setter, setting.getter, setting.signal, setting.data_type, setting.visual_line, setting.visual_name, setting.min, setting.max, setting.enum)
-		else:
-			new_module.set_disable(true)
-		
-		_settings_module_container.add_child(new_module)
+	#for classname: String in component.get_class_tree():
+		#var new_module: ClientClassSettingsModule = load("uid://cib03nuq5ktul").instantiate()
+		#new_module.set_title(classname)
+		#
+		#var settings: Array = component.get_settings(classname).values()
+		#if settings:
+			#for setting: Dictionary in settings:
+				#match setting.data_type:
+					#Utils.TYPE_CUSTOM:
+						#var panel: Control = setting.custom_panel.instantiate()
+						#
+						#if panel.has_method(setting.entry_point):
+							#panel.ready.connect(panel.get(setting.entry_point).call.bind(component), CONNECT_ONE_SHOT)
+						#
+						#new_module.show_custom(panel)
+					#
+					#_:
+						#new_module.show_setting(setting.setter, setting.getter, setting.signal, setting.data_type, setting.visual_line, setting.visual_name, setting.min, setting.max, setting.enum)
+		#else:
+			#new_module.set_disable(true)
+		#
+		#_settings_module_container.add_child(new_module)
 
 
 ## Gets the component

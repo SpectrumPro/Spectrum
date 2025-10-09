@@ -7,13 +7,13 @@ class_name InputActionSettingsComponent extends PanelContainer
 
 
 ## The ClientComponentSettings for InputActions
-@export var _input_action_settings: ClientComponentSettings
+@export var _input_action_settings: Control
 
 ## The ClientComponentSettings for InputTriggers
-@export var _input_trigger_settings: ClientComponentSettings
+@export var _input_trigger_settings: Control
 
 ## The ClientComponentSettings for ActionTriggers
-@export var _action_trigger_settings: ClientComponentSettings
+@export var _action_trigger_settings: Control
 
 ## ItemList for InputTriggers
 @export var _input_triggers_tree: Tree

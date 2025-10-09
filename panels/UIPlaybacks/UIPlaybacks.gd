@@ -55,13 +55,14 @@ var _trigger_block_connections: Dictionary[String, Callable] = {
 func _init() -> void:
 	super._init()
 	_set_class_name("UIPlaybacks")
+	
+	settings_manager.register_setting("columns", Data.Type.INT, set_columns_ui, get_columns, [columns_changed]
+	).display("UIPlaybacks", 1).set_min_max(0, 100)
 
 
 ## Load Default Columns
 func _ready() -> void:
 	set_edit_mode_disabled(true)
-	
-	register_setting_int("columns", set_columns_ui, get_columns, columns_changed, 0, 100)
 	
 	if not _columns_set_from_load:
 		_set_columns(_visable_columns)

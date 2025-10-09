@@ -36,7 +36,7 @@ signal close_request()
 
 
 ## Display mode for this panel
-enum DisplayMode {Panel, Popup}
+enum DisplayMode {Panel, Popup, Imbed}
 
 ## Min size for UIPanels
 const MinSize: Vector2 = Vector2(240, 160)
@@ -60,10 +60,13 @@ var _mouse_warp: Vector2
 
 ## Init
 func _init() -> void:
+	super._init()
 	_set_class_name("UIPanel")
 	
-	register_setting_bool("show_menu_bar", set_menu_bar_visible, get_menu_bar_visible, Signal())
-
+	settings_manager.register_setting("show_menu_bar", Data.Type.BOOL, set_menu_bar_visible, get_menu_bar_visible, [Signal()]
+	).display("UIPanel", 0)
+	
+	
 	await ready
 	set_edit_mode(false)
 	for button: Button in buttons:
@@ -103,16 +106,31 @@ func set_edit_controls(p_edit_controls: UIPanelEditControls) -> void:
 		edit_controls.close_button.pressed.connect(_on_close_button_pressed)
 		
 		edit_controls.show_close = (display_mode == DisplayMode.Popup)
+		set_display_mode(get_display_mode())
 
 
 ## Sets the display mode
 func set_display_mode(p_dispaly_mode: DisplayMode) -> void:
 	display_mode = p_dispaly_mode
 	
-	if is_instance_valid(edit_controls):
-		edit_controls.show_close = (display_mode == DisplayMode.Popup)
+	if not edit_controls:
+		return
 	
-	add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelPopup if (display_mode == DisplayMode.Popup) else ThemeManager.StyleBoxes.UIPanelBase)
+	match display_mode:
+		DisplayMode.Panel:
+			edit_controls.show_close = false
+			edit_controls.show_handle = true
+			add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelBase)
+		
+		DisplayMode.Popup:
+			edit_controls.show_close = true
+			edit_controls.show_handle = true
+			add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelPopup)
+		
+		DisplayMode.Imbed:
+			edit_controls.show_close = false
+			edit_controls.show_handle = false
+			add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelImbed)
 
 
 ## Sets the edit mode state
@@ -179,6 +197,12 @@ func detatch_menu_bar() -> PanelMenuBar:
 	menu_bar.set_popup_style(true)
 	menu_bar.get_parent().remove_child(menu_bar)
 	return menu_bar
+
+
+## Causes this panel to flash for a breef moment to get the users attenction
+func flash() -> void:
+	modulate = ThemeManager.Colors.UIPanelFlashColor
+	Interface.fade_property(self, "modulate", Color.WHITE, Callable(), ThemeManager.Constants.Times.UIPanelFlashTime)
 
 
 ## Adds a button to allow shortcuts to be added

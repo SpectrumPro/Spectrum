@@ -56,6 +56,8 @@ func set_show_edit(p_show_edit: bool) -> void:
 	
 	if edit_button:
 		edit_button.visible = show_edit
+	
+	_update_visability()
 
 
 ## Sets the visibility of the settings button
@@ -64,6 +66,8 @@ func set_show_settings(p_show_settings: bool) -> void:
 	
 	if settings_button:
 		settings_button.visible = show_settings
+	
+	_update_visability()
 
 
 ## Sets the visibility of the close button
@@ -72,6 +76,8 @@ func set_show_close(p_show_close: bool) -> void:
 	
 	if close_button:
 		close_button.visible = show_close
+	
+	_update_visability()
 
 
 ## Sets the visibility of the move/resize handle
@@ -80,6 +86,16 @@ func set_show_handle(p_show_handle: bool) -> void:
 	
 	if move_resize_handle:
 		move_resize_handle.visible = show_handle
+	
+	_update_visability()
+
+
+## Updates the visability of this EditControl if all items are hidden
+func _update_visability() -> void:
+	if not show_edit and not show_settings and not show_close and not show_handle:
+		hide()
+	else:
+		show()
 
 
 ## Called when Interface.enter_resolve() is called

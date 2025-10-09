@@ -49,6 +49,13 @@ static func create_unknown_session(p_session_id: String) -> ConstellationSession
 	return session
 
 
+## Init
+func _init() -> void:
+	settings_manager.register_setting("Master", Data.Type.NETWORKNODE, set_master, get_session_master, [master_changed]).set_class_filter(ConstellationNode)
+	settings_manager.register_status("Name", Data.Type.NAME, get_session_name, [])
+	settings_manager.register_status("MemberCount", Data.Type.INT, get_number_of_nodes, [node_joined, node_left])
+
+
 ## Updates the details of this node with a ConstaNetSessionAnnounce message
 func update_with(p_message: ConstaNetSessionAnnounce) -> bool:
 	if _session_id != p_message.session_id:
