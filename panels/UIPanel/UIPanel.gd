@@ -63,7 +63,7 @@ func _init() -> void:
 	super._init()
 	_set_class_name("UIPanel")
 	
-	settings_manager.register_setting("show_menu_bar", Data.Type.BOOL, set_menu_bar_visible, get_menu_bar_visible, [Signal()]
+	settings_manager.register_setting("show_menu_bar", Data.Type.BOOL, set_menu_bar_visible, get_menu_bar_visible, []
 	).display("UIPanel", 0)
 	
 	

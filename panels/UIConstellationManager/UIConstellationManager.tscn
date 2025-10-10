@@ -208,10 +208,15 @@ text = "Join Session"
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("11_d86vn")
-_settings_manager_view = NodePath("SettingsManagerView")
+_settings_manager_view = NodePath("ScrollContainer/SettingsManagerView")
 
-[node name="SettingsManagerView" parent="VBoxContainer/HBoxContainer/ConfigTab" instance=ExtResource("12_dvlfc")]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/ConfigTab"]
 layout_mode = 2
+
+[node name="SettingsManagerView" parent="VBoxContainer/HBoxContainer/ConfigTab/ScrollContainer" instance=ExtResource("12_dvlfc")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [connection signal="toggled" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/NodesTabButton" to="VBoxContainer/HBoxContainer/NodesTab" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/SessionsTabButton" to="VBoxContainer/HBoxContainer/SessionsTab" method="set_visible"]

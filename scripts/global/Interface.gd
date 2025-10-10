@@ -342,7 +342,11 @@ func fade_property(p_object: Object, p_property: String, p_to: Variant, p_callba
 	
 	tween.tween_property(p_object, p_property, p_to, p_time).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(func ():
-		_active_fade_animations[p_object].erase(p_property)
+		if is_instance_valid(p_object):
+			_active_fade_animations[p_object].erase(p_property)
+		else:
+			_active_fade_animations.erase(null)
+		
 		if p_callback.is_valid():
 			p_callback.call()
 	)

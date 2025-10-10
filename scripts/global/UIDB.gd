@@ -39,6 +39,8 @@ var _data_inputs: Dictionary[Data.Type, PackedScene] = {
 	Data.Type.BOOL:		load(_d("DataInputBool")),
 	Data.Type.INT:		load(_d("DataInputInt")),
 	Data.Type.FLOAT:	load(_d("DataInputFloat")),
+	Data.Type.ENUM:		load(_d("DataInputEnum")),
+	Data.Type.BITFLAGS:	load(_d("DataInputBitFlags")),
 	Data.Type.NAME:		load(_d("DataInputString")),
 }
 

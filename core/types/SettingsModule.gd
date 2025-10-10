@@ -204,6 +204,16 @@ func set_visual_line(p_visual_line: int) -> void:
 	_visual_line = p_visual_line
 
 
+## Returns true if this SettingsModule is editable
+func is_editable() -> bool:
+	if _type & TypeFlags.STATUS:
+		return false
+	elif _edit_condition.is_valid():
+		return bool(_edit_condition.call())
+	else:
+		return true
+
+
 ## Conncts the given callable to all signals
 func subscribe(p_callable: Callable) -> Callable:
 	for p_signal: Signal in _signals:

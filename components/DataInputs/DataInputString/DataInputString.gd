@@ -29,6 +29,11 @@ func _reset() -> void:
 	_line_edit.clear()
 
 
+## Called when the editable state is changed
+func _set_editable(p_editable: bool) -> void:
+	_line_edit.set_editable(p_editable)
+
+
 ## Called when the text is submitted in the LineEdit
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	_update_outline_feedback(_module.get_setter().call(new_text))

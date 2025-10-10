@@ -62,7 +62,7 @@ static var custom_type_map: Dictionary[Type, Variant.Type] = {
 	Type.OBJECT: 			TYPE_OBJECT,
 	Type.CALLABLE: 			TYPE_CALLABLE,
 	Type.SIGNAL: 			TYPE_SIGNAL,
-	Type.ENUM: 				TYPE_DICTIONARY,
+	Type.ENUM: 				TYPE_INT,
 	Type.BITFLAGS: 			TYPE_INT,
 	Type.NAME: 				TYPE_STRING,
 	Type.IP:				TYPE_STRING,
@@ -71,7 +71,6 @@ static var custom_type_map: Dictionary[Type, Variant.Type] = {
 	Type.NETWORKHANDLER: 	TYPE_OBJECT,
 	Type.ENGINECOMPONENT: 	TYPE_OBJECT,
 }
-
 
 
 ## Returns true if the 2 given types have a matching Variant.Type base

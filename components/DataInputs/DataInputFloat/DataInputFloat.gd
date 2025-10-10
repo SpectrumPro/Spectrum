@@ -46,6 +46,11 @@ func _reset() -> void:
 	_spin_box.set_value_no_signal(0)
 
 
+## Called when the editable state is changed
+func _set_editable(p_editable: bool) -> void:
+	_spin_box.set_editable(p_editable)
+
+
 ## Called when the value is changed
 func _on_spin_box_value_changed(value: float) -> void:
 	_update_outline_feedback(_module.get_setter().call(value))

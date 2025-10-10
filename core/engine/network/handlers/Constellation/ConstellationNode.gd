@@ -423,7 +423,7 @@ func set_role_flags(p_role_flags: int) -> bool:
 	if not is_local():
 		return false
 	
-	return _set_role_flags(_role_flags)
+	return _set_role_flags(p_role_flags)
 
 
 ## Sets the network role

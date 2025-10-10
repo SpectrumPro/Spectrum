@@ -21,6 +21,9 @@ var _unsaved: bool = false
 ## The DataType of this DataInput
 var _data_type: Data.Type = Data.Type.NULL
 
+## Editable state
+var _editable: bool = true
+
 
 ## Resets this DataInput
 func reset() -> void:
@@ -48,6 +51,7 @@ func set_module(p_module: SettingsModule) -> bool:
 	_settings_module_changed(_module)
 	_module_value_changed(_module.get_getter().call())
 	
+	set_editable(_module.is_editable())
 	return true
 
 
@@ -59,6 +63,12 @@ func set_show_label(p_show_label: bool) -> void:
 ## Sets the label text
 func set_label_text(p_label_text: String) -> void:
 	_label.set_text(p_label_text) 
+
+
+## Sets the editable state
+func set_editable(p_editable: bool) -> void:
+	_editable = p_editable
+	_set_editable(_editable)
 
 
 ## Gets the SettingsMoudle
@@ -81,9 +91,15 @@ func get_data_type() -> Data.Type:
 	return _data_type
 
 
+## Gets the editable state
+func get_editable() -> bool:
+	return _editable
+
+
 ## Updates the outline to match the return value of the setter
 func _update_outline_feedback(p_state: Variant) -> void:
 	_unsaved = false
+	Interface.kill_fade(_outline, "modulate") 
 	
 	if (p_state is bool and p_state) or p_state is not bool:
 		_outline.set_modulate(ThemeManager.Colors.Statuses.Normal)
@@ -110,6 +126,11 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 
 ## Called when the orignal value is changed
 func _module_value_changed(p_value: Variant) -> void:
+	pass
+
+
+## Called when the editable state is changed
+func _set_editable(p_editable: bool) -> void:
 	pass
 
 
