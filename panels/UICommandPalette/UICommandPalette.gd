@@ -25,15 +25,11 @@ class_name UICommandPalette extends UIPanel
 ## Enum for SearchMode
 enum SearchMode {
 	COMMAND,			## Search and run commands
-	COMPONENT_SEARCH,	## Search for EngineComponents in a class
 	SETTINGS_MANAGER,	## Displays the SettingsManager for a given object
 }
 
 ## RefMap for TreeItem: SettingsModule
 var _command_items: RefMap = RefMap.new()
-
-## RefMap for TreeItem: Script(EngineComponent)
-var _component_item: RefMap = RefMap.new()
 
 ## Current SearchMode state
 var _search_mode: SearchMode = SearchMode.COMMAND
@@ -45,8 +41,6 @@ var _mode_tag_visible: bool = false
 ## Ready
 func _ready() -> void:
 	_ready_command_mode()
-	_ready_component_search_mode()
-	_ready_dymanic_tree()
 	
 	search_for("")
 
@@ -80,79 +74,9 @@ func _ready_command_mode() -> void:
 			_command_items.map(tree_item, module)
 
 
-## Ready function for SearchMode.COMPONENT_SEARCH
-func _ready_component_search_mode() -> void:
-	component_search_tree.create_item()
-	component_search_tree.set_column_expand(1, false)
-	component_search_tree.set_column_custom_minimum_width(1, 50)
-	
-	component_search_tree_flat.create_item()
-	component_search_tree_flat.set_column_expand(1, false)
-	component_search_tree_flat.set_column_custom_minimum_width(1, 50)
-	
-	var class_tree: Dictionary = ClassList.get_global_class_tree()
-	
-	_climb_branch.call(component_search_tree.get_root(), class_tree)
-
-
-## Climbs a branch on the class tree
-func _climb_branch(tree_branch: TreeItem, data_branch: Dictionary) -> void:
-	for key: String in data_branch.keys():
-		if ClassList.is_class_hidden(key):
-			continue
-		
-		var value: Variant = data_branch[key]
-		var new_branch = tree_branch.create_child()
-		
-		new_branch.set_text(0, key)
-		new_branch.set_icon(0, UIDB.get_class_icon(key))
-		
-		new_branch.set_custom_color(1, Color(0x919191ff))
-		new_branch.set_text(1, "Enter")
-		
-		if value is Dictionary:
-			_climb_branch.call(new_branch, value)
-		else:
-			var flat_item: TreeItem = component_search_tree_flat.create_item()
-			
-			flat_item.set_text(0, key)
-			flat_item.set_icon(0, UIDB.get_class_icon(key))
-			
-			flat_item.set_custom_color(1, Color(0x919191ff))
-			flat_item.set_text(1, "Enter")
-			
-			_component_item.map(flat_item, key)
-
-
-## Ready the dynamic mode tree
-func _ready_dymanic_tree() -> void: 
-	dynamic_tree.create_item()
-
-
 ## Processes the given text and changes mode if needed
 func process_text(p_text: String) -> void:
-	command_tree.hide()
-	component_search_tree.hide()
-	component_search_tree_flat.hide()
-	dynamic_tree.hide()
-	
-	if not _mode_tag_visible:
-		match p_text[0] if p_text else "":
-			"@":
-				_search_mode = SearchMode.COMPONENT_SEARCH
-				_mode_tag_visible = true
-				component_search_tree.show()
-				
-				line_edit.create_tag("@")
-				line_edit.set_text("")
-			_:
-				_search_mode = SearchMode.COMMAND
-				command_tree.show()
-		
-		search_for(p_text.substr(1))
-	
-	else:
-		search_for(p_text)
+	search_for(p_text)
 
 
 ## Searches for a string
@@ -172,27 +96,6 @@ func search_for(p_search_string: String) -> void:
 					})
 			
 			search_tree = command_tree
-		
-		SearchMode.COMPONENT_SEARCH:
-			component_search_tree.hide()
-			component_search_tree_flat.hide()
-			
-			if not p_search_string:
-				component_search_tree.show()
-				return
-			
-			search_tree = component_search_tree_flat
-			component_search_tree_flat.show()
-			
-			for classname: String in ClassList.get_script_map().keys():
-				if ClassList.is_class_hidden(classname):
-					continue
-				
-				items_to_display.append({
-					"item_name": classname,
-					"similarity": classname.similarity(search_string) if p_search_string else 0.0,
-					"tree_item": _component_item.right(classname)
-				})
 	
 	items_to_display.sort_custom(_sort_items.bind(search_string))
 	items_to_display.reverse()
@@ -233,13 +136,36 @@ func _sort_items(p_a: Dictionary, p_b: Dictionary, p_search_string: String) -> b
 		return (p_a.item_name as String).naturalnocasecmp_to(p_b.item_name)
 
 
+## Selectes the next item in the tree
+func _select_next(p_tree: Tree) -> void:
+	var current: TreeItem = p_tree.get_selected()
+	var next_item: TreeItem = current.get_next_visible(true) if current else p_tree.get_root().get_child(0)
+	
+	if next_item:
+		next_item.select(0)
+	
+	p_tree.ensure_cursor_is_visible()
+
+
+## Selectes the next item in the tree
+func _select_prev(p_tree: Tree) -> void:
+	var current: TreeItem = p_tree.get_selected()
+	var next_item: TreeItem = current.get_prev_visible(true) if current else p_tree.get_root().get_child(0)
+	
+	if next_item:
+		next_item.select(0)
+	
+	p_tree.ensure_cursor_is_visible()
+
+
 ## Called when text is submitted in the list
 func _on_line_edit_text_submitted(p_new_text: String) -> void:
-	pass
-	#if not tree.get_selected():
-		#return
-	#
-	#activate_item(tree.get_selected())
+	match _search_mode:
+		SearchMode.COMMAND:
+			if not command_tree.get_selected():
+				return
+			
+			activate_item(command_tree.get_selected())
 
 
 ## Called when the text is changed in the LineEdit
@@ -249,16 +175,15 @@ func _on_line_edit_text_changed(p_new_text: String) -> void:
 
 ## Called for each GUI input on the lineedit
 func _on_line_edit_gui_input(p_event: InputEvent) -> void:
-	pass
-	#if p_event.is_action_released("ui_down"):
-		#tree.grab_focus()
-		#
-		#if tree.get_root().get_child_count():
-			#tree.get_root().get_child(0).select(0)
+	if p_event.is_action_released("ui_down"):
+		_select_next(command_tree)
+	
+	if p_event.is_action_released("ui_up"):
+		_select_prev(command_tree)
 
 
 ## Called when an item is activated in the tree
-func _on_tree_item_activated() -> void:
+func _on_command_tree_item_activated() -> void:
 	activate_item(command_tree.get_selected())
 
 

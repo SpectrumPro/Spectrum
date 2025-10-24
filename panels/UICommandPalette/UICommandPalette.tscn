@@ -104,3 +104,4 @@ select_mode = 1
 [connection signal="tag_removed" from="VBoxContainer/HBoxContainer/ScrollContainer/LineEdit" to="." method="_on_line_edit_tag_removed"]
 [connection signal="text_changed" from="VBoxContainer/HBoxContainer/ScrollContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="text_submitted" from="VBoxContainer/HBoxContainer/ScrollContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="item_activated" from="VBoxContainer/ScrollContainer/CommandTree" to="." method="_on_command_tree_item_activated"]

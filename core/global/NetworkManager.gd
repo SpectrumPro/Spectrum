@@ -74,7 +74,7 @@ func _register_item(p_item: NetworkItem) -> void:
 	for classname: String in NetworkClassList.get_class_inheritance_tree(p_item.get_script().get_global_name()):
 		_registered_items.get_or_add(classname, []).append(p_item)
 	
-	p_item.request_delete.connect(_deregister_item)
+	p_item.request_delete.connect(_deregister_item.bind(p_item))
 
 
 ## Deregister an item
