@@ -63,13 +63,13 @@ func _update_network_state(p_network_state: NetworkHandler.NetworkState, p_errco
 	
 	match p_network_state:
 		NetworkHandler.NetworkState.OFFLINE:
-			power_button.button_pressed = false
+			power_button.set_pressed_no_signal(false)
 			
 			nodes_tab.reset()
 			session_tab.reset()
 		
 		_:
-			power_button.button_pressed = true
+			power_button.set_pressed_no_signal(true)
 
 
 ## Called when a node is found

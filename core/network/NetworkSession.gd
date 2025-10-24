@@ -1,7 +1,7 @@
 # Copyright (c) 2025 Liam Sherwin, All rights reserved.
 # This file is part of the Constellation Network Engine, licensed under the GPL v3.
 
-class_name NetworkSession extends Node
+class_name NetworkSession extends NetworkItem
 ## Base class for all NetworkSessions
 
 @warning_ignore_start("unused_signal")
@@ -17,9 +17,6 @@ signal master_changed(node: NetworkNode)
 
 ## Emitted when the priority order of a node is changed
 signal priority_changed(node: NetworkNode, position: int)
-
-## Emited when this session is to be deleted after all nodes disconnect
-signal request_delete()
 
 
 ## Enum for session flags

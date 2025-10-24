@@ -210,6 +210,7 @@ func start_node() -> Error:
 
 ## Stops the node
 func stop_node(p_internal_only: bool = false) -> Error:
+	_log("Shutting Down")
 	if not p_internal_only:
 		_send_goodbye(GOODBYE_REASON_GOING_OFFLINE)
 	
@@ -237,6 +238,7 @@ func stop_node(p_internal_only: bool = false) -> Error:
 	_disco_timer.stop()
 	
 	_set_network_state(NetworkState.OFFLINE)
+	_log("NetworkState: OFFLINE")
 	return OK
 
 

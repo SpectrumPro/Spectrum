@@ -69,7 +69,6 @@ var _allow_triggered_looping: bool = false
 
 
 func _component_ready() -> void:
-	_set_name("CueList")
 	_set_self_class("CueList")
 
 	register_callback("on_active_cue_changed", _on_active_cue_changed)

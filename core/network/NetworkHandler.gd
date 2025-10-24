@@ -1,7 +1,7 @@
 # Copyright (c) 2025 Liam Sherwin, All rights reserved.
 # This file is part of the Constellation Network Engine, licensed under the GPL v3.
 
-class_name NetworkHandler extends Node
+class_name NetworkHandler extends NetworkItem
 ## Base class for all NetworkHandlers
 
 @warning_ignore_start("unused_signal")

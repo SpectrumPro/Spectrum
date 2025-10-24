@@ -49,7 +49,10 @@ func _component_callback(added: Array, removed: Array):
 			
 			if classname not in _class_parents.get_left():
 				parent = parent.create_child()
+				
 				parent.set_text(0, classname)
+				parent.set_icon(0, UIDB.get_class_icon(classname))
+				
 				_class_parents.map(classname, parent)
 			
 			else:
@@ -58,6 +61,7 @@ func _component_callback(added: Array, removed: Array):
 		var component_item: TreeItem = parent.create_child()
 		
 		component_item.set_text(0, component.get_name())
+		component_item.set_icon(0, UIDB.get_class_icon(component.self_class_name))
 		component.name_changed.connect(func (new_name: String): component_item.set_text(0, new_name))
 		
 		_component_items.map(component, component_item)

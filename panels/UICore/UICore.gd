@@ -9,6 +9,16 @@ class_name UICore extends UIPanel
 ## The UICorePrimarySideBar side bar
 @export var _side_bar: UICorePrimarySideBar
 
+## The startup background container 
+@export var _startup_bg: PanelContainer
+
+
+## Ready
+func _ready() -> void:
+	_startup_bg.show()
+	await get_tree().create_timer(0.2).timeout
+	Interface.fade_property(_startup_bg, "modulate", Color.TRANSPARENT, _startup_bg.hide, 0.5)
+
 
 ## Saves all the tabs
 func _save() -> Dictionary:

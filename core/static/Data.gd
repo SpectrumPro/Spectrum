@@ -78,10 +78,7 @@ static func do_types_match_base(p_type_one: Type, p_type_two: Type) -> bool:
 	var type_one_base: Variant.Type = custom_type_map[p_type_one]
 	var type_two_base: Variant.Type = custom_type_map[p_type_two]
 	
-	if type_one_base == TYPE_OBJECT or type_two_base == TYPE_OBJECT:
-		return false
-	else:
-		return type_one_base == type_two_base
+	return type_one_base == type_two_base
 
 
 ## Converts any bitmask enum into a readable string like "FLAG1+FLAG2"

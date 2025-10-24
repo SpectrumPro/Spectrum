@@ -205,6 +205,12 @@ func flash() -> void:
 	Interface.fade_property(self, "modulate", Color.WHITE, Callable(), ThemeManager.Constants.Times.UIPanelFlashTime)
 
 
+## Makes this UIBase take focus
+func focus() -> void:
+	if get_focus_mode_with_override():
+		grab_focus()
+
+
 ## Adds a button to allow shortcuts to be added
 func add_button(button: Button) -> bool:
 	if _buttons_map.has_left(button):

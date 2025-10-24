@@ -106,7 +106,7 @@ func _init() -> void:
 	settings_manager.register_setting("Name", Data.Type.NAME, set_node_name, get_node_name, [node_name_changed]
 	).display("NetworkNode", 1)
 	
-	settings_manager.register_status("Session", Data.Type.NETWORKSESSION, get_session, [session_changed]
+	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, join_session, get_session, [session_changed]
 	).display("NetworkNode", 2).set_class_filter(ConstellationSession)
 	
 	settings_manager.register_setting("RoleFlags", Data.Type.BITFLAGS, set_role_flags, get_role_flags, [role_flags_changed]

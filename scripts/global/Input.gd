@@ -27,7 +27,7 @@ var _internal_actions: Dictionary[String, Callable] = {
 	"clear_programmer": Programmer.clear,
 	"store_mode": _handle_store_mode_action,
 	"ui_cancel": Interface.hide_all_popup_panels,
-
+	"command_palette": Interface.toggle_popup_visable.bind(Interface.WindowPopup.COMMAND_PALETTE, self),
 }
 
 ## Allowed input events for shortcuts

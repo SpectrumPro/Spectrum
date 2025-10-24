@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://d00fmrh7nbaua"]
+[gd_scene load_steps=23 format=3 uid="uid://d00fmrh7nbaua"]
 
 [ext_resource type="Script" uid="uid://cjbnp24htiy3i" path="res://panels/UICore/UICore.gd" id="1_febpr"]
 [ext_resource type="Script" uid="uid://cpdu3qjv70rxp" path="res://panels/UICore/UICorePrimarySideBar.gd" id="2_hksc6"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cbwmiekm47cot" path="res://assets/icons/Action.svg" id="11_q5s34"]
 [ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="12_ucqqu"]
 [ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="13_c1is7"]
+[ext_resource type="Texture2D" uid="uid://dvabce3i3r2cu" path="res://assets/LogoTextSM.svg" id="14_7uvc5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opnnr"]
 bg_color = Color(0.140447, 0.140447, 0.140447, 1)
@@ -71,7 +72,10 @@ variation_embolden = 0.94
 font = SubResource("FontVariation_aoeir")
 font_color = Color(0.789062, 0.789062, 0.789062, 1)
 
-[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphhv"]
+bg_color = Color(0.09, 0.09, 0.09, 1)
+
+[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar", "_startup_bg")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -80,6 +84,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opnnr")
 script = ExtResource("1_febpr")
 _side_bar = NodePath("VBoxContainer/HBoxContainer/UICorePrimarySideBar")
+_startup_bg = NodePath("StartupBG")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -301,6 +306,33 @@ layout_mode = 2
 size_flags_horizontal = 8
 text = "Version"
 label_settings = ExtResource("13_c1is7")
+
+[node name="StartupBG" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bphhv")
+
+[node name="Control" type="Control" parent="StartupBG"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="StartupBG/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -479.99985
+offset_top = -75.0
+offset_right = 479.99985
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("14_7uvc5")
+expand_mode = 1
+stretch_mode = 4
 
 [connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Menu" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_menu_toggled"]
 [connection signal="resized" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/ScrollContainer" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="match_visable_to_size"]

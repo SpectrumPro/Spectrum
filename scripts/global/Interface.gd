@@ -12,34 +12,36 @@ signal resolve_requested(type: ResolveType, hint: ResolveHint, classname: String
 
 ## Enum for ResolveTypes
 enum ResolveType {
-	NONE,			## Disables resolve mode
-	ANY,			## Resolves anything
-	COMPONENT,		## Resolves an EngineComponent
-	UIPANEL			## Resolves a UIPanel
+	NONE,				## Disables resolve mode
+	ANY,				## Resolves anything
+	COMPONENT,			## Resolves an EngineComponent
+	UIPANEL				## Resolves a UIPanel
 }
 
 
 ## Enum for ResolveHint
 enum ResolveHint {
-	NONE,			## Default state
-	SELECT,			## Requests to select a component
-	ASSIGN,			## Requests to assign into
-	STORE,			## Requests to store into
-	EDIT,			## Requests to edit
-	RENAME,			## Requests to rename a component
-	EXECUTE,		## Requests to execute a function
-	STOP,			## Requests to stop a function
-	DELETE			## Requests to delete a component
+	NONE,				## Default state
+	SELECT,				## Requests to select a component
+	ASSIGN,				## Requests to assign into
+	STORE,				## Requests to store into
+	EDIT,				## Requests to edit
+	RENAME,				## Requests to rename a component
+	EXECUTE,			## Requests to execute a function
+	STOP,				## Requests to stop a function
+	DELETE				## Requests to delete a component
 }
 
 
 ## Enum for all WindowPopups
 enum WindowPopup {
-	PANEL_PICKER,	## PanelPicker class for selecting UIPanels
-	PANEL_SETTINGS,	## PanelPicker class for selecting UIPanels
-	MAIN_MENU,		## UI Main Menu
-	SETTINGS,		## UISettings
-	SAVE_LOAD,		## UISaveLoad
+	PANEL_PICKER,		## PanelPicker class for selecting UIPanels
+	PANEL_SETTINGS,		## PanelPicker class for selecting UIPanels
+	MAIN_MENU,			## UI Main Menu
+	SETTINGS,			## UISettings
+	SAVE_LOAD,			## UISaveLoad
+	COMMAND_PALETTE,	## UICommandPalette
+	OBJECT_PICKER		## UIObjectPicker
 }
 
 
@@ -101,11 +103,13 @@ var _resolve_hint_colors: Dictionary[ResolveHint, Color] = {
 
 ## Stores configuration for each WindowPopup that will be instanced on each window
 var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
-	WindowPopup.PANEL_PICKER: PopupConfig.new("PanelPicker", ""),
-	WindowPopup.PANEL_SETTINGS: PopupConfig.new("UIPanelSettings", "set_panel"),
-	WindowPopup.MAIN_MENU: PopupConfig.new("UIMainMenu", ""),
-	WindowPopup.SETTINGS: PopupConfig.new("UISettings", ""),
-	WindowPopup.SAVE_LOAD: PopupConfig.new("UISaveLoad", ""),
+	WindowPopup.PANEL_PICKER:		PopupConfig.new("PanelPicker", ""),
+	WindowPopup.PANEL_SETTINGS:		PopupConfig.new("UIPanelSettings", "set_panel"),
+	WindowPopup.MAIN_MENU:			PopupConfig.new("UIMainMenu", ""),
+	WindowPopup.SETTINGS:			PopupConfig.new("UISettings", ""),
+	WindowPopup.SAVE_LOAD:			PopupConfig.new("UISaveLoad", ""),
+	WindowPopup.COMMAND_PALETTE:	PopupConfig.new("UICommandPalette", ""),
+	WindowPopup.OBJECT_PICKER:		PopupConfig.new("UIObjectPicker", "")
 }
 
 ## All WindowPopup scenes per window
@@ -120,14 +124,41 @@ var _active_fade_animations: Dictionary[Object, Dictionary]
 ## All open UIPopupDialog refernced by the source node
 var _open_popup_dialogs: Dictionary[Node, UIPopupDialog]
 
+## Contains all searchable items
+var _palette_search_index: Dictionary[String, Dictionary]
 
-## Init ClientInterface
+## Config items for the ObjectPicker
+var _object_picker_index: Dictionary[Script, ClassTreeConfig]
+
+## The settings manager for ClientInterface
+var settings_manager: SettingsManager = SettingsManager.new()
+
+
+## Init
+func _init() -> void:
+	settings_manager.set_owner(self)
+	settings_manager.set_inheritance_array(["Interface"])
+	settings_manager.register_control("HideAllPopups", Data.Type.NULL, hide_all_popup_panels, Callable(), [])
+
+
+## Ready ClientInterface
 func _ready() -> void:
+	_load_config(load("res://InterfaceConfig.gd").config)
+	
 	var popups: Control = _window_popups_scene.instantiate()
 	
 	_register_window_popups(popups, get_tree().root)
 	get_tree().root.add_child.call_deferred(popups)
 	_window_popups[get_tree().root] = popups
+	
+	add_command_palette_entry(CommandPaletteEntry.new(
+		CommandPaletteEntry.ObjectType.GLOBAL, 
+		CommandPaletteEntry.DeleteSignalOrigin.PER_CLASS,
+		Network.get_active_handler_by_name("Constellation").get_local_node().settings_manager, 
+		"Constellation", 
+		Signal(),
+		Signal()
+	))
 
 
 ## Registers all WindowPopups into the corrisponding PopupConfig class
@@ -182,8 +213,11 @@ func _show_window_popup(p_popup_type: WindowPopup, p_source: Node, p_setter_arg:
 	
 	config.active_state[window] = true
 	show_and_fade(popup)
-	popup.move_to_front()
 	
+	popup.move_to_front()
+	popup.focus()
+	
+	promise.set_object_refernce(popup)
 	return promise
 
 
@@ -207,6 +241,14 @@ func prompt_panel_picker(p_source: Node) -> Promise:
 ## Promps the user with UIPaneSettings
 func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
 	return _show_window_popup(WindowPopup.PANEL_SETTINGS, p_source, p_panel)
+
+
+## Promps the user with UIPaneSettings
+func prompt_object_picker(p_source: Node, p_index: Script, p_class_filter: String) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.OBJECT_PICKER, p_source, null)
+	
+	(promise.get_object_refernce() as UIObjectPicker).set_index(p_index, p_class_filter)
+	return promise
 
 
 ## Promps the user with a confirm dialog
@@ -318,6 +360,21 @@ func set_popup_visable(p_popup_type: WindowPopup, p_source: Node, p_visible: boo
 	return get_window_popup(p_popup_type, p_source)
 
 
+## Sets the visability of a WindowPopup
+func toggle_popup_visable(p_popup_type: WindowPopup, p_source: Node) -> UIBase:
+	var popup: UIBase = get_window_popup(p_popup_type, p_source)
+	
+	if not popup:
+		return null
+	
+	if popup.visible:
+		_hide_window_popup(p_popup_type, p_source.get_window())
+	else:
+		_show_window_popup(p_popup_type, p_source, null)
+	
+	return popup
+
+
 ## Hides all popup panels
 func hide_all_popup_panels() -> void:
 	for popup_type: WindowPopup in _window_popup_config:
@@ -413,6 +470,17 @@ func hide(p_control: Control) -> void:
 	p_control.hide()
 
 
+## Adds an entry to the command palette
+func add_command_palette_entry(p_entry: CommandPaletteEntry) -> void:
+	match p_entry.get_object_type():
+		CommandPaletteEntry.ObjectType.GLOBAL:
+			for module: SettingsModule in p_entry.get_settings_manager().get_modules().values():
+				_palette_search_index.get_or_add(p_entry.get_class_name(), {})[module.get_id()] = module
+		
+		#CommandPaletteEntry.ObjectType.INSTANCED:
+			#_search_index[p_entry.get_class_name()] = p_entry.get_settings_manager()
+
+
 ## Gets the current ResolveHint
 func get_current_resolve_hint() -> ResolveHint:
 	return _current_resolve_hint
@@ -461,3 +529,12 @@ func exit_resolve_mode() -> bool:
 	
 	resolve_requested.emit(_current_resolve_type, _current_resolve_hint, _current_resolve_classname, _current_resolve_color)
 	return true
+
+
+## Loads the local config file
+func _load_config(p_config: Dictionary) -> void:
+	for entry: CommandPaletteEntry in p_config.command_palette_default_items:
+		add_command_palette_entry(entry)
+	
+	for script: Script in p_config.object_picker_default_items:
+		_object_picker_index[script] = p_config.object_picker_default_items[script]

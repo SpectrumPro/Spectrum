@@ -68,7 +68,6 @@ text = "Server Settings"
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 toggle_mode = true
-button_pressed = true
 button_group = SubResource("ButtonGroup_i7um0")
 text = "Network Manager"
 
@@ -76,6 +75,7 @@ text = "Network Manager"
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 toggle_mode = true
+button_pressed = true
 button_group = SubResource("ButtonGroup_i7um0")
 text = "Input Actions"
 
@@ -84,7 +84,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="InputActions" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_input_action_tree", "_remove_action_button", "_input_action_settings")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -131,6 +130,7 @@ layout_mode = 2
 theme_override_styles/panel = ExtResource("9_k8fg3")
 
 [node name="UIConstellationManager" parent="VBoxContainer/HBoxContainer" instance=ExtResource("9_c2tg1")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("9_k8fg3")

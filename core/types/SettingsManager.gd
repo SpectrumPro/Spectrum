@@ -18,10 +18,10 @@ var _inheritance_list: Array[String]
 
 ## Registers a settings
 func register_setting(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> SettingsModule:
-	if not p_id or not p_data_type or not p_getter:
+	if not p_id:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.TypeFlags.SETTING, p_setter, p_getter, p_signals)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.SETTING, p_setter, p_getter, p_signals)
 	_entrys[p_id] = module
 	
 	return module
@@ -29,10 +29,10 @@ func register_setting(p_id: String, p_data_type: Data.Type, p_setter: Callable, 
 
 ## Registers a controlable parameter
 func register_control(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> SettingsModule:
-	if not p_id or not p_data_type or not p_getter:
+	if not p_id:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.TypeFlags.CONTROL, p_setter, p_getter, p_signals)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.CONTROL, p_setter, p_getter, p_signals)
 	_entrys[p_id] = module
 	
 	return module
@@ -43,7 +43,7 @@ func register_status(p_id: String, p_data_type: Data.Type, p_getter: Callable, p
 	if not p_id or not p_data_type or not p_getter:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.TypeFlags.STATUS, Callable(), p_getter, p_signals)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.STATUS, Callable(), p_getter, p_signals)
 	module.set_enum_dict(p_enum_dict)
 	_entrys[p_id] = module
 	

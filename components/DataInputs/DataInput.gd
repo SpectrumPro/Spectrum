@@ -99,7 +99,7 @@ func get_editable() -> bool:
 ## Updates the outline to match the return value of the setter
 func _update_outline_feedback(p_state: Variant) -> void:
 	_unsaved = false
-	Interface.kill_fade(_outline, "modulate") 
+	Interface.kill_fade(_outline, "modulate")
 	
 	if (p_state is bool and p_state) or p_state is not bool:
 		_outline.set_modulate(ThemeManager.Colors.Statuses.Normal)

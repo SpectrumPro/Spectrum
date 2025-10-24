@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b7iwdp5jp3soi" path="res://panels/UIPlaybacks/UIPlaybackColumn.gd" id="1_l3b1e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ldd5c"]
-font_size = 7
+font_size = 9
 font_color = Color(0.581033, 0.581033, 0.581033, 1)
 
 [node name="PlaybackColumn" type="PanelContainer" node_paths=PackedStringArray("title_button", "button1", "button2", "button3", "button4", "button5", "button6", "slider")]

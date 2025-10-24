@@ -9,6 +9,9 @@ class_name UIPanelEditControls extends Control
 
 
 ## Whether to show the edit button
+@export var show_back: bool = false: set = set_show_back
+
+## Whether to show the edit button
 @export var show_edit: bool = true: set = set_show_edit
 
 ## Whether to show the settings button
@@ -22,6 +25,9 @@ class_name UIPanelEditControls extends Control
 
 
 @export_group("Nodes")
+
+## Reference to the edit button
+@export var back_button: Button = null
 
 ## Reference to the edit button
 @export var edit_button: Button = null
@@ -42,12 +48,23 @@ class_name UIPanelEditControls extends Control
 ## Ready
 func _ready() -> void:
 	set_show_edit(show_edit)
+	set_show_back(show_back)
 	set_show_settings(show_settings)
 	set_show_close(show_close)
 	set_show_handle(show_handle)
 	
 	Interface.resolve_requested.connect(_handle_resolve_request)
 	_handle_resolve_request(Interface.get_current_resolve_type(), Interface.get_current_resolve_hint(), Interface.get_current_resolve_classname(), Interface.get_current_resolve_color())
+
+
+## Sets the visibility of the edit button
+func set_show_back(p_show_back: bool) -> void:
+	show_back = p_show_back
+	
+	if back_button:
+		back_button.visible = show_back
+	
+	_update_visability()
 
 
 ## Sets the visibility of the edit button
@@ -92,7 +109,7 @@ func set_show_handle(p_show_handle: bool) -> void:
 
 ## Updates the visability of this EditControl if all items are hidden
 func _update_visability() -> void:
-	if not show_edit and not show_settings and not show_close and not show_handle:
+	if not show_back and not show_edit and not show_settings and not show_close and not show_handle:
 		hide()
 	else:
 		show()

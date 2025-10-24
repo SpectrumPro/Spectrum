@@ -7,12 +7,12 @@ class_name SettingsModule extends Object
 ## Represents a configurable module within the settings system.
 
 
-## Enum for TypeFlags
-enum TypeFlags {
-	NONE     = 0,       ## No type assigned
-	SETTING  = 1 << 0,  ## Represents a configurable setting
-	CONTROL  = 1 << 1,  ## Represents a controllable action or command
-	STATUS   = 1 << 2,  ## Represents a status or state indicator
+## Enum for Type
+enum Type {
+	NONE     = 0, ## No type assigned
+	SETTING  = 1, ## Represents a configurable setting
+	CONTROL  = 2, ## Represents a controllable action or command
+	STATUS   = 3, ## Represents a status or state indicator
 }
 
 
@@ -26,7 +26,7 @@ var _name: String = ""
 var _data_type: Data.Type = Data.Type.NULL
 
 ## Module Type
-var _type: int = TypeFlags.NONE
+var _type: Type = Type.NONE
 
 ## Setter for the connected parameter
 var _setter: Callable = Callable()
@@ -60,7 +60,7 @@ var _visual_line: int = -1
 
 
 ## Init
-func _init(p_id: String, p_name: String, p_data_type: Data.Type, p_type: int, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> void:
+func _init(p_id: String, p_name: String, p_data_type: Data.Type, p_type: Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> void:
 	_id = p_id
 	_name = p_name
 	_data_type = p_data_type
@@ -206,7 +206,7 @@ func set_visual_line(p_visual_line: int) -> void:
 
 ## Returns true if this SettingsModule is editable
 func is_editable() -> bool:
-	if _type & TypeFlags.STATUS:
+	if _type == Type.STATUS:
 		return false
 	elif _edit_condition.is_valid():
 		return bool(_edit_condition.call())
