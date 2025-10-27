@@ -16,6 +16,7 @@ func _ready() -> void:
 	_line_edit = $HBox/LineEdit
 	_label = $HBox/Label
 	_outline = $HBox/LineEdit/Outline
+	_focus_node = _line_edit
 
 
 ## Called when the orignal value is changed

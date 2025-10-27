@@ -145,6 +145,14 @@ func set_node_name(p_name: String) -> void:
 	pass
 
 
+## Sets the session
+func set_session(p_session: NetworkSession) -> bool:
+	if is_instance_valid(p_session):
+		return join_session(p_session)
+	else:
+		return leave_session()
+
+
 ## Returns True if this node is local
 func is_local() -> bool:
 	return _node_flags & NodeFlags.LOCAL_NODE

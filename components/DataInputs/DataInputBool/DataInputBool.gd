@@ -16,6 +16,7 @@ func _ready() -> void:
 	_button = $HBox/Button
 	_label = $HBox/Label
 	_outline = $HBox/Button/Outline
+	_focus_node = _button
 
 
 ## Called when the orignal value is changed

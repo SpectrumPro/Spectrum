@@ -6,11 +6,18 @@ class_name DataInput extends Control
 ## DataInput base class
 
 
+## Emitted when the value changed sucessfulley
+signal value_change_sucess()
+
+
 ## The main Label
 var _label: Label
 
 ## The LineEdit outline
 var _outline: Panel
+
+## The Control node to focus
+var _focus_node: Control = self
 
 ## The currentl SettingsModle
 var _module: SettingsModule
@@ -37,6 +44,11 @@ func reset() -> void:
 	_module = null
 	
 	_reset()
+
+
+## Takes focus to the input
+func focus() -> void:
+	_focus_node.grab_focus()
 
 
 ## Sets the SettingsMoudle to edit
@@ -103,6 +115,7 @@ func _update_outline_feedback(p_state: Variant) -> void:
 	
 	if (p_state is bool and p_state) or p_state is not bool:
 		_outline.set_modulate(ThemeManager.Colors.Statuses.Normal)
+		value_change_sucess.emit()
 	else:
 		_outline.set_modulate(ThemeManager.Colors.Statuses.Error)
 	

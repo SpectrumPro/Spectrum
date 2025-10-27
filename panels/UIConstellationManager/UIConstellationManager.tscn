@@ -63,6 +63,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 toggle_mode = true
+button_pressed = true
 button_group = SubResource("ButtonGroup_nrpeh")
 text = "Nodes"
 
@@ -77,7 +78,6 @@ text = "Sessions"
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 toggle_mode = true
-button_pressed = true
 button_group = SubResource("ButtonGroup_nrpeh")
 text = "Config"
 
@@ -110,7 +110,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="NodesTab" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_table")]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("6_tdpwf")
@@ -205,6 +204,7 @@ disabled = true
 text = "Join Session"
 
 [node name="ConfigTab" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_settings_manager_view")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("11_d86vn")

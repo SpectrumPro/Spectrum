@@ -15,6 +15,9 @@ signal session_created(session: NetworkSession)
 ## Emitted when the NetworkState is changed
 signal network_state_changed(network_state: NetworkState, err_code: Error)
 
+## Emitted when a command is recieved
+signal command_recieved(form: NetworkNode, data_type: Variant.Type, command: Variant)
+
 
 ## Enum for NetworkState
 enum NetworkState {
@@ -62,6 +65,11 @@ func join_session(p_session: NetworkSession) -> bool:
 ## Leaves a session 
 func leave_session() -> bool:
 	return false
+
+
+## Sends a command to the session, using p_node_filter as the NodeFilter
+func send_command(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.MASTER) -> Error:
+	return ERR_UNAVAILABLE
 
 
 ## Gets the current NetworkState

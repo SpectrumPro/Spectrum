@@ -114,14 +114,10 @@ func _on_send_message_to_server_pressed() -> void:
 					set_output(method.callv(args))
 		
 		else:
-			Client.send_command(
-				message_for.text,
-				message_method.text,
-				args
-			).then(func (result: Variant = null):
-				set_output(result)
+			Network.send_command(message_for.text, message_method.text, args).then(
+				func (result: Variant = null):
+					set_output(result)
 			)
-
 
 ## Saves this panel into a dictonary
 func _save() -> Dictionary:

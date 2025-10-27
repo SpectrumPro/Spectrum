@@ -41,7 +41,8 @@ enum WindowPopup {
 	SETTINGS,			## UISettings
 	SAVE_LOAD,			## UISaveLoad
 	COMMAND_PALETTE,	## UICommandPalette
-	OBJECT_PICKER		## UIObjectPicker
+	OBJECT_PICKER,		## UIObjectPicker
+	SETTINGS_MODULE,	## Shows a SettingsModule
 }
 
 
@@ -109,7 +110,8 @@ var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
 	WindowPopup.SETTINGS:			PopupConfig.new("UISettings", ""),
 	WindowPopup.SAVE_LOAD:			PopupConfig.new("UISaveLoad", ""),
 	WindowPopup.COMMAND_PALETTE:	PopupConfig.new("UICommandPalette", ""),
-	WindowPopup.OBJECT_PICKER:		PopupConfig.new("UIObjectPicker", "")
+	WindowPopup.OBJECT_PICKER:		PopupConfig.new("UIObjectPicker", ""),
+	WindowPopup.SETTINGS_MODULE:	PopupConfig.new("UIPopupSettingsModule", "set_module"),
 }
 
 ## All WindowPopup scenes per window
@@ -139,6 +141,8 @@ func _init() -> void:
 	settings_manager.set_owner(self)
 	settings_manager.set_inheritance_array(["Interface"])
 	settings_manager.register_control("HideAllPopups", Data.Type.NULL, hide_all_popup_panels, Callable(), [])
+	settings_manager.register_control("OpenMainMenu", Data.Type.NULL, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
+	settings_manager.register_control("OpenSettings", Data.Type.NULL, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
 
 
 ## Ready ClientInterface
@@ -251,6 +255,22 @@ func prompt_object_picker(p_source: Node, p_index: Script, p_class_filter: Strin
 	return promise
 
 
+## Promps the user with SettingsModule
+func prompt_settings_module(p_source: Node, p_module: SettingsModule) -> Promise:
+	return _show_window_popup(WindowPopup.SETTINGS_MODULE, p_source, p_module)
+
+
+## Promps the user with a DataInput
+func prompt_data_input(p_source: Node, p_data_type: Data.Type, p_default: Variant, p_label: String) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.SETTINGS_MODULE, p_source, null)
+	var module_view: UIPopupSettingsModule = promise.get_object_refernce()
+	var dummy_module: SettingsModule = SettingsModule.new(p_label, p_label, p_data_type, SettingsModule.Type.SETTING, promise.resolvev, func (): return p_default, [])
+	
+	module_view.set_module(dummy_module)
+	module_view.focus()
+	return promise
+
+
 ## Promps the user with a confirm dialog
 func prompt_dialog_confirm(p_source: Node, p_title_text: String = "", p_label_text: String = "", p_button_text: String = "") -> Promise:
 	var promise: Promise = create_popup_dialog(p_source)
@@ -291,25 +311,6 @@ func prompt_dialog_delete(p_source: Node, p_title_text: String = "", p_label_tex
 	
 	if p_button_text:
 		new_dialog.set_button_text(p_button_text)
-	
-	return promise
-
-
-## Promps the user with a string dialog
-func prompt_dialog_string(p_source: Node, p_title_text: String = "", p_label_text: String = "") -> Promise:
-	var promise: Promise = create_popup_dialog(p_source)
-	var new_dialog: UIPopupDialog = promise.get_object_refernce()
-	
-	if not new_dialog:
-		return promise
-	
-	new_dialog.set_mode(UIPopupDialog.Mode.STRING)
-	
-	if p_title_text:
-		new_dialog.set_title_text(p_title_text)
-	
-	if p_label_text:
-		new_dialog.set_label_text(p_label_text)
 	
 	return promise
 

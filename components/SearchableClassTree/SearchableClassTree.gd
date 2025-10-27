@@ -42,6 +42,12 @@ var _class_items: RefMap = RefMap.new()
 ## RefMap for TreeItem: Object
 var _object_items: RefMap = RefMap.new()
 
+## The null item in the inheritance_tree
+var _inheritance_tree_null: TreeItem
+
+## The null item in the searchable_tree
+var _searchable_tree_null: TreeItem
+
 ## Current search mode
 var _search_mode: SearchMode = SearchMode.CLASS
 
@@ -108,6 +114,9 @@ func activate_selected() -> void:
 	if not selected or selected == tree.get_root():
 		return
 	
+	if selected == _inheritance_tree_null or selected == _searchable_tree_null:
+		object_selected.emit(null)
+	
 	match _search_mode:
 		SearchMode.CLASS:
 			search_mode_object(selected.get_text(0))
@@ -125,6 +134,12 @@ func load_config(p_config: ClassTreeConfig) -> void:
 	
 	inheritance_tree.create_item()
 	searchable_tree.create_item()
+	
+	
+	_inheritance_tree_null = inheritance_tree.get_root().create_child()
+	_inheritance_tree_null.set_text(0, "null")
+	_inheritance_tree_null.set_text(1, "Empty")
+	_inheritance_tree_null.set_icon(0, UIDB.get_class_icon("null"))
 	
 	_climb_branch.call(inheritance_tree.get_root(), p_config.get_class_tree(), p_config.get_class_tree().keys()[0])
 
@@ -145,6 +160,11 @@ func search_mode_object(p_classname: String) -> void:
 	object_tree.clear()
 	object_tree.create_item()
 	_object_items.clear()
+	
+	_searchable_tree_null = searchable_tree.get_root().create_child()
+	_searchable_tree_null.set_text(0, "null")
+	_searchable_tree_null.set_text(1, "Empty")
+	_searchable_tree_null.set_icon(0, UIDB.get_class_icon("null"))
 	
 	for object: Object in _config.get_objects_by_classname(p_classname):
 		var item: TreeItem = object_tree.create_item()
@@ -216,6 +236,9 @@ func search_for(p_text: String) -> void:
 	if search_tree.get_root().get_child_count():
 		search_tree.get_root().get_child(0).select(0)
 		search_tree.ensure_cursor_is_visible()
+		
+		if _searchable_tree_null:
+			_searchable_tree_null.move_before(search_tree.get_root().get_child(0))
 	
 	_search_text = search_string
 

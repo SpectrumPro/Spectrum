@@ -121,7 +121,8 @@ func activate_item(p_tree_item: TreeItem) -> void:
 			match module.get_data_type():
 				Data.Type.NULL:
 					module.get_setter().call()
-					
+				_:
+					Interface.prompt_settings_module(self, module)
 	
 	close_request.emit()
 

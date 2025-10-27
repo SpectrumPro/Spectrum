@@ -137,12 +137,13 @@ func _init() -> void:
 	ConstellationConfig.load_config("res://ConstellaitionConfig.gd")
 	
 	_handler_name = "Constellation"
-	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, join_session, _local_node.get_session, [_local_node.session_changed]).set_class_filter(ConstellationSession)
+	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, _local_node.set_session, _local_node.get_session, [_local_node.session_changed]).set_class_filter(ConstellationSession)
 	
 	if not ConstellationConfig.disable_startup_details:
 		Details.print_startup_detils()
 	
 	_local_node._set_node_ip(_bind_address)
+	_local_node._set_node_name("LocalNode")
 	add_child(_local_node)
 	
 	var cli_args: PackedStringArray = OS.get_cmdline_args()
@@ -158,6 +159,10 @@ func _init() -> void:
 	
 	if cli_args.has("--ctl-node-id"):
 		_local_node._set_node_id(str(cli_args[cli_args.find("--ctl-node-id") + 1]))
+	
+	(func ():
+		node_found.emit(_local_node)
+	).call_deferred()
 
 
 ## Polls the socket
@@ -240,6 +245,14 @@ func stop_node(p_internal_only: bool = false) -> Error:
 	_set_network_state(NetworkState.OFFLINE)
 	_log("NetworkState: OFFLINE")
 	return OK
+
+
+## Sends a command to the session, using p_node_filter as the NodeFilter
+func send_command(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.MASTER) -> Error:
+	if not _local_node.get_session():
+		return ERR_UNAVAILABLE
+	
+	return _local_node.get_session().send_command(p_command, p_node_filter)
 
 
 ## Returns a list of all known nodes

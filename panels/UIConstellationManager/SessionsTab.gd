@@ -81,7 +81,7 @@ func reset() -> void:
 
 ## Called when the create session button is pressed
 func _on_create_session_button_pressed() -> void:
-	Interface.prompt_dialog_string(self, "Create new Session", "Name").then(func (p_name: String):
+	Interface.prompt_data_input(self, Data.Type.STRING, "NewSession", "Session Name").then(func (p_name: String):
 		_constellation.create_session(p_name)
 	)
 

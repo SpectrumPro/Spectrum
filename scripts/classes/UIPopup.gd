@@ -50,7 +50,7 @@ func get_custom_signal_or_default() -> Signal:
 
 
 ## Accepts this popup action
-func accept(arg: Variant) -> void:
+func accept(arg: Variant = null) -> void:
 	_custom_accepted_signal.emit(arg)
 	accepted.emit()
 

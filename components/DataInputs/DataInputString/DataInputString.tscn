@@ -20,6 +20,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+select_all_on_focus = true
 
 [node name="Outline" type="Panel" parent="HBox/LineEdit"]
 modulate = Color(1, 1, 1, 0)

@@ -84,7 +84,8 @@ class Row extends Object:
 	
 	## Sets the cell data from a SettingsModule callback
 	func _set_cell_data_module(p_data: Variant, p_column: int) -> void:
-		_item.set_text(p_column, _cells[p_column].get_value_string())
+		if is_instance_valid(_item):
+			_item.set_text(p_column, _cells[p_column].get_value_string())
 		
 
 
@@ -152,6 +153,7 @@ func remove_row(p_row: Row) -> bool:
 	_rows.erase_left(p_row)
 	_update_selection()
 	
+	p_row.free()
 	item.free()
 	return true
 
@@ -224,3 +226,19 @@ func _on_tree_nothing_selected() -> void:
 	_tree.deselect_all()
 	_selected_items.clear()
 	_update_selection()
+
+
+## Called for each GUI input on the tree
+func _on_tree_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
+		var mouse_pos: Vector2 = _tree.get_local_mouse_position()
+		var row: Row = _rows.right(_tree.get_item_at_position(mouse_pos))
+		
+		if not row:
+			return
+		
+		var column: int = _tree.get_column_at_position(mouse_pos)
+		var data: Variant = row.get_cell_data(column)
+		
+		if data is SettingsModule:
+			Interface.prompt_settings_module(self, data)

@@ -15,8 +15,9 @@ func _ready() -> void:
 	_data_type = Data.Type.INT
 	_spin_box = $HBox/SpinBox
 	_label = $HBox/Label
-	_outline = $HBox/LineEdit/Outline
+	_outline = $HBox/SpinBox/Outline
 	_spin_box.get_line_edit().text_changed.connect(func (x): _make_unsaved())
+	_focus_node = _spin_box
 
 
 ## Sets the prefix

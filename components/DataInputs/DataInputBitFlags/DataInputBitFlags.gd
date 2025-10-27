@@ -27,6 +27,7 @@ func _ready() -> void:
 	_flag_label = $VBox/HBoxContainer/FlagLabel
 	_outline = $Outline
 	_expand_button = $VBox/HBoxContainer/Expand
+	_focus_node = _expand_button
 
 
 ## Called when the module is changed

@@ -17,6 +17,7 @@ func _ready() -> void:
 	_label = $HBox/Label
 	_outline = $HBox/LineEdit/Outline
 	_spin_box.get_line_edit().text_changed.connect(func (x): _make_unsaved())
+	_focus_node = _spin_box
 
 
 ## Sets the prefix

@@ -2,40 +2,31 @@
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
 # See the LICENSE file for details.
 
-class_name DataInputEnum extends DataInput
-## DataInput for Data.Type.ENUM
+class_name DataInputNetworkNode extends DataInput
+## DataInput for Data.Type.NETWORKNODE
 
 
 ## The LineEdit
-var _button: OptionButton
+var _button: Button
 
 
 ## Ready
 func _ready() -> void:
-	_data_type = Data.Type.ENUM
+	_data_type = Data.Type.NETWORKNODE
 	_button = $HBox/Button
 	_label = $HBox/Label
 	_outline = $HBox/Button/Outline
 	_focus_node = _button
 
 
-## Called when the module is changed
-func _settings_module_changed(p_module: SettingsModule) -> void:
-	var enum_dict: Dictionary = p_module.get_enum_dict()
-	
-	for item_name: String in enum_dict:
-		_button.add_item(item_name)
-
-
 ## Called when the orignal value is changed
 func _module_value_changed(p_value: Variant) -> void:
-	if p_value is int and not _unsaved:
-		_button.select(p_value)
+	_button.set_text(p_value.get_node_name() if p_value is NetworkNode else "")
 
 
 ## Resets this DataInputString
 func _reset() -> void:
-	_button.clear()
+	_button.set_text("")
 
 
 ## Called when the editable state is changed
@@ -43,6 +34,8 @@ func _set_editable(p_editable: bool) -> void:
 	_button.set_disabled(not p_editable)
 
 
-## Called when an item is selected
-func _on_button_item_selected(p_index: int) -> void:
-	_update_outline_feedback(_module.get_setter().call(p_index))
+## Called when the button is pressed
+func _on_button_pressed() -> void:
+	Interface.prompt_object_picker(self, NetworkItem, _module.get_class_filter().get_global_name()).then(func (p_session: NetworkNode):
+		_update_outline_feedback(_module.get_setter().call(p_session))
+	)

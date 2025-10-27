@@ -30,6 +30,7 @@ var _panels: Dictionary[String, PackedScene] = {
 	"UISettings":			load(_p("UISettings")),
 	"UISaveLoad":			load(_p("UISaveLoad")),
 	"UICore":				load(_p("UICore")),
+	"UIDebug":				load(_p("UIDebug")),
 }
 
 
@@ -57,6 +58,7 @@ var _data_inputs: Dictionary[Data.Type, PackedScene] = {
 	Data.Type.NAME:				load(_d("DataInputString")),
 	Data.Type.IP:				load(_d("DataInputString")),
 	Data.Type.NETWORKSESSION: 	load(_d("DataInputNetworkSession")),
+	Data.Type.NETWORKNODE:	 	load(_d("DataInputNetworkNode")),
 }
 
 ## All UIPanels sorted by category
@@ -68,7 +70,7 @@ var _panels_by_category: Dictionary[String, Array] = {
 		"UIUniverses",
 		"UISettings",
 		"UISaveLoad",
-		"UICore"
+		"UIDebug"
 	],
 }
 
@@ -76,6 +78,7 @@ var _panels_by_category: Dictionary[String, Array] = {
 ## All class icons
 var _class_icons: Dictionary[String, Texture2D] = {
 	"_": 					load(_i("Component")),
+	"null":					load(_i("Reset")),
 	"NetworkManager": 		load(_i("Network")),
 	"Network": 				load(_i("Network")),
 	"Interface": 			load(_i("Panel")),

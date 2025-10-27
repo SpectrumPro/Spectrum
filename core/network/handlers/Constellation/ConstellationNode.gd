@@ -100,13 +100,16 @@ static func create_unknown_node(p_node_id: String) -> ConstellationNode:
 
 ## Init
 func _init() -> void:
+	settings_manager.set_owner(self)
+	settings_manager.set_inheritance_array(["NetworkNode", "ConstellationNode"])
+	
 	settings_manager.register_status("ConnectionState", Data.Type.ENUM, get_connection_state, [connection_state_changed], ConnectionState
 	).display("NetworkNode", 0)
 	
 	settings_manager.register_setting("Name", Data.Type.NAME, set_node_name, get_node_name, [node_name_changed]
 	).display("NetworkNode", 1)
 	
-	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, join_session, get_session, [session_changed]
+	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, set_session, get_session, [session_changed]
 	).display("NetworkNode", 2).set_class_filter(ConstellationSession)
 	
 	settings_manager.register_setting("RoleFlags", Data.Type.BITFLAGS, set_role_flags, get_role_flags, [role_flags_changed]
@@ -114,8 +117,6 @@ func _init() -> void:
 	
 	settings_manager.register_status("IpAddress", Data.Type.IP, get_node_ip, [node_ip_changed]).set_ip_type(IP.TYPE_IPV4
 	).display("ConstellationNode", 4)
-	
-	settings_manager.set_inheritance_array(["NetworkNode", "ConstellationNode"])
 
 
 ## Called each frame
@@ -195,7 +196,10 @@ func handle_message(p_message: ConstaNetHeadder) -> void:
 			
 			match p_message.attribute:
 				ConstaNetSetAttribute.Attribute.NAME:
-					_set_node_name(p_message.value)
+					if is_local():
+						set_node_name(p_message.value)
+					else:
+						_set_node_name(p_message.value)
 				
 				ConstaNetSetAttribute.Attribute.SESSION:
 					if is_local():
@@ -212,6 +216,7 @@ func handle_message(p_message: ConstaNetHeadder) -> void:
 				return
 			
 			command_recieved.emit(p_message)
+			_network.command_recieved.emit(_network.get_node_from_id(p_message.origin_id), p_message.data_type, p_message.command)
 
 
 ## Updates this nodes info from a discovery packet

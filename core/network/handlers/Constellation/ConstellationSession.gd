@@ -86,7 +86,7 @@ func set_priority_order(p_node: NetworkNode, p_position: int) -> bool:
 	message.origin_id = _network.get_node_id()
 	message.set_announcement(true)
 	
-	_network.send_message_broadcast(message)
+	_network._send_message_broadcast(message)
 	return true
 
 
@@ -102,7 +102,7 @@ func set_master(p_node: NetworkNode) -> bool:
 	message.origin_id = _network.get_node_id()
 	message.set_announcement(true)
 	
-	_network.send_message_broadcast(message)
+	_network._send_message_broadcast(message)
 	return true
 
 
@@ -166,7 +166,7 @@ func close() -> void:
 
 
 ## Sends a command to the session, using p_node_filter as the NodeFilter
-func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.MASTER) -> Error:
+func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.AUTO) -> Error:
 	var message: ConstaNetCommand = ConstaNetCommand.new()
 	
 	message.command = p_command
@@ -176,10 +176,16 @@ func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.MAS
 
 
 ## Sends a pre-existing ConstaNetCommand message to the session
-func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeFilter = NodeFilter.MASTER) -> Error:
+func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeFilter = NodeFilter.AUTO) -> Error:
 	var local_node: ConstellationNode = _network.get_local_node()
 	p_command.in_session = _session_id
 	p_command.origin_id = local_node.get_node_id()
+	
+	if p_node_filter == NodeFilter.AUTO:
+		if _session_master == local_node:
+			p_node_filter = NodeFilter.ALL_OTHER_NODES
+		else:
+			p_node_filter = NodeFilter.MASTER
 	
 	match p_node_filter:
 		NodeFilter.MASTER:

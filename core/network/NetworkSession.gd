@@ -28,6 +28,7 @@ enum SessionFlags {
 ## Enum for the node filter
 enum NodeFilter {
 	NONE,				## Default State
+	AUTO,				## NodeFilter.ALL_OTHER_NODES if local node is not session master, otherwise NodeFilter.MASTER
 	MASTER,				## Send only to the session master
 	ALL_NODES,			## Send to all nodes
 	ALL_OTHER_NODES,	## Send to all nodes, expect the session master
@@ -114,12 +115,12 @@ func close() -> void:
 
 
 ## Sends a command to the session, using p_node_filter as the NodeFilter
-func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.MASTER) -> Error:
+func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.AUTO) -> Error:
 	return ERR_UNAVAILABLE
 
 
 ## Sends a pre-existing ConstaNetCommand message to the session
-func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeFilter = NodeFilter.MASTER) -> Error:
+func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeFilter = NodeFilter.AUTO) -> Error:
 	return ERR_UNAVAILABLE
 
 
