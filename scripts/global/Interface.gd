@@ -9,6 +9,12 @@ class_name ClientInterface extends Node
 ## Emitted when a resolve request is required
 signal resolve_requested(type: ResolveType, hint: ResolveHint, classname: String, color_hint: Color)
 
+## Emitted when a window is added
+signal window_added(window: UIWindow)
+
+## Emitted when a window is removed
+signal window_removed(window: UIWindow)
+
 
 ## Enum for ResolveTypes
 enum ResolveType {
@@ -43,6 +49,8 @@ enum WindowPopup {
 	COMMAND_PALETTE,	## UICommandPalette
 	OBJECT_PICKER,		## UIObjectPicker
 	SETTINGS_MODULE,	## Shows a SettingsModule
+	WINDOW_MANAGER,		## UIWindowManager
+	WINDOW_ID,			## UIWindowID
 }
 
 
@@ -83,7 +91,7 @@ var _current_resolve_type: ResolveType = ResolveType.NONE
 var _current_resolve_classname: String = ""
 
 ## The current resolve color
-var  _current_resolve_color: Color = Color.TRANSPARENT
+var _current_resolve_color: Color = Color.TRANSPARENT
 
 ## The resolve Promise
 var _resolve_promise: Promise = Promise.new()
@@ -112,7 +120,12 @@ var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
 	WindowPopup.COMMAND_PALETTE:	PopupConfig.new("UICommandPalette", ""),
 	WindowPopup.OBJECT_PICKER:		PopupConfig.new("UIObjectPicker", ""),
 	WindowPopup.SETTINGS_MODULE:	PopupConfig.new("UIPopupSettingsModule", "set_module"),
+	WindowPopup.WINDOW_MANAGER:		PopupConfig.new("UIWindowManager", ""),
+	WindowPopup.WINDOW_ID:			PopupConfig.new("UIWindowID", ""),
 }
+
+## All windows by UUID RefMap for UUID: Window
+var _windows: RefMap = RefMap.new()
 
 ## All WindowPopup scenes per window
 var _window_popups: Dictionary[Window, Control]
@@ -143,26 +156,23 @@ func _init() -> void:
 	settings_manager.register_control("HideAllPopups", Data.Type.NULL, hide_all_popup_panels, Callable(), [])
 	settings_manager.register_control("OpenMainMenu", Data.Type.NULL, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
 	settings_manager.register_control("OpenSettings", Data.Type.NULL, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
+	
 
 
 ## Ready ClientInterface
 func _ready() -> void:
 	_load_config(load("res://InterfaceConfig.gd").config)
+	get_window().set_script(UIWindow)
 	
 	var popups: Control = _window_popups_scene.instantiate()
+	var root: UIWindow = get_tree().root
 	
-	_register_window_popups(popups, get_tree().root)
-	get_tree().root.add_child.call_deferred(popups)
-	_window_popups[get_tree().root] = popups
+	_register_window_popups(popups, root)
+	root.set_window_popups.call_deferred(popups)	
+	root._base_panel = root.get_node("UICore")
 	
-	add_command_palette_entry(CommandPaletteEntry.new(
-		CommandPaletteEntry.ObjectType.GLOBAL, 
-		CommandPaletteEntry.DeleteSignalOrigin.PER_CLASS,
-		Network.get_active_handler_by_name("Constellation").get_local_node().settings_manager, 
-		"Constellation", 
-		Signal(),
-		Signal()
-	))
+	_window_popups[root] = popups
+	_windows.map("main", get_window())
 
 
 ## Registers all WindowPopups into the corrisponding PopupConfig class
@@ -469,6 +479,98 @@ func hide(p_control: Control) -> void:
 	kill_fade(p_control, "modulate")
 	p_control.modulate = Color.WHITE
 	p_control.hide()
+
+
+## Adds a new window
+func add_window(p_base_panel: Script = UICore) -> UIWindow:
+	var new_window: UIWindow = UIWindow.new()
+	var uuid: String = UUID_Util.v4()
+	var popups: Control = _window_popups_scene.instantiate()
+	
+	_register_window_popups(popups, new_window)
+	_window_popups[new_window] = popups
+	_windows.map(uuid, new_window)
+	
+	(func():
+		new_window.set_name("New Window")
+		new_window.set_window_popups(popups)
+		new_window.set_base_panel(UIDB.instance_panel(p_base_panel))
+		new_window.set_window_title(new_window.name)
+	).call_deferred()
+	
+	new_window.set_initial_position(Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS)
+	add_child(new_window)
+	
+	window_added.emit(new_window)
+	return new_window
+
+
+## Removes the given window
+func remove_window(p_window: UIWindow) -> bool:
+	if not _windows.has_right(p_window) or p_window.is_window_root():
+		return false
+	
+	_windows.erase_right(p_window)
+	p_window.queue_free()
+	
+	remove_child(p_window)
+	window_removed.emit(p_window)
+	
+	return true
+
+
+## Hides the given window
+func close_window(p_window: UIWindow) -> bool:
+	if not _windows.has_right(p_window) or p_window.is_window_root():
+		return false
+	
+	p_window.hide()
+	return true
+
+
+## Hides the given window
+func show_window(p_window: UIWindow) -> bool:
+	if not _windows.has_right(p_window) or p_window.is_window_root():
+		return false
+	
+	p_window.show()
+	return true
+
+
+## Shows the WindowID on all the given windows. or all windows
+func show_window_id(p_on_windows: Array[UIWindow] = []) -> void:
+	if not p_on_windows:
+		p_on_windows = get_all_windows()
+	
+	for window: UIWindow in p_on_windows:
+		_show_window_popup(WindowPopup.WINDOW_ID, window, null)
+
+
+## Shows the WindowID on all the given windows. or all windows
+func hide_window_id(p_on_windows: Array[UIWindow] = []) -> void:
+	if not p_on_windows:
+		p_on_windows = get_all_windows()
+	
+	for window: UIWindow in p_on_windows:
+		_hide_window_popup(WindowPopup.WINDOW_ID, window)
+
+
+## Gets all windows
+func get_all_windows() -> Array[UIWindow]:
+	var result: Array[UIWindow] = []
+	result.assign(_windows.get_right())
+	
+	return result
+
+
+## Gets the Window node the p_source node is in
+func get_window_node(p_source: Node) -> UIWindow:
+	var window: Window = p_source.get_window()
+	
+	while not _windows.has_right(window):
+		window = window.get_window()
+	
+	return window
 
 
 ## Adds an entry to the command palette

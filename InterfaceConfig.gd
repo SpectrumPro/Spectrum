@@ -13,6 +13,14 @@ static var config: Dictionary = {
 			CommandPaletteEntry.DeleteSignalOrigin.NONE,
 			Network.settings_manager,
 			"Network",
+		),
+		CommandPaletteEntry.new(
+			CommandPaletteEntry.ObjectType.GLOBAL, 
+			CommandPaletteEntry.DeleteSignalOrigin.PER_CLASS,
+			Network.get_active_handler_by_name("Constellation").get_local_node().settings_manager, 
+			"Constellation", 
+			Signal(),
+			Signal()
 		)
 	],
 	"object_picker_default_items": {

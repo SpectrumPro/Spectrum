@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ds42t8h4nusm4"]
+[gd_scene load_steps=11 format=3 uid="uid://ds42t8h4nusm4"]
 
 [ext_resource type="PackedScene" uid="uid://bojo5mnmadf4j" path="res://panels/popups/UIPopupPanelPicker/UIPopupPanelPicker.tscn" id="1_e0vty"]
 [ext_resource type="PackedScene" uid="uid://cgkb6rh0joakn" path="res://panels/UIPanelSettings/UIPanelSettings.tscn" id="2_m68sf"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://bgos7cwjodq8j" path="res://panels/UICommandPalette/UICommandPalette.tscn" id="6_5wuys"]
 [ext_resource type="PackedScene" uid="uid://bfdb7diyn2pub" path="res://panels/UIObjectPicker/UIObjectPicker.tscn" id="7_l8vcs"]
 [ext_resource type="PackedScene" uid="uid://b1kltq456o7pj" path="res://panels/popups/UIPopupSettingsModule/UIPopupSettingsModule.tscn" id="8_fdaae"]
+[ext_resource type="PackedScene" uid="uid://dbindagv7rpfp" path="res://panels/UIWindowManager/UIWindowManager.tscn" id="9_if4f4"]
+[ext_resource type="PackedScene" uid="uid://k0p6c6xe8xmi" path="res://panels/popups/UIWindowID/UIWindowID.tscn" id="10_0h5oi"]
 
 [node name="WindowPopups" type="Control"]
 layout_mode = 3
@@ -127,4 +129,27 @@ offset_right = 111.5
 offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
+display_mode = 1
+
+[node name="UIWindowManager" parent="." instance=ExtResource("9_if4f4")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -462.0
+offset_top = -246.0
+offset_right = 462.0
+offset_bottom = 246.0
+display_mode = 1
+
+[node name="UIWindowID" parent="." instance=ExtResource("10_0h5oi")]
+visible = false
+layout_mode = 1
+offset_left = -264.0
+offset_top = -128.0
+offset_right = 264.0
+offset_bottom = 128.0
 display_mode = 1

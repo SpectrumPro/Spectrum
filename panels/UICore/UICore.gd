@@ -16,6 +16,10 @@ class_name UICore extends UIPanel
 ## Ready
 func _ready() -> void:
 	_startup_bg.show()
+	
+	if get_parent() is UIWindow:
+		set_menu_bar_visible(false)
+	
 	await get_tree().create_timer(0.2).timeout
 	Interface.fade_property(_startup_bg, "modulate", Color.TRANSPARENT, _startup_bg.hide, 0.5)
 

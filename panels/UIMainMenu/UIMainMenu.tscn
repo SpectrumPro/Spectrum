@@ -70,6 +70,7 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
 text = "Window Manager"
 icon = ExtResource("6_6svl8")
 autowrap_mode = 2
@@ -134,6 +135,7 @@ custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+disabled = true
 text = "New Window"
 icon = ExtResource("13_ljneo")
 autowrap_mode = 2
@@ -143,6 +145,7 @@ custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+disabled = true
 text = "Move Window"
 icon = ExtResource("14_7ow35")
 autowrap_mode = 2
@@ -161,6 +164,7 @@ custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+disabled = true
 text = "Save File"
 icon = ExtResource("10_dtvuq")
 autowrap_mode = 2
@@ -170,12 +174,15 @@ custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+disabled = true
 text = "Load File"
 icon = ExtResource("12_3vctd")
 autowrap_mode = 2
 
 [connection signal="toggled" from="VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer/AllSettings" to="." method="_on_all_settings_toggled"]
+[connection signal="toggled" from="VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer3/WindowManager" to="." method="_on_window_manager_toggled"]
 [connection signal="toggled" from="VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer2/SaveLoad" to="." method="_on_save_load_toggled"]
 [connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer/SettingsContainer/NetworkManagerSettings" to="." method="_on_network_manager_settings_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer/SettingsContainer/ExternalInputSettings" to="." method="_on_external_input_settings_pressed"]
 
 [editable path="VBoxContainer/PanelMenuBar"]

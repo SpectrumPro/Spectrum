@@ -1,6 +1,8 @@
-[gd_scene load_steps=23 format=3 uid="uid://d00fmrh7nbaua"]
+[gd_scene load_steps=24 format=3 uid="uid://d00fmrh7nbaua"]
 
+[ext_resource type="StyleBox" uid="uid://c248eat6flpbo" path="res://assets/styles/UIPanelImbed.tres" id="1_7kg0u"]
 [ext_resource type="Script" uid="uid://cjbnp24htiy3i" path="res://panels/UICore/UICore.gd" id="1_febpr"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="2_dciud"]
 [ext_resource type="Script" uid="uid://cpdu3qjv70rxp" path="res://panels/UICore/UICorePrimarySideBar.gd" id="2_hksc6"]
 [ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="3_prxic"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="4_avgbi"]
@@ -14,14 +16,6 @@
 [ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="12_ucqqu"]
 [ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="13_c1is7"]
 [ext_resource type="Texture2D" uid="uid://dvabce3i3r2cu" path="res://assets/LogoTextSM.svg" id="14_7uvc5"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opnnr"]
-bg_color = Color(0.140447, 0.140447, 0.140447, 1)
-border_color = Color(0.309804, 0.309804, 0.309804, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aoeir"]
 content_margin_left = 4.0
@@ -75,20 +69,32 @@ font_color = Color(0.789062, 0.789062, 0.789062, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphhv"]
 bg_color = Color(0.09, 0.09, 0.09, 1)
 
-[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar", "_startup_bg")]
+[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar", "_startup_bg", "edit_controls", "menu_bar")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_opnnr")
+theme_override_styles/panel = ExtResource("1_7kg0u")
 script = ExtResource("1_febpr")
 _side_bar = NodePath("VBoxContainer/HBoxContainer/UICorePrimarySideBar")
 _startup_bg = NodePath("StartupBG")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("2_dciud")]
+layout_mode = 2
+
+[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "UICore"
+icon = ExtResource("7_s5yey")
+
+[node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+show_settings = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -103,7 +109,7 @@ tab_button_modulate = Color(0.509804, 0.509804, 0.509804, 1)
 disabled_tab_button_modulate = Color(0.682353, 0.682353, 0.682353, 1)
 _tab_button_container = NodePath("VBoxContainer/ScrollContainer/TabButtonContainer")
 _tab_button_scroll = NodePath("VBoxContainer/ScrollContainer")
-_tab_control_container = NodePath("../MainContent/TabControlContainer")
+_tab_control_container = NodePath("../MainContent/HSplitContainer/VSplitContainer/TabControlContainer")
 _overlay_container = NodePath("../MainContent/OverlayContainer")
 _menu_button = NodePath("VBoxContainer/Menu")
 _edit_button = NodePath("VBoxContainer/Edit")
@@ -166,13 +172,19 @@ size_flags_horizontal = 4
 text = "SPECTRUM"
 label_settings = SubResource("LabelSettings_tdt00")
 
-[node name="TabControlContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent"]
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/HBoxContainer/MainContent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer/HBoxContainer/MainContent/HSplitContainer"]
+layout_mode = 2
+
+[node name="TabControlContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent/HSplitContainer/VSplitContainer"]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -340,3 +352,5 @@ stretch_mode = 4
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer/AddDesk" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="create_custom" binds= ["UIDesk"]]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/PanelTypeOption/HBoxContainer/AddCustom" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_add_custom_pressed"]
 [connection signal="toggled" from="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer2/HBoxContainer/ActionButton" to="VBoxContainer/UICoreStatusBar" method="_on_action_button_toggled"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

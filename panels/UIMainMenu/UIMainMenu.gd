@@ -46,12 +46,16 @@ class_name UIMainMenu extends UIPanel
 @onready var _settings_panel: UISetting = Interface.get_window_popup(Interface.WindowPopup.SETTINGS, self)
 
 ## The UISaveLoad popup for this window
+@onready var _window_manager_panel: UIWindowManager = Interface.get_window_popup(Interface.WindowPopup.WINDOW_MANAGER, self)
+
+## The UISaveLoad popup for this window
 @onready var _save_load_panel: UISaveLoad = Interface.get_window_popup(Interface.WindowPopup.SAVE_LOAD, self)
 
 
 ## Ready
 func _ready() -> void:
 	_settings_panel.visibility_changed.connect(func (): all_settings_button.set_pressed_no_signal(_settings_panel.visible))
+	_window_manager_panel.visibility_changed.connect(func (): window_manager_button.set_pressed_no_signal(_window_manager_panel.visible))
 	_save_load_panel.visibility_changed.connect(func (): save_load_button.set_pressed_no_signal(_save_load_panel.visible))
 
 
@@ -68,7 +72,20 @@ func _on_network_manager_settings_pressed() -> void:
 	close_request.emit()
 
 
+## Called when the ExternalInput button is pressed
+func _on_external_input_settings_pressed() -> void:
+	Interface.set_popup_visable(Interface.WindowPopup.SETTINGS, self, true)
+	_settings_panel.switch_to_tab(UISetting.Tab.Shortcuts)
+	close_request.emit()
+
+
 ## Called when the SaveLoad Button is toggled
 func _on_save_load_toggled(p_toggled_on: bool) -> void:
 	Interface.set_popup_visable(Interface.WindowPopup.SAVE_LOAD, self, p_toggled_on)
+	close_request.emit()
+
+
+## Caleld when the WindowManager button is pressed
+func _on_window_manager_toggled(p_toggled_on: bool) -> void:
+	Interface.set_popup_visable(Interface.WindowPopup.WINDOW_MANAGER, self, p_toggled_on)
 	close_request.emit()

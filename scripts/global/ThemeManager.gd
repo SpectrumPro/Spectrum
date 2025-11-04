@@ -19,7 +19,7 @@ class Colors:
 		static var Delete				= Color("ef4444")  ## Red
 	
 	class Selections:
-		static var Selected				= Color(0.0549, 0.4745, 0.9647, 1.0)
+		static var Selected				= Color(0.055, 0.475, 0.965, 1.0)
 		static var SelectedDimmed		= Color(0.0549, 0.4745, 0.9647, 0.2)
 		static var UnSelectedGray 		= Color(0.2, 0.2, 0.2, 0.8)
 		static var SelectedGray			= Color(0.4, 0.4, 0.4, 0.8)

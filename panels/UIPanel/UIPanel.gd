@@ -75,6 +75,10 @@ func _init() -> void:
 	
 	if custom_minimum_size != Vector2.ZERO:
 		custom_minimum_size = MinSize
+	
+	if get_parent() is UIWindow:
+		add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelImbed)
+
 
 
 ## Disables all the buttons in the given array

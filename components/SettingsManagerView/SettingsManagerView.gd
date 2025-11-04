@@ -26,12 +26,15 @@ func reset() -> void:
 	for view: SettingsManagerModuleView in _views_by_class.values():
 		_view_container.remove_child(view)
 		view.queue_free()
+	
+	_manager = null
+	_views_by_class.clear()
 
 
 ## Sets the SettingsManager
 func set_manager(p_manager: SettingsManager) -> void:
-	_manager = p_manager
 	reset()
+	_manager = p_manager
 	
 	for classname: String in _manager.get_inheritance_list():
 		var view: SettingsManagerModuleView = preload("res://components/SettingsManagerView/ModuleView/SettingsManagerModuleView.tscn").instantiate()

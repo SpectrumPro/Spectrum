@@ -59,6 +59,7 @@ var _data_inputs: Dictionary[Data.Type, PackedScene] = {
 	Data.Type.IP:				load(_d("DataInputString")),
 	Data.Type.NETWORKSESSION: 	load(_d("DataInputNetworkSession")),
 	Data.Type.NETWORKNODE:	 	load(_d("DataInputNetworkNode")),
+	Data.Type.UIPANEL:			load(_d("DataInputUIPanel"))
 }
 
 ## All UIPanels sorted by category
@@ -70,7 +71,7 @@ var _panels_by_category: Dictionary[String, Array] = {
 		"UIUniverses",
 		"UISettings",
 		"UISaveLoad",
-		"UIDebug"
+		"UIDebug",
 	],
 }
 
