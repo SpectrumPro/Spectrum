@@ -163,6 +163,7 @@ func _update_size_from_event(p_event: InputEventMouse) -> void:
 	
 	_target_size = _new_size.snapped(_snapping_distance).clamp(_snapping_distance, Vector2.INF)
 	update_label()
+	move_to_front()
 	_update_transform()
 
 
@@ -173,6 +174,7 @@ func _update_position_from_event(p_event: InputEventMouse) -> void:
 	
 	_target_position = _new_position.snapped(_snapping_distance)
 	update_label()
+	move_to_front()
 	_update_transform()
 
 

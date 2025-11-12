@@ -33,4 +33,4 @@ select_mode = 2
 
 [connection signal="gui_input" from="Tree" to="." method="_on_tree_gui_input"]
 [connection signal="multi_selected" from="Tree" to="." method="_on_tree_multi_selected"]
-[connection signal="nothing_selected" from="Tree" to="." method="_on_tree_nothing_selected"]
+[connection signal="nothing_selected" from="Tree" to="." method="deselect_all"]

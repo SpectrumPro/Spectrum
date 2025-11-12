@@ -8,14 +8,13 @@
 [sub_resource type="LabelSettings" id="LabelSettings_hbu47"]
 font_size = 18
 
-[node name="ClassSettingsModule" type="PanelContainer" node_paths=PackedStringArray("_title", "_expand_hide_button", "_settings_container", "_custom_container")]
+[node name="ClassSettingsModule" type="PanelContainer" node_paths=PackedStringArray("_title", "_expand_hide_button", "_settings_container")]
 theme = ExtResource("1_0arna")
 theme_override_styles/panel = ExtResource("2_5gjfr")
 script = ExtResource("3_tcr3o")
 _title = NodePath("VBoxContainer/HBoxContainer/Title")
 _expand_hide_button = NodePath("VBoxContainer/HBoxContainer/ExpandHide")
 _settings_container = NodePath("VBoxContainer/SettingContainer")
-_custom_container = NodePath("VBoxContainer/SettingContainer/CustomContainer")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -37,9 +36,6 @@ icon = ExtResource("4_1gck8")
 flat = true
 
 [node name="SettingContainer" type="VBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="CustomContainer" type="VBoxContainer" parent="VBoxContainer/SettingContainer"]
 layout_mode = 2
 
 [connection signal="toggled" from="VBoxContainer/HBoxContainer/ExpandHide" to="." method="_on_expand_hide_toggled"]

@@ -69,12 +69,14 @@ func set_module(p_module: SettingsModule) -> bool:
 
 ## Shows or hides the label
 func set_show_label(p_show_label: bool) -> void:
-	_label.set_visible(p_show_label)
+	if is_instance_valid(_label):
+		_label.set_visible(p_show_label)
 
 
 ## Sets the label text
 func set_label_text(p_label_text: String) -> void:
-	_label.set_text(p_label_text) 
+	if is_instance_valid(_label):
+		_label.set_text(p_label_text) 
 
 
 ## Sets the editable state

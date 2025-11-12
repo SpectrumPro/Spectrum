@@ -33,6 +33,8 @@ class Colors:
 		static var UnsavedData			= Color.ORANGE
 	
 	static var UIPanelFlashColor		= Color.WHITE * 1.5
+	static var UICorePrimarySideBarTabModulate			= Color(0.51, 0.51, 0.51)
+	static var UICorePrimarySideBarDisabledTabModulate	= Color(0.682, 0.682, 0.682)
 	
 	static func pastel(p_color: Color) -> Color:
 		return p_color.blend(Color(1, 1, 1, 0.2))

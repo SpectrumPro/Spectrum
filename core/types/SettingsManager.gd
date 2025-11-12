@@ -33,7 +33,7 @@ func register_setting(p_id: String, p_data_type: Data.Type, p_setter: Callable, 
 	if not p_id:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.SETTING, p_setter, p_getter, p_signals)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.SETTING, p_setter, p_getter, p_signals, _owner)
 	_entrys[p_id] = module
 	
 	return module
@@ -44,7 +44,7 @@ func register_control(p_id: String, p_data_type: Data.Type, p_setter: Callable, 
 	if not p_id:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.CONTROL, p_setter, p_getter, p_signals)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.CONTROL, p_setter, p_getter, p_signals, _owner)
 	_entrys[p_id] = module
 	
 	return module
@@ -55,8 +55,33 @@ func register_status(p_id: String, p_data_type: Data.Type, p_getter: Callable, p
 	if not p_id or not p_data_type or not p_getter:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.STATUS, Callable(), p_getter, p_signals)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.STATUS, Callable(), p_getter, p_signals, _owner)
 	module.set_enum_dict(p_enum_dict)
+	_entrys[p_id] = module
+	
+	return module
+
+
+## Registers a custom panel to display
+func register_custom_panel(p_id: String, p_panel: PackedScene, p_entry_point: String) -> SettingsModule:
+	if not p_id or not p_panel:
+		return null
+	
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), Data.Type.CUSTOMPANEL, SettingsModule.Type.SETTING, Callable(), Callable(), [], _owner)
+	module.set_custom_panel_scene(p_panel)
+	module.set_custom_panel_entry_point(p_entry_point)
+	_entrys[p_id] = module
+	
+	return module
+
+
+## Registers a differnt SettingsManager to be shown alongside all the local SettingsModules
+func require(p_id: String, p_manager: SettingsManager) -> SettingsModule:
+	if not p_manager:
+		return null
+	
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), Data.Type.SETTINGSMANAGER, SettingsModule.Type.SETTING, Callable(), Callable(), [], _owner)
+	module.set_sub_manager(p_manager)
 	_entrys[p_id] = module
 	
 	return module

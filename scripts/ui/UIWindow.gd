@@ -15,6 +15,15 @@ signal base_panel_changed(panel: UIPanel)
 ## Emitted when the DisplayMode is changed
 signal display_mode_changed(diaplay_mode: DisplayMode)
 
+## Emitted when the window position is changed
+signal window_position_changed(window_position)
+
+## Emitted when the window size is changed
+signal window_size_changed(window_size: Vector2i)
+
+## Emitted when the window borderless state is changed
+signal window_borderless_changed(window_borderless)
+
 
 ## Enum for DisplayMode
 enum DisplayMode {WINDOWED, MAXIMIZED, FULLSCREEN}
@@ -32,9 +41,16 @@ var _display_mode: DisplayMode = DisplayMode.WINDOWED
 ## The Control node that contains all window popups
 var _window_popups: Control
 
+## Previous size
+var _previous_size: Vector2i
+
+## Previous position
+var _previous_pos: Vector2i
+
 
 ## Init
 func _init() -> void:
+	print(DisplayServer.get_name())
 	settings_manager.set_owner(self)
 	settings_manager.set_inheritance_array(["UIWindow"])
 	
@@ -47,10 +63,30 @@ func _init() -> void:
 	settings_manager.register_setting("display_mode", Data.Type.ENUM, set_display_mode, get_display_mode, [display_mode_changed])\
 	.display("UIWindow", 2).set_enum_dict(DisplayMode)
 	
+	settings_manager.register_setting("position", Data.Type.VECTOR2I, set_window_position, get_window_position, [window_position_changed])\
+	.display("UIWindow", 3).set_min_max(Vector2.ZERO, Vector2.INF)
+	
+	settings_manager.register_setting("size", Data.Type.VECTOR2I, set_window_size, get_window_size, [window_size_changed])\
+	.display("UIWindow", 4).set_min_max(Vector2.ZERO, Vector2.INF)
+	
+	settings_manager.register_setting("borderless", Data.Type.BOOL, set_window_borderless, get_window_borderless, [window_borderless_changed])\
+	.display("UIWindow", 5)
+	
 	settings_manager.register_status("root", Data.Type.BOOL, is_window_root, [])\
-	.display("UIWindow", 3)
+	.display("UIWindow", 6)
 	
 	close_requested.connect(_on_close_request)
+
+
+## Process
+func _process(delta: float) -> void:
+	if get_position() != _previous_pos:
+		window_position_changed.emit(get_position())
+		_previous_pos = get_position()
+	
+	if get_size() != _previous_size:
+		window_size_changed.emit(get_size())
+		_previous_size = get_size()
 
 
 ## Sets the window title
@@ -94,6 +130,22 @@ func set_display_mode(p_display_mode) -> void:
 	
 	display_mode_changed.emit(_display_mode)
 
+
+## Sets the window size
+func set_window_size(p_window_size: Vector2i) -> void:
+	set_size(p_window_size)
+
+
+## Sets the window position
+func set_window_position(p_position: Vector2i) -> void:
+	set_position(p_position)
+
+
+## Sets the borderless state
+func set_window_borderless(p_borderless: bool) -> void:
+	set_flag(Window.FLAG_BORDERLESS, p_borderless)
+
+
 ## Gets the window title
 func get_window_title() -> String:
 	return title
@@ -112,6 +164,21 @@ func get_window_popups() -> Control:
 ## Gets the current DisplayMode
 func get_display_mode() -> DisplayMode:
 	return _display_mode
+
+
+## Gets the window position
+func get_window_position() -> Vector2i:
+	return get_position()
+
+
+## Gets the window size
+func get_window_size() -> Vector2i:
+	return get_size()
+
+
+## Gets the borderless state
+func get_window_borderless() -> bool:
+	return get_flag(Window.FLAG_BORDERLESS)
 
 
 ## Returns true if this node is the root window in the program

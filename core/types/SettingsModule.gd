@@ -2,17 +2,16 @@
 # This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
 # See the LICENSE file for details.
 
-
 class_name SettingsModule extends Object
 ## Represents a configurable module within the settings system.
 
 
 ## Enum for Type
 enum Type {
-	NONE     = 0, ## No type assigned
-	SETTING  = 1, ## Represents a configurable setting
-	CONTROL  = 2, ## Represents a controllable action or command
-	STATUS   = 3, ## Represents a status or state indicator
+	NONE		= 0, ## No type assigned
+	SETTING		= 1, ## Represents a configurable setting
+	CONTROL		= 2, ## Represents a controllable action or command
+	STATUS		= 3, ## Represents a status or state indicator
 }
 
 
@@ -52,15 +51,27 @@ var _edit_condition: Callable = func () -> bool: return true
 ## The min and max values
 var _min_max: Array[Variant] = [0.0, 1.0]
 
+## The PackedScene for DataType.CUSTOMPANEL
+var _custom_panel_scene: PackedScene
+
+## The String callable name for the custom panel scene's setter function
+var _custom_panel_entry_point: String
+
+## The sub manager SettingsManager, for Data.Type.SETTINGSMANAGER
+var _sub_manager: SettingsManager
+
 ## The name for the category this module should be displayed under when in a user interface
 var _visual_category: String = ""
 
 ## The line this Module shoule be displayed when in a user interface
 var _visual_line: int = -1
 
+## The object that owns this SettingsManager
+var _owner: Object
+
 
 ## Init
-func _init(p_id: String, p_name: String, p_data_type: Data.Type, p_type: Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> void:
+func _init(p_id: String, p_name: String, p_data_type: Data.Type, p_type: Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal], p_owner: Object) -> void:
 	_id = p_id
 	_name = p_name
 	_data_type = p_data_type
@@ -68,6 +79,7 @@ func _init(p_id: String, p_name: String, p_data_type: Data.Type, p_type: Type, p
 	_setter = p_setter
 	_getter = p_getter
 	_signals = p_signals
+	_owner = p_owner
 
 
 ## Gets the value of this SettingsModule as a String
@@ -154,6 +166,21 @@ func get_max() -> Variant:
 	return _min_max[1]
 
 
+## Gets the custom panel PackedScene
+func get_custom_panel() -> PackedScene:
+	return _custom_panel_scene
+
+
+## Gets the custom panel entry point
+func get_custom_panel_entry_point() -> String:
+	return _custom_panel_entry_point
+
+
+## Gets the sub manager
+func get_sub_manager() -> SettingsManager:
+	return _sub_manager
+
+
 ## Gets the visual category
 func get_visual_category() -> String:
 	return _visual_category
@@ -162,6 +189,11 @@ func get_visual_category() -> String:
 ## Gets the visual line
 func get_visual_line() -> int:
 	return _visual_line
+
+
+## Gets the owner Object
+func get_owner() -> Object:
+	return _owner
 
 
 ## Sets the class filter
@@ -194,14 +226,36 @@ func set_min_max(p_min: Variant, p_max: Variant) -> SettingsModule:
 	return self
 
 
+## Sets the custom panel scene
+func set_custom_panel_scene(p_scene: PackedScene) -> SettingsModule:
+	_custom_panel_scene = p_scene
+	_getter = get_custom_panel
+	return self
+
+
+## Sets the custom panel entry point
+func set_custom_panel_entry_point(p_entry_point: String) -> SettingsModule:
+	_custom_panel_entry_point = p_entry_point
+	return self
+
+
+## Sets the sub manager
+func set_sub_manager(p_sub_manager: SettingsManager) -> SettingsModule:
+	_sub_manager = p_sub_manager
+	_getter = get_sub_manager
+	return self
+
+
 ## Sets the visual category
-func set_visual_category(p_visual_category: String) -> void:
+func set_visual_category(p_visual_category: String) -> SettingsModule:
 	_visual_category = p_visual_category
+	return self
 
 
 ## Sets the visual line
-func set_visual_line(p_visual_line: int) -> void:
+func set_visual_line(p_visual_line: int) -> SettingsModule:
 	_visual_line = p_visual_line
+	return self
 
 
 ## Returns true if this SettingsModule is editable

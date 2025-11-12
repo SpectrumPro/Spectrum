@@ -89,7 +89,8 @@ func _on_table_selection_changed() -> void:
 
 ## Called when the AddWindow button is pressed
 func _on_add_window_pressed() -> void:
-	Interface.add_window()
+	window_table.deselect_all()
+	_window_rows.right(Interface.add_window()).select()
 
 
 ## Called when the CloseWindow button is presse
@@ -102,8 +103,10 @@ func _on_close_window_pressed() -> void:
 ## Called when the DeleteWindow button is pressed
 func _on_delete_window_pressed() -> void:
 	if _selected_window:
-		Interface.remove_window(_selected_window)
-		_update_buttons()
+		Interface.prompt_delete_confirmation(self, str("Delete: ", _selected_window.get_window_title(), "?")).then(func ():
+			Interface.remove_window(_selected_window)
+			_update_buttons()
+		)
 
 
 ## Called when the open window button is pressed

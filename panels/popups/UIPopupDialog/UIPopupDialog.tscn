@@ -1,29 +1,28 @@
-[gd_scene load_steps=8 format=3 uid="uid://bruqlneow3y33"]
+[gd_scene load_steps=5 format=3 uid="uid://bruqlneow3y33"]
 
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_sp5qm"]
 [ext_resource type="Script" uid="uid://5edq1bxl2trx" path="res://panels/popups/UIPopupDialog/UIPopupDialog.gd" id="2_8bghr"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="3_jdxiq"]
 [ext_resource type="Texture2D" uid="uid://wpl648ha8tvw" path="res://assets/icons/ToolTip.svg" id="4_sp5qm"]
-[ext_resource type="Texture2D" uid="uid://b3hmh5jlggqxa" path="res://assets/icons/cross.svg" id="5_2iuyk"]
-[ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="6_iia6j"]
-[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="7_iia6j"]
 
-[node name="UIPopupDialog" type="PanelContainer" node_paths=PackedStringArray("title_button", "mode_string_input", "edit_controls", "menu_bar")]
+[node name="UIPopupDialog" type="PanelContainer" node_paths=PackedStringArray("container", "title_button", "edit_controls", "menu_bar")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -199.0
-offset_top = -61.5
-offset_right = 199.0
-offset_bottom = 61.5
+offset_left = -131.0
+offset_top = -47.25
+offset_right = 131.0
+offset_bottom = 47.25
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("1_sp5qm")
 script = ExtResource("2_8bghr")
+container = NodePath("VBoxContainer/VBoxContainer")
 title_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/PanelName")
-mode_string_input = NodePath("VBoxContainer/PanelContainer2/DataInputContainer/ModeContainer/StringInput")
 edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
 display_mode = 1
 menu_bar = NodePath("VBoxContainer/PanelMenuBar")
@@ -41,85 +40,8 @@ icon = ExtResource("4_sp5qm")
 [node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
 show_close = true
 
-[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="DataInputContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="DataInputLabel" type="Label" parent="VBoxContainer/PanelContainer2/DataInputContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Name:"
-
-[node name="ModeContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/DataInputContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="StringInput" type="LineEdit" parent="VBoxContainer/PanelContainer2/DataInputContainer/ModeContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-placeholder_text = "value"
-
-[node name="ConfirmationContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer2"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="ConfirmationLabel" type="Label" parent="VBoxContainer/PanelContainer2/ConfirmationContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(320, 0)
-layout_mode = 2
-size_flags_vertical = 3
-text = "Please confirm this action."
-autowrap_mode = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ConfirmationContainer"]
-layout_mode = 2
-
-[node name="ConfirmationCancel" type="Button" parent="VBoxContainer/PanelContainer2/ConfirmationContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Cancel"
-icon = ExtResource("5_2iuyk")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ConfirmationContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ConfirmationConfirm" type="Button" parent="VBoxContainer/PanelContainer2/ConfirmationContainer/HBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Confirm"
-icon = ExtResource("6_iia6j")
-
-[node name="DeleteConfirmationConfirm" type="Button" parent="VBoxContainer/PanelContainer2/ConfirmationContainer/HBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-visible = false
-modulate = Color(1.9614621, 0.62352514, 0.62352514, 1)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/font_focus_color = Color(1.7357064, 1.7357064, 1.7357064, 1)
-theme_override_colors/font_pressed_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/font_hover_color = Color(1.7357064, 1.7357064, 1.7357064, 1)
-theme_override_colors/font_hover_pressed_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/icon_normal_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/icon_focus_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/icon_pressed_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/icon_hover_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-theme_override_colors/icon_hover_pressed_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
-text = "Delete"
-icon = ExtResource("7_iia6j")
-
-[connection signal="text_submitted" from="VBoxContainer/PanelContainer2/DataInputContainer/ModeContainer/StringInput" to="." method="confirm" unbinds=1]
-[connection signal="pressed" from="VBoxContainer/PanelContainer2/ConfirmationContainer/HBoxContainer/HBoxContainer/ConfirmationConfirm" to="." method="confirm"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer2/ConfirmationContainer/HBoxContainer/HBoxContainer/DeleteConfirmationConfirm" to="." method="confirm"]
 
 [editable path="VBoxContainer/PanelMenuBar"]

@@ -9,6 +9,9 @@ class_name PanelMenuBar extends UIComponent
 ## Popup style state
 var _popup_style: bool = false
 
+## The owner of this Menubar
+var _owner: UIPanel
+
 
 ## Sets the popup style state
 func set_popup_style(p_popup_style: bool) -> bool:
@@ -19,3 +22,8 @@ func set_popup_style(p_popup_style: bool) -> bool:
 	add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.PanelMenuBarPopup if _popup_style else ThemeManager.StyleBoxes.PanelMenuBarBase)
 	
 	return true
+
+
+## Gets the owner
+func get_panel_owner() -> UIPanel:
+	return _owner

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dbindagv7rpfp"]
+[gd_scene load_steps=14 format=3 uid="uid://dbindagv7rpfp"]
 
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_eoc6a"]
 [ext_resource type="Script" uid="uid://dou4ebckt6mds" path="res://panels/UIWindowManager/UIWindowManager.gd" id="2_0pdyn"]
@@ -13,8 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://dhhbjjtkgbfl0" path="res://assets/icons/FileOpen.svg" id="11_qropn"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="11_ukpiy"]
 [ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="13_fsmei"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_eoc6a"]
 
 [node name="UIWindowManager" type="PanelContainer" node_paths=PackedStringArray("edit_controls", "menu_bar")]
 anchors_preset = 15
@@ -44,21 +42,6 @@ size_flags_horizontal = 6
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="WindowManagerTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_eoc6a")
-text = "WindowManager"
-
-[node name="WindowSettingsTabButton" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_eoc6a")
-text = "PanelSettings"
-
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -68,7 +51,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("5_0pdyn")
 window_table = NodePath("WindowManagerTab/HSplitContainer/Table")
-settings_manager_view = NodePath("WindowManagerTab/HSplitContainer/SettingsManagerView")
+settings_manager_view = NodePath("WindowManagerTab/HSplitContainer/ScrollContainer/SettingsManagerView")
 close_window_button = NodePath("PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/CloseWindow")
 open_window_button = NodePath("PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/OpenWindow")
 delete_window_button = NodePath("PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/DeleteWindow")
@@ -86,9 +69,14 @@ split_offset = -290
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SettingsManagerView" parent="VBoxContainer/HBoxContainer/WindowManagerTab/WindowManagerTab/HSplitContainer" instance=ExtResource("5_23wbi")]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/WindowManagerTab/WindowManagerTab/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="SettingsManagerView" parent="VBoxContainer/HBoxContainer/WindowManagerTab/WindowManagerTab/HSplitContainer/ScrollContainer" instance=ExtResource("5_23wbi")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/WindowManagerTab"]
 layout_mode = 2
@@ -140,13 +128,6 @@ toggle_mode = true
 text = "identify"
 icon = ExtResource("13_fsmei")
 
-[node name="PanelSettingsTab" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_23wbi")]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[connection signal="toggled" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/WindowManagerTabButton" to="VBoxContainer/HBoxContainer/WindowManagerTab/WindowManagerTab" method="set_visible"]
-[connection signal="toggled" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/WindowSettingsTabButton" to="VBoxContainer/HBoxContainer/PanelSettingsTab" method="set_visible"]
 [connection signal="selection_changed" from="VBoxContainer/HBoxContainer/WindowManagerTab/WindowManagerTab/HSplitContainer/Table" to="VBoxContainer/HBoxContainer/WindowManagerTab" method="_on_table_selection_changed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/WindowManagerTab/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/AddWindow" to="VBoxContainer/HBoxContainer/WindowManagerTab" method="_on_add_window_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/WindowManagerTab/PanelContainer/HBoxContainer/PanelContainer/HBoxContainer/CloseWindow" to="VBoxContainer/HBoxContainer/WindowManagerTab" method="_on_close_window_pressed"]

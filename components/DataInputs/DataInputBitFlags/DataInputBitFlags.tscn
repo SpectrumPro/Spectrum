@@ -29,7 +29,6 @@ size_flags_vertical = 6
 vertical_alignment = 1
 
 [node name="FlagLabel" type="Label" parent="VBox/HBoxContainer"]
-modulate = Color(0.5, 0.5, 0.5, 1)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 1

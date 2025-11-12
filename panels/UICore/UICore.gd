@@ -13,8 +13,18 @@ class_name UICore extends UIPanel
 @export var _startup_bg: PanelContainer
 
 
+## Init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UICore")
+	_class_tree.append("SideBar")
+
+
 ## Ready
 func _ready() -> void:
+	settings_manager.require("side_bar_settings", _side_bar.settings_manager).display("SideBar", 0)
+	
 	_startup_bg.show()
 	
 	if get_parent() is UIWindow:

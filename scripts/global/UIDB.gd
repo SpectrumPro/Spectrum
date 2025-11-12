@@ -53,13 +53,17 @@ var _data_inputs: Dictionary[Data.Type, PackedScene] = {
 	Data.Type.BOOL:				load(_d("DataInputBool")),
 	Data.Type.INT:				load(_d("DataInputInt")),
 	Data.Type.FLOAT:			load(_d("DataInputFloat")),
+	Data.Type.VECTOR2:			load(_d("DataInputVector2")),
+	Data.Type.VECTOR2I:			load(_d("DataInputVector2")),
 	Data.Type.ENUM:				load(_d("DataInputEnum")),
 	Data.Type.BITFLAGS:			load(_d("DataInputBitFlags")),
 	Data.Type.NAME:				load(_d("DataInputString")),
 	Data.Type.IP:				load(_d("DataInputString")),
 	Data.Type.NETWORKSESSION: 	load(_d("DataInputNetworkSession")),
 	Data.Type.NETWORKNODE:	 	load(_d("DataInputNetworkNode")),
-	Data.Type.UIPANEL:			load(_d("DataInputUIPanel"))
+	Data.Type.UIPANEL:			load(_d("DataInputUIPanel")),
+	Data.Type.SETTINGSMANAGER:	load(_d("DataInputSettingsManager")),
+	Data.Type.CUSTOMPANEL:		load(_d("DataInputCustomPanel")),
 }
 
 ## All UIPanels sorted by category
@@ -72,6 +76,7 @@ var _panels_by_category: Dictionary[String, Array] = {
 		"UISettings",
 		"UISaveLoad",
 		"UIDebug",
+		"UICore"
 	],
 }
 

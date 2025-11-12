@@ -1,10 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://cgkb6rh0joakn"]
+[gd_scene load_steps=10 format=3 uid="uid://cgkb6rh0joakn"]
 
 [ext_resource type="Script" uid="uid://ddcbvxctik0tr" path="res://panels/UIPanelSettings/UIPanelSettings.gd" id="1_4hx28"]
 [ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/UIPanelPopup.tres" id="1_i7um0"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="3_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="4_1jyub"]
-[ext_resource type="Texture2D" uid="uid://bhl73t2e0jcwn" path="res://assets/icons/close.svg" id="5_a0kig"]
 [ext_resource type="PackedScene" uid="uid://kjup3yrjifr5" path="res://components/SettingsManagerView/SettingsManagerView.tscn" id="6_a0kig"]
 [ext_resource type="Script" uid="uid://c20borh60xiu1" path="res://panels/UIPanelSettings/Shortcuts.gd" id="6_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_i3a75"]
@@ -64,20 +63,14 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_i7um0")
 text = "Shortcuts"
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer"]
-layout_mode = 2
-text = "Close Panel"
-icon = ExtResource("5_a0kig")
-
-[node name="Settings" type="PanelContainer" parent="VBoxContainer"]
+[node name="Settings" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="SettingsManagerView" parent="VBoxContainer/Settings" instance=ExtResource("6_a0kig")]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Shortcuts" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_button_tree", "_action_tree", "_add_action_button", "_remove_action_button")]
 visible = false
@@ -132,6 +125,7 @@ text = "Remove"
 icon = ExtResource("8_ct4k6")
 
 [connection signal="panel_changed" from="." to="VBoxContainer/Shortcuts" method="set_panel"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="toggled" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/SettingsTab" to="VBoxContainer/Settings" method="set_visible"]
 [connection signal="toggled" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/ShortcutsTab" to="VBoxContainer/Shortcuts" method="set_visible"]
 [connection signal="item_selected" from="VBoxContainer/Shortcuts/HBoxContainer/ButtonList" to="VBoxContainer/Shortcuts" method="_on_button_list_item_selected"]

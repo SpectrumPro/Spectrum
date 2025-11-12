@@ -16,6 +16,9 @@ class_name UIPopupSettingsModule extends UIPopup
 ## The current DataInput node
 var _current_data_input: DataInput
 
+## Should the data input be focused once ready
+var _focus_on_ready: bool = false
+
 
 ## Sets the SettingsModule to be shown
 func set_module(p_module: SettingsModule) -> void:
@@ -29,6 +32,9 @@ func set_module(p_module: SettingsModule) -> void:
 		new_data_input.set_module(p_module)
 		new_data_input.set_label_text(p_module.get_name())
 		new_data_input.set_show_label(true)
+		
+		if _focus_on_ready:
+			new_data_input.focus()
 	)
 	
 	if p_module.is_editable():
@@ -43,5 +49,7 @@ func set_module(p_module: SettingsModule) -> void:
 
 ## Focuses the input
 func focus() -> void:
-	if _current_data_input:
+	if _current_data_input and _current_data_input.is_node_ready():
 		_current_data_input.focus()
+	elif _current_data_input:
+		_focus_on_ready = true

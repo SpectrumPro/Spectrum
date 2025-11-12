@@ -6,124 +6,148 @@ class_name UIPopupDialog extends UIPopup
 ## UIPopupDialog
 
 
-## Emitted when the value is set
-signal value_set(value: Variant)
-
-## Emitted when the mode is changed
-signal mode_changed(mode: Mode)
+## Emitted when a button is pressed that Represents a non bool option
+signal option_chosen(option: Variant)
 
 
-## Enum for dialog modes
-enum Mode {
-	NONE,					## No Mode
-	CONFIRMATION,			## Confirmation Dialog
-	DELETE_CONFIRMATION,	## Delete Confirmation
-	STRING,					## String input
-}
+## The Control to contain all nodex
+@export var container: Control
 
-## The title button
+## The title Button
 @export var title_button: Button
 
-## The LineEdit for Mode.String
-@export var mode_string_input: LineEdit
 
-
-## All nodes for each Mode
-@onready var _mode_nodes: Dictionary[Mode, Array] = {
-	Mode.NONE: 					[],
-	Mode.CONFIRMATION:			[%ConfirmationContainer, %ConfirmationConfirm],
-	Mode.DELETE_CONFIRMATION:	[%ConfirmationContainer, %DeleteConfirmationConfirm],
-	Mode.STRING: 				[mode_string_input, %DataInputContainer]
+## Enum for Preset
+enum Preset {
+	CONFIRM,
+	DELETE,
 }
 
-## All labels
-@onready var _labels: Array[Label] = [%DataInputLabel, %ConfirmationLabel]
 
-## All confirmation buttons
-@onready var _confirm_button: Array[Button] = [%ConfirmationConfirm, %DeleteConfirmationConfirm]
+## The current line
+var _current_line: HBoxContainer = HBoxContainer.new()
+
+## The imbedded Promise
+var _promise: Promise
+
+## Array of all labels
+var _labels: Array[Label]
+
+## Array of all buttons
+var _button: Array[Button]
+
+## config for each preset
+var _preset_config: Dictionary[Preset, Callable] = {
+	Preset.CONFIRM: (func (p_label: String):
+		title(p_label if p_label else "Please confirm this action.")
+		button.bind("Cancel", false)
+		button.bind("Confirm", true)
+		),
+	Preset.DELETE: (func (p_label: String):
+		title(p_label if p_label else "Confirm deletion? This action can't be undone.")
+		button("Cancel", false)
+		button("Delete", true, Color.INDIAN_RED)
+		),
+}
 
 
-## Current Mode
-var _mode: Mode = Mode.STRING
+## Ready
+func _ready() -> void:
+	new_line()
 
 
-## Init
-func _init() -> void:
-	super._init()
-	_set_class_name("UIPopupDialog")
-	_custom_accepted_signal = value_set
-
-
-## Sets the Mode
-func set_mode(p_mode: Mode) -> void:
-	if p_mode == _mode:
-		return
+## Loads a preset
+func preset(p_preset: Preset, p_custom_label: String = "") -> UIPopupDialog:
+	if not is_node_ready():
+		return self
 	
-	for node: Node in _mode_nodes[_mode]:
-		node.hide()
+	_preset_config[p_preset].call(p_custom_label)
 	
-	_mode = p_mode
+	return self
+
+
+## Returns the imbedded promise
+func promise() -> Promise:
+	return _promise
+
+
+## Sets the popup title
+func title(p_title: String) -> void:
+	title_button.set_text(p_title)
+
+
+## Adds a label
+func label(p_text: String) -> UIPopupDialog:
+	if not is_node_ready():
+		return self
 	
-	for node: Node in _mode_nodes[_mode]:
-		node.show()
+	var new_label: Label = Label.new()
+	_labels.append(new_label)
 	
-	mode_changed.emit()
+	new_label.set_text(p_text)
+	new_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	
+	_current_line.add_child(new_label)
+	return self
 
 
-## Sets the title text
-func set_title_text(p_title_text: String) -> void:
-	title_button.set_text(p_title_text)
-
-
-## Sets the label text
-func set_label_text(p_label_text: String) -> void:
-	for label: Label in _labels:
-		label.set_text(p_label_text)
-
-
-## Sets the button text
-func set_button_text(p_button_text: String) -> void:
-	for button: Button in _confirm_button:
-		button.set_text(p_button_text)
-
-
-## Gets the current Mode
-func get_mode() -> Mode:
-	return _mode
-
-
-## Gets the title text
-func get_title_text() -> String:
-	return title_button.get_text()
-
-
-## Gets the label text
-func get_label_text() -> String:
-	return _labels[0].get_text()
-
-
-## Gets the button text
-func get_button_text() -> String:
-	return _confirm_button[0].get_text()
-
-
-## Confirms and outputs the value of this UIPopupDialog
-func confirm() -> void:
-	match _mode:
-		Mode.STRING:
-			accept(mode_string_input.get_text())
-		
-		Mode.CONFIRMATION, Mode.DELETE_CONFIRMATION:
-			accept(null)
+## Adds a button
+func button(p_text: String, p_return_value: Variant, p_color: Color = Color.TRANSPARENT) -> UIPopupDialog:
+	if not is_node_ready():
+		self
+	
+	var new_button: Button = Button.new()
+	_button.append(new_button)
+	
+	new_button.set_text(p_text)
+	new_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+	new_button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+	
+	if p_color != Color.TRANSPARENT:
+		new_button.add_theme_color_override("font_color", p_color)
+		new_button.add_theme_color_override("font_focus_color", p_color)
+		new_button.add_theme_color_override("font_pressed_color", p_color)
+		new_button.add_theme_color_override("font_hover_color", p_color)
+	
+	match typeof(p_return_value):
+		TYPE_BOOL:
+			if p_return_value:
+				new_button.pressed.connect(func (): accept())
+			else:
+				new_button.pressed.connect(cancel)
 		_:
-			cancel()
+			set_custom_accepted_signal(option_chosen)
+			new_button.pressed.connect(func (): accept(p_return_value))
+	
+	_current_line.add_child(new_button)
+	return self
 
 
-## Takes focus onto the input for the current mode
-func focus() -> void:
-	match _mode:
-		Mode.STRING:
-			mode_string_input.grab_focus()
-		
-		_:
-			edit_controls.close_button.grab_focus()
+## Moves to a new line
+func new_line() -> UIPopupDialog:
+	if not is_node_ready():
+		return self
+	
+	_current_line = HBoxContainer.new()
+	_current_line.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+	
+	container.add_child(_current_line)
+	return self
+
+
+## Fowards Promise.then
+func then(p_callback: Callable) -> UIPopupDialog:
+	_promise.then(p_callback)
+	return self
+
+
+## Fowards Promise.catch
+func catch(p_callback: Callable) -> UIPopupDialog:
+	_promise.catch(p_callback)
+	return self
+
+
+## Sets the imbedded Promise
+func set_promise(p_promise: Promise) -> UIPopupDialog:
+	_promise = p_promise
+	return self

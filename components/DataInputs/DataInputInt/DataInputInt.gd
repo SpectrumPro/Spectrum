@@ -17,6 +17,7 @@ func _ready() -> void:
 	_label = $HBox/Label
 	_outline = $HBox/SpinBox/Outline
 	_spin_box.get_line_edit().text_changed.connect(func (x): _make_unsaved())
+	_spin_box.get_line_edit().set_select_all_on_focus(true)
 	_focus_node = _spin_box
 
 
@@ -28,6 +29,11 @@ func set_prefix(p_prefix: String) -> void:
 ## Sets the prefix
 func set_suffix(p_suffix: String) -> void:
 	_spin_box.set_suffix(p_suffix)
+
+
+## Grabs focus
+func focus() -> void:
+	_spin_box.get_line_edit().grab_focus()
 
 
 ## Called when the SettingModule is changed

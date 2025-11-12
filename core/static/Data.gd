@@ -39,6 +39,7 @@ enum Type {
 	UIPANEL,			## A UI Panel
 	INPUTEVENT,			## An InputEvent
 	CUSTOMPANEL,		## A custom UIPanel
+	SETTINGSMANAGER,	## A SettingsManager
 }
 
 
@@ -52,13 +53,13 @@ static var custom_type_map: Dictionary[Type, Variant.Type] = {
 	Type.ARRAY: 			TYPE_ARRAY,
 	Type.DICTIONARY: 		TYPE_DICTIONARY,
 	Type.VECTOR2: 			TYPE_VECTOR2,
-	Type.VECTOR2I: 			TYPE_VECTOR2I,
+	Type.VECTOR2I: 			TYPE_VECTOR2,
 	Type.RECT2: 			TYPE_RECT2,
-	Type.RECT2I: 			TYPE_RECT2I,
+	Type.RECT2I: 			TYPE_RECT2,
 	Type.VECTOR3: 			TYPE_VECTOR3,
-	Type.VECTOR3I: 			TYPE_VECTOR3I,
+	Type.VECTOR3I: 			TYPE_VECTOR3,
 	Type.VECTOR4: 			TYPE_VECTOR4,
-	Type.VECTOR4I: 			TYPE_VECTOR4I,
+	Type.VECTOR4I: 			TYPE_VECTOR4,
 	Type.COLOR:				TYPE_COLOR,
 	Type.OBJECT: 			TYPE_OBJECT,
 	Type.CALLABLE: 			TYPE_CALLABLE,
@@ -72,6 +73,8 @@ static var custom_type_map: Dictionary[Type, Variant.Type] = {
 	Type.NETWORKHANDLER: 	TYPE_OBJECT,
 	Type.ENGINECOMPONENT: 	TYPE_OBJECT,
 	Type.UIPANEL:			TYPE_OBJECT,
+	Type.CUSTOMPANEL:		TYPE_OBJECT,
+	Type.SETTINGSMANAGER:	TYPE_OBJECT,
 }
 
 

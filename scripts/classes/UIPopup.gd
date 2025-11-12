@@ -22,13 +22,17 @@ func _init() -> void:
 	super._init()
 	
 	_set_class_name("UIPopup")
-	await ready
 	
-	if is_instance_valid(edit_controls):
-		edit_controls.close_button.pressed.connect(
-			func (): 
-				canceled.emit()
-		)
+	(func ():
+		if not is_node_ready():
+			await ready
+		
+		if is_instance_valid(edit_controls):
+			edit_controls.close_button.pressed.connect(
+				func (): 
+					canceled.emit()
+			)
+	).call_deferred()
 
 
 ## Sets the accepted signal

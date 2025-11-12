@@ -156,7 +156,8 @@ func _init() -> void:
 	settings_manager.register_control("HideAllPopups", Data.Type.NULL, hide_all_popup_panels, Callable(), [])
 	settings_manager.register_control("OpenMainMenu", Data.Type.NULL, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
 	settings_manager.register_control("OpenSettings", Data.Type.NULL, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
-	
+	settings_manager.register_control("OpenSaveLoad", Data.Type.NULL, set_popup_visable.bind(WindowPopup.SAVE_LOAD, self, true), Callable(), [])
+	settings_manager.register_control("OpenWindowManager", Data.Type.NULL, set_popup_visable.bind(WindowPopup.WINDOW_MANAGER, self, true), Callable(), [])
 
 
 ## Ready ClientInterface
@@ -168,7 +169,7 @@ func _ready() -> void:
 	var root: UIWindow = get_tree().root
 	
 	_register_window_popups(popups, root)
-	root.set_window_popups.call_deferred(popups)	
+	root.set_window_popups.call_deferred(popups)
 	root._base_panel = root.get_node("UICore")
 	
 	_window_popups[root] = popups
@@ -274,59 +275,20 @@ func prompt_settings_module(p_source: Node, p_module: SettingsModule) -> Promise
 func prompt_data_input(p_source: Node, p_data_type: Data.Type, p_default: Variant, p_label: String) -> Promise:
 	var promise: Promise = _show_window_popup(WindowPopup.SETTINGS_MODULE, p_source, null)
 	var module_view: UIPopupSettingsModule = promise.get_object_refernce()
-	var dummy_module: SettingsModule = SettingsModule.new(p_label, p_label, p_data_type, SettingsModule.Type.SETTING, promise.resolvev, func (): return p_default, [])
+	var dummy_module: SettingsModule = SettingsModule.new(p_label, p_label, p_data_type, SettingsModule.Type.SETTING, promise.resolvev, func (): return p_default, [], p_source)
 	
 	module_view.set_module(dummy_module)
 	module_view.focus()
 	return promise
 
 
-## Promps the user with a confirm dialog
-func prompt_dialog_confirm(p_source: Node, p_title_text: String = "", p_label_text: String = "", p_button_text: String = "") -> Promise:
-	var promise: Promise = create_popup_dialog(p_source)
-	var new_dialog: UIPopupDialog = promise.get_object_refernce()
-	
-	if not new_dialog:
-		return promise
-	
-	new_dialog.set_mode(UIPopupDialog.Mode.CONFIRMATION)
-	
-	if p_title_text:
-		new_dialog.set_title_text(p_title_text)
-	
-	if p_label_text:
-		new_dialog.set_label_text(p_label_text)
-	
-	if p_button_text:
-		new_dialog.set_button_text(p_button_text)
-	
-	return promise
-
-
-## Promps the user with a confirm dialog
-func prompt_dialog_delete(p_source: Node, p_title_text: String = "", p_label_text: String = "", p_button_text: String = "") -> Promise:
-	var promise: Promise = create_popup_dialog(p_source)
-	var new_dialog: UIPopupDialog = promise.get_object_refernce()
-	
-	if not new_dialog:
-		return promise
-	
-	new_dialog.set_mode(UIPopupDialog.Mode.DELETE_CONFIRMATION)
-	
-	if p_title_text:
-		new_dialog.set_title_text(p_title_text)
-	
-	if p_label_text:
-		new_dialog.set_label_text(p_label_text)
-	
-	if p_button_text:
-		new_dialog.set_button_text(p_button_text)
-	
-	return promise
+## Prompts the user with a delete confirmation dialog
+func prompt_delete_confirmation(p_source: Node, p_title: String = "Confirm Deletion?") -> Promise:
+	return prompt_popup_dialog(p_source, p_title).preset(UIPopupDialog.Preset.DELETE, p_title).promise()
 
 
 ## Creates and adds a blank UIPopupDialog
-func create_popup_dialog(p_source: Node) -> Promise:
+func prompt_popup_dialog(p_source: Node, p_title: String = "") -> UIPopupDialog:
 	if _open_popup_dialogs.has(p_source):
 		var open_dialog: UIPopupDialog = _open_popup_dialogs[p_source]
 		
@@ -334,13 +296,13 @@ func create_popup_dialog(p_source: Node) -> Promise:
 		open_dialog.move_to_front()
 		open_dialog.flash()
 		
-		return Promise.new().auto_reject()
+		return UIPopupDialog.new().set_promise(Promise.new().auto_reject())
 	
 	var window_popups: Control = _window_popups[p_source.get_window()]
 	var new_dialog: UIPopupDialog = UIDB.instance_popup(UIPopupDialog)
 	var promise: Promise = Promise.new()
 	
-	new_dialog._custom_accepted_signal.connect(func (...p_args): 
+	new_dialog.get_custom_signal_or_default().connect(func (...p_args): 
 		promise.resolve(p_args)
 		fade_and_hide(new_dialog, new_dialog.queue_free)
 		_open_popup_dialogs.erase(p_source)
@@ -351,14 +313,19 @@ func create_popup_dialog(p_source: Node) -> Promise:
 		_open_popup_dialogs.erase(p_source)
 	)
 	
+	if p_title:
+		new_dialog.title(p_title)
+	
 	promise.set_object_refernce(new_dialog)
 	window_popups.add_child(new_dialog)
-	new_dialog.hide()
-	show_and_fade(new_dialog, new_dialog.focus)
-	new_dialog.focus()
 	
+	new_dialog.set_promise(promise)
+	new_dialog.focus()
+	new_dialog.hide()
+	
+	show_and_fade(new_dialog, new_dialog.focus)
 	_open_popup_dialogs[p_source] = new_dialog
-	return promise
+	return new_dialog
 
 
 ## Sets the visability of a WindowPopup
@@ -451,8 +418,9 @@ func fade_and_hide(p_control: Control, p_callback: Callable = Callable(), p_time
 	
 	p_control.modulate = Color.WHITE
 	fade_property(p_control, "modulate", Color.TRANSPARENT, func ():
-		p_control.hide()
-		p_control.modulate = Color.WHITE
+		if is_instance_valid(p_control):
+			p_control.hide()
+			p_control.modulate = Color.WHITE
 		
 		if p_callback.is_valid():
 			p_callback.call()

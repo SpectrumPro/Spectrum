@@ -86,6 +86,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			input_action.deactivate()
 
 
+## Notification
+func _notification(p_what: int) -> void:
+	if p_what == NOTIFICATION_WM_CLOSE_REQUEST:
+		Interface.prompt_popup_dialog(self, "Close Main Window?")\
+		.button("Cancel", false)\
+		.button("Close", true, Color.RED)\
+		.then(func ():
+			get_tree().quit()
+		)
+
+
 ## Resets to a default state
 func _reset() -> void:
 	for action: InputAction in _input_actions.get_left():

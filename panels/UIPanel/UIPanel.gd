@@ -15,6 +15,9 @@ signal request_resize(by: Vector2)
 ## Emitted when the edit mode is toggled
 signal edit_mode_toggled(state: bool)
 
+## Emitted when the menu var visibility changes
+signal menu_bar_visibility_changed(bar_visible: bool)
+
 ## Emitted when the close button is pressed
 signal close_request()
 
@@ -63,22 +66,28 @@ func _init() -> void:
 	super._init()
 	_set_class_name("UIPanel")
 	
-	settings_manager.register_setting("show_menu_bar", Data.Type.BOOL, set_menu_bar_visible, get_menu_bar_visible, []
+	settings_manager.register_setting("show_menu_bar", Data.Type.BOOL, set_menu_bar_visible, get_menu_bar_visible, [menu_bar_visibility_changed]
 	).display("UIPanel", 0)
 	
-	
-	await ready
-	set_edit_mode(false)
-	for button: Button in buttons:
-		_buttons_map.map(button, button.name)
-		_button_actions[button] = []
-	
-	if custom_minimum_size != Vector2.ZERO:
-		custom_minimum_size = MinSize
-	
-	if get_parent() is UIWindow:
-		add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelImbed)
-
+	(func ():
+		if not is_node_ready():
+			await ready
+			
+		set_edit_mode(false)
+		
+		for button: Button in buttons:
+			_buttons_map.map(button, button.name)
+			_button_actions[button] = []
+		
+		if custom_minimum_size != Vector2.ZERO:
+			custom_minimum_size = MinSize
+		
+		if get_parent() is UIWindow:
+			add_theme_stylebox_override("panel", ThemeManager.StyleBoxes.UIPanelImbed)
+		
+		if menu_bar:
+			menu_bar._owner = self
+	).call_deferred()
 
 
 ## Disables all the buttons in the given array
@@ -163,6 +172,7 @@ func set_edit_mode_disabled(disabled: bool) -> void:
 func set_menu_bar_visible(p_visable: bool) -> void:
 	if menu_bar:
 		menu_bar.visible = p_visable
+		menu_bar_visibility_changed.emit(menu_bar.visible)
 
 
 ## Gets the current DisplayMode
@@ -178,6 +188,11 @@ func get_edit_mode() -> bool:
 ## Gets the EditMode disabled state
 func get_edit_mode_disabled() -> bool:
 	return _edit_mode_disabled
+
+
+## Gets the panels menu bar
+func get_menu_bar() -> PanelMenuBar:
+	return menu_bar
 
 
 ## Gets the menu bars visible state
@@ -200,6 +215,7 @@ func detatch_menu_bar() -> PanelMenuBar:
 	
 	menu_bar.set_popup_style(true)
 	menu_bar.get_parent().remove_child(menu_bar)
+	menu_bar.set_owner(null)
 	return menu_bar
 
 
