@@ -48,13 +48,20 @@ func set_manager(p_manager: SettingsManager) -> void:
 	for module: SettingsModule in _manager.get_modules().values():
 		var view: SettingsManagerModuleView
 		
-		if module.get_visual_category() in _views_by_class:
-			view = _views_by_class[module.get_visual_category()]
-		else:
-			view = _views_by_class[_manager.get_inheritance_root()]
-		
-		view.set_disabled(false)
-		view.show_module(module)
+		match module.get_data_type():
+			Data.Type.SETTINGSMANAGER:
+				var manager_view: SettingsManagerView = UIDB.instance_component(SettingsManagerView)
+				
+				_view_container.add_child(manager_view)
+				manager_view.set_manager(module.get_getter().call())
+			_:
+				if module.get_visual_category() in _views_by_class:
+					view = _views_by_class[module.get_visual_category()]
+				else:
+					view = _views_by_class[_manager.get_inheritance_root()]
+				
+				view.set_disabled(false)
+				view.show_module(module)
 
 
 ## Sets the SettingsManager

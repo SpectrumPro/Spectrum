@@ -18,12 +18,11 @@ func _init() -> void:
 	super._init()
 	
 	_set_class_name("UICore")
-	_class_tree.append("SideBar")
 
 
 ## Ready
 func _ready() -> void:
-	settings_manager.require("side_bar_settings", _side_bar.settings_manager).display("SideBar", 0)
+	settings_manager.require("side_bar_settings", _side_bar.settings_manager)
 	
 	_startup_bg.show()
 	
