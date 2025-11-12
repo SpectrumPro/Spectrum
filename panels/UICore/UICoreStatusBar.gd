@@ -23,11 +23,6 @@ func _ready() -> void:
 	_version_label.set_text(Details.version)
 
 
-## Process
-func _process(delta: float) -> void:
-	_info_label.set_text(str(get_window().size))
-
-
 ## Called when the quick action button is toggled
 func _on_action_button_toggled(toggled_on: bool) -> void:
 	Interface.set_visible_and_fade(_resolve_button_container, toggled_on)
