@@ -47,7 +47,7 @@ func set_object(object: EngineComponent) -> void:
 	_object = object
 	
 	if _object:
-		text = _object.name
+		text = _object.name()
 		_object.name_changed.connect(_on_component_name_changed)
 		remove_theme_color_override("icon_normal_color")
 		remove_theme_color_override("icon_focus_color")

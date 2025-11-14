@@ -193,9 +193,12 @@ func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeF
 				local_node.handle_message(p_command)
 				return OK
 			
-			else:
+			elif has_session_master():
 				p_command.target_id = _session_master.get_node_id()
 				return _session_master.send_message_udp(p_command)
+			
+			else:
+				return ERR_DOES_NOT_EXIST
 			
 		NodeFilter.ALL_NODES:
 			for node: ConstellationNode in _nodes:

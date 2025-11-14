@@ -10,7 +10,7 @@ class_name SettingsManager extends RefCounted
 var _entrys: Dictionary[String, SettingsModule]
 
 ## The owner Object
-var _owner: Object = null
+var _owner: WeakRef = null
 
 ## The object deletion signal
 var _delete_signal: Signal
@@ -132,7 +132,7 @@ func get_modules() -> Dictionary[String, SettingsModule]:
 
 ## Gets the owner of this SettingsManager
 func get_owner() -> Object:
-	return _owner
+	return _owner.get_ref()
 
 
 ## Gets the delete signal
@@ -182,7 +182,7 @@ func get_networked_signals() -> Dictionary[String, Signal]:
 
 ## Sets the owner
 func set_owner(p_owner: Object) -> void:
-	_owner = p_owner
+	_owner = weakref(p_owner)
 
 
 ## Sets the delete signal
@@ -193,3 +193,11 @@ func set_delete_signal(p_delete_signal: Signal) -> void:
 ## Sets the Array inheritance_list uses, allowing it to be updated afterwards
 func set_inheritance_array(p_inheritance_array: Array[String]) -> void:
 	_inheritance_list = p_inheritance_array
+
+
+## Notification
+func _notification(p_what: int) -> void:
+	if p_what == NOTIFICATION_PREDELETE:
+		print("Settings manager is freeing")
+		for module: SettingsModule in _entrys.values():
+			module.free()

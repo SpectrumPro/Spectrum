@@ -492,8 +492,9 @@ func _set_session(p_session: ConstellationSession) -> bool:
 	_session = p_session
 	
 	_session._add_node(self)
-	session_joined.emit(_session)
-	session_changed.emit(_session)
+	
+	#session_joined.emit(_session)
+	#session_changed.emit(_session)
 	
 	return true
 

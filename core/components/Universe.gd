@@ -27,28 +27,96 @@ var _fixtures: Dictionary = {}
 ## Dictionary containing all the outputs in this universe
 var _outputs: Dictionary = {} 
 
-## Dictionary containing the current dmx data of this universe, this is constantly updated, so modifying this manualy will cause unexpected outcomes
-var _dmx_data: Dictionary = {} 
-
-## Stores dmx overrides, sotred at {channel:value}. theese values will always override other data passed to this universe
-var _dmx_overrides: Dictionary = {}
-
 
 ## Called when this EngineComponent is ready
 func _component_ready() -> void:
 	_set_self_class("Universe")
 	
-	register_callback("on_fixtures_added", _add_fixtures)
-	register_callback("on_fixtures_removed", _remove_fixtures)
-	register_callback("on_outputs_added", _add_outputs)
-	register_callback("on_outputs_removed", _remove_outputs)
+	_settings_manager.register_networked_callbacks({
+		"on_fixtures_added": _add_fixtures,
+		"on_fixtures_removed": _remove_fixtures,
+		"on_outputs_added": _add_outputs,
+		"on_outputs_removed": _remove_outputs,
+	})
+
 
 ## Creates a new output by class name
-func create_output(p_output_class_name: String) -> Promise: return rpc("create_output", [p_output_class_name])
+func create_output(p_output_class_name: String) -> Promise: 
+	return rpc("create_output", [p_output_class_name])
 
 
 ## Adds a new output to this universe, returning false if this output can't be added
-func add_output(p_output: DMXOutput) -> Promise: return rpc("add_output", [p_output])
+func add_output(p_output: DMXOutput) -> Promise: 
+	return rpc("add_output", [p_output])
+
+
+## Adds mutiple outputs to this univere at once
+func add_outputs(p_outputs: Array[DMXOutput]) -> Promise: 
+	return rpc("add_outputs", [p_outputs])
+
+
+## Removes a output from this engine
+func remove_output(p_output: DMXOutput) -> Promise: 
+	return rpc("remove_output", [p_output])
+
+
+## Removes mutiple outputs from this universe
+func remove_outputs(p_outputs: Array[DMXOutput]) -> Promise: 
+	return rpc("remove_outputs", [p_outputs])
+
+
+## Adds a new fixture to this universe
+func add_fixture(p_fixture: DMXFixture, p_channel: int = -1) -> Promise: 
+	return rpc("add_fixture", [p_fixture, p_channel])
+
+
+## Adds mutiple fixtures to this universe
+func add_fixtures(p_fixtures: Array[DMXFixture]) -> Promise: 
+	return rpc("add_fixtures", [p_fixtures])
+
+
+## Removes a fixture from this universe
+func remove_fixture(p_fixture: DMXFixture) -> Promise: 
+	return rpc("remove_fixture", [p_fixture])
+
+
+## Removes mutiple fixtures from this universe
+func remove_fixtures(p_fixtures: Array[DMXFixture]) -> Promise: 
+	return rpc("remove_fixtures", [p_fixtures])
+
+
+## Returns all fixture on the given channel
+func get_fixture_by_channel(p_channel: int) -> Array[DMXFixture]:
+	var fixtures: Array[DMXFixture] = []
+	fixtures.assign(_fixture_channels.get(p_channel, []))
+	
+	return fixtures
+
+
+## Gets all the outputs in this universe
+func get_outputs() -> Dictionary:
+	return _outputs.duplicate()
+
+
+## Gets all the fixtures in this universe
+func get_fixtures() -> Dictionary:
+	return _fixtures.duplicate()
+
+
+## Sets a manual dmx channel to the set value
+func set_dmx_override(p_channel: int, p_value: int) -> Promise: 
+	return rpc("set_dmx_override", [p_channel, p_value])
+
+
+## Removes a manual dmx override
+func remove_dmx_override(p_channel: int) -> Promise: 
+	return rpc("remove_dmx_override", [p_channel]) 
+
+
+## Removes all dmx overrides
+func remove_all_dmx_overrides() -> Promise:
+	return rpc("remove_all_dmx_overrides")
+
 
 ## Internal: Adds an output to this universe
 func _add_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool:
@@ -66,9 +134,6 @@ func _add_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool:
 	return true
 
 
-## Adds mutiple outputs to this univere at once
-func add_outputs(p_outputs: Array) -> Promise: return rpc("add_outputs", [p_outputs])
-
 ## Internal: Adds mutiple outputs at once
 func _add_outputs(p_outputs: Array, p_no_signal: bool = false) -> void:
 	var just_added_outputs: Array[DMXOutput] = []
@@ -81,9 +146,6 @@ func _add_outputs(p_outputs: Array, p_no_signal: bool = false) -> void:
 	if not p_no_signal and just_added_outputs:
 		outputs_added.emit(just_added_outputs)
 
-
-## Removes a output from this engine
-func remove_output(p_output: DMXOutput) -> Promise: return rpc("remove_output", [p_output])
 
 ## Internal: Removes a output from this universe
 func _remove_output(p_output: DMXOutput, p_no_signal: bool = false, p_delete: bool = false) -> bool: 
@@ -101,10 +163,7 @@ func _remove_output(p_output: DMXOutput, p_no_signal: bool = false, p_delete: bo
 	return true
 
 
-## Removes mutiple outputs from this universe
-func remove_outputs(p_outputs: Array) -> Promise: return rpc("remove_outputs", [p_outputs])
-
-## Internal: Removes mutiple outputs from this universe
+# Internal: Removes mutiple outputs from this universe
 func _remove_outputs(p_outputs: Array, p_no_signal: bool = false, p_delete: bool = false) -> void:
 	var just_removed_outputs: Array[DMXOutput] = []
 
@@ -116,9 +175,6 @@ func _remove_outputs(p_outputs: Array, p_no_signal: bool = false, p_delete: bool
 	if not p_no_signal and just_removed_outputs:
 		outputs_removed.emit(just_removed_outputs)
 
-
-## Adds a new fixture to this universe
-func add_fixture(p_fixture: DMXFixture, p_channel: int = -1) -> Promise: return rpc("add_fixture", [p_fixture, p_channel])
 
 ## Internal: Adds a new fixture to this universe
 func _add_fixture(p_fixture: DMXFixture, p_channel: int = -1, p_no_signal: bool = false) -> bool:
@@ -142,9 +198,6 @@ func _add_fixture(p_fixture: DMXFixture, p_channel: int = -1, p_no_signal: bool 
 	return true
 
 
-## Adds mutiple fixtures to this universe
-func add_fixtures(p_fixtures: Array) -> Promise: return rpc("add_fixtures", [p_fixtures])
-
 ## Internal: Adds mutiple fixtures to this universe
 func _add_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
 	var just_added_fixtures: Array[DMXFixture] = []
@@ -157,9 +210,6 @@ func _add_fixtures(p_fixtures: Array, p_no_signal: bool = false) -> void:
 	if not p_no_signal and just_added_fixtures:
 		fixtures_added.emit(just_added_fixtures)
 
-
-## Removes a fixture from this universe
-func remove_fixture(p_fixture: DMXFixture) -> Promise: return rpc("remove_fixture", [p_fixture])
 
 ## Internal: Removes a fixture from this universe
 func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false, p_delete: bool = false) -> bool:
@@ -181,9 +231,6 @@ func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false, p_delete:
 	return true
 
 
-## Removes mutiple fixtures from this universe
-func remove_fixtures(p_fixtures: Array) -> Promise: return rpc("remove_fixtures", [p_fixtures])
-
 ## Internal: Removes mutiple fixtures from this universe
 func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false, p_delete: bool = false) -> void:
 	var just_removed_fixtures: Array[DMXFixture] = []
@@ -195,34 +242,6 @@ func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false, p_delete: bo
 	
 	if not p_no_signal and just_removed_fixtures:
 		fixtures_removed.emit(just_removed_fixtures)
-		
-
-## Returns all fixture on the given channel
-func get_fixture_by_channel(p_channel: int) -> Array[DMXFixture]:
-	var fixtures: Array[DMXFixture] = []
-	fixtures.assign(_fixture_channels.get(p_channel, []))
-
-	return fixtures
-
-
-## Gets all the outputs in this universe
-func get_outputs() -> Dictionary:
-	return _outputs.duplicate()
-
-
-## Gets all the fixtures in this universe
-func get_fixtures() -> Dictionary:
-	return _fixtures.duplicate()
-
-
-## Sets a manual dmx channel to the set value
-func set_dmx_override(p_channel: int, p_value: int) -> Promise: return rpc("set_dmx_override", [p_channel, p_value])
-
-## Removes a manual dmx override
-func remove_dmx_override(p_channel: int) -> Promise: return rpc("remove_dmx_override", [p_channel]) 
-
-## Removes all dmx overrides
-func remove_all_dmx_overrides() -> Promise: return rpc("remove_all_dmx_overrides")
 
 
 ## Serializes this universe
@@ -231,7 +250,7 @@ func _serialize_request() -> Dictionary:
 	var serialized_fixtures: Dictionary[String, Array] = {}
 
 	for output: DMXOutput in _outputs.values():
-		serialized_outputs[output.uuid] = output.serialize()
+		serialized_outputs[output.uuid()] = output.serialize()
 	
 	for channel: int in _fixture_channels.keys():
 		serialized_fixtures[str(channel)] = []

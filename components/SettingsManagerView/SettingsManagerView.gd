@@ -23,7 +23,7 @@ func _init() -> void:
 
 ## Resets this SettingsManagerView
 func reset() -> void:
-	for view: SettingsManagerModuleView in _views_by_class.values():
+	for view: Control in _view_container.get_children():
 		_view_container.remove_child(view)
 		view.queue_free()
 	

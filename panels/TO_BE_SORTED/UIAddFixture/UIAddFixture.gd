@@ -59,6 +59,7 @@ var _current_fixture: String
 var _mode: String = ""
 
 
+## Ready
 func _ready() -> void:
 	set_edit_mode_disabled(true)
 	
@@ -134,15 +135,15 @@ func _on_modes_item_selected(index: int) -> void:
 	_mode = fixture_info_modes.get_item_text(index)
 
 
+## Called when the create button is pressed
 func _on_create_pressed() -> void:
-	var universe: Universe = universe_options.get_object()
-	var manifest_uuid: String = loaded_manifests[_current_manufacturer][_current_fixture].uuid
-	var config: Dictionary = {
-		"channel": channel_input.value,
-		"quantity": quantity_input.value,
-		"offset": offset_input.value,
-		"mode": _mode,
-		"name": name_input.text,
-		"increment_name": increment_name.button_pressed
-	}
-	FixtureLibrary.create_fixture(manifest_uuid, universe, config)
+	FixtureLibrary.create_fixture(
+		loaded_manifests[_current_manufacturer][_current_fixture].uuid, 
+		universe_options.get_object(), 
+		channel_input.get_value(), 
+		quantity_input.get_value(), 
+		offset_input.get_value(), 
+		_mode, 
+		name_input.get_text(), 
+		increment_name.is_pressed()
+	)

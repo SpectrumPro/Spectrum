@@ -35,7 +35,7 @@ var _fixture: Dictionary[Fixture, Dictionary]
 
 
 ## Constructor
-func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_set_name("DataContainer")
 	_set_self_class("DataContainer")
 	

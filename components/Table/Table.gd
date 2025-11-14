@@ -48,7 +48,7 @@ func _ready() -> void:
 ## Adds a new column to the table
 func add_column(p_name: String, p_data_type: Data.Type) -> Column:
 	var column_id: int = len(_columns)
-	var new_column: Column = Column.new(column_id, p_name, p_data_type, _tree)
+	var new_column: Column = Column.new(column_id, p_name, p_data_type, _tree, _rows)
 	
 	_columns.append(new_column)
 	_tree.columns = max(column_id + 1, 1)
@@ -195,6 +195,7 @@ class Row extends Object:
 	## All bound callables for a SettingsModule
 	var _module_bound_methods: Dictionary[int, Callable]
 	
+	
 	## Init
 	func _init(p_item: TreeItem, p_columns: Array[Column], p_data: Dictionary[int, Variant], p_tree: Tree) -> void:
 		_item = p_item
@@ -203,6 +204,7 @@ class Row extends Object:
 		
 		for column: int in p_data:
 			set_cell_data(column, p_data[column])
+	
 	
 	## Sets the data with in a cell
 	func set_cell_data(p_column: int, p_value: Variant) -> void:
@@ -215,6 +217,9 @@ class Row extends Object:
 		
 		if p_value is SettingsModule:
 			if p_value.get_data_type() != _columns[p_column]._data_type:
+				_cells.erase(p_column)
+				_item.set_text(p_column, "")
+				
 				return
 			
 			_module_bound_methods[p_column] = p_value.subscribe(_set_cell_data_module.bind(p_column))
@@ -226,15 +231,18 @@ class Row extends Object:
 			_cells[p_column] = Data.data_type_convert(p_value, _columns[p_column]._data_type)
 			_item.set_text(p_column, str(_cells[p_column]))
 	
+	
 	## Gets the data in a cell
 	func get_cell_data(p_column: int) -> Variant:
 		return _cells.get(p_column, null)
+	
 	
 	## Selects this row
 	func select(p_column: int = 0) -> void:
 		_tree.deselect_all()
 		_item.select(p_column)
 		_tree.multi_selected.emit(_item, p_column, true)
+	
 	
 	## Sets the cell data from a SettingsModule callback
 	func _set_cell_data_module(p_data: Variant, p_column: int) -> void:
@@ -256,12 +264,17 @@ class Column extends Object:
 	## The tree this column is in
 	var _tree: Tree 
 	
+	## The RefMap containing all rows
+	var _rows: RefMap
+	
+	
 	## Init
-	func _init(p_id: int, p_name: String, p_data_type: Data.Type, p_tree: Tree) -> void:
+	func _init(p_id: int, p_name: String, p_data_type: Data.Type, p_tree: Tree, p_rows: RefMap) -> void:
 		_id = p_id
 		_name = p_name
 		_data_type = p_data_type
 		_tree = p_tree
+		_rows = p_rows
 	
 	
 	## Sets the column title
@@ -272,3 +285,29 @@ class Column extends Object:
 	## Sets the expand flag on a given column
 	func set_expand(p_expand: bool) -> void:
 		_tree.set_column_expand(_id, p_expand)
+	
+	
+	## Sets this columns datatype
+	func set_data_type(p_data_type: Data.Type) -> void:
+		if p_data_type == _data_type:
+			return
+		
+		_data_type = p_data_type
+		
+		for row: Row in _rows.get_left():
+			row.set_cell_data(_id, row.get_cell_data(_id))
+	
+	
+	## Gets the column title
+	func get_title() -> String:
+		return _tree.get_column_title(_id)
+	
+	
+	## Gets the column Data.Type
+	func get_data_type() -> Data.Type:
+		return _data_type
+	
+	
+	## Gets the id of this column
+	func get_id() -> int:
+		return _id

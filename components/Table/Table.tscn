@@ -25,6 +25,7 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(0.886262, 0.886261, 0.886262, 1)
 theme_override_colors/font_selected_color = Color(1, 1, 1, 1)
 theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 9
 theme_override_styles/cursor = SubResource("StyleBoxEmpty_bfqnh")
 theme_override_styles/cursor_unfocused = SubResource("StyleBoxEmpty_xi7fw")
 column_titles_visible = true
@@ -33,4 +34,3 @@ select_mode = 2
 
 [connection signal="gui_input" from="Tree" to="." method="_on_tree_gui_input"]
 [connection signal="multi_selected" from="Tree" to="." method="_on_tree_multi_selected"]
-[connection signal="nothing_selected" from="Tree" to="." method="deselect_all"]

@@ -83,7 +83,7 @@ func send_message(p_command: Variant, p_node_filter: NetworkSession.NodeFilter =
 
 
 ## Sends a MessageType.COMMAND to the network
-func send_command(p_for: String, p_call: String, p_args: Array, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Promise:
+func send_command(p_for: String, p_call: String, p_args: Array = [], p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Promise:
 	var msg_id: String = UUID_Util.v4()
 	var promise: Promise = Promise.new()
 	var message: Dictionary = {
@@ -91,7 +91,7 @@ func send_command(p_for: String, p_call: String, p_args: Array, p_node_filter: N
 		"msg_id": msg_id,
 		"for": p_for,
 		"call": p_call,
-		"args": var_to_str(Utils.objects_to_uuids(p_args))
+		"args": var_to_str(objects_to_uuids(p_args))
 	}
 	
 	if send_message(message, p_node_filter):
@@ -130,9 +130,11 @@ func register_network_object(p_id: String, p_settings_manager: SettingsManager) 
 		var method: Callable = func (...args) -> void: send_signal(p_id, p_signal_name, args)
 		p_signal.connect(method)
 		
-		_networked_objects_signal_connections.get_or_add(p_settings_manager)[p_signal] = method
+		_networked_objects_signal_connections.get_or_add(p_settings_manager, {})[p_signal] = method
 	
-	p_settings_manager.get_delete_signal().connect(deregister_network_object.bind(p_settings_manager), CONNECT_ONE_SHOT)
+	if not p_settings_manager.get_delete_signal().is_null():
+		p_settings_manager.get_delete_signal().connect(deregister_network_object.bind(p_settings_manager), CONNECT_ONE_SHOT)
+	
 	_registered_network_objects.map(p_id, p_settings_manager)
 
 
@@ -141,10 +143,11 @@ func deregister_network_object(p_settings_manager: SettingsManager) -> void:
 	if not _registered_network_objects.has_right(p_settings_manager):
 		return
 	
-	for p_signal: Signal in _networked_objects_signal_connections.get(p_settings_manager):
+	for p_signal: Signal in _networked_objects_signal_connections.get(p_settings_manager, []):
 		p_signal.disconnect(_networked_objects_signal_connections[p_settings_manager][p_signal])
 	
 	_registered_network_objects.erase_right(p_settings_manager)
+	_networked_objects_signal_connections.erase(p_settings_manager)
 
 
 ## Gets an active handler by its class name
@@ -162,6 +165,65 @@ func get_items_by_classname(p_classname: String) -> Array:
 	return _registered_items.get(p_classname, [])
 
 
+## Replaces any object in the given data with uuid refernces. Checks sub arrays and dictionarys
+func objects_to_uuids(p_data: Variant) -> Variant:
+	match typeof(p_data):
+		TYPE_OBJECT:
+			return {
+					"_object_ref": str(p_data.uuid() if p_data is EngineComponent else p_data.get("uuid")),
+					"_serialized_object": p_data.serialize(),
+					"_class_name": str(p_data.classname() if p_data is EngineComponent else p_data.get("self_class_name"))
+				}
+		
+		TYPE_DICTIONARY:
+			var new_dict = {}
+			for key in p_data.keys():
+				new_dict[key] = objects_to_uuids(p_data[key])
+			return new_dict
+		
+		TYPE_ARRAY:
+			var new_array = []
+			for item in p_data:
+				new_array.append(objects_to_uuids(item))
+			return new_array
+	
+	return p_data
+
+
+## Checks for uuid refernces left by objects_to_uuids(). If one is found the corrisponding object will be created or found via ComponentDB
+func uuids_to_objects(p_data: Variant):
+	match typeof(p_data):
+		TYPE_DICTIONARY:
+			if "_object_ref" in p_data.keys():
+				if _registered_network_objects.has_left(p_data._object_ref):
+					return _registered_network_objects.left(p_data._object_ref).get_owner()
+					
+				elif "_class_name" in p_data.keys():
+					if ClassList.has_class(type_convert(p_data["_class_name"], TYPE_STRING)):
+						var initialized_object = ClassList.get_class_script(p_data["_class_name"]).new(p_data._object_ref)
+						
+						if initialized_object.has_method("load") and "_serialized_object" in p_data.keys():
+							initialized_object.load(p_data._serialized_object)
+							
+						return initialized_object
+				else:
+					return null
+				
+			else:
+				var new_dict = {}
+				for key in p_data.keys():
+					new_dict[key] = uuids_to_objects(p_data[key])
+				return new_dict
+		
+		TYPE_ARRAY:
+			var new_array = []
+			for item in p_data:
+				new_array.append(uuids_to_objects(item))
+			return new_array
+	
+	return p_data
+
+
 ## Register an item
 func _register_item(p_item: NetworkItem) -> void:
 	for classname: String in NetworkClassList.get_class_inheritance_tree(p_item.get_script().get_global_name()):
@@ -177,11 +239,11 @@ func _deregister_item(p_item: NetworkItem) -> void:
 
 
 ## Emitted when a command is recieved
-func _on_command_recieved(p_from: NetworkNode, p_type: Variant.Type, p_command: Variant, ) -> void:
+func _on_command_recieved(p_from: NetworkNode, p_type: Variant.Type, p_command: Variant) -> void:
 	if p_command is Dictionary:
 		var object_id: String = type_convert(p_command.get("for", ""), TYPE_STRING)
 		var for_method: String = type_convert(p_command.get("call", ""), TYPE_STRING)
-		var args: Array = str_to_var(type_convert(p_command.get("args", "[]"), TYPE_STRING))
+		var args: Array = uuids_to_objects(type_convert(p_command.get("args"), TYPE_ARRAY))
 		var msg_id: String = type_convert(p_command.get("msg_id", ""), TYPE_STRING)
 		
 		match p_command.get("type", 0):

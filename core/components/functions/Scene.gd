@@ -79,6 +79,6 @@ func _load_request(serialized_data: Dictionary) -> void:
 	_fade_in_speed = type_convert(serialized_data.get("fade_in_speed", _fade_in_speed), TYPE_FLOAT)
 	_fade_out_speed = type_convert(serialized_data.get("fade_out_speed", _fade_out_speed), TYPE_FLOAT)
 	
-	Client.remove_networked_object(_data_container.uuid)
+	Client.remove_networked_object(_data_container.uuid())
 	_data_container.load(serialized_data.get("save_data", {}))
-	Client.add_networked_object(_data_container.uuid, _data_container)
+	Client.add_networked_object(_data_container.uuid(), _data_container)

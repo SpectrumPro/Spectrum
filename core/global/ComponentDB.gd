@@ -14,11 +14,10 @@ signal component_removed(component: EngineComponent)
 
 
 ## Stores all the components in this DB
-var components: Dictionary = {}
+var _components: Dictionary = {}
 
 ## Stores all components by there class name
-var components_by_classname: Dictionary = {}
-
+var _components_by_classname: Dictionary = {}
 
 ## Stores all the class callback signals
 var _class_callbacks: Dictionary = {}
@@ -33,6 +32,7 @@ var _emit_class_callbacks_queued: bool = false
 var _component_requests: Dictionary = {}
 
 
+## Ready
 func _ready() -> void:
 	Core.resetting.connect(func () -> void:
 		_just_changed_components = {}
@@ -43,71 +43,76 @@ func _ready() -> void:
 
 
 ## Adds a component to the DB, returns false if it already exists
-func register_component(component: EngineComponent) -> bool:
-	if component.uuid in components:
+func register_component(p_component: EngineComponent) -> bool:
+	if p_component.uuid() in _components:
 		return false
 	
-	components[component.uuid] = component
+	_components[p_component.uuid()] = p_component
 	
-	for classname in component.class_tree:
-		if not classname in components_by_classname:
-			components_by_classname[classname] = []
-		components_by_classname[classname].append(component)
+	for classname: String in p_component.get_class_tree():
+		if not classname in _components_by_classname:
+			_components_by_classname[classname] = []
+		_components_by_classname[classname].append(p_component)
 	
-	if component.uuid in _component_requests:
-		for callback in _component_requests[component.uuid]:
+	if p_component.uuid() in _component_requests:
+		for callback: Callable in _component_requests[p_component.uuid()]:
 			if callback.is_valid(): 
-				callback.call(component)
-		_component_requests.erase(component.uuid)
+				callback.call(p_component)
+		_component_requests.erase(p_component.uuid())
 	
-	_check_class_callbacks(component)
-	component.delete_requested.connect(deregister_component.bind(component), CONNECT_ONE_SHOT)
+	_check_class_callbacks(p_component)
+	p_component.delete_requested.connect(deregister_component.bind(p_component), CONNECT_ONE_SHOT)
 	
-	Client.add_networked_object(component.uuid, component, component.delete_requested)
-	component_added.emit(component)
+	Network.register_network_object(p_component.uuid(), p_component.settings())
+	component_added.emit(p_component)
 	return true
 
 
 ## Removes a component to the DB, returns false if it never existed
-func deregister_component(component: EngineComponent) -> bool:
-	if not component.uuid in components:
+func deregister_component(p_component: EngineComponent) -> bool:
+	if not p_component.uuid() in _components:
 		return false
 	
-	for classname in component.class_tree:
-		components_by_classname[classname].erase(component)
+	for classname: String in p_component.get_class_tree():
+		_components_by_classname[classname].erase(p_component)
 	
-	_check_class_callbacks(component, true)
+	_check_class_callbacks(p_component, true)
 	
-	Client.remove_networked_object(component.uuid)
-	components.erase(component.uuid)
+	Network.deregister_network_object(p_component.settings())
+	_components.erase(p_component.uuid())
 	
-	component_removed.emit(component)
+	component_removed.emit(p_component)
 	return true
 
 
 ## Gets all the loaded components by classname
 func get_components_by_classname(classname: String) -> Array:
-	return components_by_classname.get(classname, []).duplicate()
+	return _components_by_classname.get(classname, []).duplicate()
 
 
 ## Gets a component by a uuid
 func get_component(uuid: String) -> EngineComponent:
-	return components.get(uuid)
+	return _components.get(uuid)
+
+
+## Checks if the given component exists in ComponentDB
+func has_component(p_component: EngineComponent) -> bool:
+	return _components.has(p_component.uuid())
 
 
 ## Use this method if you need to call a function once a component is added to the engine. This will only be called once
-func request_component(uuid: String, callback: Callable) -> void:
-	if not uuid:
+func request_component(p_uuid: String, p_callback: Callable) -> void:
+	if not p_uuid:
 		return
 	
-	if uuid in components:
-		callback.call(components[uuid])
+	if p_uuid in _components:
+		p_callback.call(_components[p_uuid])
 		
 	else:
-		if not uuid in _component_requests:
-			_component_requests[uuid] = []
+		if not p_uuid in _component_requests:
+			_component_requests[p_uuid] = []
 		
-		_component_requests[uuid].append(callback)
+		_component_requests[p_uuid].append(p_callback)
 
 
 ## Removes a request
@@ -135,7 +140,7 @@ func remove_class_callback(classname: String, callback: Callable) -> void:
 
 ## Checks if there are any class callbacks for this component
 func _check_class_callbacks(component: EngineComponent, remove: bool = false) -> void:
-	for classname: String in component.class_tree:
+	for classname: String in component.get_class_tree():
 		if classname in _class_callbacks:
 			if not _just_changed_components.has(classname): 
 				_just_changed_components[classname] = {

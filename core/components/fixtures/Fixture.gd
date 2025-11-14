@@ -5,6 +5,7 @@
 class_name Fixture extends EngineComponent
 ## Engine class to control parameters of fixtures
 
+@warning_ignore_start("unused_signal")
 
 ## Emitted when parameters are changed
 signal parameter_changed(zone: String, parameter: String, function: String, value: Variant)
@@ -27,7 +28,7 @@ static var RootZone: String = "root"
 
 
 ## Called when this EngineComponent is ready
-func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_set_self_class("Fixture")
 	
 	register_callback("on_parameter_changed", _set_parameter)

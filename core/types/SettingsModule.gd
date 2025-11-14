@@ -79,7 +79,7 @@ func _init(p_id: String, p_name: String, p_data_type: Data.Type, p_type: Type, p
 	_setter = p_setter
 	_getter = p_getter
 	_signals = p_signals
-	_owner = p_owner
+	_owner = weakref(p_owner)
 
 
 ## Gets the value of this SettingsModule as a String

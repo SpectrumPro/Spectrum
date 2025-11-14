@@ -154,7 +154,7 @@ func _add_component(component: EngineComponent) -> void:
 	
 	var item: TreeItem = _tree.create_item(parent_node)
 	item.set_icon(0, Interface.get_class_icon(component.self_class_name))
-	item.set_text(0, component.name)
+	item.set_text(0, component.name())
 	item.set_text(1, str(component.cid()))
 	
 	tree_items[component.self_class_name][component.uuid] = item
@@ -226,7 +226,7 @@ func _update_selection_label() -> void:
 	
 	if selected_items:
 		for object: EngineComponent in selected_items:
-			name_list += object.name + ", "
+			name_list += object.name() + ", "
 		name_list = name_list.left(-2)
 	else:
 		name_list = "Select An Item..."

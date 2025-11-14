@@ -328,6 +328,27 @@ func prompt_popup_dialog(p_source: Node, p_title: String = "") -> UIPopupDialog:
 	return new_dialog
 
 
+## Prompts the user with a custom panel popup
+func prompt_panel_popup(p_source: Node, p_panel_class: Variant) -> UIPanel:
+	var window_popups: Control = _window_popups[p_source.get_window()]
+	var panel: UIPanel = UIDB.instance_panel(p_panel_class)
+	
+	if not is_instance_valid(panel):
+		return null
+	
+	panel.close_request.connect(func ():
+		fade_and_hide(panel, panel.queue_free)
+	)
+	
+	panel.hide()
+	panel.set_display_mode(UIPanel.DisplayMode.Popup)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	window_popups.add_child(panel)
+	
+	show_and_fade(panel)
+	return panel
+
+
 ## Sets the visability of a WindowPopup
 func set_popup_visable(p_popup_type: WindowPopup, p_source: Node, p_visible: bool) -> UIBase:
 	if p_visible:

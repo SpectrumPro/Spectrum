@@ -8,4 +8,6 @@ class_name UIComponent extends UIBase
 
 ## Init
 func _init() -> void:
+	super._init()
+	
 	_set_class_name("UIComponent")

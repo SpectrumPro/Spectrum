@@ -22,7 +22,7 @@ var _connection_state: bool = false
 var _previous_note: String = ""
 
 
-func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_set_self_class("DMXOutput")
 	
 	#register_custom_panel("DMXOutput", "connection_status", "set_output", load("res://components/ComponentSettings/ClassCustomModules/DMXOutputStatusDisplay.tscn"))

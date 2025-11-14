@@ -63,7 +63,7 @@ func _on_list_functions_pressed() -> void:
 	var output: Dictionary = {}
 	
 	for function: Function in ComponentDB.get_components_by_classname("Function"):
-		output[function.uuid] = str(function) + " | " + function.name 
+		output[function.uuid] = str(function) + " | " + function.name()
 	
 	set_output(output)
 
