@@ -24,6 +24,9 @@ enum NetworkFlags {
 	ALLOW_DESERIALIZE	= 1 << 1, ## Allows EngineComponents to be deserialized on an incomming message
 }
 
+## The max time in seconds that this node will wait for a response from another node
+const ResponseMaxWaitTime: float = 10
+
 
 ## All available NetworkHandlers that can be loaded
 var _available_handlers: Dictionary[String, Script] = {
@@ -72,6 +75,16 @@ func _ready() -> void:
 		_active_handlers[handler_name] = new_handler
 
 
+## Process
+func _process(_p_delta: float) -> void:
+	for msg_id: String in _awaiting_responces.duplicate():
+		var promise: Promise = _awaiting_responces[msg_id]
+		
+		if Time.get_unix_time_from_system() - promise.get_created_time() >= ResponseMaxWaitTime:
+			promise.reject([ERR_TIMEOUT])
+			_awaiting_responces.erase(msg_id)
+
+
 ## Starts all the NetworkHandlers
 func start_all() -> void:
 	for handler: NetworkHandler in _active_handlers.values():
@@ -101,8 +114,9 @@ func send_command(p_for: String, p_call: String, p_args: Array = [], p_flags: Ne
 		"args": var_to_str(serialize_objects(p_args, p_flags))
 	}
 	
-	if send_message(message, p_node_filter, p_nodes):
-		return promise.auto_reject()
+	var error: Error = send_message(message, p_node_filter, p_nodes)
+	if error:
+		return promise.auto_reject([error])
 	
 	_awaiting_responces[msg_id] = promise
 	return promise

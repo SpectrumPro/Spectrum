@@ -34,6 +34,9 @@ var _use_auto_reject: bool = false
 ## The object refernce this promise is for
 var _object_refernce: Object = null
 
+## UNIX timestamp this Promise was created at
+var _created_at: float = Time.get_unix_time_from_system()
+
 
 ## Resolves the promise and calls all registered `then()` callbacks
 func resolve(args: Array = []) -> void:
@@ -122,3 +125,8 @@ func set_object_refernce(p_object_refernce: Object) -> void:
 ## Gets the object refernce
 func get_object_refernce() -> Object:
 	return _object_refernce
+
+
+## Gets the UNIX timestamp this Promise was created at 
+func get_created_time() -> float:
+	return _created_at
