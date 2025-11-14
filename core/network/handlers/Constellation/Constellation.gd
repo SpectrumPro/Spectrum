@@ -248,7 +248,7 @@ func stop_node(p_internal_only: bool = false) -> Error:
 
 
 ## Sends a command to the session, using p_node_filter as the NodeFilter
-func send_command(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.MASTER) -> Error:
+func send_command(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.MASTER, p_nodes: Array[NetworkNode] = []) -> Error:
 	if not _local_node.get_session():
 		return ERR_UNAVAILABLE
 	

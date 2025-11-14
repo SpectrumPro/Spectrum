@@ -68,7 +68,7 @@ func leave_session() -> bool:
 
 
 ## Sends a command to the session, using p_node_filter as the NodeFilter
-func send_command(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.MASTER) -> Error:
+func send_command(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.MASTER, p_nodes: Array[NetworkNode] = []) -> Error:
 	return ERR_UNAVAILABLE
 
 

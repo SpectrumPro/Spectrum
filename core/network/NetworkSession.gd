@@ -115,12 +115,12 @@ func close() -> void:
 
 
 ## Sends a command to the session, using p_node_filter as the NodeFilter
-func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.AUTO) -> Error:
+func send_command(p_command: Variant, p_node_filter: NodeFilter = NodeFilter.AUTO, p_nodes: Array[NetworkNode] = []) -> Error:
 	return ERR_UNAVAILABLE
 
 
 ## Sends a pre-existing ConstaNetCommand message to the session
-func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeFilter = NodeFilter.AUTO) -> Error:
+func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeFilter = NodeFilter.AUTO, p_nodes: Array[NetworkNode] = []) -> Error:
 	return ERR_UNAVAILABLE
 
 

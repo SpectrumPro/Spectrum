@@ -85,12 +85,12 @@ func stop_all() -> void:
 
 
 ## Sends a message to the session, using p_node_filter as the NodeFilter
-func send_message(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
-	return _active_handlers["Constellation"].send_command(p_command, p_node_filter)
+func send_message(p_command: Variant, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO, p_nodes: Array[NetworkNode] = []) -> Error:
+	return _active_handlers["Constellation"].send_command(p_command, p_node_filter, p_nodes)
 
 
 ## Sends a MessageType.COMMAND to the network
-func send_command(p_for: String, p_call: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Promise:
+func send_command(p_for: String, p_call: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO, p_nodes: Array[NetworkNode] = []) -> Promise:
 	var msg_id: String = UUID_Util.v4()
 	var promise: Promise = Promise.new()
 	var message: Dictionary = {
@@ -101,7 +101,7 @@ func send_command(p_for: String, p_call: String, p_args: Array = [], p_flags: Ne
 		"args": var_to_str(serialize_objects(p_args, p_flags))
 	}
 	
-	if send_message(message, p_node_filter):
+	if send_message(message, p_node_filter, p_nodes):
 		return promise.auto_reject()
 	
 	_awaiting_responces[msg_id] = promise
@@ -109,22 +109,22 @@ func send_command(p_for: String, p_call: String, p_args: Array = [], p_flags: Ne
 
 
 ## Sends a MessageType.SIGNAL
-func send_signal(p_from: String, p_signal: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
+func send_signal(p_from: String, p_signal: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO, p_nodes: Array[NetworkNode] = []) -> Error:
 	return send_message({
 		"type": MessageType.SIGNAL,
 		"for": p_from,
 		"call": p_signal,
 		"args": var_to_str(serialize_objects(p_args, p_flags)), 
-	})
+	}, p_node_filter, p_nodes)
 
 
 ## Sends a MessageType.RESPONCE
-func send_responce(p_id: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
+func send_responce(p_id: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO, p_nodes: Array[NetworkNode] = []) -> Error:
 	return send_message({
 		"type": MessageType.RESPONCE,
 		"msg_id": p_id,
 		"args": var_to_str(serialize_objects(p_args, p_flags)), 
-	})
+	}, p_node_filter, p_nodes)
 
 
 ## Rgegisters a network object
@@ -276,7 +276,7 @@ func _on_command_recieved(p_from: NetworkNode, p_type: Variant.Type, p_command: 
 					args = deserialize_objects(args, manager.get_method_network_flags(for_method))
 					
 					var result: Variant = manager.get_networked_method(for_method).callv(args)
-					send_responce(msg_id, [result], manager.get_method_network_flags(for_method))
+					send_responce(msg_id, [result], manager.get_method_network_flags(for_method), NetworkSession.NodeFilter.MANUAL, [p_from])
 				
 			MessageType.SIGNAL:
 				if _registered_network_objects.has_left(object_id):
