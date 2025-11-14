@@ -33,13 +33,25 @@ static func from(dictionary: Dictionary) -> RefMap:
 	return map
 
 
+## Merges data into this RefMap
+func merge(p_data: Dictionary, p_override: bool = false) -> void:
+	for key: Variant in p_data:
+		var value: Variant = p_data[key]
+		
+		if not _left.has(key) or p_override:
+			_left[key] = value
+		
+		if not _right.has(value) or p_override:
+			_right[value] = key
+
+
 ## Gets an item from the map using the left key
-func left(key: Variant) -> Variant:
-	return _left.get(key, null)
+func left(key: Variant, p_default: Variant = null) -> Variant:
+	return _left.get(key, p_default)
 
 
 ## Gets an item from the map using the right key
-func right(key: Variant) -> Variant:
+func right(key: Variant, p_default: Variant = null) -> Variant:
 	return _right.get(key, null)
 
 

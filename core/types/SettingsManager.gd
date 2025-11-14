@@ -27,6 +27,15 @@ var _networked_callbacks: Dictionary[String, Callable]
 ## All signals that should be emitted accross the network
 var _networked_signals: Dictionary[String, Signal]
 
+## NetworkManager.NetworkFlags for all network methods
+var _networked_method_flags: Dictionary[String, int]
+
+## NetworkManager.NetworkFlags for all network callbacks
+var _networked_callback_flags: Dictionary[String, int]
+
+## NetworkManager.NetworkFlags for all network signals
+var _networked_signal_flags: Dictionary[String, int]
+
 
 ## Registers a settings
 func register_setting(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> SettingsModule:
@@ -180,6 +189,21 @@ func get_networked_signals() -> Dictionary[String, Signal]:
 	return _networked_signals.duplicate()
 
 
+## Gets NetworkFlags for the given callable
+func get_method_network_flags(p_method: String) -> int:
+	return _networked_method_flags.get(p_method, NetworkManager.NetworkFlags.NONE)
+
+
+## Gets NetworkFlags for the given callable
+func get_callback_network_flags(p_method: String) -> int:
+	return _networked_callback_flags.get(p_method, NetworkManager.NetworkFlags.NONE)
+
+
+## Gets NetworkFlags for the given callable
+func get_signal_network_flags(p_signal: String) -> int:
+	return _networked_signal_flags.get(p_signal, NetworkManager.NetworkFlags.NONE)
+
+
 ## Sets the owner
 func set_owner(p_owner: Object) -> void:
 	_owner = weakref(p_owner)
@@ -193,6 +217,51 @@ func set_delete_signal(p_delete_signal: Signal) -> void:
 ## Sets the Array inheritance_list uses, allowing it to be updated afterwards
 func set_inheritance_array(p_inheritance_array: Array[String]) -> void:
 	_inheritance_list = p_inheritance_array
+
+
+## Sets NetworkFlags on the given callable
+func set_method_network_flags(p_callable: String, p_flags: int) -> void:
+	_networked_method_flags[p_callable] = p_flags
+
+
+## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
+func set_method_allow_serialize(p_callable: String) -> void:
+	set_method_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
+
+
+## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
+func set_method_allow_deserialize(p_callable: String) -> void:
+	set_method_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
+
+
+## Sets NetworkFlags on the given callable
+func set_callback_network_flags(p_callable: String, p_flags: int) -> void:
+	_networked_callback_flags[p_callable] = p_flags
+
+
+## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
+func set_callback_allow_serialize(p_callable: String) -> void:
+	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
+
+
+## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
+func set_callback_allow_deserialize(p_callable: String) -> void:
+	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
+
+
+## Sets NetworkFlags on the given callable
+func set_signal_network_flags(p_signal: String, p_flags: int) -> void:
+	_networked_signal_flags[p_signal] = p_flags
+
+
+## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
+func set_signal_allow_serialize(p_signal: String) -> void:
+	set_signal_network_flags(p_signal, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
+
+
+## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
+func set_signal_allow_deserialize(p_signal: String) -> void:
+	set_signal_network_flags(p_signal, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
 
 
 ## Notification

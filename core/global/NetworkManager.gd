@@ -17,6 +17,13 @@ enum MessageType {
 	RESPONCE	= 3, ## Command responce messgae1
 }
 
+## Enum for NetworkFlags
+enum NetworkFlags {
+	NONE				= 0, ## No flags
+	ALLOW_SERIALIZE		= 1 << 0, ## Allows EngineComponents to be serialized on an outgoing message
+	ALLOW_DESERIALIZE	= 1 << 1, ## Allows EngineComponents to be deserialized on an incomming message
+}
+
 
 ## All available NetworkHandlers that can be loaded
 var _available_handlers: Dictionary[String, Script] = {
@@ -83,7 +90,7 @@ func send_message(p_command: Variant, p_node_filter: NetworkSession.NodeFilter =
 
 
 ## Sends a MessageType.COMMAND to the network
-func send_command(p_for: String, p_call: String, p_args: Array = [], p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Promise:
+func send_command(p_for: String, p_call: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Promise:
 	var msg_id: String = UUID_Util.v4()
 	var promise: Promise = Promise.new()
 	var message: Dictionary = {
@@ -91,7 +98,7 @@ func send_command(p_for: String, p_call: String, p_args: Array = [], p_node_filt
 		"msg_id": msg_id,
 		"for": p_for,
 		"call": p_call,
-		"args": var_to_str(objects_to_uuids(p_args))
+		"args": var_to_str(serialize_objects(p_args, p_flags))
 	}
 	
 	if send_message(message, p_node_filter):
@@ -102,21 +109,21 @@ func send_command(p_for: String, p_call: String, p_args: Array = [], p_node_filt
 
 
 ## Sends a MessageType.SIGNAL
-func send_signal(p_from: String, p_signal: String, p_args: Array = [], p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
+func send_signal(p_from: String, p_signal: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
 	return send_message({
 		"type": MessageType.SIGNAL,
 		"for": p_from,
 		"call": p_signal,
-		"args": p_args, 
+		"args": var_to_str(serialize_objects(p_args, p_flags)), 
 	})
 
 
 ## Sends a MessageType.RESPONCE
-func send_responce(p_id: String, p_args: Array = [], p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
+func send_responce(p_id: String, p_args: Array = [], p_flags: NetworkFlags = NetworkFlags.NONE, p_node_filter: NetworkSession.NodeFilter = NetworkSession.NodeFilter.AUTO) -> Error:
 	return send_message({
 		"type": MessageType.RESPONCE,
 		"msg_id": p_id,
-		"args": p_args, 
+		"args": var_to_str(serialize_objects(p_args, p_flags)), 
 	})
 
 
@@ -127,7 +134,7 @@ func register_network_object(p_id: String, p_settings_manager: SettingsManager) 
 	
 	for p_signal_name: String in p_settings_manager.get_networked_signals():
 		var p_signal: Signal = p_settings_manager.get_networked_signal(p_signal_name)
-		var method: Callable = func (...args) -> void: send_signal(p_id, p_signal_name, args)
+		var method: Callable = func (...args) -> void: send_signal(p_id, p_signal_name, args, p_settings_manager.get_signal_network_flags(p_signal_name))
 		p_signal.connect(method)
 		
 		_networked_objects_signal_connections.get_or_add(p_settings_manager, {})[p_signal] = method
@@ -166,59 +173,70 @@ func get_items_by_classname(p_classname: String) -> Array:
 
 
 ## Replaces any object in the given data with uuid refernces. Checks sub arrays and dictionarys
-func objects_to_uuids(p_data: Variant) -> Variant:
+func serialize_objects(p_data: Variant, p_flags: int = NetworkFlags.NONE) -> Variant:
 	match typeof(p_data):
-		TYPE_OBJECT:
+		TYPE_OBJECT when p_data is EngineComponent:
 			return {
-					"_object_ref": str(p_data.uuid() if p_data is EngineComponent else p_data.get("uuid")),
+					"_object_ref": p_data.uuid(),
+				}.merged({
 					"_serialized_object": p_data.serialize(),
-					"_class_name": str(p_data.classname() if p_data is EngineComponent else p_data.get("self_class_name"))
-				}
+					"_class_name": p_data.classname(),
+				} if p_flags & NetworkFlags.ALLOW_SERIALIZE else {})
+		
+		TYPE_OBJECT:
+			return str(p_data)
 		
 		TYPE_DICTIONARY:
-			var new_dict = {}
-			for key in p_data.keys():
-				new_dict[key] = objects_to_uuids(p_data[key])
+			var new_dict: Dictionary = {}
+			
+			for key: Variant in p_data.keys():
+				new_dict[key] = serialize_objects(p_data[key], p_flags)
+			
 			return new_dict
 		
 		TYPE_ARRAY:
-			var new_array = []
+			var new_array: Array = []
+			
 			for item in p_data:
-				new_array.append(objects_to_uuids(item))
+				new_array.append(serialize_objects(item, p_flags))
+			
 			return new_array
 	
 	return p_data
 
 
-## Checks for uuid refernces left by objects_to_uuids(). If one is found the corrisponding object will be created or found via ComponentDB
-func uuids_to_objects(p_data: Variant):
+## Checks for uuid refernces left by serialize_objects(). If one is found the corrisponding object will be created or found via ComponentDB
+func deserialize_objects(p_data: Variant, p_flags: int = NetworkFlags.NONE) -> Variant:
 	match typeof(p_data):
-		TYPE_DICTIONARY:
-			if "_object_ref" in p_data.keys():
-				if _registered_network_objects.has_left(p_data._object_ref):
-					return _registered_network_objects.left(p_data._object_ref).get_owner()
-					
-				elif "_class_name" in p_data.keys():
-					if ClassList.has_class(type_convert(p_data["_class_name"], TYPE_STRING)):
-						var initialized_object = ClassList.get_class_script(p_data["_class_name"]).new(p_data._object_ref)
-						
-						if initialized_object.has_method("load") and "_serialized_object" in p_data.keys():
-							initialized_object.load(p_data._serialized_object)
-							
-						return initialized_object
-				else:
-					return null
+		TYPE_DICTIONARY when p_data.has("_object_ref") and typeof(p_data._object_ref) == TYPE_STRING:
+			if _registered_network_objects.has_left(p_data._object_ref):
+				return _registered_network_objects.left(p_data._object_ref).get_owner()
 				
+			elif p_data.has("_class_name") and typeof(p_data._class_name) == TYPE_STRING and p_flags & NetworkFlags.ALLOW_DESERIALIZE:
+				if ClassList.has_class(p_data._class_name):
+					var initialized_object: EngineComponent = ClassList.get_class_script(p_data._class_name).new(p_data._object_ref)
+					
+					if p_data.has("_serialized_object") and typeof(p_data._serialized_object) == TYPE_DICTIONARY:
+						initialized_object.load(p_data._serialized_object)
+						
+					return initialized_object
 			else:
-				var new_dict = {}
-				for key in p_data.keys():
-					new_dict[key] = uuids_to_objects(p_data[key])
-				return new_dict
+				return null
+		
+		TYPE_DICTIONARY:
+			var new_dict: Dictionary = {}
+			
+			for key: Variant in p_data.keys():
+				new_dict[key] = deserialize_objects(p_data[key], p_flags)
+			
+			return new_dict
 		
 		TYPE_ARRAY:
-			var new_array = []
-			for item in p_data:
-				new_array.append(uuids_to_objects(item))
+			var new_array: Array = []
+			
+			for item: Variant in p_data:
+				new_array.append(deserialize_objects(item, p_flags))
+			
 			return new_array
 	
 	return p_data
@@ -240,26 +258,37 @@ func _deregister_item(p_item: NetworkItem) -> void:
 
 ## Emitted when a command is recieved
 func _on_command_recieved(p_from: NetworkNode, p_type: Variant.Type, p_command: Variant) -> void:
+	print("Got command: ", p_command, " from: ", p_from.get_node_name())
+	
 	if p_command is Dictionary:
 		var object_id: String = type_convert(p_command.get("for", ""), TYPE_STRING)
 		var for_method: String = type_convert(p_command.get("call", ""), TYPE_STRING)
-		var args: Array = uuids_to_objects(type_convert(p_command.get("args"), TYPE_ARRAY))
 		var msg_id: String = type_convert(p_command.get("msg_id", ""), TYPE_STRING)
+		var args: Variant = str_to_var(type_convert(p_command.get("args", "[]"), TYPE_STRING))
+		
+		if typeof(args) != TYPE_ARRAY:
+			return
 		
 		match p_command.get("type", 0):
 			MessageType.COMMAND:
 				if _registered_network_objects.has_left(object_id):
-					var result: Variant = (_registered_network_objects.left(object_id) as SettingsManager).get_networked_method(for_method).callv(args)
-					send_responce(msg_id, [result])
+					var manager: SettingsManager = _registered_network_objects.left(object_id)
+					args = deserialize_objects(args, manager.get_method_network_flags(for_method))
+					
+					var result: Variant = manager.get_networked_method(for_method).callv(args)
+					send_responce(msg_id, [result], manager.get_method_network_flags(for_method))
 				
 			MessageType.SIGNAL:
 				if _registered_network_objects.has_left(object_id):
-					(_registered_network_objects.left(object_id) as SettingsManager).get_networked_callback(for_method).callv(args)
+					var manager: SettingsManager = _registered_network_objects.left(object_id)
+					args = deserialize_objects(args, manager.get_callback_network_flags(for_method))
+					
+					manager.get_networked_callback(for_method).callv(args)
 				
 			MessageType.RESPONCE:
 				if _awaiting_responces.has(msg_id):
+					args = deserialize_objects(args)
 					_awaiting_responces[msg_id].resolve(args)
 					_awaiting_responces.erase(msg_id)
 	
-	print("Got command: ", p_command, " from: ", p_from.get_node_name())
 	command_recieved.emit(p_from, p_type, p_command)

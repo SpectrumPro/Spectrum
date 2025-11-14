@@ -84,6 +84,8 @@ func _init() -> void:
 		"on_resetting": _reset,
 		"on_file_name_changed": _set_file_name,
 	})
+	
+	settings_manager.set_callback_allow_deserialize("on_components_added")
 
 
 ## Init
