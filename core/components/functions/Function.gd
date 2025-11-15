@@ -93,7 +93,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	#register_setting("Function", "auto_start", set_auto_start, get_auto_start, auto_start_changed, Utils.TYPE_BOOL, 2, "Auto Start")
 	#register_setting("Function", "auto_stop", set_auto_stop, get_auto_stop, auto_stop_changed, Utils.TYPE_BOOL, 3, "Auto Stop")
 	
-	Client.add_networked_object(_data_container.uuid(), _data_container)
+	Network.add_networked_object(_data_container.uuid(), _data_container)
 	super._init(p_uuid, p_name)
 
 
@@ -312,5 +312,5 @@ func load(p_serialized_data: Dictionary) -> void:
 
 ## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
 func local_delete() -> void:
-	Client.remove_networked_object(_data_container.uuid())
+	Network.remove_networked_object(_data_container.settings())
 	super.local_delete()

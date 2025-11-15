@@ -175,7 +175,7 @@ func remove_component(p_component: EngineComponent) -> Promise:
 
 ## Server: Removes mutiple components at once
 func remove_components(p_components: Array[EngineComponent]) -> Promise: 
-	return Client.send_command("engine", "remove_components", [p_components])
+	return Network.send_command("engine", "remove_components", [p_components])
 
 
 ## Internal: Adds a new component to this engine

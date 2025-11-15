@@ -32,13 +32,13 @@ func set_output(output: Variant) -> void:
 
 
 ## Resets the engine
-func _on_reset_pressed() -> void: Client.send_command("debug", "reset")
+func _on_reset_pressed() -> void: Network.send_command("debug", "reset")
 
 ## Quits the engine
-func _on_stop_pressed() -> void: Client.send_command("debug", "quit")
+func _on_stop_pressed() -> void: Network.send_command("debug", "quit")
 
 ## Crash the server
-func _on_crash_pressed() -> void: Client.send_command("debug", "crash")
+func _on_crash_pressed() -> void: Network.send_command("debug", "crash")
 
 
 ## Sets the output to the selected component uuid
@@ -50,7 +50,7 @@ func _on_get_component_uuid_pressed() -> void:
 
 ## Dumps the servers networkd objects to a file
 func _on_dump_networked_objects_pressed() -> void:
-	Client.send_command("debug", "dump_networked_objects").then(func (file_path: String):
+	Network.send_command("debug", "dump_networked_objects").then(func (file_path: String):
 		set_output("Networked Objects dumped to (on-server): " + file_path)
 	)
 
@@ -78,7 +78,7 @@ func _on_change_name_pressed() -> void:
 ## Dumps fixture data
 func _on_dump_fixture_data_pressed() -> void:
 	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (fixtures: Array):
-		Client.send_command("debug", "dump_fixture_data", [fixtures[0]]).then(func (path: String):
+		Network.send_command("debug", "dump_fixture_data", [fixtures[0]]).then(func (path: String):
 			OS.shell_open(path)
 			set_output(path)
 		)
@@ -88,7 +88,7 @@ func _on_dump_fixture_data_pressed() -> void:
 ## Gets a Serialized Component
 func _on_get_serialized_component_pressed() -> void:
 	Interface.show_object_picker(ObjectPicker.SelectMode.Single, func (components: Array):
-		Client.send_command(components[0].uuid, "serialize").then(func (data: Dictionary):
+		Network.send_command(components[0].uuid, "serialize").then(func (data: Dictionary):
 			set_output(data)
 		)
 	, "")

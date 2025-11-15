@@ -39,7 +39,7 @@ var _files: Array[Dictionary]
 
 
 func _ready() -> void:
-	Client.connected_to_server.connect(_reload_saves)
+	Core.synchronizing.connect(_reload_saves)
 	Core.file_name_changed.connect(_set_file_name)
 	
 	_reload_saves()

@@ -39,7 +39,7 @@ func _ready() -> void:
 
 ## Creates a new fixture from a manifest
 func create_fixture(p_manifest_uuid: String, p_universe: Universe, p_channel: int, p_quantity: int, p_offset: int, p_mode: String, p_name: String, p_increment_name: bool) -> void:
-	Client.send_command("FixtureLibrary", "create_fixture", [p_manifest_uuid, p_universe, p_channel, p_quantity, p_offset, p_mode, p_name, p_increment_name])
+	Network.send_command("FixtureLibrary", "create_fixture", [p_manifest_uuid, p_universe, p_channel, p_quantity, p_offset, p_mode, p_name, p_increment_name])
 
 
 ## Gets a manifest, imports it if its not already imported
@@ -64,7 +64,7 @@ func request_manifest(p_manifest_uuid: String) -> Promise:
 		promise.auto_resolve([_loaded_manifests[p_manifest_uuid]])
 	else:
 		if p_manifest_uuid not in _manifest_requests:
-			Client.send_command("FixtureLibrary", "get_manifest", [p_manifest_uuid]).then(_on_get_manifest_received)
+			Network.send_command("FixtureLibrary", "get_manifest", [p_manifest_uuid]).then(_on_get_manifest_received)
 		
 		_manifest_requests.get_or_add(p_manifest_uuid, []).append(promise)
 	

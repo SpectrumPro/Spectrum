@@ -27,7 +27,7 @@ func _ready() -> void:
 
 ## Sets a component's CID, returning false if it was alreay taken
 func set_component_id(cid: int, p_component: EngineComponent) -> Promise:
-	return Client.send_command("CIDManager", "set_component_id", [cid, p_component])
+	return Network.send_command("CIDManager", "set_component_id", [cid, p_component])
 
 
 ## Sets a component's CID, returning false if it was alreay taken
