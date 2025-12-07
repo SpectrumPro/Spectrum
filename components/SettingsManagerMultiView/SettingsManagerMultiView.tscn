@@ -16,7 +16,7 @@ settings_manager_view = NodePath("HSplitContainer/ScrollContainer/SettingsManage
 
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
 layout_mode = 2
-split_offset = -495
+split_offset = -140
 
 [node name="Table" parent="HSplitContainer" instance=ExtResource("2_0b5xi")]
 layout_mode = 2

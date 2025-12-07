@@ -44,8 +44,8 @@ layout_mode = 2
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("3_nrpeh")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
-text = "Constellation Manager"
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "NetworkManager"
 icon = ExtResource("4_tdbwv")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]

@@ -40,8 +40,8 @@ var _button: Array[Button]
 var _preset_config: Dictionary[Preset, Callable] = {
 	Preset.CONFIRM: (func (p_label: String):
 		title(p_label if p_label else "Please confirm this action.")
-		button.bind("Cancel", false)
-		button.bind("Confirm", true)
+		button("Cancel", false)
+		button("Confirm", true)
 		),
 	Preset.DELETE: (func (p_label: String):
 		title(p_label if p_label else "Confirm deletion? This action can't be undone.")

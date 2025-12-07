@@ -15,6 +15,15 @@ enum Type {
 }
 
 
+## Enum for ActionMode
+enum ActionMode {
+	NONE		= 0, ## No action assigned
+	SINGLE		= 1, ## One-shot action
+	TOGGLE		= 2, ## Toggable action
+	HOLD		= 3, ## Press and Release action
+}
+
+
 ## ID of this SettingsModule
 var _id: String = ""
 
@@ -60,6 +69,12 @@ var _custom_panel_entry_point: String
 ## The sub manager SettingsManager, for Data.Type.SETTINGSMANAGER
 var _sub_manager: SettingsManager
 
+## ActionMode when usign Data.Type.ACTION
+var _action_mode: ActionMode = ActionMode.NONE
+
+## The callable for ActionMode.HOLD when the action is released
+var _hold_release_callable: Callable = Callable()
+
 ## The name for the category this module should be displayed under when in a user interface
 var _visual_category: String = ""
 
@@ -67,7 +82,7 @@ var _visual_category: String = ""
 var _visual_line: int = -1
 
 ## The object that owns this SettingsManager
-var _owner: Object
+var _owner: WeakRef
 
 
 ## Init
@@ -181,6 +196,16 @@ func get_sub_manager() -> SettingsManager:
 	return _sub_manager
 
 
+## Gets the ActionMode
+func get_action_mode() -> ActionMode:
+	return _action_mode
+
+
+## Gets the hold release callable
+func get_hold_release_callable() -> Callable:
+	return _hold_release_callable
+
+
 ## Gets the visual category
 func get_visual_category() -> String:
 	return _visual_category
@@ -193,7 +218,7 @@ func get_visual_line() -> int:
 
 ## Gets the owner Object
 func get_owner() -> Object:
-	return _owner
+	return _owner.get_ref()
 
 
 ## Sets the class filter
@@ -246,6 +271,18 @@ func set_sub_manager(p_sub_manager: SettingsManager) -> SettingsModule:
 	return self
 
 
+## Sets the action mode
+func set_action_mode(p_action_mode: ActionMode) -> SettingsModule:
+	_action_mode = p_action_mode
+	return self
+
+
+## Sets the hold release callable
+func set_hold_release_callable(p_hold_release_callable: Callable) -> SettingsModule:
+	_hold_release_callable = p_hold_release_callable
+	return self
+
+
 ## Sets the visual category
 func set_visual_category(p_visual_category: String) -> SettingsModule:
 	_visual_category = p_visual_category
@@ -286,5 +323,20 @@ func unsubscribe(p_callable: Callable) -> void:
 func display(p_category: String, p_line: int = -1) -> SettingsModule:
 	set_visual_category(p_category)
 	set_visual_line(p_line)
+	
+	return self
+
+
+## Sets action mode to ActionMode.HOLD and sets hold release callable to p_release_callable
+func action_mode_hold(p_release_callable: Callable) -> SettingsModule:
+	set_action_mode(ActionMode.HOLD)
+	set_hold_release_callable(p_release_callable)
+	
+	return self
+
+
+## Shorthand for set_action_mode(ActionMode.TOGGLE)
+func action_mode_toggle() -> SettingsModule:
+	set_action_mode(ActionMode.TOGGLE)
 	
 	return self

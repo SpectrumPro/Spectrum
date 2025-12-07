@@ -27,17 +27,20 @@ signal all_override_removed()
 static var RootZone: String = "root"
 
 
-## Called when this EngineComponent is ready
+## init
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
-	_set_self_class("Fixture")
-	
-	register_callback("on_parameter_changed", _set_parameter)
-	register_callback("on_parameter_erased", _erase_parameter)
-	register_callback("on_override_changed", _set_override)
-	register_callback("on_override_erased", _erase_override)
-	register_callback("on_all_override_removed", _erase_all_overrides)
-	
 	super._init(p_uuid, p_name)
+	
+	_set_self_class("Fixture")
+	_set_name("Fixture")
+	
+	_settings_manager.register_networked_callbacks({
+		"on_parameter_changed": _set_parameter,
+		"on_parameter_erased": _erase_parameter,
+		"on_override_changed": _set_override,
+		"on_override_erased": _erase_override,
+		"on_all_override_removed": _erase_all_overrides,
+	})
 
 
 ## Sets a parameter to a float value

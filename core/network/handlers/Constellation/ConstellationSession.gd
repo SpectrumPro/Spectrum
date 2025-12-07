@@ -86,7 +86,7 @@ func set_priority_order(p_node: NetworkNode, p_position: int) -> bool:
 	message.origin_id = _network.get_node_id()
 	message.set_announcement(true)
 	
-	_network._send_message_broadcast(message)
+	_network._send_message_mcast(message)
 	return true
 
 
@@ -102,7 +102,7 @@ func set_master(p_node: NetworkNode) -> bool:
 	message.origin_id = _network.get_node_id()
 	message.set_announcement(true)
 	
-	_network._send_message_broadcast(message)
+	_network._send_message_mcast(message)
 	return true
 
 
@@ -195,18 +195,17 @@ func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeF
 			
 			elif has_session_master():
 				p_command.target_id = _session_master.get_node_id()
-				return _session_master.send_message_udp(p_command)
+				return _session_master.send_message(p_command)
 			
 			else:
 				return ERR_DOES_NOT_EXIST
-			
+		
 		NodeFilter.ALL_NODES:
 			for node: ConstellationNode in _nodes:
 				p_command.target_id = node.get_node_id()
-				node.send_message_udp(p_command)
+				node.send_message(p_command)
 			
 			return OK
-			
 		
 		NodeFilter.ALL_OTHER_NODES:
 			for node: ConstellationNode in _nodes:
@@ -214,8 +213,15 @@ func send_pre_existing_command(p_command: ConstaNetCommand, p_node_filter: NodeF
 					continue
 				
 				p_command.target_id = node.get_node_id()
-				node.send_message_udp(p_command)
+				node.send_message(p_command)
 				
+			return OK
+		
+		NodeFilter.MANUAL:
+			for node: ConstellationNode in p_nodes:
+				p_command.target_id = node.get_node_id()
+				node.send_message(p_command)
+			
 			return OK
 		
 		_:
@@ -334,3 +340,7 @@ func _on_node_connection_state_changed(p_connection_state: ConstellationNode.Con
 			
 			if p_node == _session_master:
 				_set_session_master(_priority_order[0] if _priority_order else null)
+		
+		ConstellationNode.ConnectionState.CONNECTED:
+			if p_node.is_sesion_master():
+				_network.get_local_node().connected_to_session_master.emit()

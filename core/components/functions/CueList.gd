@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name CueList extends Function
 ## A list of cues
@@ -68,33 +69,35 @@ var _loop_mode: LoopMode = LoopMode.RESET
 var _allow_triggered_looping: bool = false
 
 
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("CueList")
 	_set_self_class("CueList")
-
-	register_callback("on_active_cue_changed", _on_active_cue_changed)
-	register_callback("on_global_fade_state_changed", _set_global_fade_state)
-	register_callback("on_global_pre_wait_state_changed", set_global_pre_wait_state)
-	register_callback("on_global_fade_changed", _set_global_fade_speed)
-	register_callback("on_global_pre_wait_changed", _set_global_pre_wait_speed)
-	register_callback("on_triggered_looping_changed", _set_allow_triggered_looping)
-	register_callback("on_loop_mode_changed", _set_loop_mode)
-	register_callback("on_cues_added", _add_cues)
-	register_callback("on_cues_removed", _remove_cues)
-	register_callback("on_cue_order_changed", _set_cue_position)
 	
-	register_control_method("go_previous", go_previous)
-	register_control_method("go_next", go_next)
-	register_control_method("set_global_fade_speed", set_global_fade_speed, get_global_fade_speed, global_fade_changed)
-	register_control_method("set_global_pre_wait_speed", set_global_pre_wait_speed, get_global_pre_wait_speed, global_pre_wait_changed)
+	_settings_manager.register_setting("allow_triggered_looping", Data.Type.BOOL, set_allow_triggered_looping, get_allow_triggered_looping, [triggered_looping_changed])
+	_settings_manager.register_setting("use_global_fade", Data.Type.BOOL, set_global_fade_state, get_global_fade_state, [global_fade_state_changed])
+	_settings_manager.register_setting("use_global_pre_wait", Data.Type.BOOL, set_global_pre_wait_state, get_global_pre_wait_state, [global_pre_wait_state_changed])
+	_settings_manager.register_setting("loop_mode", Data.Type.ENUM, set_loop_mode, get_loop_mode, [loop_mode_changed]).set_enum_dict(LoopMode)
 	
-	register_setting_bool("allow_triggered_looping", set_allow_triggered_looping, get_allow_triggered_looping, triggered_looping_changed)
-	register_setting_bool("use_global_fade", set_global_fade_state, get_global_fade_state, global_fade_state_changed)
-	register_setting_bool("use_global_pre_wait", set_global_pre_wait_state, get_global_pre_wait_state, global_pre_wait_state_changed)
+	_settings_manager.register_control("go_previous", Data.Type.ACTION, go_previous)
+	_settings_manager.register_control("go_next", Data.Type.ACTION, go_next)
+	_settings_manager.register_control("global_fade_speed", Data.Type.FLOAT, set_global_fade_speed, get_global_fade_speed, [global_fade_changed])
+	_settings_manager.register_control("global_pre_wait_speed", Data.Type.FLOAT, set_global_pre_wait_speed, get_global_pre_wait_speed, [global_pre_wait_changed])
 	
-	register_setting_float("global_fade", set_global_fade_speed, get_global_fade_speed, global_fade_changed, 0, INF)
-	register_setting_float("global_pre_wait", set_global_pre_wait_speed, get_global_pre_wait_speed, global_pre_wait_changed, 0, INF)
-	
-	register_setting_enum("loop_mode", set_loop_mode, get_loop_mode, loop_mode_changed, LoopMode)
+	_settings_manager.register_networked_callbacks({
+		"on_active_cue_changed": _on_active_cue_changed,
+		"on_global_fade_state_changed": _set_global_fade_state,
+		"on_global_pre_wait_state_changed": set_global_pre_wait_state,
+		"on_global_fade_changed": _set_global_fade_speed,
+		"on_global_pre_wait_changed": _set_global_pre_wait_speed,
+		"on_triggered_looping_changed": _set_allow_triggered_looping,
+		"on_loop_mode_changed": _set_loop_mode,
+		"on_cues_added": _add_cues,
+		"on_cues_removed": _remove_cues,
+		"on_cue_order_changed": _set_cue_position,
+	})
 
 
 ## Server: Adds a cue to the list

@@ -53,8 +53,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_settings_manager.set_inheritance_array(_class_tree)
 	_settings_manager.set_delete_signal(delete_requested)
 	
-	_settings_manager.register_setting("name", Data.Type.STRING, set_name, get_name, [name_changed])\
-	.display("EngineComponent", 0)
+	_settings_manager.register_setting("name", Data.Type.STRING, set_name, get_name, [name_changed])
 	
 	#_settings_manager.register_setting("CID", Data.Type.CID, CIDManager.set_component_id.bind(self), cid, [cid_changed])\
 	#.display("EngineComponent", 1)
@@ -66,13 +65,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 		"on_user_meta_deleted": _delete_user_meta
 	})
 	
-	_component_ready()
 	print("I am: ", _name, " | ", _uuid)
-
-
-## Override this function to provide a _ready function for your script
-func _component_ready() -> void:
-	pass
 
 
 ## Shorthand for get_cid()

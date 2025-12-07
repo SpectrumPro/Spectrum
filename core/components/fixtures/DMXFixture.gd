@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name DMXFixture extends Fixture
 ## Dmx Fixture
@@ -8,12 +9,18 @@ class_name DMXFixture extends Fixture
 ## Emitted when the channel is changed
 signal channel_changed(channel: int)
 
+## Emitted when the universe is changed
+signal universe_changed(universe: Universe)
+
 ## Emitted when the manifest is changed
 signal manifest_changed(manifest: FixtureManifest)
 
 
 ## The DMX channel of this fixture
 var _channel: int = 0
+
+## The current universe this fixture is patched to
+var _universe: Universe
 
 ## The mode of this fixture
 var _mode: String = ""
@@ -30,11 +37,22 @@ var _raw_override_layers: Dictionary[String, Dictionary] = {}
 var _manifest: FixtureManifest = null
 
 
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("DMXFixture")
 	_set_self_class("DMXFixture")
 	
-	register_callback("on_channel_changed", _set_channel)
-	#register_setting("DMXFixture", "channel", set_channel, get_channel, channel_changed, Data.Type.INT, 0, "Channel", 1, 512)
+	_settings_manager.register_setting("channel", Data.Type.INT, set_channel, get_channel, [channel_changed]).set_min_max(1, 512)
+	_settings_manager.register_setting("universe", Data.Type.ENGINECOMPONENT, set_universe, get_universe, [universe_changed]).set_class_filter(Universe)
+	_settings_manager.register_setting("manifest", Data.Type.FIXTUREMANIFEST, set_manifest, get_manifest, [manifest_changed])
+	
+	_settings_manager.register_networked_callbacks({
+		"on_channel_changed": _set_channel,
+		"on_universe_changed": _set_universe,
+		"on_manifest_changed": _set_manifest,
+	})
 
 
 ## Gets the channel
@@ -42,14 +60,32 @@ func get_channel() -> int:
 	return _channel
 
 
-## Sets the channel
-func set_channel(p_channel: int) -> Promise:
-	return rpc("set_channel", [p_channel])
+## Gets the universe this fixture is patched to
+func get_universe() -> Universe:
+	return _universe
 
 
 ## Gets the FixtureManifest
 func get_manifest() -> FixtureManifest:
 	return _manifest
+
+
+## Sets the channel
+func set_channel(p_channel: int) -> Promise:
+	return rpc("set_channel", [p_channel])
+
+
+## Sets the universe
+func set_universe(p_universe: Universe) -> Promise:
+	return rpc("set_universe", [p_universe])
+
+
+## Sets the FixtureManifest
+func set_manifest(p_manifest: Variant, p_mode: String) -> Promise:
+	if p_manifest is FixtureManifest:
+		p_manifest = p_manifest.uuid()
+	
+	return rpc("set_manifest", [type_convert(p_manifest, TYPE_STRING), p_mode])
 
 
 ## Gets all the override values
@@ -139,8 +175,20 @@ func _set_channel(p_channel: int) -> void:
 	channel_changed.emit(_channel)
 
 
+## Called when the universe is changed
+func _set_universe(p_universe: Universe) -> void:
+	_universe = p_universe
+	universe_changed.emit(_universe)
+
+
 ## Sets the FixtureManifest
-func _set_manifest(p_manifest: FixtureManifest, p_mode: String) -> void:
+func _set_manifest(p_manifest: Variant, p_mode: String) -> void:
+	if p_manifest is not FixtureManifest:
+		p_manifest = FixtureLibrary.get_manifest(type_convert(p_manifest, TYPE_STRING))
+	
+	if not is_instance_valid(p_manifest):
+		return
+	
 	_mode = p_mode
 	_manifest = p_manifest
 	

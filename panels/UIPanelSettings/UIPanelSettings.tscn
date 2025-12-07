@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ddcbvxctik0tr" path="res://panels/UIPanelSettings/UIPanelSettings.gd" id="1_4hx28"]
 [ext_resource type="StyleBox" uid="uid://drpfuhk8y61xk" path="res://assets/styles/UIPanelPopup.tres" id="1_i7um0"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="3_ct4k6"]
-[ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="4_1jyub"]
+[ext_resource type="Texture2D" uid="uid://c6xnsmttojanx" path="res://assets/icons/Settings.svg" id="4_ct4k6"]
 [ext_resource type="PackedScene" uid="uid://kjup3yrjifr5" path="res://components/SettingsManagerView/SettingsManagerView.tscn" id="6_a0kig"]
 [ext_resource type="Script" uid="uid://c20borh60xiu1" path="res://panels/UIPanelSettings/Shortcuts.gd" id="6_ct4k6"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_i3a75"]
@@ -36,9 +36,9 @@ layout_mode = 2
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("3_ct4k6")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
 text = "Panel Settings"
-icon = ExtResource("4_1jyub")
+icon = ExtResource("4_ct4k6")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
 layout_mode = 2

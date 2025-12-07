@@ -3,11 +3,11 @@
 [ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_vopyx"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_63t2f"]
 [ext_resource type="Script" uid="uid://ls3oi5ej0d0g" path="res://panels/UIDesk/UIDesk.gd" id="2_j5yap"]
-[ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="4_84fyy"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="4_u3w1e"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="5_7kvcf"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="5_63t2f"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="6_74a5n"]
+[ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="6_u3w1e"]
 [ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="7_tirx7"]
 [ext_resource type="Texture2D" uid="uid://1ha66l33ttxn" path="res://assets/icons/Copy.svg" id="8_eafht"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="9_i2hmx"]
@@ -73,9 +73,9 @@ layout_mode = 2
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("5_63t2f")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
 text = "Desk"
-icon = ExtResource("4_84fyy")
+icon = ExtResource("6_u3w1e")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
 layout_mode = 2

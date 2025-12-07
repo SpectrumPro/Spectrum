@@ -29,11 +29,39 @@ func _get_as_dict() -> Dictionary[String, Variant]:
 	}
 
 
+## Gets this ConstaNetSessionSetMaster as a PackedByteArray
+func _get_as_packet() -> PackedByteArray:
+	var result: PackedByteArray = PackedByteArray()
+	
+	result.append_array(get_id_as_buffer(session_id))
+	result.append_array(get_id_as_buffer(node_id))
+	result.append_array(ba(position, 2))
+	
+	return result
+
+
 ## Phrases a Dictionary
 func _phrase_dict(p_dict: Dictionary) -> void:
 	session_id = type_convert(p_dict.get("id", ""), TYPE_STRING)
 	node_id = type_convert(p_dict.get("node_id", ""), TYPE_STRING)
 	position = type_convert(p_dict.get("position", -1), TYPE_INT)
+
+
+## Phrases a PackedByteArray
+func _phrase_packet(p_packet: PackedByteArray) -> void:
+	if p_packet.size() < NODE_ID_LENGTH + NODE_ID_LENGTH + 2:
+		return
+	
+	var offset: int = 0
+	
+	session_id = p_packet.slice(offset, offset + NODE_ID_LENGTH).get_string_from_ascii()
+	offset += NODE_ID_LENGTH
+	
+	node_id = p_packet.slice(offset, offset + NODE_ID_LENGTH).get_string_from_ascii()
+	offset += NODE_ID_LENGTH
+	
+	position = ba_to_int(p_packet, offset, 2)
+	offset += 2
 
 
 ## Checks if this ConstaNetSessionSetPriority is valid

@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 ## Called when the orignal value is changed
-func _module_value_changed(p_value: Variant) -> void:
+func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	if p_value is bool and not _unsaved:
 		if p_value:
 			_button.set_pressed_no_signal(p_value)

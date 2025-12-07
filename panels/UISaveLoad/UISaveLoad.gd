@@ -148,14 +148,15 @@ func _on_open_pressed() -> void:
 	if selected:
 		var file_name: String = selected.get_text(0)
 		
-		Interface.show_confirmation_dialog("Warning: Opening a show will erace all current components!").confirmed.connect(func ():
+		Interface.prompt_popup_dialog(self).preset(UIPopupDialog.Preset.CONFIRM, "Confirm Open? Unsaved changes will be lost!").then(func ():
 			if int(_files[selected.get_index()].version) != Details.schema_version:
-				Interface.show_confirmation_dialog("Warning: This file was made in an older version of the engine. Opening it may cause errors!").confirmed.connect(func ():
+				Interface.prompt_popup_dialog(self).preset(UIPopupDialog.Preset.CONFIRM, "Confirm Open? Unsaved changes will be lost!").then(func ():
 					Core.reset_and_load(file_name)
 				)
 			else:
 				Core.reset_and_load(file_name)
 		)
+
 
 
 ## Saves the main ui layout
@@ -176,13 +177,13 @@ func _on_new_pressed() -> void:
 
 ## Called when the save as button is pressed
 func _on_save_as_pressed() -> void:
-	Interface.show_name_dialog("Save As: ", Core.get_file_name()).confirmed.connect(func (file_name: String):
-		if file_name in _listed_files:
-			Interface.show_confirmation_dialog("A file with the same name already exists. Would you like to override it?").confirmed.connect(func ():
-				Core.save(file_name)
-			)
-		else:
-			Core.save(file_name).then(_reload_saves)
+	var default_name: String = Core.get_file_name() if Core.get_file_name() else str("Save at: ", Time.get_time_string_from_system())
+	
+	Interface.prompt_data_input(self, Data.Type.STRING, default_name, "Save As:").then(func (p_file_name: String):
+			if p_file_name in _listed_files:
+				Interface.prompt_popup_dialog(self).preset(UIPopupDialog.Preset.CONFIRM, "File Exists! Override?").then(Core.save.bind(p_file_name))
+			else:
+				Core.save(p_file_name).then(_reload_saves)
 	)
 
 

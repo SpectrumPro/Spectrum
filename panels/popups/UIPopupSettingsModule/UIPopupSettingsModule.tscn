@@ -5,7 +5,7 @@
 
 [node name="UIPopupSettingsModule" type="PanelContainer" node_paths=PackedStringArray("title", "module_container", "edit_controls", "menu_bar")]
 script = ExtResource("1_kmprp")
-title = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/PanelName")
+title = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ComponentButton")
 module_container = NodePath("VBoxContainer")
 edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
 menu_bar = NodePath("VBoxContainer/PanelMenuBar")
@@ -15,8 +15,5 @@ layout_mode = 2
 
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("2_vmvni")]
 layout_mode = 2
-
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
-text = "SettingsModule"
 
 [editable path="VBoxContainer/PanelMenuBar"]

@@ -51,6 +51,7 @@ enum WindowPopup {
 	SETTINGS_MODULE,	## Shows a SettingsModule
 	WINDOW_MANAGER,		## UIWindowManager
 	WINDOW_ID,			## UIWindowID
+	MANIFEST_PICKER,	## UIManifestPicker
 }
 
 
@@ -122,6 +123,7 @@ var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
 	WindowPopup.SETTINGS_MODULE:	PopupConfig.new("UIPopupSettingsModule", "set_module"),
 	WindowPopup.WINDOW_MANAGER:		PopupConfig.new("UIWindowManager", ""),
 	WindowPopup.WINDOW_ID:			PopupConfig.new("UIWindowID", ""),
+	WindowPopup.MANIFEST_PICKER:	PopupConfig.new("UIManifestPicker")
 }
 
 ## All windows by UUID RefMap for UUID: Window
@@ -261,8 +263,29 @@ func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
 ## Promps the user with UIPaneSettings
 func prompt_object_picker(p_source: Node, p_index: Script, p_class_filter: String) -> Promise:
 	var promise: Promise = _show_window_popup(WindowPopup.OBJECT_PICKER, p_source, null)
+	var object_picker: UIObjectPicker = promise.get_object_refernce()
 	
-	(promise.get_object_refernce() as UIObjectPicker).set_index(p_index, p_class_filter)
+	object_picker.set_select_mode(UIObjectPicker.SelectMode.OBJECT)
+	object_picker.set_index(p_index, p_class_filter)
+	
+	return promise
+
+
+## Prompts the user with UIManifestPicker
+func prompt_manifest_picker(p_source: Node) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.MANIFEST_PICKER, p_source, null)
+	
+	return promise
+
+
+## Promps the user with UIPaneSettings
+func prompt_create_component(p_source: Node, p_class_filter: String) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.OBJECT_PICKER, p_source, null)
+	var object_picker: UIObjectPicker = promise.get_object_refernce()
+	
+	object_picker.set_select_mode(UIObjectPicker.SelectMode.CLASS)
+	object_picker.set_index(EngineComponent, p_class_filter)
+	
 	return promise
 
 

@@ -6,11 +6,28 @@ class_name ComponentManagerView extends UIComponent
 ## ComponentManagerView
 
 
+## Emitted when the create button is pressed and a classname is selected
+signal create_requested(classname: String)
+
+## Emitted when the duplicate button is pressed
+signal duplicate_requested(component: EngineComponent)
+
+
+## Enum for mode
+enum Mode {
+	STANDALONE, 	## Standalone mode operates using ComponentDB for global components
+	MANUAL,			## MANUAL mode operates on subcomponents of a EngineComponent
+}
+
+
 ## The EngineComponent classname to use
 @export var classname: String
 
 ## Table columns made up of SettingsManager
 @export var table_column_names: Array[String]
+
+## The current Mode
+@export var component_mode: Mode = Mode.STANDALONE
 
 ## Nodes group
 @export_group("Nodes")
@@ -28,6 +45,10 @@ class_name ComponentManagerView extends UIComponent
 @export var duplicate_button: Button
 
 
+## Current mode
+var _mode: Mode = Mode.STANDALONE
+
+
 ## init
 func _init() -> void:
 	super._init()
@@ -37,12 +58,6 @@ func _init() -> void:
 
 ## Ready
 func _ready() -> void:
-	settings_manager_multi_view.reset()
-	settings_manager_multi_view.table_column_names = table_column_names
-	settings_manager_multi_view._ready()
-	
-	ComponentDB.request_class_callback(classname, _class_callback)
-	
 	settings_manager_multi_view.manager_selected.connect(_on_manager_selected)
 	new_button.pressed.connect(_on_new_button_pressed)
 	delete_button.pressed.connect(_on_delete_button_pressed)
@@ -51,11 +66,31 @@ func _ready() -> void:
 	delete_button.set_disabled(true)
 	duplicate_button.set_disabled(true)
 	
-	_class_callback(ComponentDB.get_components_by_classname(classname), [])
+	set_mode(component_mode)
+
+
+## Sets the Mode to Mode.STANDALONG
+func set_mode(p_mode: Mode) -> void:
+	_mode = p_mode
+	
+	reset()
+	
+	match _mode:
+		Mode.STANDALONE:
+			ComponentDB.request_class_callback(classname, class_callback)
+			class_callback(ComponentDB.get_components_by_classname(classname), [])
+		Mode.MANUAL:
+			ComponentDB.remove_class_callback(classname, class_callback)
+
+
+## Resets the UI
+func reset() -> void:
+	settings_manager_multi_view.table_column_names = table_column_names.duplicate()
+	settings_manager_multi_view.reset()
 
 
 ## Called each time a Universe is added or removed from ComponentDB
-func _class_callback(p_added: Array, p_removed: Array) -> void:
+func class_callback(p_added: Array, p_removed: Array) -> void:
 	for component: EngineComponent in p_added:
 		settings_manager_multi_view.add_manager(component.settings())
 	
@@ -73,11 +108,17 @@ func _on_manager_selected(p_manager: SettingsManager) -> void:
 
 ## Called when the NewComponent Button is pressed
 func _on_new_button_pressed() -> void:
-	Core.create_component(classname).then(func (p_component: EngineComponent):
-		if not is_instance_valid(p_component):
-			return
-		
-		Interface.prompt_settings_module(self, p_component.settings().get_entry("name"))
+	Interface.prompt_create_component(self, classname).then(func (p_classname: String):
+		match _mode:
+			Mode.STANDALONE:
+				Core.create_component(p_classname).then(func (p_component: EngineComponent):
+					if not is_instance_valid(p_component):
+						return
+					
+					Interface.prompt_settings_module(self, p_component.settings().get_entry("name"))
+				)
+			Mode.MANUAL:
+				create_requested.emit(p_classname)
 	)
 
 
@@ -88,4 +129,8 @@ func _on_delete_button_pressed() -> void:
 
 ## Called when the DuplicateComponent Button is pressed
 func _on_duplicate_button_pressed() -> void:
-	Core.duplicate_component(settings_manager_multi_view.get_selected_manager().get_owner())
+	match _mode:
+		Mode.STANDALONE:
+			Core.duplicate_component(settings_manager_multi_view.get_selected_manager().get_owner())
+		Mode.MANUAL:
+			duplicate_requested.emit(settings_manager_multi_view.get_selected_manager().get_owner())

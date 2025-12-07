@@ -22,9 +22,36 @@ func _get_as_dict() -> Dictionary[String, Variant]:
 	}
 
 
+## Gets this ConstaNetGoodbye as a PackedByteArray
+func _get_as_packet() -> PackedByteArray:
+	var result: PackedByteArray = PackedByteArray()
+	var reason_bytes: PackedByteArray = reason.to_ascii_buffer()
+	
+	result.append_array(ba(reason_bytes.size(), 2))
+	result.append_array(reason_bytes)
+	
+	return result
+
+
 ## Phrases a Dictionary
 func _phrase_dict(p_dict: Dictionary) -> void:
 	reason = type_convert(p_dict.get("reason", ""), TYPE_STRING)
+
+
+## Phrases a PackedByteArray
+func _phrase_packet(p_packet: PackedByteArray) -> void:
+	if p_packet.size() < 2:
+		return
+	
+	var offset: int = 0
+	var reason_size: int = ba_to_int(p_packet, offset, 2)
+	offset += 2
+	
+	if p_packet.size() < offset + reason_size:
+		return
+	
+	reason = p_packet.slice(offset, offset + reason_size).get_string_from_ascii()
+	offset += reason_size
 
 
 ## Checks if this ConstaNetGoodbye is valid

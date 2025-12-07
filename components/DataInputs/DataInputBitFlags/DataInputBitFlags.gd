@@ -46,7 +46,7 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 
 
 ## Called when the orignal value is changed
-func _module_value_changed(p_value: Variant) -> void:
+func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	if p_value is int and not _unsaved:
 		for bit: int in _module.get_enum_dict().values():
 			_buttons[bit].set_pressed_no_signal(p_value & bit)

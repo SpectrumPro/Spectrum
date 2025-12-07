@@ -38,36 +38,45 @@ var _networked_signal_flags: Dictionary[String, int]
 
 
 ## Registers a settings
-func register_setting(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> SettingsModule:
+func register_setting(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable = Callable(), p_signals: Array[Signal] = []) -> SettingsModule:
 	if not p_id:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.SETTING, p_setter, p_getter, p_signals, _owner)
-	_entrys[p_id] = module
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.SETTING, p_setter, p_getter, p_signals, get_owner())
 	
+	if _inheritance_list:
+		module.display(_inheritance_list[-1])
+	
+	_entrys[p_id] = module
 	return module
 
 
 ## Registers a controlable parameter
-func register_control(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable, p_signals: Array[Signal]) -> SettingsModule:
+func register_control(p_id: String, p_data_type: Data.Type, p_setter: Callable, p_getter: Callable = Callable(), p_signals: Array[Signal] = []) -> SettingsModule:
 	if not p_id:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.CONTROL, p_setter, p_getter, p_signals, _owner)
-	_entrys[p_id] = module
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.CONTROL, p_setter, p_getter, p_signals, get_owner())
 	
+	if _inheritance_list:
+		module.display(_inheritance_list[-1])
+	
+	_entrys[p_id] = module
 	return module
 
 
 ## Registers a controlable parameter
-func register_status(p_id: String, p_data_type: Data.Type, p_getter: Callable, p_signals: Array[Signal], p_enum_dict: Dictionary = {}) -> SettingsModule:
+func register_status(p_id: String, p_data_type: Data.Type, p_getter: Callable, p_signals: Array[Signal] = [], p_enum_dict: Dictionary = {}) -> SettingsModule:
 	if not p_id or not p_data_type or not p_getter:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.STATUS, Callable(), p_getter, p_signals, _owner)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), p_data_type, SettingsModule.Type.STATUS, Callable(), p_getter, p_signals, get_owner())
 	module.set_enum_dict(p_enum_dict)
-	_entrys[p_id] = module
 	
+	if _inheritance_list:
+		module.display(_inheritance_list[-1])
+	
+	_entrys[p_id] = module
 	return module
 
 
@@ -76,11 +85,14 @@ func register_custom_panel(p_id: String, p_panel: PackedScene, p_entry_point: St
 	if not p_id or not p_panel:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), Data.Type.CUSTOMPANEL, SettingsModule.Type.SETTING, Callable(), Callable(), [], _owner)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), Data.Type.CUSTOMPANEL, SettingsModule.Type.SETTING, Callable(), Callable(), [], get_owner())
 	module.set_custom_panel_scene(p_panel)
 	module.set_custom_panel_entry_point(p_entry_point)
-	_entrys[p_id] = module
 	
+	if _inheritance_list:
+		module.display(_inheritance_list[-1])
+	
+	_entrys[p_id] = module
 	return module
 
 
@@ -89,10 +101,13 @@ func require(p_id: String, p_manager: SettingsManager) -> SettingsModule:
 	if not p_manager:
 		return null
 	
-	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), Data.Type.SETTINGSMANAGER, SettingsModule.Type.SETTING, Callable(), Callable(), [], _owner)
+	var module: SettingsModule = SettingsModule.new(p_id, p_id.capitalize(), Data.Type.SETTINGSMANAGER, SettingsModule.Type.SETTING, Callable(), Callable(), [], get_owner())
 	module.set_sub_manager(p_manager)
-	_entrys[p_id] = module
 	
+	if _inheritance_list:
+		module.display(_inheritance_list[-1])
+	
+	_entrys[p_id] = module
 	return module
 
 
@@ -141,7 +156,7 @@ func get_modules() -> Dictionary[String, SettingsModule]:
 
 ## Gets the owner of this SettingsManager
 func get_owner() -> Object:
-	return _owner.get_ref()
+	return _owner.get_ref() if is_instance_valid(_owner) else null 
 
 
 ## Gets the delete signal
@@ -225,12 +240,18 @@ func set_method_network_flags(p_callable: String, p_flags: int) -> void:
 
 
 ## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
-func set_method_allow_serialize(p_callable: String) -> void:
+func set_method_allow_serialize(p_callable: Variant) -> void:
+	if p_callable is Callable:
+		p_callable = p_callable.get_method()
+	
 	set_method_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
 
 
 ## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
-func set_method_allow_deserialize(p_callable: String) -> void:
+func set_method_allow_deserialize(p_callable: Variant) -> void:
+	if p_callable is Callable:
+		p_callable = p_callable.get_method()
+	
 	set_method_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
 
 
@@ -240,12 +261,18 @@ func set_callback_network_flags(p_callable: String, p_flags: int) -> void:
 
 
 ## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
-func set_callback_allow_serialize(p_callable: String) -> void:
+func set_callback_allow_serialize(p_callable: Variant) -> void:
+	if p_callable is Callable:
+		p_callable = p_callable.get_method()
+	
 	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
 
 
 ## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
-func set_callback_allow_deserialize(p_callable: String) -> void:
+func set_callback_allow_deserialize(p_callable: Variant) -> void:
+	if p_callable is Callable:
+		p_callable = p_callable.get_method()
+	
 	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
 
 
@@ -255,12 +282,18 @@ func set_signal_network_flags(p_signal: String, p_flags: int) -> void:
 
 
 ## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
-func set_signal_allow_serialize(p_signal: String) -> void:
+func set_signal_allow_serialize(p_signal: Variant) -> void:
+	if p_signal is Signal:
+		p_signal = p_signal.get_name()
+	
 	set_signal_network_flags(p_signal, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
 
 
 ## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
-func set_signal_allow_deserialize(p_signal: String) -> void:
+func set_signal_allow_deserialize(p_signal: Variant) -> void:
+	if p_signal is Signal:
+		p_signal = p_signal.get_name()
+	
 	set_signal_network_flags(p_signal, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
 
 

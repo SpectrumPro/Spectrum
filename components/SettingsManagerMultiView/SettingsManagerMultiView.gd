@@ -41,8 +41,7 @@ func _init() -> void:
 
 ## Ready
 func _ready() -> void:
-	for column_name: String in table_column_names:
-		_table_columns.map(table.add_column(column_name.capitalize(), Data.Type.NULL), column_name)
+	reset()
 
 
 ## Adds a manager
@@ -95,7 +94,11 @@ func reset() -> void:
 	_selected_manager = null
 	
 	table.clear()
+	table.clear_columns()
 	settings_manager_view.reset()
+	
+	for column_name: String in table_column_names:
+		_table_columns.map(table.add_column(column_name.capitalize(), Data.Type.NULL), column_name)
 
 
 ## Gets the current selected SettingsManager

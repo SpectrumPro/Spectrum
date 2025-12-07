@@ -31,7 +31,7 @@ layout_mode = 2
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("2_a3hd6")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
 text = "Window Manager"
 icon = ExtResource("3_0pdyn")
 

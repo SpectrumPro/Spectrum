@@ -48,7 +48,8 @@ func reset() -> void:
 
 ## Takes focus to the input
 func focus() -> void:
-	_focus_node.grab_focus()
+	if _module.is_editable():
+		_focus_node.grab_focus()
 
 
 ## Sets the SettingsMoudle to edit
@@ -58,10 +59,12 @@ func set_module(p_module: SettingsModule) -> bool:
 	
 	reset()
 	_module = p_module
-	_module.subscribe(_module_value_changed)
 	
+	_module.subscribe(_module_value_changed)
 	_settings_module_changed(_module)
-	_module_value_changed(_module.get_getter().call())
+	
+	if _module.get_getter().is_valid():
+		_module_value_changed(_module.get_getter().call())
 	
 	set_editable(_module.is_editable())
 	return true
@@ -140,7 +143,7 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 
 
 ## Called when the orignal value is changed
-func _module_value_changed(p_value: Variant) -> void:
+func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	pass
 
 

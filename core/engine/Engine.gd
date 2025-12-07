@@ -94,7 +94,7 @@ func _ready() -> void:
 	
 	Network.start_all()
 	
-	(Network.get_active_handler_by_name("Constellation").get_local_node() as ConstellationNode).session_joined.connect(_load_from_server)
+	(Network.get_active_handler_by_name("Constellation").get_local_node() as ConstellationNode).connected_to_session_master.connect(_load_from_server)
 	_add_auto_network_classes.call_deferred()
 
 
@@ -247,9 +247,31 @@ func _add_auto_network_classes() -> void:
 
 ## Requests the current state from the server and loads it localy
 func _load_from_server(...p_args) -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
 	_reset()
 	synchronizing.emit()
-	Network.send_command("engine", "serialize", []).then(func (responce):
+	Network.send_command("engine", "serialize", []).then(func (responce: Dictionary):
 		_load_from(responce)
 	)
 

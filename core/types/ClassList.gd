@@ -46,23 +46,29 @@ func rebuild_maps(tree: Dictionary) -> void:
 ## Processes a node in the class_tree.
 func _process_node(key: String, node: Variant, inheritance_map: Dictionary, inheritance_trees: Dictionary, class_script_map: Dictionary, current_position: Array) -> void:
 	if node is Dictionary:
-		var leaves: Array = []
 		for subkey in node.keys():
 			var subnode = node[subkey]
+			var remove_pos: bool = false
 			
-			inheritance_map.get_or_add(key, []).append(subkey)
-			current_position.push_back(subkey)
+			if not current_position or current_position.back() != subkey:
+				current_position.push_back(subkey)
+				remove_pos = true
 			
 			if subnode is Dictionary:
 				_process_node(subkey, subnode, inheritance_map, inheritance_trees, class_script_map, current_position)
 			else:
-				leaves.append(subkey)
 				class_script_map[subkey] = subnode
 				inheritance_trees[subkey] = current_position.duplicate()
+				inheritance_map.get_or_add(key, []).append(subkey)
+				
+				if not inheritance_map.has(subkey):
+					inheritance_map[subkey] = [subkey]
 			
-			current_position.pop_back()
+			if remove_pos:
+				current_position.pop_back()
 	else:
 		class_script_map[key] = node
+		inheritance_map[key] = [node]
 
 
 ## Returns the class script from the script map, or null if not found

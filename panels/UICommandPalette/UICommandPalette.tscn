@@ -50,7 +50,6 @@ script = ExtResource("4_blvx6")
 
 [node name="EditControls" parent="VBoxContainer/HBoxContainer" instance=ExtResource("4_2ap7d")]
 layout_mode = 2
-show_back = true
 show_edit = false
 show_settings = false
 show_close = true

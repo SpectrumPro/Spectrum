@@ -38,8 +38,8 @@ layout_mode = 2
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("4_01dry")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
-text = "File Library"
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "Save Load"
 icon = ExtResource("5_868id")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]

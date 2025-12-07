@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name FixtureGroupItem extends EngineComponent
 ## A data container for Fixture Groups, this does not do anyting by its self.
@@ -19,11 +20,17 @@ var _fixture: Fixture = null
 var _position: Vector3 = Vector3.ZERO
 
 
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("FixtureGroupItem")
 	_set_self_class("FixtureGroupItem")
 	
-	register_callback("on_fixture_changed", _set_fixture)
-	register_callback("on_position_changed", _set_position)
+	_settings_manager.register_networked_callbacks({
+		"on_fixture_changed": _set_fixture,
+		"on_position_changed": _set_position,
+	})
 
 
 ## Sets the fixture

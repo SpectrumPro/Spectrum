@@ -27,6 +27,7 @@ var _panels: Dictionary[String, PackedScene] = {
 	"UIFunctions":			load(_p("UIFunctions")),
 	"UIPlaybacks":			load(_p("UIPlaybacks")),
 	"UIUniverses":			load(_p("UIUniverses")),
+	"UIFixtures":			load(_p("UIFixtures")),
 	"UISettings":			load(_p("UISettings")),
 	"UISaveLoad":			load(_p("UISaveLoad")),
 	"UICore":				load(_p("UICore")),
@@ -64,23 +65,29 @@ var _data_inputs: Dictionary[Data.Type, PackedScene] = {
 	Data.Type.IP:				load(_d("DataInputString")),
 	Data.Type.NETWORKSESSION: 	load(_d("DataInputNetworkSession")),
 	Data.Type.NETWORKNODE:	 	load(_d("DataInputNetworkNode")),
+	Data.Type.ENGINECOMPONENT:	load(_d("DataInputEngineComponent")),
+	Data.Type.FIXTUREMANIFEST:	load(_d("DataInputFixtureManifest")),
 	Data.Type.UIPANEL:			load(_d("DataInputUIPanel")),
 	Data.Type.SETTINGSMANAGER:	load(_d("DataInputSettingsManager")),
 	Data.Type.CUSTOMPANEL:		load(_d("DataInputCustomPanel")),
+	Data.Type.ACTION:			load(_d("DataInputAction")),
 }
 
 ## All UIPanels sorted by category
 var _panels_by_category: Dictionary[String, Array] = {
 	"Panels": [
 		"UIDesk",
-		"UIFunctions",
 		"UIPlaybacks",
-		"UIUniverses",
 		"UISettings",
 		"UISaveLoad",
 		"UIDebug",
 		"UICore"
 	],
+	"Components": [
+		"UIUniverses",
+		"UIFunctions",
+		"UIFixtures",
+	]
 }
 
 

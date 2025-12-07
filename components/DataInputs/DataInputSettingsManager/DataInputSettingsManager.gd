@@ -19,7 +19,7 @@ func _ready() -> void:
 
 
 ## Called when the orignal value is changed
-func _module_value_changed(p_value: Variant) -> void:
+func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	if p_value is SettingsManager:
 		_settings_manager_view.set_manager(p_value)
 

@@ -1,0 +1,81 @@
+[gd_scene load_steps=6 format=3 uid="uid://bcksw5esp2mib"]
+
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="1_alnjd"]
+[ext_resource type="Script" uid="uid://3shyid6t18bp" path="res://panels/UIManifestPicker/UIManifestPicker.gd" id="2_phqoy"]
+[ext_resource type="Texture2D" uid="uid://70jvrxlq7sgl" path="res://assets/icons/Schema.svg" id="3_jw3ll"]
+[ext_resource type="Script" uid="uid://c1mxckcn5x4su" path="res://components/Scripts/TaggedLineEdit.gd" id="4_3v2kl"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="5_r07w8"]
+
+[node name="UIManifestPicker" type="PanelContainer" node_paths=PackedStringArray("manifest_tree", "fixture_tree", "mode_tree", "search_bar", "edit_controls")]
+custom_minimum_size = Vector2(0, 60)
+offset_right = 604.0
+offset_bottom = 60.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("1_alnjd")
+script = ExtResource("2_phqoy")
+manifest_tree = NodePath("VBoxContainer/IndexContainer/ManifestTree")
+fixture_tree = NodePath("VBoxContainer/IndexContainer/FixtureTree")
+mode_tree = NodePath("VBoxContainer/IndexContainer/ModeTree")
+search_bar = NodePath("VBoxContainer/HBoxContainer/ScrollContainer/LineEdit")
+edit_controls = NodePath("VBoxContainer/HBoxContainer/EditControls")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("3_jw3ll")
+flat = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+placeholder_text = "Manifest Picker"
+select_all_on_focus = true
+script = ExtResource("4_3v2kl")
+
+[node name="EditControls" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_r07w8")]
+layout_mode = 2
+show_back = true
+show_edit = false
+show_settings = false
+show_close = true
+
+[node name="IndexContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ManifestTree" type="Tree" parent="VBoxContainer/IndexContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+hide_root = true
+select_mode = 1
+
+[node name="FixtureTree" type="Tree" parent="VBoxContainer/IndexContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+hide_root = true
+select_mode = 1
+
+[node name="ModeTree" type="Tree" parent="VBoxContainer/IndexContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+hide_root = true
+
+[connection signal="gui_input" from="VBoxContainer/HBoxContainer/ScrollContainer/LineEdit" to="." method="_on_line_edit_gui_input"]
+[connection signal="text_changed" from="VBoxContainer/HBoxContainer/ScrollContainer/LineEdit" to="." method="search_for"]

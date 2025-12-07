@@ -2,8 +2,8 @@
 
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="1_1h8qn"]
 [ext_resource type="Script" uid="uid://be06a2r38386h" path="res://panels/UIPanel/PanelMenuBar.gd" id="2_fnf3r"]
+[ext_resource type="PackedScene" uid="uid://bbpvsnjbak1p3" path="res://components/ComponentButton/ComponentButton.tscn" id="3_dnle8"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="3_fnf3r"]
-[ext_resource type="Texture2D" uid="uid://c8ia6s2pwy1wm" path="res://assets/icons/Component.svg" id="3_kaite"]
 
 [node name="PanelMenuBar" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 60)
@@ -15,11 +15,8 @@ script = ExtResource("2_fnf3r")
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="PanelName" type="Button" parent="HBoxContainer"]
+[node name="ComponentButton" parent="HBoxContainer" instance=ExtResource("3_dnle8")]
 layout_mode = 2
-size_flags_horizontal = 0
-text = "PanelMenuBar"
-icon = ExtResource("3_kaite")
 flat = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]

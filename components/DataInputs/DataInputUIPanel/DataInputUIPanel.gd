@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 ## Called when the orignal value is changed
-func _module_value_changed(p_value: Variant) -> void:
+func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	_button.set_text(p_value.get_class_name() if p_value is UIPanel else "")
 
 

@@ -11,7 +11,7 @@ signal manifests_found()
 
 
 ## All the current found manifests, { "manufacturer": { "name": FixtureManifest } }
-var _found_sorted_manifest_info: Dictionary = {}
+var _found_sorted_manifest_info: Dictionary[String, Dictionary] = {}
 
 ## All loaded fixture manifests, { "manifest_uuid": FixtureManifest }
 var _loaded_manifests: Dictionary = {}
@@ -51,7 +51,7 @@ func get_manifest(p_manifest_uuid: String) -> FixtureManifest:
 
 
 ## Returnes the sorted manifest info of all manifests found
-func get_sorted_manifest_info() -> Dictionary:
+func get_sorted_manifest_info() -> Dictionary[String, Dictionary]:
 	return _found_sorted_manifest_info.duplicate(true)
 
 
@@ -80,7 +80,7 @@ func is_loaded() -> bool:
 func _synchronize() -> void:
 	_is_loaded = false
 	Network.send_command("FixtureLibrary", "get_sorted_manifest_info").then(func (p_sorted_fixture_manifests: Dictionary):
-		_found_sorted_manifest_info = p_sorted_fixture_manifests
+		_found_sorted_manifest_info = Dictionary(p_sorted_fixture_manifests, TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)
 		_is_loaded = true
 		manifests_found.emit()
 	)

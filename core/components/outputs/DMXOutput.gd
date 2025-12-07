@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name DMXOutput extends EngineComponent
 ## Base class for all DMX outputs
@@ -22,18 +23,25 @@ var _connection_state: bool = false
 var _previous_note: String = ""
 
 
+## init
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("DMXOutput")
 	_set_self_class("DMXOutput")
 	
-	#register_custom_panel("DMXOutput", "connection_status", "set_output", load("res://components/ComponentSettings/ClassCustomModules/DMXOutputStatusDisplay.tscn"))
-	#register_setting("DMXOutput", "start", start, Callable(), Signal(), Utils.TYPE_NULL, 0, "Start")
-	#register_setting("DMXOutput", "stop", stop, Callable(), Signal(), Utils.TYPE_NULL, 0, "Stop")
-	#register_setting("DMXOutput", "auto_start", set_auto_start, get_auto_start, auto_start_changed, Utils.TYPE_BOOL, 1, "Auto Start")
+	_settings_manager.register_custom_panel("connection_status_panel", preload("res://components/SettingsManagerCustomPanels/DMXOutputStatusDisplay.tscn"), "set_output")
+	_settings_manager.register_setting("auto_start", Data.Type.BOOL, set_auto_start, get_auto_start, [auto_start_changed])
 	
-	register_callback("on_connection_state_changed", _on_connection_state_changed)
-	register_callback("on_auto_start_changed", _set_auto_start)
+	_settings_manager.register_control("start", Data.Type.ACTION, start)
+	_settings_manager.register_control("stop", Data.Type.ACTION, stop)
 	
-	super._init()
+	_settings_manager.register_status("connection_status", Data.Type.BOOL, get_connection_state, [connection_state_changed])
+	
+	_settings_manager.register_networked_callbacks({
+		"on_connection_state_changed": _on_connection_state_changed,
+		"on_auto_start_changed": _set_auto_start,
+	})
 
 
 ## Sets the auto start state

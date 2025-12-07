@@ -21,17 +21,19 @@ var _fade_out_speed: float = 2
 
 
 ## Called when this EngineComponent is ready
-func _component_ready() -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("Scene")
 	_set_self_class("Scene")
 	
-	#register_control_method("fade_in_speed", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, [TYPE_FLOAT])
-	#register_control_method("fade_out_speed", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, [TYPE_FLOAT])
-	##
-	#register_setting("Scene", "fade_in", set_fade_in_speed, get_fade_in_speed, fade_in_speed_changed, Utils.TYPE_FLOAT, 0, "Fade In Time", 0, INF)
-	#register_setting("Scene", "fade_out", set_fade_out_speed, get_fade_out_speed, fade_out_speed_changed, Utils.TYPE_FLOAT, 1, "Fade Out Time", 0, INF)
-	#
-	register_callback("on_fade_in_speed_changed", _set_fade_in_speed)
-	register_callback("on_fade_out_speed_changed", _set_fade_out_speed)
+	_settings_manager.register_setting("fade_in", Data.Type.FLOAT, set_fade_in_speed, get_fade_in_speed, [fade_in_speed_changed])
+	_settings_manager.register_setting("fade_out", Data.Type.FLOAT, set_fade_out_speed, get_fade_out_speed, [fade_out_speed_changed])
+	
+	_settings_manager.register_networked_callbacks({
+		"on_fade_in_speed_changed": _set_fade_in_speed,
+		"on_fade_out_speed_changed": _set_fade_out_speed,
+	})
 
 
 ## Sets the fade in speed in seconds
@@ -79,6 +81,6 @@ func _load_request(serialized_data: Dictionary) -> void:
 	_fade_in_speed = type_convert(serialized_data.get("fade_in_speed", _fade_in_speed), TYPE_FLOAT)
 	_fade_out_speed = type_convert(serialized_data.get("fade_out_speed", _fade_out_speed), TYPE_FLOAT)
 	
-	Network.remove_networked_object(_data_container.uuid())
+	Network.deregister_network_object(_data_container.settings())
 	_data_container.load(serialized_data.get("save_data", {}))
-	Network.add_networked_object(_data_container.uuid(), _data_container.settings())
+	Network.register_network_object(_data_container.uuid(), _data_container.settings())

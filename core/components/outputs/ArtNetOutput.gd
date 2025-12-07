@@ -30,16 +30,21 @@ var _universe_number: int = 0
 
 
 ## Called when this object is first created
-func _component_ready():
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("ArtNetOutput")
 	_set_self_class("ArtNetOutput")
 	
-	#register_setting("ArtNetOutput", "ip_address", set_ip, get_ip, ip_changed, Utils.TYPE_IP, 0, "IP Address")
-	#register_setting("ArtNetOutput", "use_broadcast", set_use_broadcast, get_use_broadcast, broadcast_state_changed, Utils.TYPE_BOOL, 1, "Use Broadcast")
-	#register_setting("ArtNetOutput", "universe_number", set_universe_number, get_universe_number, universe_number_changed, Utils.TYPE_INT, 2, "Universe Number")
-	#
-	register_callback("on_ip_changed", _set_ip)
-	register_callback("on_broadcast_state_changed", _set_use_broadcast)
-	register_callback("on_universe_number_changed", _set_universe_number)
+	_settings_manager.register_setting("ip_address", Data.Type.IP, set_ip, get_ip, [ip_changed])
+	_settings_manager.register_setting("use_broadcast", Data.Type.BOOL, set_use_broadcast, get_use_broadcast, [broadcast_state_changed])
+	_settings_manager.register_setting("universe_number", Data.Type.INT, set_universe_number, get_universe_number, [universe_number_changed])
+	
+	_settings_manager.register_networked_callbacks({
+		"on_ip_changed": _set_ip,
+		"on_broadcast_state_changed": _set_use_broadcast,
+		"on_universe_number_changed": _set_universe_number,
+	})
 
 
 ## Sets the ip address

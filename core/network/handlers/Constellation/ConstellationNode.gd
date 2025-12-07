@@ -15,6 +15,9 @@ signal command_recieved(command: ConstaNetCommand)
 signal node_ip_changed(ip: String)
 
 
+## The MTU for udp payloads, if this is exceeded the command will be sent as a multipart message
+const UDP_MTP: int = 1000
+
 ## MessageType
 const MessageType: ConstaNetHeadder.Type = ConstaNetHeadder.Type
 
@@ -57,7 +60,7 @@ var _udp_socket: PacketPeerUDP = PacketPeerUDP.new()
 var _tcp_socket: StreamPeerTCP = StreamPeerTCP.new()
 
 ## Previous TCP Peer status
-var _tcp_previous_status: StreamPeerTCP.Status = StreamPeerTCP.Status.STATUS_NONE
+var _tcp_previous_status: int = StreamPeerTCP.Status.STATUS_NONE
 
 
 ## Creates a new ConstellationNode from a ConstaNetDiscovery message
@@ -124,8 +127,11 @@ func _process(delta: float) -> void:
 	_tcp_socket.poll()
 	
 	var status: StreamPeerTCP.Status = _tcp_socket.get_status()
-	if status != _tcp_previous_status and _connection_state != ConnectionState.OFFLINE:
+	if status != _tcp_previous_status:
 		_tcp_previous_status = status
+		
+		if _connection_state == ConnectionState.OFFLINE:
+			return
 		
 		match status:
 			StreamPeerTCP.Status.STATUS_NONE:
@@ -245,28 +251,61 @@ func update_from_discovery(p_discovery: ConstaNetDiscovery) -> void:
 
 
 ## Sends a message to the remote node
-func send_message(p_message: ConstaNetHeadder, p_transport_mode: TransportMode = TransportMode.AUTO) -> void:
-	match TransportMode:
+func send_message(p_message: ConstaNetHeadder, p_transport_mode: TransportMode = TransportMode.AUTO) -> Error:
+	match p_transport_mode:
 		TransportMode.TCP:
-			send_message_tcp(p_message)
+			return send_message_tcp(p_message)
 		
 		TransportMode.UDP:
-			send_message_udp(p_message)
+			return send_message_udp(p_message)
 		
 		TransportMode.AUTO:
-			if _connection_state == ConnectionState.CONNECTED:
-				send_message_tcp(p_message)
+			if _tcp_socket.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+				return send_message_tcp(p_message)
+			
 			else:
-				send_message_udp(p_message)
+				return send_message_udp(p_message)
+		_:
+			return ERR_INVALID_PARAMETER
 
 
 ## Sends a message via UDP to the remote node
 func send_message_udp(p_message: ConstaNetHeadder) -> Error:
-	if _udp_socket.is_socket_connected():
-		var errcode: Error = _udp_socket.put_packet(p_message.get_as_string().to_utf8_buffer())
-		return errcode
+	if not _udp_socket.is_socket_connected():
+		return ERR_CONNECTION_ERROR
 	
-	return ERR_CONNECTION_ERROR
+	var buffer: PackedByteArray = p_message.get_as_packet()
+	
+	if buffer.size() > UDP_MTP:
+		_network._logv(ConstaNetHeadder.Type.keys()[p_message.type], " is too large to send as a single frame (", buffer.size(), ") Sending as multipart")
+		
+		var multi_part: ConstaNetMultiPart = auto_fill_headder(ConstaNetMultiPart.new(), Flags.NONE)
+		var offset: int = 0
+		var chunk_id: int = 0
+		
+		multi_part.multi_part_id = UUID_Util.v4()
+		multi_part.num_of_chunks = int(ceil(buffer.size() / float(UDP_MTP)))
+		
+		while offset < buffer.size():
+			var current_size: int = min(UDP_MTP, buffer.size() - offset)
+			var payload: PackedByteArray = buffer.slice(offset, offset + current_size)
+			
+			multi_part.chunk_id = chunk_id
+			multi_part.data = payload
+			
+			var error: Error = _udp_socket.put_packet(multi_part.get_as_packet())
+			
+			if error:
+				return error
+			
+			offset += current_size
+			chunk_id += 1
+		
+		return OK
+		
+	else:
+		var errcode: Error = _udp_socket.put_packet(buffer)
+		return errcode
 
 
 ## Sends a message over TCP to the remote node
@@ -282,6 +321,9 @@ func connect_tcp() -> Error:
 	if is_local():
 		return ERR_UNAVAILABLE
 	
+	if is_tcp_connected():
+		return ERR_ALREADY_EXISTS
+	
 	disconnect_tcp()
 	
 	var err_code: Error = _tcp_socket.connect_to_host(_node_ip, _node_tcp_port)
@@ -293,6 +335,7 @@ func connect_tcp() -> Error:
 ## Disconnects TCP from this node
 func disconnect_tcp() -> void:
 	_tcp_socket.disconnect_from_host()
+	_tcp_previous_status = -1
 
 
 ## Closes this nodes local object
@@ -410,6 +453,12 @@ func is_sesion_master() -> bool:
 	return _is_session_master
 
 
+## Returns true if the TCP socket is connected
+func is_tcp_connected() -> bool:
+	var status = _tcp_socket.get_status()
+	return status == StreamPeerTCP.STATUS_CONNECTED
+
+
 ## Sends a message to set the name of this node on the network
 func set_node_name(p_name: String) -> void:
 	var set_attribute: ConstaNetSetAttribute = auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
@@ -418,7 +467,7 @@ func set_node_name(p_name: String) -> void:
 	set_attribute.value = p_name
 	
 	if is_local() and _set_node_name(p_name):
-		_network._send_message_broadcast(set_attribute)
+		_network._send_message_mcast(set_attribute)
 	else:
 		send_message_udp(set_attribute)
 
@@ -444,9 +493,6 @@ func _set_role_flags(p_role_flags: int) -> bool:
 
 ## Sets the connection status
 func _set_connection_status(p_status: ConnectionState) -> bool:
-	if p_status == _connection_state:
-		return false
-	
 	_connection_state = p_status
 	connection_state_changed.emit(_connection_state)
 	
@@ -490,11 +536,7 @@ func _set_session(p_session: ConstellationSession) -> bool:
 		return false
 	
 	_session = p_session
-	
 	_session._add_node(self)
-	
-	#session_joined.emit(_session)
-	#session_changed.emit(_session)
 	
 	return true
 
@@ -502,7 +544,12 @@ func _set_session(p_session: ConstellationSession) -> bool:
 ## Sets the nodes session, with out joining the session unlike _set_session
 func _set_session_no_join(p_session: ConstellationSession) -> void:
 	_session = p_session
-	_remove_session_master_mark()
+	
+	if p_session and p_session.get_session_master() == self:
+		_mark_as_session_master()
+	else:
+		_remove_session_master_mark()
+	
 	session_changed.emit(p_session)
 	
 	if p_session:

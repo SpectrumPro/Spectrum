@@ -90,7 +90,7 @@ size_flags_horizontal = 3
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("2_dciud")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
 text = "UICore"
 icon = ExtResource("7_s5yey")
 
@@ -311,7 +311,6 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
-text = "Info: Set ActiveMode on \"NGH Show\""
 label_settings = SubResource("LabelSettings_7y6be")
 
 [node name="VersionLabel" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]

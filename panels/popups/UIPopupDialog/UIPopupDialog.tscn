@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_sp5qm"]
 [ext_resource type="Script" uid="uid://5edq1bxl2trx" path="res://panels/popups/UIPopupDialog/UIPopupDialog.gd" id="2_8bghr"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="3_jdxiq"]
-[ext_resource type="Texture2D" uid="uid://wpl648ha8tvw" path="res://assets/icons/ToolTip.svg" id="4_sp5qm"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="4_sp5qm"]
 
 [node name="UIPopupDialog" type="PanelContainer" node_paths=PackedStringArray("container", "title_button", "edit_controls", "menu_bar")]
 anchors_preset = 8
@@ -22,7 +22,7 @@ size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("1_sp5qm")
 script = ExtResource("2_8bghr")
 container = NodePath("VBoxContainer/VBoxContainer")
-title_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/PanelName")
+title_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ComponentButton")
 edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
 display_mode = 1
 menu_bar = NodePath("VBoxContainer/PanelMenuBar")
@@ -33,8 +33,7 @@ layout_mode = 2
 [node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("3_jdxiq")]
 layout_mode = 2
 
-[node name="PanelName" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
-text = "UIPopupDialog"
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
 icon = ExtResource("4_sp5qm")
 
 [node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]

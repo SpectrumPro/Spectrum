@@ -7,7 +7,14 @@ class_name UIObjectPicker extends UIPopup
 
 
 ## Emitted when an object is selected
-signal object_selected(p_object: Object)
+signal object_selected(p_object: Variant)
+
+
+## Enum for SelectMode
+enum SelectMode {
+	OBJECT, 		## Selects a pre-existing object
+	CLASS			## Selects a classname
+}
 
 
 ## The LineEdit search bar
@@ -22,6 +29,9 @@ var _indexes: RefMap = RefMap.new()
 
 ## The current index
 var _current_index: SearchableClassTree
+
+## Current select mode
+var _select_mode: SelectMode = SelectMode.OBJECT
 
 
 ## Init
@@ -38,6 +48,7 @@ func _ready() -> void:
 		
 		class_tree.search_mode_changed.connect(_on_search_mode_changed.bind(class_tree))
 		class_tree.object_selected.connect(accept)
+		class_tree.class_selected.connect(accept)
 		
 		class_tree.load_config(config)
 		class_tree.hide()
@@ -47,8 +58,6 @@ func _ready() -> void:
 	
 	edit_controls.back_button.pressed.connect(_revert_to_class_mode)
 	edit_controls.back_button.set_disabled(true)
-	
-	set_index(NetworkItem)
 
 
 ## Sets the index by base script
@@ -64,12 +73,29 @@ func set_index(p_class: Script, p_class_filter: String = "") -> bool:
 	
 	_current_index = _indexes.left(p_class)
 	_current_index.show()
-	_current_index.search_for(search_bar.get_text())
 	
-	if p_class_filter:
-		_current_index.search_mode_object(p_class_filter)
+	match _select_mode:
+		SelectMode.OBJECT:
+			_current_index.search_mode_object(p_class_filter)
+		SelectMode.CLASS:
+			_current_index.search_mode_class(p_class_filter)
 	
 	return true
+
+
+## Sets the select mode
+func set_select_mode(p_select_mode: SelectMode) -> void:
+	_select_mode = p_select_mode
+	
+	if not is_instance_valid(_current_index):
+		return
+	
+	match _select_mode:
+		SelectMode.OBJECT:
+			_current_index.search_mode_combined()
+			
+		SelectMode.CLASS:
+			_current_index.search_mode_class()
 
 
 ## Sets the search filter
@@ -106,6 +132,8 @@ func _on_search_mode_changed(p_search_mode: SearchableClassTree.SearchMode, p_cl
 			
 			search_bar.grab_focus()
 			search_bar.edit()
+		_:
+			edit_controls.back_button.set_disabled(true)
 
 
 ## Called when a tag is removed from the search bar

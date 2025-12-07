@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cjrfroxmneel1"]
 
-[ext_resource type="Script" uid="uid://d266aph0mkd2o" path="res://components/TO_BE_SORTED/ComponentSettings/ClassCustomModules/FunctionGroupFunctions.gd" id="1_7hh60"]
+[ext_resource type="Script" uid="uid://d266aph0mkd2o" path="res://components/SettingsManagerCustomPanels/FunctionGroupFunctions.gd" id="1_7hh60"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="2_xsoim"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="3_yjx4v"]
 [ext_resource type="Texture2D" uid="uid://cawxywwrt8wr5" path="res://assets/icons/Arrow_upward.svg" id="4_yjx4v"]

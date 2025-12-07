@@ -301,7 +301,7 @@ func _on_command_recieved(p_from: NetworkNode, p_type: Variant.Type, p_command: 
 				
 			MessageType.RESPONCE:
 				if _awaiting_responces.has(msg_id):
-					args = deserialize_objects(args)
+					args = deserialize_objects(args, NetworkFlags.ALLOW_DESERIALIZE)
 					_awaiting_responces[msg_id].resolve(args)
 					_awaiting_responces.erase(msg_id)
 	

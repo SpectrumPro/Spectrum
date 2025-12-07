@@ -84,14 +84,21 @@ func remove_row(p_row: Row) -> bool:
 	return true
 
 
-## Clears the whole table
+## Clears all rows
 func clear() -> void:
 	_rows.clear()
 	_selected_items.clear()
 	_active_row_tints.clear()
+	_is_selection_update_queued = false
 	
 	_tree.clear()
 	_root = _tree.create_item()
+
+
+## Clears all columns
+func clear_columns() -> void:
+	_columns.clear()
+	_tree.set_columns(1)
 
 
 ## Deselects all items

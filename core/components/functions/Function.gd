@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details
 
 class_name Function extends EngineComponent
 ## Base class for all functions, scenes, cuelists ect
@@ -67,34 +68,104 @@ var _data_container: DataContainer = DataContainer.new()
 
 ## Constructor
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("Function")
 	_set_self_class("Function")
 	
-	register_control_method("set_intensity", set_intensity, Callable(), intensity_changed, [TYPE_FLOAT])
-	register_control_method("on", on)
-	register_control_method("off", off)
-	register_control_method("toggle", toggle)
-	register_control_method("play", play)
-	register_control_method("pause", pause)
-	register_control_method("temp", full, blackout)
-	register_control_method("flash", on, off)
-	register_control_method("full", full)
-	register_control_method("blackout", blackout)
+	_settings_manager.register_custom_panel("status_control", preload("res://components/SettingsManagerCustomPanels/FunctionStatusControls.tscn"), "set_function")
+	_settings_manager.register_setting("auto_start", Data.Type.BOOL, set_auto_start, get_auto_start, [auto_start_changed])
+	_settings_manager.register_setting("auto_stop", Data.Type.BOOL, set_auto_stop, get_auto_stop, [auto_stop_changed])
+	_settings_manager.register_setting("active_state", Data.Type.ENUM, set_active_state, get_active_state, [active_state_changed]).set_enum_dict(ActiveState)
+	_settings_manager.register_setting("transport_state", Data.Type.ENUM, set_transport_state, get_transport_state, [transport_state_changed]).set_enum_dict(TransportState)
+	_settings_manager.register_setting("priority_mode", Data.Type.ENUM, set_priority_mode_state, get_priority_mode_state, [priority_mode_state_changed]).set_enum_dict(PriorityMode)
 	
-	register_callback("on_intensity_changed", _set_intensity)
-	register_callback("on_active_state_changed", _set_active_state)
-	register_callback("on_transport_state_changed", _set_transport_state)
-	register_callback("on_priority_mode_state_changed", _set_priority_mode_state)
-	register_callback("on_auto_start_changed", _set_auto_start)
-	register_callback("on_auto_stop_changed", _set_auto_stop)
+	_settings_manager.register_control("intensity", Data.Type.FLOAT, set_intensity, get_intensity, [intensity_changed])
+	_settings_manager.register_control("on",		Data.Type.ACTION, on)
+	_settings_manager.register_control("off",		Data.Type.ACTION, off)
+	_settings_manager.register_control("toggle",	Data.Type.ACTION, toggle).action_mode_toggle()
+	_settings_manager.register_control("play",		Data.Type.ACTION, play)
+	_settings_manager.register_control("pause",		Data.Type.ACTION, pause)
+	_settings_manager.register_control("temp",		Data.Type.ACTION, full).action_mode_hold(blackout)
+	_settings_manager.register_control("flash",		Data.Type.ACTION, on).action_mode_hold(off)
+	_settings_manager.register_control("full",		Data.Type.ACTION, full)
+	_settings_manager.register_control("blackout",	Data.Type.ACTION, blackout)
 	
-	#register_custom_panel("Function", "status_controls", "set_function", load("res://components/ComponentSettings/ClassCustomModules/FunctionStatusControls.tscn"))
-	#register_setting_enum("priority_mode", set_priority_mode_state, get_priority_mode_state, priority_mode_state_changed, PriorityMode)
-	#register_setting("Function", "auto_start", set_auto_start, get_auto_start, auto_start_changed, Utils.TYPE_BOOL, 2, "Auto Start")
-	#register_setting("Function", "auto_stop", set_auto_stop, get_auto_stop, auto_stop_changed, Utils.TYPE_BOOL, 3, "Auto Stop")
+	_settings_manager.register_networked_callbacks({
+		"on_intensity_changed": _set_intensity,
+		"on_active_state_changed": _set_active_state,
+		"on_transport_state_changed": _set_transport_state,
+		"on_priority_mode_state_changed": _set_priority_mode_state,
+		"on_auto_start_changed": _set_auto_start,
+		"on_auto_stop_changed": _set_auto_stop,
+	})
 	
-	Network.add_networked_object(_data_container.uuid(), _data_container)
-	super._init(p_uuid, p_name)
+	Network.register_network_object(_data_container.uuid(), _data_container.settings())
+
+
+## Gets the ActiveState
+func get_active_state() -> ActiveState:
+	return _active_state
+
+
+## Gets the current TransportState
+func get_transport_state() -> TransportState:
+	return _transport_state
+
+
+## Returnes the intensity
+func get_intensity() -> float:
+	return _intensity
+
+
+## Gets the current PriorityMode
+func get_priority_mode_state() -> PriorityMode:
+	return _priority_mode
+
+
+## Gets the autostart state
+func get_auto_start() -> bool:
+	return _auto_start
+
+
+## Gets the auto stop state
+func get_auto_stop() -> bool:
+	return _auto_stop
+
+
+## Returns the DataContainer 
+func get_data_container() -> DataContainer:
+	return _data_container
+
+
+## Sets this scenes ActiveState
+func set_active_state(active_state: ActiveState) -> void:
+	return rpc("set_active_state", [active_state])
+
+
+## Sets this Function TransportState
+func set_transport_state(transport_state: TransportState) -> Promise:
+	return rpc("set_transport_state", [transport_state])
+
+
+## Sets the intensity of this function, from 0.0 to 1.0
+func set_intensity(p_intensity: float) -> Promise:
+	return rpc("set_intensity", [p_intensity])
+
+
+## Sets the _priority_mode state
+func set_priority_mode_state(p_priority_mode: PriorityMode) -> Promise:
+	return rpc("set_priority_mode_state", [p_priority_mode])
+
+
+## Sets the auto start state
+func set_auto_start(p_auto_start: bool) -> Promise:
+	return rpc("set_auto_start", [p_auto_start])
+
+
+## Sets the auto stop state
+func set_auto_stop(p_auto_stop: bool) -> Promise:
+	return rpc("set_auto_stop", [p_auto_stop])
 
 
 ## Enables this Function
@@ -110,21 +181,6 @@ func off() -> Promise:
 ## Toggles this scenes acive state
 func toggle() -> Promise:
 	return rpc("toggle")
-
-
-## Sets this scenes ActiveState
-func set_active_state(active_state: ActiveState) -> void:
-	return rpc("set_active_state", [active_state])
-
-
-## Override this function to handle ActiveState changes
-func _handle_active_state_change(active_state: ActiveState) -> void:
-	pass
-
-
-## Gets the ActiveState
-func get_active_state() -> ActiveState:
-	return _active_state
 
 
 ## Plays this Function, with the previous TransportState
@@ -147,21 +203,6 @@ func pause() -> Promise:
 	return rpc("pause")
 
 
-## Sets this Function TransportState
-func set_transport_state(transport_state: TransportState) -> Promise:
-	return rpc("set_transport_state", [transport_state])
-
-
-## Override this function to handle TransportState changes
-func _handle_transport_state_chage(transport_state: TransportState) -> void:
-	pass
-
-
-## Gets the current TransportState
-func get_transport_state() -> TransportState:
-	return _transport_state
-
-
 ## Blackouts this Function, by setting the intensity to 0
 func blackout() -> Promise:
 	return rpc("blackout")
@@ -172,54 +213,53 @@ func full() -> Promise:
 	return rpc("full")
 
 
-## Sets the intensity of this function, from 0.0 to 1.0
-func set_intensity(p_intensity: float) -> Promise:
-	return rpc("set_intensity", [p_intensity])
+## Returns serialized version of this component, change the mode to define if this object should be serialized for saving to disk, or for networking to clients
+func serialize() -> Dictionary:
+	return super.serialize().merged({
+		"priority_mode": _priority_mode,
+		"auto_start": _auto_start,
+		"auto_stop": _auto_stop
+	})
+
+
+## Loades this object from a serialized version
+func load(p_serialized_data: Dictionary) -> void:
+	_set_priority_mode_state(type_convert(p_serialized_data.get("priority_mode", _priority_mode), TYPE_INT))
+
+	_auto_start = type_convert(p_serialized_data.get("auto_start", _auto_start), TYPE_BOOL)
+	_auto_stop = type_convert(p_serialized_data.get("auto_stop", _auto_stop), TYPE_BOOL)
+	
+	if "intensity" in p_serialized_data:
+		_intensity = type_convert(p_serialized_data.get("intensity", _intensity), TYPE_FLOAT)
+		
+	if "active_state" in p_serialized_data:
+		_active_state = type_convert(p_serialized_data.get("active_state", _active_state), TYPE_INT)
+	
+	if "transport_state" in p_serialized_data:
+		_transport_state = type_convert(p_serialized_data.get("transport_state", _transport_state), TYPE_INT)
+	
+	super.load(p_serialized_data)
+
+
+## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
+func local_delete() -> void:
+	Network.deregister_network_object(_data_container.settings())
+	super.local_delete()
+
+
+## Override this function to handle ActiveState changes
+func _handle_active_state_change(active_state: ActiveState) -> void:
+	pass
+
+
+## Override this function to handle TransportState changes
+func _handle_transport_state_change(transport_state: TransportState) -> void:
+	pass
 
 
 ## Override this function to handle intensity changes
 func _handle_intensity_change(p_intensity: float) -> void:
 	pass
-
-
-## Returnes the intensity
-func get_intensity() -> float:
-	return _intensity
-
-
-## Sets the _priority_mode state
-func set_priority_mode_state(p_priority_mode: PriorityMode) -> Promise:
-	return rpc("set_priority_mode_state", [p_priority_mode])
-
-
-## Gets the current PriorityMode
-func get_priority_mode_state() -> PriorityMode:
-	return _priority_mode
-
-
-## Sets the auto start state
-func set_auto_start(p_auto_start: bool) -> Promise:
-	return rpc("set_auto_start", [p_auto_start])
-
-
-## Gets the autostart state
-func get_auto_start() -> bool:
-	return _auto_start
-
-
-## Sets the auto stop state
-func set_auto_stop(p_auto_stop: bool) -> Promise:
-	return rpc("set_auto_stop", [p_auto_stop])
-
-
-## Gets the auto stop state
-func get_auto_stop() -> bool:
-	return _auto_stop
-
-
-## Returns the DataContainer 
-func get_data_container() -> DataContainer:
-	return _data_container
 
 
 ## Internal: Sets this scenes ActiveState
@@ -239,7 +279,7 @@ func _set_transport_state(transport_state: TransportState) -> void:
 		return
 	
 	_transport_state = transport_state
-	_handle_transport_state_chage(_transport_state)
+	_handle_transport_state_change(_transport_state)
 	
 	transport_state_changed.emit(_transport_state)
 
@@ -280,37 +320,3 @@ func _set_auto_stop(p_auto_stop: bool) -> void:
 	
 	_auto_stop = p_auto_stop
 	auto_stop_changed.emit(_auto_stop)
-
-
-## Returns serialized version of this component, change the mode to define if this object should be serialized for saving to disk, or for networking to clients
-func serialize() -> Dictionary:
-	return super.serialize().merged({
-		"priority_mode": _priority_mode,
-		"auto_start": _auto_start,
-		"auto_stop": _auto_stop
-	})
-
-
-## Loades this object from a serialized version
-func load(p_serialized_data: Dictionary) -> void:
-	_set_priority_mode_state(type_convert(p_serialized_data.get("priority_mode", _priority_mode), TYPE_INT))
-
-	_auto_start = type_convert(p_serialized_data.get("auto_start", _auto_start), TYPE_BOOL)
-	_auto_stop = type_convert(p_serialized_data.get("auto_stop", _auto_stop), TYPE_BOOL)
-	
-	if "intensity" in p_serialized_data:
-		_intensity = type_convert(p_serialized_data.get("intensity", _intensity), TYPE_FLOAT)
-		
-	if "active_state" in p_serialized_data:
-		_active_state = type_convert(p_serialized_data.get("active_state", _active_state), TYPE_INT)
-	
-	if "transport_state" in p_serialized_data:
-		_transport_state = type_convert(p_serialized_data.get("transport_state", _transport_state), TYPE_INT)
-	
-	super.load(p_serialized_data)
-
-
-## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
-func local_delete() -> void:
-	Network.remove_networked_object(_data_container.settings())
-	super.local_delete()

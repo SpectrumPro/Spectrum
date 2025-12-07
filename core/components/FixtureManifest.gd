@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name FixtureManifest extends EngineComponent
 ## Defines a manifest for a DMXFixture, specifying its channels, capabilities, and behavior.
@@ -31,7 +32,10 @@ var _categorys: Dictionary = {}
 var _force_defaults: Array[String]
 
 
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_self_class("FixtureManifest")
 	_set_name("FixtureManifest")
 

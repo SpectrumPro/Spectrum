@@ -56,7 +56,7 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 
 
 ## Called when the orignal value is changed
-func _module_value_changed(p_value: Variant) -> void:
+func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	if p_value is Vector2 or p_value is Vector2i and not _unsaved:
 		x_axis.set_value_no_signal(p_value.x)
 		y_axis.set_value_no_signal(p_value.y)

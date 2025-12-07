@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name DataContainer extends EngineComponent
 ## DataContainer stores fixture data
@@ -34,20 +35,22 @@ var _items: Array[ContainerItem]
 var _fixture: Dictionary[Fixture, Dictionary]
 
 
-## Constructor
+## init
 func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("DataContainer")
 	_set_self_class("DataContainer")
 	
-	register_callback("on_items_stored", _store_items)
-	register_callback("on_items_erased", _erase_items)
-	register_callback("on_items_function_changed", _set_function)
-	register_callback("on_items_value_changed", _set_value)
-	register_callback("on_items_can_fade_changed", _set_can_fade)
-	register_callback("on_items_start_changed", _set_start)
-	register_callback("on_items_stop_changed", _set_stop)
-	
-	super._init(p_uuid, p_name)
+	_settings_manager.register_networked_callbacks({
+		"on_items_stored": _store_items,
+		"on_items_erased": _erase_items,
+		"on_items_function_changed": _set_function,
+		"on_items_value_changed": _set_value,
+		"on_items_can_fade_changed": _set_can_fade,
+		"on_items_start_changed": _set_start,
+		"on_items_stop_changed": _set_stop,
+	})
 
 
 ## Gets all the ContainerItems

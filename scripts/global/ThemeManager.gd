@@ -36,6 +36,9 @@ class Colors:
 	static var UICorePrimarySideBarTabModulate			= Color(0.51, 0.51, 0.51)
 	static var UICorePrimarySideBarDisabledTabModulate	= Color(0.682, 0.682, 0.682)
 	
+	static var FontColor 				= Color("dfdfdf")
+	static var FontDisabledColor		= Color("dfdfdf80")
+	
 	static func pastel(p_color: Color) -> Color:
 		return p_color.blend(Color(1, 1, 1, 0.2))
 
@@ -68,4 +71,9 @@ class Constants:
 ## Strings
 class Strings:
 	class PopupDialog:
-		static var DefaultTitleText	="UIPopupDialog"
+		static var DefaultTitleText		= "UIPopupDialog"
+
+
+## Fonts
+class Fonts:
+	static var RubikMono: FontFile		= preload("res://assets/font/RubikMonoOne-Regular.ttf")

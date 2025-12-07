@@ -1,6 +1,7 @@
 static var config: Dictionary = {
-	"disable_startup_details": true,				## Disables the colorfull start up logo and copyright headder
 	"custom_loging_method": Callable(),				## Defines a custom callable to call when logging infomation
 	"custom_loging_method_verbose": Callable(),		## Defines a custom callable to call when logging infomation verbosely
-	"log_prefix": "CTL: ",							## A String prefix to print before all message logs
+	"log_prefix": "",								## A String prefix to print before all message logs
+	"bind_address": "192.168.1.70",				## Default IP address to bind to
+	"bind_interface": "br0",				## Default IP address to bind to
 }

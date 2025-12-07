@@ -1,36 +1,42 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name Universe extends EngineComponent
 ## Engine component for handling universes, and there outputs
 
 
-## Emited when a fixture / fixtures are added to this universe, contains a list of all fixture uuids for server-client synchronization
+## Emited when a fixture / fixtures are added to this universe
 signal fixtures_added(fixtures: Array[DMXFixture])
 
-## Emited when a fixture / fixtures are removed from this universe, contains a list of all fixture uuids for server-client synchronization
+## Emited when a fixture / fixtures are removed from this universe
 signal fixtures_removed(fixtures: Array[DMXFixture])
 
-## Emited when a output / outputs are added to this universe, contains a list of all output uuids for server-client synchronization
+## Emited when a output / outputs are added to this universe
 signal outputs_added(outputs: Array[DMXOutput])
 
-## Emited when a output / outputs are removed from this universe, contains a list of all output uuids for server-client synchronization
+## Emited when a output / outputs are removed from this universe
 signal outputs_removed(outputs: Array[DMXOutput])
 
 
 ## Dictionary containing all the fixtures in this universe, stored as channel:Array[fixture]
-var _fixture_channels: Dictionary = {} 
+var _fixture_channels: Dictionary[int, Array] = {} 
 
 ## Dictionary containing all the fixtures in this universe, stored as uuid:fixture
-var _fixtures: Dictionary = {}
+var _fixtures: Dictionary[String, DMXFixture] = {}
 
 ## Dictionary containing all the outputs in this universe
-var _outputs: Dictionary = {} 
+var _outputs: Dictionary[String, DMXOutput] = {} 
 
 
 ## Called when this EngineComponent is ready
-func _component_ready() -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("Universe")
 	_set_self_class("Universe")
+	
+	_settings_manager.register_custom_panel("outputs", preload("res://components/SettingsManagerCustomPanels/UniverseOutputEditor.tscn"), "set_universe")
 	
 	_settings_manager.register_networked_callbacks({
 		"on_fixtures_added": _add_fixtures,
@@ -38,6 +44,9 @@ func _component_ready() -> void:
 		"on_outputs_added": _add_outputs,
 		"on_outputs_removed": _remove_outputs,
 	})
+	
+	_settings_manager.set_callback_allow_deserialize("on_outputs_added")
+	_settings_manager.set_callback_allow_deserialize("on_fixtures_added")
 
 
 ## Creates a new output by class name
@@ -123,7 +132,7 @@ func _add_output(p_output: DMXOutput, p_no_signal: bool = false) -> bool:
 	if p_output in _outputs.values():
 		return false
 	
-	_outputs[p_output.uuid] = p_output
+	_outputs[p_output.uuid()] = p_output
 	
 	p_output.delete_requested.connect(_remove_output.bind(p_output), CONNECT_ONE_SHOT)
 	ComponentDB.register_component(p_output)
@@ -188,7 +197,7 @@ func _add_fixture(p_fixture: DMXFixture, p_channel: int = -1, p_no_signal: bool 
 		_fixture_channels[fixture_channel] = []
 	
 	_fixture_channels[fixture_channel].append(p_fixture)
-	_fixtures[p_fixture.uuid] = p_fixture
+	_fixtures[p_fixture.uuid()] = p_fixture
 
 	p_fixture.delete_requested.connect(_remove_fixture.bind(p_fixture), CONNECT_ONE_SHOT)
 

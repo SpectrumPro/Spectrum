@@ -22,6 +22,9 @@ signal session_joined(session: NetworkSession)
 ## Emitted when the node leaves the current session
 signal session_left()
 
+## Emitted when this node has connected to the session master and is ready to send data. Only emitted on the local node
+signal connected_to_session_master()
+
 ## Emitted if this node becomes the master of its session
 signal is_now_session_master()
 
@@ -69,7 +72,7 @@ var _is_session_master: bool = false
 var _is_unknown: bool = false
 
 ## The Session
-var _session: NetworkSession
+var _session: ConstellationSession
 
 ## UNIX timestamp of the last time this node was seen on the network
 var _last_seen: float = 0
