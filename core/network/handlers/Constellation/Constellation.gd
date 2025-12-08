@@ -707,17 +707,13 @@ class IncommingMultiPart extends Object:
 		id = p_multi_part.multi_part_id
 		num_of_chunks = p_multi_part.num_of_chunks
 		
-		print("New multipart")
 		store_multi_part(p_multi_part)
-		
 	
 	
 	## Stores a chunk of data from a ConstaNetMultiPart
 	func store_multi_part(p_multi_part: ConstaNetMultiPart) -> void:
 		chunks[p_multi_part.chunk_id] = p_multi_part.data
 		last_seen = Time.get_unix_time_from_system()
-		
-		print("Multipart adding chunk (", chunks.size(), "/", num_of_chunks, ")")
 	
 	
 	## Gets all data that has been sent

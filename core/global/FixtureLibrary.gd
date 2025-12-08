@@ -10,7 +10,7 @@ class_name CoreFixtureLibrary extends Node
 signal manifests_found()
 
 
-## All the current found manifests, { "manufacturer": { "name": FixtureManifest } }
+## All the current found manifests, { "manufacturer": { "name": {...} } }
 var _found_sorted_manifest_info: Dictionary[String, Dictionary] = {}
 
 ## All loaded fixture manifests, { "manifest_uuid": FixtureManifest }
@@ -79,6 +79,7 @@ func is_loaded() -> bool:
 ## Called when the engine send out a synchronize request
 func _synchronize() -> void:
 	_is_loaded = false
+	
 	Network.send_command("FixtureLibrary", "get_sorted_manifest_info").then(func (p_sorted_fixture_manifests: Dictionary):
 		_found_sorted_manifest_info = Dictionary(p_sorted_fixture_manifests, TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)
 		_is_loaded = true
