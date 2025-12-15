@@ -423,8 +423,10 @@ func _bind_network() -> void:
 	_mcast_tx.set_reuse_port_enabled(true)
 	_mcast_rx.set_reuse_port_enabled(true)
 	
+	var rx_address: String = ConstellationConfig.bind_address if OS.has_feature("windows") else MCAST_GROUP
+	
 	var tx_bind_error: Error = _mcast_tx.bind(UDP_MCAST_PORT, ConstellationConfig.bind_address)
-	var rx_bind_error: Error = _mcast_rx.bind(UDP_MCAST_PORT, MCAST_GROUP)
+	var rx_bind_error: Error = _mcast_rx.bind(UDP_MCAST_PORT, rx_address)
 	
 	var tx_config_error: Error = _mcast_tx.set_dest_address(MCAST_GROUP, UDP_MCAST_PORT)
 	var rx_config_error: Error = _mcast_rx.join_multicast_group(MCAST_GROUP, ConstellationConfig.bind_interface)
@@ -616,7 +618,7 @@ func _handle_discovery_message(p_discovery: ConstaNetDiscovery, p_source: Stream
 		if p_discovery.origin_id in _unknown_nodes:
 			node = _unknown_nodes[p_discovery.origin_id]
 			node._mark_as_unknown(false)
-			node.update_from_discovery(p_discovery)
+			node._update_from_discovery(p_discovery)
 			
 			_unknown_nodes.erase(p_discovery.origin_id)
 			_log("Using unknown node: ", node.get_node_id())
@@ -654,7 +656,7 @@ func _handle_session_discovery(p_session_discovery: ConstaNetSessionDiscovery) -
 ## Handles a session announce message
 func _handle_session_announce_message(p_message: ConstaNetSessionAnnounce) -> void:
 	if _known_sessions.has(p_message.session_id):
-		_known_sessions[p_message.session_id].update_with(p_message)
+		_known_sessions[p_message.session_id]._update_with(p_message)
 	
 	else:
 		var session: ConstellationSession
@@ -747,6 +749,7 @@ func _process_multi_part(p_multi_part: IncommingMultiPart) -> void:
 ## Called when the discovery timer times out
 func _on_disco_timeout() -> void:
 	_send_discovery()
+	_send_session_discovery()
 
 
 ## Called when the sessions is to be deleted after all nodes disconnect

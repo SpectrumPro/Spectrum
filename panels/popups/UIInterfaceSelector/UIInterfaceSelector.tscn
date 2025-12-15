@@ -70,6 +70,7 @@ icon = ExtResource("7_4qotu")
 [connection signal="item_activated" from="VBoxContainer/InterfaceTree" to="." method="_confirm_selected"]
 [connection signal="item_selected" from="VBoxContainer/InterfaceTree" to="." method="_on_interface_tree_item_selected"]
 [connection signal="nothing_selected" from="VBoxContainer/InterfaceTree" to="." method="_on_interface_tree_nothing_selected"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Cancel" to="." method="cancel"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/Confirm" to="." method="_confirm_selected"]
 
 [editable path="VBoxContainer/PanelMenuBar"]
