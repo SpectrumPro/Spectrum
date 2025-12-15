@@ -62,7 +62,7 @@ var _data_inputs: Dictionary[Data.Type, PackedScene] = {
 	Data.Type.ENUM:				load(_d("DataInputEnum")),
 	Data.Type.BITFLAGS:			load(_d("DataInputBitFlags")),
 	Data.Type.NAME:				load(_d("DataInputString")),
-	Data.Type.IP:				load(_d("DataInputString")),
+	Data.Type.IP:				load(_d("DataInputIPAddr")),
 	Data.Type.NETWORKSESSION: 	load(_d("DataInputNetworkSession")),
 	Data.Type.NETWORKNODE:	 	load(_d("DataInputNetworkNode")),
 	Data.Type.ENGINECOMPONENT:	load(_d("DataInputEngineComponent")),

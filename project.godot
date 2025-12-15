@@ -10,11 +10,12 @@ config_version=5
 
 [application]
 
-config/name="Spectrum Client"
+config/name="SpectrumClient"
 config/description="Realtime node based DMX controller"
 config/version="0.4.0"
 run/main_scene="uid://d00fmrh7nbaua"
 config/use_custom_user_dir=true
+config/custom_user_dir_name="SpectrumClient"
 config/auto_accept_quit=false
 config/features=PackedStringArray("4.5")
 boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)

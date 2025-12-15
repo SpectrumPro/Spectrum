@@ -57,6 +57,9 @@ var _ip_type: IP.Type = IP.Type.TYPE_ANY
 ## A Callable that must return true for this SettingsModule to be editable
 var _edit_condition: Callable = func () -> bool: return true
 
+## A Callable that must return true for this SettingsMoudle to be displayed in the GUI
+var _display_condition: Callable = func () -> bool: return true
+
 ## The min and max values
 var _min_max: Array[Variant] = [0.0, 1.0]
 
@@ -166,6 +169,11 @@ func get_edit_condition() -> Callable:
 	return _edit_condition
 
 
+## Gets the displat condition
+func get_display_condition() -> Callable:
+	return _display_condition
+
+
 ## Gets the min and max values as an array
 func get_min_max() -> Array[Variant]:
 	return _min_max
@@ -245,6 +253,16 @@ func set_edit_condition(p_callable: Callable) -> SettingsModule:
 	return self
 
 
+## Sets the display condition, if p_set_editable is true, set_edit_condition will also be set
+func set_display_condition(p_callable: Callable, p_set_editable: bool = false) -> SettingsModule:
+	_display_condition = p_callable
+	
+	if p_set_editable:
+		set_edit_condition(p_callable)
+	
+	return self
+
+
 ## Sets the min and max values
 func set_min_max(p_min: Variant, p_max: Variant) -> SettingsModule:
 	_min_max = [p_min, p_max]
@@ -303,6 +321,11 @@ func is_editable() -> bool:
 		return bool(_edit_condition.call())
 	else:
 		return true
+
+
+## Returns true of this SettingsModule is displayable in a GUI
+func is_displayable() -> bool:
+	return bool(_display_condition.call())
 
 
 ## Conncts the given callable to all signals

@@ -89,7 +89,7 @@ func _on_create_session_button_pressed() -> void:
 ## Called when the LeaveSession button is pressed
 func _on_leave_session_button_pressed() -> void:
 	if _constellation.get_local_node().get_session().get_number_of_nodes() == 1:
-		Interface.prompt_dialog_confirm(self, "Leave Session?", "Leaving this session will cause it to be removed", "Leave").then(_constellation.leave_session)
+		Interface.prompt_popup_dialog(self).preset(UIPopupDialog.Preset.CONFIRM, "Leave Session?").then(_constellation.leave_session)
 	else:
 		_constellation.leave_session()
 

@@ -16,7 +16,7 @@ enum Columns {NAME, IP_ADDR, ROLE_FLAGS, CONNECTION_STATUS, SESSION}
 ## Config for each column
 var _column_config: Dictionary[int, Dictionary] = {
 	Columns.NAME: {"type": Data.Type.NAME},
-	Columns.IP_ADDR: {"type": Data.Type.IP},
+	Columns.IP_ADDR: {"type": Data.Type.STRING},
 	Columns.ROLE_FLAGS: {"type": Data.Type.BITFLAGS},
 	Columns.CONNECTION_STATUS: {"type": Data.Type.ENUM},
 	Columns.SESSION: {"type": Data.Type.NETWORKSESSION},

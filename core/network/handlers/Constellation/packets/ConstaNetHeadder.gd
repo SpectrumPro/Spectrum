@@ -6,7 +6,7 @@ class_name ConstaNetHeadder extends RefCounted
 
 
 ## Current proto version
-const VERSION: int = 1
+const VERSION: int = 2
 
 ## The length in bytes a NodeID should be
 const NODE_ID_LENGTH: int = 36

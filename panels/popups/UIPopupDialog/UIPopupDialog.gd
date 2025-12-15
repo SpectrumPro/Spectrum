@@ -34,7 +34,7 @@ var _promise: Promise
 var _labels: Array[Label]
 
 ## Array of all buttons
-var _button: Array[Button]
+var _buttons: Array[Button]
 
 ## config for each preset
 var _preset_config: Dictionary[Preset, Callable] = {
@@ -54,6 +54,14 @@ var _preset_config: Dictionary[Preset, Callable] = {
 ## Ready
 func _ready() -> void:
 	new_line()
+
+
+## Focuses this input
+func focus() -> void:
+	if _buttons:
+		_buttons[0].grab_focus()
+	else:
+		edit_controls.close_button.grab_focus()
 
 
 ## Loads a preset
@@ -97,7 +105,7 @@ func button(p_text: String, p_return_value: Variant, p_color: Color = Color.TRAN
 		self
 	
 	var new_button: Button = Button.new()
-	_button.append(new_button)
+	_buttons.append(new_button)
 	
 	new_button.set_text(p_text)
 	new_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)

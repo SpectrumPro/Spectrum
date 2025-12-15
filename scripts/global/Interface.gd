@@ -52,6 +52,7 @@ enum WindowPopup {
 	WINDOW_MANAGER,		## UIWindowManager
 	WINDOW_ID,			## UIWindowID
 	MANIFEST_PICKER,	## UIManifestPicker
+	INTERFACE_SELECTOR,	## UIInterfaceSelector
 }
 
 
@@ -123,7 +124,8 @@ var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
 	WindowPopup.SETTINGS_MODULE:	PopupConfig.new("UIPopupSettingsModule", "set_module"),
 	WindowPopup.WINDOW_MANAGER:		PopupConfig.new("UIWindowManager", ""),
 	WindowPopup.WINDOW_ID:			PopupConfig.new("UIWindowID", ""),
-	WindowPopup.MANIFEST_PICKER:	PopupConfig.new("UIManifestPicker")
+	WindowPopup.MANIFEST_PICKER:	PopupConfig.new("UIManifestPicker"),
+	WindowPopup.INTERFACE_SELECTOR: PopupConfig.new("UIInterfaceSelector")
 }
 
 ## All windows by UUID RefMap for UUID: Window
@@ -274,6 +276,13 @@ func prompt_object_picker(p_source: Node, p_index: Script, p_class_filter: Strin
 ## Prompts the user with UIManifestPicker
 func prompt_manifest_picker(p_source: Node) -> Promise:
 	var promise: Promise = _show_window_popup(WindowPopup.MANIFEST_PICKER, p_source, null)
+	
+	return promise
+
+
+## Prompts the user with UIInterfaceSelector
+func prompt_interface_selector(p_source: Node) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.INTERFACE_SELECTOR, p_source, null)
 	
 	return promise
 

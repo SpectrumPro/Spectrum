@@ -29,8 +29,8 @@ func _ready() -> void:
 	if get_parent() is UIWindow:
 		set_menu_bar_visible(false)
 	
-	await get_tree().create_timer(0.2).timeout
-	Interface.fade_property(_startup_bg, "modulate", Color.TRANSPARENT, _startup_bg.hide, 0.5)
+	await get_tree().create_timer(0.5).timeout
+	Interface.fade_property(_startup_bg, "modulate", Color.TRANSPARENT, _startup_bg.hide, 0.3)
 
 
 ## Saves all the tabs

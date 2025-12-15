@@ -106,27 +106,30 @@ func _init() -> void:
 	settings_manager.set_owner(self)
 	settings_manager.set_inheritance_array(["NetworkNode", "ConstellationNode"])
 	
-	settings_manager.register_status("ConnectionState", Data.Type.ENUM, get_connection_state, [connection_state_changed], ConnectionState
-	).display("NetworkNode", 0)
+	settings_manager.register_status("ConnectionState", Data.Type.ENUM, get_connection_state, [connection_state_changed], ConnectionState)\
+	.display("NetworkNode", 0)
 	
-	settings_manager.register_setting("Name", Data.Type.NAME, set_node_name, get_node_name, [node_name_changed]
-	).display("NetworkNode", 1)
+	settings_manager.register_setting("Name", Data.Type.NAME, set_node_name, get_node_name, [node_name_changed])\
+	.display("NetworkNode", 1)
 	
-	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, set_session, get_session, [session_changed]
-	).display("NetworkNode", 2).set_class_filter(ConstellationSession)
+	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, set_session, get_session, [session_changed])\
+	.display("NetworkNode", 2).set_class_filter(ConstellationSession)
 	
-	settings_manager.register_setting("RoleFlags", Data.Type.BITFLAGS, set_role_flags, get_role_flags, [role_flags_changed]
-	).display("ConstellationNode", 3).set_edit_condition(is_local).set_enum_dict(ConstaNetHeadder.RoleFlags)
+	settings_manager.register_setting("RoleFlags", Data.Type.BITFLAGS, set_role_flags, get_role_flags, [role_flags_changed])\
+	.display("ConstellationNode", 3).set_edit_condition(is_local).set_enum_dict(ConstaNetHeadder.RoleFlags)
 	
-	settings_manager.register_status("IpAddress", Data.Type.IP, get_node_ip, [node_ip_changed]).set_ip_type(IP.TYPE_IPV4
-	).display("ConstellationNode", 4)
+	settings_manager.register_setting("BindAddress", Data.Type.IP, _network.set_ip_and_interface, _network.get_ip_and_interface, [_network.ip_and_interface_changed])\
+	.display("ConstellationNode", 4).set_display_condition(is_local)
+	
+	settings_manager.register_status("IpAddress", Data.Type.STRING, get_node_ip, [node_ip_changed])\
+	.display("ConstellationNode", 5)
 
 
 ## Called each frame
 func _process(delta: float) -> void:
 	_tcp_socket.poll()
-	
 	var status: StreamPeerTCP.Status = _tcp_socket.get_status()
+	
 	if status != _tcp_previous_status:
 		_tcp_previous_status = status
 		
@@ -141,113 +144,38 @@ func _process(delta: float) -> void:
 				_set_connection_status(ConnectionState.CONNECTING)
 			
 			StreamPeerTCP.Status.STATUS_CONNECTED:
-				_set_connection_status(ConnectionState.CONNECTED)
+				_send_tcp_discovery_request()
 			
 			StreamPeerTCP.Status.STATUS_ERROR:
 				_set_connection_status(ConnectionState.LOST_CONNECTION)
 	
-	if status == StreamPeerTCP.STATUS_CONNECTED and _tcp_socket.get_available_bytes():
-		var data: Array = _tcp_socket.get_data(_tcp_socket.get_available_bytes())
-		var packet: PackedByteArray = data[1]
-		
-		_network.handle_packet(packet)
+	if status == StreamPeerTCP.STATUS_CONNECTED:
+		while _tcp_socket.get_available_bytes() > 0:
+			_network._handle_packet_frame(_tcp_socket)
 
 
-## Autofills a ConstaNetHeadder with the infomation to comunicate to this remote node
-func auto_fill_headder(p_headder: ConstaNetHeadder, p_flags: int) -> ConstaNetHeadder:
-	p_headder.origin_id = _network.get_node_id()
-	p_headder.flags |= p_flags
-	
-	if not is_local():
-		p_headder.target_id = _node_id
-	
-	return p_headder
 
 
-## Handles a message
-func handle_message(p_message: ConstaNetHeadder) -> void:
-	match p_message.type:
-		MessageType.DISCOVERY:
-			update_from_discovery(p_message)
-			
-			if _connection_state in [ConnectionState.UNKNOWN, ConnectionState.OFFLINE, ConnectionState.LOST_CONNECTION]:
-				_set_connection_status(ConnectionState.DISCOVERED)
-		
-		MessageType.GOODBYE:
-			_leave_session()
-			disconnect_tcp()
-			_udp_socket.close()
-			_set_connection_status(ConnectionState.OFFLINE)
-		
-		MessageType.SESSION_ANNOUNCE:
-			if p_message.is_announcement() and p_message.nodes.has(_node_id):
-				_set_session(_network.get_session_from_id(p_message.session_id, true))
-		
-		MessageType.SESSION_JOIN:
-			var session: ConstellationSession = _network.get_session_from_id(p_message.session_id)
-			if session == _network.get_local_node().get_session():
-				connect_tcp()
-			
-			_set_session(_network.get_session_from_id(p_message.session_id, true))
-		
-		MessageType.SESSION_LEAVE:
-			var session: ConstellationSession = _network.get_session_from_id(p_message.session_id)
-			if session == _network.get_local_node().get_session():
-				disconnect_tcp()
-			
-			_leave_session()
-		
-		MessageType.SET_ATTRIBUTE:
-			p_message = p_message as ConstaNetSetAttribute
-			
-			match p_message.attribute:
-				ConstaNetSetAttribute.Attribute.NAME:
-					if is_local():
-						set_node_name(p_message.value)
-					else:
-						_set_node_name(p_message.value)
-				
-				ConstaNetSetAttribute.Attribute.SESSION:
-					if is_local():
-						var session: ConstellationSession = _network.get_session_from_id(p_message.value)
-						if session:
-							_network.join_session(session)
-						else:
-							_network.leave_session()
-		
-		MessageType.COMMAND:
-			p_message = p_message as ConstaNetCommand
-			
-			if p_message.in_session and p_message.in_session != get_session_id():
-				return
-			
-			command_recieved.emit(p_message)
-			_network.command_recieved.emit(_network.get_node_from_id(p_message.origin_id), p_message.data_type, p_message.command)
+## Connectes TCP to this node
+func connect_tcp() -> Error:
+	if is_local():
+		return ERR_UNAVAILABLE
+	
+	if is_tcp_connected():
+		return ERR_ALREADY_EXISTS
+	
+	disconnect_tcp()
+	
+	var err_code: Error = _tcp_socket.connect_to_host(_node_ip, _node_tcp_port)
+	_tcp_socket.set_no_delay(true)
+	
+	return err_code
 
 
-## Updates this nodes info from a discovery packet
-func update_from_discovery(p_discovery: ConstaNetDiscovery) -> void:
-	_set_node_name(p_discovery.node_name)
-	_set_role_flags(p_discovery.role_flags)
-	
-	_last_seen = Time.get_unix_time_from_system()
-	last_seen_changed.emit(_last_seen)
-	
-	var force_reconnect: bool = false
-	if p_discovery.node_ip != _node_ip:
-		_set_node_ip(p_discovery.node_ip)
-		force_reconnect = true
-	
-	if p_discovery.tcp_port != _node_tcp_port or force_reconnect:
-		_node_tcp_port = p_discovery.tcp_port
-		
-		if _connection_state in [ConnectionState.CONNECTED, ConnectionState.CONNECTING]:
-			connect_tcp()
-	
-	if p_discovery.udp_port != _node_udp_port or force_reconnect:
-		_node_udp_port = p_discovery.udp_port
-		_udp_socket.close()
-		_udp_socket.connect_to_host(_node_ip, _node_udp_port)
+## Disconnects TCP from this node
+func disconnect_tcp() -> void:
+	_tcp_socket.disconnect_from_host()
+	_tcp_previous_status = -1
 
 
 ## Sends a message to the remote node
@@ -279,7 +207,7 @@ func send_message_udp(p_message: ConstaNetHeadder) -> Error:
 	if buffer.size() > UDP_MTP:
 		_network._logv(ConstaNetHeadder.Type.keys()[p_message.type], " is too large to send as a single frame (", buffer.size(), ") Sending as multipart")
 		
-		var multi_part: ConstaNetMultiPart = auto_fill_headder(ConstaNetMultiPart.new(), Flags.NONE)
+		var multi_part: ConstaNetMultiPart = _auto_fill_headder(ConstaNetMultiPart.new(), Flags.NONE)
 		var offset: int = 0
 		var chunk_id: int = 0
 		
@@ -316,36 +244,6 @@ func send_message_tcp(p_message: ConstaNetHeadder) -> Error:
 	return ERR_CONNECTION_ERROR
 
 
-## Connectes TCP to this node
-func connect_tcp() -> Error:
-	if is_local():
-		return ERR_UNAVAILABLE
-	
-	if is_tcp_connected():
-		return ERR_ALREADY_EXISTS
-	
-	disconnect_tcp()
-	
-	var err_code: Error = _tcp_socket.connect_to_host(_node_ip, _node_tcp_port)
-	_tcp_socket.set_no_delay(true)
-	
-	return err_code
-
-
-## Disconnects TCP from this node
-func disconnect_tcp() -> void:
-	_tcp_socket.disconnect_from_host()
-	_tcp_previous_status = -1
-
-
-## Closes this nodes local object
-func close() -> void:
-	disconnect_tcp()
-	_udp_socket.close()
-	
-	_connection_state = ConnectionState.UNKNOWN
-
-
 ## Joins the given session
 func join_session(p_session: NetworkSession) -> bool:
 	if not p_session:
@@ -354,7 +252,7 @@ func join_session(p_session: NetworkSession) -> bool:
 	if is_local():
 		return _network.join_session(p_session)
 	
-	var set_attribute: ConstaNetSetAttribute = auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
+	var set_attribute: ConstaNetSetAttribute = _auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
 	
 	set_attribute.attribute = ConstaNetSetAttribute.Attribute.SESSION
 	set_attribute.value = p_session.get_session_id()
@@ -371,13 +269,21 @@ func leave_session() -> bool:
 	if is_local():
 		return _network.leave_session()
 	
-	var set_attribute: ConstaNetSetAttribute = auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
+	var set_attribute: ConstaNetSetAttribute = _auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
 	
 	set_attribute.attribute = ConstaNetSetAttribute.Attribute.SESSION
 	set_attribute.value = ""
 	
 	send_message_udp(set_attribute)
 	return true
+
+
+## Closes this nodes local object
+func close() -> void:
+	disconnect_tcp()
+	_udp_socket.close()
+	
+	_connection_state = ConnectionState.UNKNOWN
 
 
 ## Gets the network role
@@ -428,6 +334,27 @@ func get_last_seen_time() -> float:
 	return _last_seen
 
 
+## Sends a message to set the name of this node on the network
+func set_node_name(p_name: String) -> void:
+	var set_attribute: ConstaNetSetAttribute = _auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
+	
+	set_attribute.attribute = ConstaNetSetAttribute.Attribute.NAME
+	set_attribute.value = p_name
+	
+	if is_local() and _set_node_name(p_name):
+		_network._send_message_mcast(set_attribute)
+	else:
+		send_message_udp(set_attribute)
+
+
+## Sets the role flags
+func set_role_flags(p_role_flags: int) -> bool:
+	if not is_local():
+		return false
+	
+	return _set_role_flags(p_role_flags)
+
+
 ## Returns True if this node is local
 func is_local() -> bool:
 	return _node_flags & NodeFlags.LOCAL_NODE
@@ -459,27 +386,6 @@ func is_tcp_connected() -> bool:
 	return status == StreamPeerTCP.STATUS_CONNECTED
 
 
-## Sends a message to set the name of this node on the network
-func set_node_name(p_name: String) -> void:
-	var set_attribute: ConstaNetSetAttribute = auto_fill_headder(ConstaNetSetAttribute.new(), Flags.REQUEST)
-	
-	set_attribute.attribute = ConstaNetSetAttribute.Attribute.NAME
-	set_attribute.value = p_name
-	
-	if is_local() and _set_node_name(p_name):
-		_network._send_message_mcast(set_attribute)
-	else:
-		send_message_udp(set_attribute)
-
-
-## Sets the role flags
-func set_role_flags(p_role_flags: int) -> bool:
-	if not is_local():
-		return false
-	
-	return _set_role_flags(p_role_flags)
-
-
 ## Sets the network role
 func _set_role_flags(p_role_flags: int) -> bool:
 	if p_role_flags == _role_flags:
@@ -493,6 +399,10 @@ func _set_role_flags(p_role_flags: int) -> bool:
 
 ## Sets the connection status
 func _set_connection_status(p_status: ConnectionState) -> bool:
+	if _connection_state == p_status:
+		return false
+	
+	_network._logv("Setting ConnectionState to remote node: ", get_node_name(), ", to: ", ConnectionState.keys()[p_status])
 	_connection_state = p_status
 	connection_state_changed.emit(_connection_state)
 	
@@ -513,6 +423,7 @@ func _set_node_name(p_node_name: String) -> bool:
 	if p_node_name == _node_name:
 		return false
 	
+	_network._logv("Changing name from: ", get_node_name(), ", tp: ", p_node_name)
 	_node_name = p_node_name
 	node_name_changed.emit(_node_name)
 	
@@ -589,3 +500,157 @@ func _mark_as_unknown(p_unknown: bool) -> void:
 		_node_flags |= NodeFlags.UNKNOWN
 	else:
 		_node_flags &= ~NodeFlags.UNKNOWN
+
+
+## Sends a Discovery Flags.REQUEST to the remote node over TCP
+func _send_tcp_discovery_request() -> void:
+	var message: ConstaNetDiscovery = _auto_fill_headder(_network._create_discovery(), Flags.REQUEST)
+	var errcode: Error = _tcp_socket.put_data(message.get_as_packet())
+	
+	_network._logv("Sending TCP Discovery REQ, errcode: ", error_string(errcode), ", to: ", get_node_name())
+
+
+## Sends a Discovery Flags.ACKNOWLEDGMENT to the remote node over TCP
+func _send_tcp_discovery_acknowledment() -> void:
+	var message: ConstaNetDiscovery = _auto_fill_headder(_network._create_discovery(), Flags.ACKNOWLEDGMENT)
+	var errcode: Error = _tcp_socket.put_data(message.get_as_packet())
+	
+	_network._logv("Sending TCP Discovery ACK, errcode: ", error_string(errcode), ", to: ", get_node_name())
+
+
+## Handles a ConstaNetHeadder
+func _handle_message(p_message: ConstaNetHeadder) -> void:
+	match p_message.type:
+		MessageType.DISCOVERY:
+			_handle_discovery(p_message)
+		
+		MessageType.GOODBYE:
+			_handle_goodbye(p_message)
+		
+		MessageType.SESSION_ANNOUNCE:
+			_handle_session_announce(p_message)
+		
+		MessageType.SESSION_JOIN:
+			_handle_session_join(p_message)
+		
+		MessageType.SESSION_LEAVE:
+			_handle_session_leave(p_message)
+		
+		MessageType.SET_ATTRIBUTE:
+			_handle_set_attribute(p_message)
+		
+		MessageType.COMMAND:
+			_handle_command(p_message)
+
+
+## Handles a ConstaNetDiscovery
+func _handle_discovery(p_discovery: ConstaNetDiscovery) -> void:
+	_update_from_discovery(p_discovery)
+	
+	if [ConnectionState.UNKNOWN, ConnectionState.OFFLINE, ConnectionState.LOST_CONNECTION].has(_connection_state):
+		_set_connection_status(ConnectionState.DISCOVERED)
+
+
+## Handles a ConstaNetGoodbye
+func _handle_goodbye(p_goodbye: ConstaNetGoodbye) -> void:
+	_leave_session()
+	disconnect_tcp()
+	_udp_socket.close()
+	_set_connection_status(ConnectionState.OFFLINE)
+
+
+## Handles a ConstaNetSessionAnnounce
+func _handle_session_announce(p_session_announce: ConstaNetSessionAnnounce) -> void:
+	if p_session_announce.is_announcement() and p_session_announce.nodes.has(_node_id):
+		_set_session(_network.get_session_from_id(p_session_announce.session_id, true))
+
+
+## Handles a ConstaNetSessionJoin
+func _handle_session_join(p_session_join: ConstaNetSessionJoin) -> void:
+	_set_session(_network.get_session_from_id(p_session_join.session_id, true))
+
+
+## Handles a ConstaNetSessionLeave
+func _handle_session_leave(p_session_leave: ConstaNetSessionLeave) -> void:
+	var session: ConstellationSession = _network.get_session_from_id(p_session_leave.session_id)
+	
+	if session == _network.get_local_node().get_session():
+		disconnect_tcp()
+	
+	_leave_session()
+
+
+## Handles a ConstaNetSetAttribute
+func _handle_set_attribute(p_set_attribute: ConstaNetSetAttribute) -> void:
+	match p_set_attribute.attribute:
+		ConstaNetSetAttribute.Attribute.NAME:
+			if is_local():
+				set_node_name(p_set_attribute.value)
+			else:
+				_set_node_name(p_set_attribute.value)
+		
+		ConstaNetSetAttribute.Attribute.SESSION when is_local():
+			var session: ConstellationSession = _network.get_session_from_id(p_set_attribute.value)
+			
+			if is_instance_valid(session):
+				_network.join_session(session)
+			else:
+				_network.leave_session()
+
+
+## Handles a ConstaNetCommand
+func _handle_command(p_command: ConstaNetCommand) -> void:
+	if p_command.in_session and p_command.in_session != get_session_id():
+		return
+	
+	command_recieved.emit(p_command)
+	_network.command_recieved.emit(_network.get_node_from_id(p_command.origin_id), p_command.data_type, p_command.command)
+
+
+## Updates this nodes info from a discovery packet
+func _update_from_discovery(p_discovery: ConstaNetDiscovery) -> void:
+	if p_discovery.target_id:
+		return
+	
+	_set_node_name(p_discovery.node_name)
+	_set_role_flags(p_discovery.role_flags)
+	
+	_last_seen = Time.get_unix_time_from_system()
+	last_seen_changed.emit(_last_seen)
+	
+	var force_reconnect: bool = false
+	if p_discovery.node_ip != _node_ip:
+		_set_node_ip(p_discovery.node_ip)
+		force_reconnect = true
+	
+	if p_discovery.tcp_port != _node_tcp_port or force_reconnect:
+		_node_tcp_port = p_discovery.tcp_port
+		
+		if _connection_state in [ConnectionState.CONNECTED, ConnectionState.CONNECTING]:
+			connect_tcp()
+	
+	if p_discovery.udp_port != _node_udp_port or force_reconnect:
+		_node_udp_port = p_discovery.udp_port
+		_udp_socket.close()
+		_udp_socket.connect_to_host(_node_ip, _node_udp_port)
+
+
+## Autofills a ConstaNetHeadder with the infomation to comunicate to this remote node
+func _auto_fill_headder(p_headder: ConstaNetHeadder, p_flags: int = Flags.NONE) -> ConstaNetHeadder:
+	p_headder.origin_id = _network.get_node_id()
+	p_headder.flags |= p_flags
+	
+	if not is_local():
+		p_headder.target_id = _node_id
+	
+	return p_headder
+
+
+## Changed the TCP stream that is used to comunicate to the remote node
+func _use_stream(p_stream: StreamPeerTCP) -> void:
+	if _tcp_socket == p_stream:
+		return
+	
+	_network._logv("Changing TCP stream object for: ", get_node_name())
+	_tcp_socket.disconnect_from_host()
+	_tcp_socket = p_stream
