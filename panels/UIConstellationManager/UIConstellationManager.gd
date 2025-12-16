@@ -35,6 +35,7 @@ var _status_colors: Dictionary[NetworkHandler.NetworkState, Color] = {
 	NetworkHandler.NetworkState.INITIALIZING:	ThemeManager.Colors.Statuses.Standby,
 	NetworkHandler.NetworkState.BOUND: 			ThemeManager.Colors.Statuses.Standby,
 	NetworkHandler.NetworkState.READY: 			ThemeManager.Colors.Statuses.Normal,
+	NetworkHandler.NetworkState.SHUTTING_DOWN: 	ThemeManager.Colors.Statuses.Standby,
 	NetworkHandler.NetworkState.ERROR: 			ThemeManager.Colors.Statuses.Error,
 }
 

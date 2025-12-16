@@ -52,7 +52,7 @@ static func create_unknown_session(p_session_id: String) -> ConstellationSession
 ## Init
 func _init() -> void:
 	settings_manager.register_setting("Master", Data.Type.NETWORKNODE, set_master, get_session_master, [master_changed]).set_class_filter(ConstellationNode)
-	settings_manager.register_status("Name", Data.Type.NAME, get_session_name, [])
+	settings_manager.register_setting("Name", Data.Type.STRING, set_session_name, get_session_name, [session_name_changed])
 	settings_manager.register_status("MemberCount", Data.Type.INT, get_number_of_nodes, [node_joined, node_left])
 
 
@@ -158,10 +158,28 @@ func set_master(p_node: NetworkNode) -> bool:
 	if not _set_session_master(p_node):
 		return false
 	
-	var message: ConstaNetSessionSetMaster = ConstaNetSessionSetMaster.new()
+	var message: ConstaNetSessionSetAttribute = ConstaNetSessionSetAttribute.new()
 	
 	message.session_id = _session_id
-	message.node_id = p_node.get_node_id()
+	message.attribute = ConstaNetSessionSetAttribute.Attribute.MASTER
+	message.value = p_node.get_node_id()
+	message.origin_id = _network.get_node_id()
+	message.set_announcement(true)
+	
+	_network._send_message_mcast(message)
+	return true
+
+
+## Sets the session name
+func set_session_name(p_name: String) -> bool:
+	if not _set_session_name(p_name):
+		return false
+	
+	var message: ConstaNetSessionSetAttribute = ConstaNetSessionSetAttribute.new()
+	
+	message.session_id = _session_id
+	message.attribute = ConstaNetSessionSetAttribute.Attribute.NAME
+	message.value = p_name
 	message.origin_id = _network.get_node_id()
 	message.set_announcement(true)
 	
@@ -239,6 +257,17 @@ func _set_session_master(p_session_master: ConstellationNode) -> bool:
 		_session_master._mark_as_session_master()
 		
 	master_changed.emit(_session_master)
+	
+	return true
+
+
+## Sets the name of this session
+func _set_session_name(p_name: String) -> bool:
+	if p_name == _name:
+		return false
+	
+	_name = p_name
+	session_name_changed.emit(_name)
 	
 	return true
 

@@ -35,13 +35,6 @@ layout_mode = 2
 text = "Window Manager"
 icon = ExtResource("3_0pdyn")
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
-layout_mode = 2
-size_flags_horizontal = 6
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer"]
-layout_mode = 2
-
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

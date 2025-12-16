@@ -18,6 +18,9 @@ signal master_changed(node: NetworkNode)
 ## Emitted when the priority order of a node is changed
 signal priority_changed(node: NetworkNode, position: int)
 
+## Emitted when the session name is changed
+signal session_name_changed(session_name: String)
+
 
 ## Enum for session flags
 enum SessionFlags {
@@ -66,6 +69,11 @@ func set_priority_order(p_node: NetworkNode, p_position: int) -> bool:
 
 ## Sets the session master
 func set_master(p_node: NetworkNode) -> bool:
+	return false
+
+
+## Sets the session name
+func set_session_name(p_name: String) -> bool:
 	return false
 
 

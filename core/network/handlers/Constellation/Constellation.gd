@@ -18,11 +18,8 @@ const UDP_MCAST_PORT: int = 3823
 ## Time in seconds for discovery
 const DISCO_TIMEOUT: int = 10
 
-## Time in seconds for a node to be considred lost if it does not send a disco message
-const DISCO_DISCONNECT_TIME: int = 12
-
-## Wait time in seconds for a responce from from a disco broadcast
-const DISCO_WAIT_TIME: int = 1
+## Wait time in seconds before session discovery deems a given sessionID to no longer exist, and continue with auto create
+const SESSION_DISCO_WAIT_TIME: int = 2
 
 ## Max time to wait in second for the next chunk of a multipart message to be recieved
 const MULTI_PART_MAX_WAIT: int = 10
@@ -76,6 +73,9 @@ var _unknown_sessions: Dictionary[String, ConstellationSession]
 ## Timer for node discovery
 var _disco_timer: Timer = Timer.new()
 
+## Timer for session auto create
+var _session_timer: Timer = Timer.new()
+
 ## Stores all known devices by thier NodeID
 var _known_nodes: Dictionary[String, ConstellationNode] = {}
 
@@ -91,14 +91,31 @@ func _init() -> void:
 	ConstellationNode._network = self
 	ConstellationSession._network = self
 	
-	_local_node = ConstellationNode.create_local_node()
-	_local_node._set_node_ip(ConstellationConfig.bind_address)
-	_local_node._set_node_name("LocalNode")
-	add_child(_local_node)
-	
 	set_process(false)
 	ConstellationConfig.load_config("res://ConstellaitionConfig.gd")
 	ConstellationConfig.load_user_config()
+	
+	_local_node = ConstellationNode.create_local_node()
+	_local_node._set_node_ip(ConstellationConfig.bind_address)
+	_local_node._set_node_name(ConstellationConfig.node_name)
+	_local_node._set_node_id(ConstellationConfig.node_id)
+	
+	_local_node.node_name_changed.connect(_on_local_node_name_changed)
+	_local_node.session_changed.connect(_on_local_node_session_changed)
+	
+	_disco_timer.set_autostart(false)
+	_disco_timer.set_one_shot(false)
+	_disco_timer.set_wait_time(DISCO_TIMEOUT)
+	_disco_timer.timeout.connect(_on_disco_timeout)
+	
+	_session_timer.set_autostart(false)
+	_session_timer.set_one_shot(true)
+	_session_timer.set_wait_time(SESSION_DISCO_WAIT_TIME)
+	_session_timer.timeout.connect(_on_session_timer_timeout)
+	
+	add_child(_local_node)
+	add_child(_disco_timer)
+	add_child(_session_timer)
 	
 	_handler_name = "Constellation"
 	settings_manager.register_setting("Session", Data.Type.NETWORKSESSION, _local_node.set_session, _local_node.get_session, [_local_node.session_changed]).set_class_filter(ConstellationSession)
@@ -121,8 +138,8 @@ func _init() -> void:
 		_role_flags = RoleFlags.EXECUTOR
 		_local_node._set_role_flags(_role_flags)
 	
-	if cli_args.has("--ctl-node-id"):
-		_local_node._set_node_id(str(cli_args[cli_args.find("--ctl-node-id") + 1]))
+	if cli_args.has("--ctl-random-id"):
+		_local_node._set_node_id(UUID_Util.v4())
 	
 	(func ():
 		node_found.emit(_local_node)
@@ -145,6 +162,12 @@ func _process(delta: float) -> void:
 	
 	for multi_part: IncommingMultiPart in _active_multi_parts.values():
 		_process_multi_part(multi_part)
+
+
+## Handles notification
+func _notification(p_what: int) -> void:
+	if p_what == NOTIFICATION_WM_CLOSE_REQUEST:
+		ConstellationConfig.save_user_config()
 
 
 ## Starts the node
@@ -175,6 +198,7 @@ func stop_node(p_internal_only: bool = false) -> Error:
 		_log("Stopping Down")
 		_send_goodbye(GOODBYE_REASON_GOING_OFFLINE)
 	
+	_set_network_state(NetworkState.SHUTTING_DOWN)
 	_close_network()
 	
 	for node: ConstellationNode in _known_nodes.values():
@@ -191,8 +215,9 @@ func stop_node(p_internal_only: bool = false) -> Error:
 	_unknown_sessions.clear()
 	
 	_disco_timer.stop()
+	_session_timer.stop()
 	
-	_set_network_state(NetworkState.OFFLINE)	
+	_set_network_state(NetworkState.OFFLINE)
 	return OK
 
 
@@ -225,7 +250,7 @@ func create_session(p_name: String) -> NetworkSession:
 
 ## Joins a pre-existing session on the network
 func join_session(p_session: NetworkSession) -> bool:
-	if not p_session:
+	if not p_session or p_session == _local_node.get_session():
 		leave_session()
 		return false
 	
@@ -470,17 +495,24 @@ func _close_network() -> void:
 
 ## Starts the discovery stage
 func _begin_discovery() -> void:
-	_disco_timer.wait_time = DISCO_TIMEOUT
+	_disco_timer.start()
 	
-	if not _disco_timer.timeout.is_connected(_on_disco_timeout):
-		_disco_timer.autostart = true
-		_disco_timer.timeout.connect(_on_disco_timeout)
-		add_child(_disco_timer)
+	if ConstellationConfig.auto_create_session and not ConstellationConfig.session_id:
+		_auto_create_session()
+	
+	elif ConstellationConfig.auto_create_session:
+		_session_timer.start()
 	
 	_send_discovery(ConstaNetHeadder.Flags.REQUEST)
 	_send_session_discovery(ConstaNetHeadder.Flags.REQUEST)
 
 
+## Auto creates a session
+func _auto_create_session() -> void:
+	create_session(_local_node.get_node_name() + "'s Session")
+
+
+## Creates a discovery message
 func _create_discovery(p_flags: int = 0, p_target_id: String = "") -> ConstaNetDiscovery:
 	var message: ConstaNetDiscovery = ConstaNetDiscovery.new()
 	
@@ -597,8 +629,8 @@ func _handle_message(p_message: ConstaNetHeadder, p_source: StreamPeerTCP = null
 		MessageType.SESSION_SET_PRIORITY:
 			_handle_session_set_priority(p_message)
 		
-		MessageType.SESSION_SET_MASTER:
-			_handle_session_set_master(p_message)
+		MessageType.SESSION_SET_ATTRIBUTE:
+			_handle_session_set_attribute(p_message)
 		
 		MessageType.MULTI_PART:
 			_handle_multi_part(p_message)
@@ -657,25 +689,28 @@ func _handle_session_discovery(p_session_discovery: ConstaNetSessionDiscovery) -
 func _handle_session_announce_message(p_message: ConstaNetSessionAnnounce) -> void:
 	if _known_sessions.has(p_message.session_id):
 		_known_sessions[p_message.session_id]._update_with(p_message)
+		return
+	
+	var session: ConstellationSession
+	
+	if _unknown_sessions.has(p_message.session_id):
+		session = _unknown_sessions[p_message.session_id]
+		session._mark_as_unknown(false)
+		session.update_with(p_message)
+		
+		_unknown_sessions.erase(p_message.session_id)
+		_log("Using unknown session: ", session.get_session_id())
 	
 	else:
-		var session: ConstellationSession
-		
-		if _unknown_sessions.has(p_message.session_id):
-			session = _unknown_sessions[p_message.session_id]
-			session._mark_as_unknown(false)
-			session.update_with(p_message)
-			
-			_unknown_sessions.erase(p_message.session_id)
-			_log("Using unknown session: ", session.get_session_id())
-		
-		else:
-			session = ConstellationSession.create_from_session_announce(p_message)
-		
-		_known_sessions[session.get_session_id()] = session
-		session.request_delete.connect(_on_session_delete_request.bind(session), CONNECT_ONE_SHOT)
-		
-		session_created.emit(session)
+		session = ConstellationSession.create_from_session_announce(p_message)
+	
+	_known_sessions[session.get_session_id()] = session
+	session.request_delete.connect(_on_session_delete_request.bind(session), CONNECT_ONE_SHOT)
+	
+	session_created.emit(session)
+	
+	if ConstellationConfig.session_auto_rejoin and not _local_node.get_session() and ConstellationConfig.session_id == session.get_session_id():
+		join_session(session)
 
 
 ## Handles a ConstaNetSessionSetPriority
@@ -688,12 +723,18 @@ func _handle_session_set_priority(p_session_set_priority: ConstaNetSessionSetPri
 
 
 ## Handles a ConstaNetSessionSetMaster
-func _handle_session_set_master(p_session_set_master: ConstaNetSessionSetMaster) -> void:
-	var node: ConstellationNode = get_node_from_id(p_session_set_master.node_id)
-	var session: ConstellationSession = get_session_from_id(p_session_set_master.session_id)
+func _handle_session_set_attribute(p_session_set_attribute: ConstaNetSessionSetAttribute) -> void:
+	var session: ConstellationSession = get_session_from_id(p_session_set_attribute.session_id)
 	
-	if is_instance_valid(node) and is_instance_valid(session):
-		session._set_session_master(node)
+	if not is_instance_valid(session):
+		return
+	
+	match p_session_set_attribute.attribute:
+		ConstaNetSessionSetAttribute.Attribute.NAME:
+			session._set_session_name(p_session_set_attribute.value)
+		
+		ConstaNetSessionSetAttribute.Attribute.MASTER:
+			session._set_session_master(get_node_from_id(p_session_set_attribute.value))
 
 
 ## Handles ConstaNetMultiPart
@@ -746,10 +787,32 @@ func _process_multi_part(p_multi_part: IncommingMultiPart) -> void:
 		p_multi_part.free()
 
 
+## Called when the node name is changed on the LocalNode
+func _on_local_node_name_changed(p_name: String) -> void:
+	ConstellationConfig.node_name = p_name
+	ConstellationConfig.save_user_config()
+
+
+## Called when the session of the local node changes
+func _on_local_node_session_changed(p_session: ConstellationSession) -> void:
+	if _network_state != NetworkState.READY:
+		return
+	
+	ConstellationConfig.session_id = p_session.get_session_id() if p_session else ""
+	ConstellationConfig.save_user_config()
+
+
 ## Called when the discovery timer times out
 func _on_disco_timeout() -> void:
 	_send_discovery()
-	_send_session_discovery()
+
+
+## Called when the session timer times out
+func _on_session_timer_timeout() -> void:
+	if not ConstellationConfig.auto_create_session or _local_node.get_session():
+		return
+	
+	_auto_create_session()
 
 
 ## Called when the sessions is to be deleted after all nodes disconnect
@@ -780,6 +843,21 @@ class ConstellationConfig extends Object:
 	## File name for the user config file
 	static var user_config_file_name: String = "constellation.conf"
 	
+	## NodeID for the local node
+	static var node_id: String = UUID_Util.v4()
+	
+	## Node name for the local node
+	static var node_name: String = "ConstellationNode"
+	
+	## The SessionID of the session the local node was last in
+	static var session_id: String = ""
+	
+	## Auto rejoins the last session if it still exists on the network
+	static var session_auto_rejoin: bool = true
+	
+	## True if this node should auto create a session once online, asuming previous session is is null and the node is not already in a session
+	static var auto_create_session: bool = true
+	
 	## The ConfigFile object to access the user config file 
 	static var _config_access: ConfigFile
 	
@@ -803,6 +881,13 @@ class ConstellationConfig extends Object:
 		user_config_file_location = type_convert(config.get("user_config_file_location", user_config_file_location), TYPE_STRING)
 		user_config_file_name = type_convert(config.get("user_config_file_name", user_config_file_name), TYPE_STRING)
 		
+		node_id = type_convert(config.get("node_id", node_id), TYPE_STRING)
+		node_name = type_convert(config.get("node_name", node_name), TYPE_STRING)
+		
+		session_id = type_convert(config.get("session_id", session_id), TYPE_STRING)
+		session_auto_rejoin = type_convert(config.get("session_auto_rejoin", session_auto_rejoin), TYPE_BOOL)
+		auto_create_session = type_convert(config.get("auto_create_session", auto_create_session), TYPE_BOOL)
+		
 		DirAccess.make_dir_recursive_absolute(user_config_file_location)
 		_config_access = ConfigFile.new()
 		
@@ -816,6 +901,13 @@ class ConstellationConfig extends Object:
 		bind_address = type_convert(_config_access.get_value("Network", "bind_address", bind_address), TYPE_STRING)
 		bind_interface = type_convert(_config_access.get_value("Network", "bind_interface", bind_interface), TYPE_STRING)
 		
+		node_id = type_convert(_config_access.get_value("LocalNode", "node_id", node_id), TYPE_STRING)
+		node_name = type_convert(_config_access.get_value("LocalNode", "node_name", node_name), TYPE_STRING)
+		
+		session_id = type_convert(_config_access.get_value("Session", "session_id", session_id), TYPE_STRING)
+		session_auto_rejoin = type_convert(_config_access.get_value("Session", "session_auto_rejoin", session_auto_rejoin), TYPE_BOOL)
+		auto_create_session = type_convert(_config_access.get_value("Session", "auto_create_session", auto_create_session), TYPE_BOOL)
+		
 		save_user_config()
 		return OK
 	
@@ -824,6 +916,13 @@ class ConstellationConfig extends Object:
 	static func save_user_config() -> Error:
 		_config_access.set_value("Network", "bind_address", bind_address)
 		_config_access.set_value("Network", "bind_interface", bind_interface)
+		
+		_config_access.set_value("LocalNode", "node_id", node_id)
+		_config_access.set_value("LocalNode", "node_name", node_name)
+		
+		_config_access.set_value("Session", "session_id", session_id)
+		_config_access.set_value("Session", "session_auto_rejoin", session_auto_rejoin)
+		_config_access.set_value("Session", "auto_create_session", auto_create_session)
 		
 		return _config_access.save(get_user_config_path())
 	
@@ -855,7 +954,6 @@ class IncommingMultiPart extends Object:
 		id = p_multi_part.multi_part_id
 		num_of_chunks = p_multi_part.num_of_chunks
 		
-		print("New multipart")
 		store_multi_part(p_multi_part)
 	
 	
@@ -863,8 +961,6 @@ class IncommingMultiPart extends Object:
 	func store_multi_part(p_multi_part: ConstaNetMultiPart) -> void:
 		chunks[p_multi_part.chunk_id] = p_multi_part.data
 		last_seen = Time.get_unix_time_from_system()
-		
-		print("Multipart adding chunk (", chunks.size(), "/", num_of_chunks, ")")
 	
 	
 	## Gets all data that has been sent

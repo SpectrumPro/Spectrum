@@ -25,6 +25,7 @@ enum NetworkState {
 	INITIALIZING, 		## Handler is getting ready to bind
 	BOUND,				## Handler has bound network ports
 	READY,				## Handler is ready for comms
+	SHUTTING_DOWN,		## Handler is in the process of stopping
 	ERROR				## Handler has had an error
 }
 

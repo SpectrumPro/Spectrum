@@ -22,7 +22,7 @@ enum Columns {NAME, MEMBER_COUNT, MASTER}
 
 ## Config for each column
 var _column_config: Dictionary[int, Dictionary] = {
-	Columns.NAME: {"type": Data.Type.NAME},
+	Columns.NAME: {"type": Data.Type.STRING},
 	Columns.MEMBER_COUNT: {"type": Data.Type.INT},
 	Columns.MASTER: {"type": Data.Type.NETWORKNODE},
 }

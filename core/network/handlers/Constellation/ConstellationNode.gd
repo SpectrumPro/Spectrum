@@ -246,7 +246,7 @@ func send_message_tcp(p_message: ConstaNetHeadder) -> Error:
 
 ## Joins the given session
 func join_session(p_session: NetworkSession) -> bool:
-	if not p_session:
+	if not p_session or p_session == _session:
 		return false
 	
 	if is_local():
