@@ -85,7 +85,22 @@ func _on_save_load_toggled(p_toggled_on: bool) -> void:
 	close_request.emit()
 
 
-## Caleld when the WindowManager button is pressed
+## Called when the SaveFile button is pressed
+func _on_save_file_pressed() -> void:
+	Core.save()
+
+
+## Called when the WindowManager button is pressed
 func _on_window_manager_toggled(p_toggled_on: bool) -> void:
 	Interface.set_popup_visable(Interface.WindowPopup.WINDOW_MANAGER, self, p_toggled_on)
 	close_request.emit()
+
+
+## Called when the NewWindow button is pressed
+func _on_new_window_pressed() -> void:
+	Interface.add_window()
+
+
+## Called when the SetDisplayMode button is pressed
+func _on_set_display_mode_pressed() -> void:
+	Interface.prompt_settings_module(self, Interface.get_window_node(self).settings_manager.get_entry("display_mode"))

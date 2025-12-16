@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dvdu7rmfoegem" path="res://assets/icons/Window.svg" id="6_6svl8"]
 [ext_resource type="Texture2D" uid="uid://b42wnxsau8q6l" path="res://assets/icons/ExternalInput.svg" id="7_g302c"]
 [ext_resource type="Texture2D" uid="uid://c6rls43ddilxg" path="res://assets/icons/Save.svg" id="10_dtvuq"]
-[ext_resource type="Texture2D" uid="uid://dhhbjjtkgbfl0" path="res://assets/icons/FileOpen.svg" id="12_3vctd"]
+[ext_resource type="Texture2D" uid="uid://b7f3pgpifntmh" path="res://assets/icons/SaveAs.svg" id="13_8hqmw"]
 [ext_resource type="Texture2D" uid="uid://dyd2xybu6duv4" path="res://assets/icons/NewWindow.svg" id="13_ljneo"]
 [ext_resource type="Texture2D" uid="uid://beoapfaav6t6" path="res://assets/icons/Move.svg" id="14_7ow35"]
 
@@ -24,7 +24,7 @@ network_manager_settings_button = NodePath("VBoxContainer/VBoxContainer2/VBoxCon
 external_input_settings_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer/SettingsContainer/ExternalInputSettings")
 window_manager_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer3/WindowManager")
 new_window_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer/NewWindow")
-move_window_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer/MoveWindow")
+move_window_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer/SetDisplayMode")
 save_load_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer2/SaveLoad")
 save_file_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer2/SaveLoadContainer/SaveFile")
 load_file_button = NodePath("VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer2/SaveLoadContainer/LoadFile")
@@ -137,18 +137,16 @@ custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "New Window"
 icon = ExtResource("13_ljneo")
 autowrap_mode = 2
 
-[node name="MoveWindow" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer"]
+[node name="SetDisplayMode" type="Button" parent="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer"]
 custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
-text = "Move Window"
+text = "Display Mode"
 icon = ExtResource("14_7ow35")
 autowrap_mode = 2
 
@@ -166,7 +164,6 @@ custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 text = "Save File"
 icon = ExtResource("10_dtvuq")
 autowrap_mode = 2
@@ -177,8 +174,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 disabled = true
-text = "Load File"
-icon = ExtResource("12_3vctd")
+text = "Save As"
+icon = ExtResource("13_8hqmw")
 autowrap_mode = 2
 
 [connection signal="toggled" from="VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer/AllSettings" to="." method="_on_all_settings_toggled"]
@@ -186,5 +183,8 @@ autowrap_mode = 2
 [connection signal="toggled" from="VBoxContainer/VBoxContainer2/VBoxContainer/PanelContainer2/SaveLoad" to="." method="_on_save_load_toggled"]
 [connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer/SettingsContainer/NetworkManagerSettings" to="." method="_on_network_manager_settings_pressed"]
 [connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer/SettingsContainer/ExternalInputSettings" to="." method="_on_external_input_settings_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer/NewWindow" to="." method="_on_new_window_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer3/WindowManagerContainer/SetDisplayMode" to="." method="_on_set_display_mode_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer2/VBoxContainer2/PanelContainer2/SaveLoadContainer/SaveFile" to="." method="_on_save_file_pressed"]
 
 [editable path="VBoxContainer/PanelMenuBar"]
