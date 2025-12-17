@@ -102,3 +102,8 @@ func _on_join_session_button_pressed() -> void:
 ## Called when the selection is changed
 func _on_table_selection_changed() -> void:
 	join_session_button.set_disabled(not _table.is_any_selected())
+
+
+## Called when the Reload Button is pressed
+func _on_reload_pressed() -> void:
+	_constellation._send_session_discovery()

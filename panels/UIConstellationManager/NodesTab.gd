@@ -54,9 +54,6 @@ func reset() -> void:
 	_table.clear()
 
 
-## Called when the join session button is pressed
-func _on_join_session_pressed() -> void:
-	var node: ConstellationNode = _node_rows.right(_table.get_selected_row())
-	
-	if node.get_session():
-		_constellation.join_session(node.get_session())
+## Called when the Reload Button is pressed
+func _on_reload_pressed() -> void:
+	_constellation._send_discovery()
