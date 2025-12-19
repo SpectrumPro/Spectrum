@@ -114,7 +114,7 @@ var _resolve_hint_colors: Dictionary[ResolveHint, Color] = {
 
 ## Stores configuration for each WindowPopup that will be instanced on each window
 var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
-	WindowPopup.PANEL_PICKER:		PopupConfig.new("PanelPicker", ""),
+	WindowPopup.PANEL_PICKER:		PopupConfig.new("UIPanelPicker", ""),
 	WindowPopup.PANEL_SETTINGS:		PopupConfig.new("UIPanelSettings", "set_panel"),
 	WindowPopup.MAIN_MENU:			PopupConfig.new("UIMainMenu", ""),
 	WindowPopup.SETTINGS:			PopupConfig.new("UISettings", ""),

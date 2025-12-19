@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://ds42t8h4nusm4"]
 
-[ext_resource type="PackedScene" uid="uid://bojo5mnmadf4j" path="res://panels/popups/UIPopupPanelPicker/UIPopupPanelPicker.tscn" id="1_e0vty"]
+[ext_resource type="PackedScene" uid="uid://bojo5mnmadf4j" path="res://panels/popups/UIPanelPicker/UIPanelPicker.tscn" id="1_e0vty"]
 [ext_resource type="PackedScene" uid="uid://cgkb6rh0joakn" path="res://panels/UIPanelSettings/UIPanelSettings.tscn" id="2_m68sf"]
 [ext_resource type="PackedScene" uid="uid://d0naqdd3py4jm" path="res://panels/UIMainMenu/UIMainMenu.tscn" id="3_3r4oo"]
 [ext_resource type="PackedScene" uid="uid://c3ri0p6vmbv6v" path="res://panels/UISettings/UISettings.tscn" id="4_u85oq"]
@@ -23,18 +23,12 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PanelPicker" parent="." instance=ExtResource("1_e0vty")]
-visible = false
+[node name="UIPanelPicker" parent="." instance=ExtResource("1_e0vty")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -366.0
-offset_top = -372.0
-offset_right = 366.0
-offset_bottom = 372.0
+offset_left = -343.0
+offset_top = -188.0
+offset_right = 343.0
+offset_bottom = 188.0
 display_mode = 1
 
 [node name="UIPanelSettings" parent="." instance=ExtResource("2_m68sf")]

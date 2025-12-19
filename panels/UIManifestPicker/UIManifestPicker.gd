@@ -346,7 +346,6 @@ func _on_line_edit_gui_input(p_event: InputEvent) -> void:
 	if not p_event.is_action_type():
 		return
 	
-	
 	if p_event.is_action_pressed("ui_down") or p_event.is_action_pressed("ui_up"):
 		var trees: Array[Tree]
 		
