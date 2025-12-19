@@ -174,6 +174,11 @@ func get_inheritance_root() -> String:
 	return _inheritance_list[0]
 
 
+## Gets the last item in the inheritance list
+func get_inheritance_child() -> String:
+	return _inheritance_list[-1]
+
+
 ## Gets a networked method by name
 func get_networked_method(p_method_name: String) -> Callable:
 	return _networked_methods.get(p_method_name, Callable())

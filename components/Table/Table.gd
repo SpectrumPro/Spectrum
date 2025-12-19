@@ -58,9 +58,12 @@ func add_column(p_name: String, p_data_type: Data.Type) -> Column:
 
 
 ## Adds a new row to the table
-func add_row(p_data: Dictionary[int, Variant]) -> Row:
+func add_row(p_data: Dictionary[int, Variant], p_icon: Texture2D = null) -> Row:
 	var new_item: TreeItem = _root.create_child()
 	var new_row: Row = Row.new(new_item, _columns, p_data, _tree)
+	
+	if is_instance_valid(p_icon):
+		new_item.set_icon(0, p_icon)
 	
 	_rows.map(new_row, new_item)
 	return new_row

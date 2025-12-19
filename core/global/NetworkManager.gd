@@ -57,8 +57,8 @@ var settings_manager: SettingsManager = SettingsManager.new()
 func _init() -> void:
 	settings_manager.set_owner(self)
 	settings_manager.set_inheritance_array(["NetworkManager"])
-	settings_manager.register_control("StartAll", Data.Type.NULL, start_all, Callable(), [])
-	settings_manager.register_control("StopAll", Data.Type.NULL, stop_all, Callable(), [])
+	settings_manager.register_control("StartAll", Data.Type.ACTION, start_all, Callable(), [])
+	settings_manager.register_control("StopAll", Data.Type.ACTION, stop_all, Callable(), [])
 
 
 ## Ready

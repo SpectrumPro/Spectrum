@@ -157,11 +157,13 @@ var settings_manager: SettingsManager = SettingsManager.new()
 func _init() -> void:
 	settings_manager.set_owner(self)
 	settings_manager.set_inheritance_array(["Interface"])
-	settings_manager.register_control("HideAllPopups", Data.Type.NULL, hide_all_popup_panels, Callable(), [])
-	settings_manager.register_control("OpenMainMenu", Data.Type.NULL, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
-	settings_manager.register_control("OpenSettings", Data.Type.NULL, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
-	settings_manager.register_control("OpenSaveLoad", Data.Type.NULL, set_popup_visable.bind(WindowPopup.SAVE_LOAD, self, true), Callable(), [])
-	settings_manager.register_control("OpenWindowManager", Data.Type.NULL, set_popup_visable.bind(WindowPopup.WINDOW_MANAGER, self, true), Callable(), [])
+	
+	settings_manager.register_control("HideAllPopups", Data.Type.ACTION, hide_all_popup_panels, Callable(), [])
+	settings_manager.register_control("OpenMainMenu", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
+	settings_manager.register_control("OpenSettings", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
+	settings_manager.register_control("OpenSaveLoad", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.SAVE_LOAD, self, true), Callable(), [])
+	settings_manager.register_control("OpenWindowManager", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.WINDOW_MANAGER, self, true), Callable(), [])
+	settings_manager.register_control("AddWindow", Data.Type.ACTION, add_window, Callable(), [])
 
 
 ## Ready ClientInterface
@@ -596,13 +598,8 @@ func get_window_node(p_source: Node) -> UIWindow:
 
 ## Adds an entry to the command palette
 func add_command_palette_entry(p_entry: CommandPaletteEntry) -> void:
-	match p_entry.get_object_type():
-		CommandPaletteEntry.ObjectType.GLOBAL:
-			for module: SettingsModule in p_entry.get_settings_manager().get_modules().values():
-				_palette_search_index.get_or_add(p_entry.get_class_name(), {})[module.get_id()] = module
-		
-		#CommandPaletteEntry.ObjectType.INSTANCED:
-			#_search_index[p_entry.get_class_name()] = p_entry.get_settings_manager()
+	for module: SettingsModule in p_entry.get_settings_manager().get_modules().values():
+		_palette_search_index.get_or_add(p_entry.get_class_name(), {})[module.get_id()] = module
 
 
 ## Gets the current ResolveHint

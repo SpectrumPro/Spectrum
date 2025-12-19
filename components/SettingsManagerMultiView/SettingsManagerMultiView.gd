@@ -64,7 +64,7 @@ func add_manager(p_manager: SettingsManager) -> void:
 			column.set_data_type(entry.get_data_type())
 			rows[column.get_id()] = entry
 	
-	_manager_rows.map(table.add_row(rows), p_manager)
+	_manager_rows.map(table.add_row(rows, UIDB.get_class_icon(p_manager.get_inheritance_child())), p_manager)
 
 
 ## Removes a manager

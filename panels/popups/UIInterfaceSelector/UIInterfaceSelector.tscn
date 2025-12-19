@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dpbusafl685o6"]
+[gd_scene load_steps=9 format=3 uid="uid://dpbusafl685o6"]
 
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_2q3b2"]
 [ext_resource type="Script" uid="uid://clcg8142rdons" path="res://panels/popups/UIInterfaceSelector/UIInterfaceSelector.gd" id="1_52xbj"]
 [ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="2_k7der"]
 [ext_resource type="Texture2D" uid="uid://dsdrilsl1p3g1" path="res://assets/icons/IPAddr.svg" id="3_dwg5m"]
@@ -14,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_2q3b2")
 script = ExtResource("1_52xbj")
 interface_tree = NodePath("VBoxContainer/InterfaceTree")
 confirm_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/Confirm")
