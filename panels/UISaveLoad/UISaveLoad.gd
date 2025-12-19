@@ -170,7 +170,7 @@ func _on_save_pressed() -> void:
 
 ## Called when the new button is clicked
 func _on_new_pressed() -> void:
-	Interface.show_confirmation_dialog("Warning: Creating a show will erace all current components!").confirmed.connect(func ():
+	Interface.prompt_popup_dialog(self).preset(UIPopupDialog.Preset.DELETE, "Warning: Creating a show will erace all current components!").then(func ():
 		Core.reset()
 	)
 

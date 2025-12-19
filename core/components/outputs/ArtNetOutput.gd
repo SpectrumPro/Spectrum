@@ -36,7 +36,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_set_name("ArtNetOutput")
 	_set_self_class("ArtNetOutput")
 	
-	_settings_manager.register_setting("ip_address", Data.Type.IP, set_ip, get_ip, [ip_changed])
+	_settings_manager.register_setting("ip_address", Data.Type.STRING, set_ip, get_ip, [ip_changed])
 	_settings_manager.register_setting("use_broadcast", Data.Type.BOOL, set_use_broadcast, get_use_broadcast, [broadcast_state_changed])
 	_settings_manager.register_setting("universe_number", Data.Type.INT, set_universe_number, get_universe_number, [universe_number_changed])
 	

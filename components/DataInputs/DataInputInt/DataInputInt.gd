@@ -45,6 +45,8 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 	_spin_box.min_value = p_module.get_min()
 	_ignore_next_update = true
 	_spin_box.max_value = p_module.get_max()
+	
+	_ignore_next_update = false
 
 
 ## Called when the orignal value is changed

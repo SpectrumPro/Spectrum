@@ -157,17 +157,16 @@ offset_bottom = 128.0
 display_mode = 1
 
 [node name="UIManifestPicker" parent="." instance=ExtResource("11_jcwaf")]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -302.0
-offset_top = -32.0
-offset_right = 302.0
-offset_bottom = 32.0
+offset_left = -343.0
+offset_top = -188.0
+offset_right = 343.0
+offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
 display_mode = 1

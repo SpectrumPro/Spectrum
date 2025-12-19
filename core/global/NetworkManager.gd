@@ -22,6 +22,7 @@ enum NetworkFlags {
 	NONE				= 0, ## No flags
 	ALLOW_SERIALIZE		= 1 << 0, ## Allows EngineComponents to be serialized on an outgoing message
 	ALLOW_DESERIALIZE	= 1 << 1, ## Allows EngineComponents to be deserialized on an incomming message
+	ALLOW_UNRESOLVED	= 1 << 2, ## Allows the EngineComponent's uuid to be passed instead of an object if it can't be resolved from ComponentDB
 }
 
 ## The max time in seconds that this node will wait for a response from another node
@@ -234,6 +235,13 @@ func deserialize_objects(p_data: Variant, p_flags: int = NetworkFlags.NONE) -> V
 						initialized_object.load(p_data._serialized_object)
 						
 					return initialized_object
+				
+				elif p_flags & NetworkFlags.ALLOW_UNRESOLVED:
+					return p_data._object_ref
+			
+			elif p_flags & NetworkFlags.ALLOW_UNRESOLVED:
+				return p_data._object_ref
+			
 			else:
 				return null
 		

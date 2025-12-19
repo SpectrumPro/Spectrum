@@ -58,8 +58,6 @@ func _create_panel_item(p_panel_class: String) -> PanelPickerItem:
 		#new_panel_item.set_icon(Interface.panel_icons[panel_name])
 	
 	new_panel_item.pressed.connect(func () -> void:
-		set_custom_accepted_signal(panel_chosen)
-		
 		accept(p_panel_class)
 	)
 	

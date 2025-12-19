@@ -58,10 +58,15 @@ func get_sorted_manifest_info() -> Dictionary[String, Dictionary]:
 ## Gets a manifest from a manifest uuid, return a promise 
 func request_manifest(p_manifest_uuid: String) -> Promise:
 	var promise: Promise = Promise.new()
+	
+	if not p_manifest_uuid:
+		return promise.auto_reject()
+	
 	var manifest: FixtureManifest = _loaded_manifests.get(p_manifest_uuid)
 	
 	if manifest:
 		promise.auto_resolve([_loaded_manifests[p_manifest_uuid]])
+	
 	else:
 		if p_manifest_uuid not in _manifest_requests:
 			Network.send_command("FixtureLibrary", "get_manifest", [p_manifest_uuid]).then(_on_get_manifest_received)
@@ -103,8 +108,8 @@ func _reset() -> void:
 ## Called when a manifest is received from the server
 func _on_get_manifest_received(p_manifest: FixtureManifest) -> void:
 	if p_manifest:
-		_loaded_manifests[p_manifest.uuid] = p_manifest
-		for promise: Promise in _manifest_requests.get(p_manifest.uuid, []):
+		_loaded_manifests[p_manifest.uuid()] = p_manifest
+		for promise: Promise in _manifest_requests.get(p_manifest.uuid(), []):
 			promise.resolve([p_manifest])
 		
 		_manifest_requests.erase(p_manifest.uuid)

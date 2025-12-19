@@ -225,11 +225,13 @@ func _remove_fixture(p_fixture: DMXFixture, p_no_signal: bool = false, p_delete:
 	if not p_fixture in _fixtures.values():
 		return false
 	
-	_fixtures.erase(p_fixture.uuid)
-	_fixture_channels[p_fixture.get_channel()].erase(p_fixture)
+	_fixtures.erase(p_fixture.uuid())
 	
-	if not _fixture_channels[p_fixture.get_channel()]:
-		_fixture_channels.erase(p_fixture.get_channel())
+	if _fixture_channels.has(p_fixture.get_channel()):
+		_fixture_channels[p_fixture.get_channel()].erase(p_fixture)
+		
+		if not _fixture_channels[p_fixture.get_channel()]:
+			_fixture_channels.erase(p_fixture.get_channel())
 		
 	if not p_no_signal:
 		fixtures_removed.emit([p_fixture])

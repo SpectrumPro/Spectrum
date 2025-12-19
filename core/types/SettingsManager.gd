@@ -255,17 +255,17 @@ func set_method_allow_deserialize(p_callable: Variant) -> void:
 	set_method_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
 
 
-## Sets NetworkFlags on the given callable
-func set_callback_network_flags(p_callable: String, p_flags: int) -> void:
-	_networked_callback_flags[p_callable] = p_flags
-
-
-## Sets NetworkFlags.ALLOW_SERIALIZE on the given callable
-func set_callback_allow_serialize(p_callable: Variant) -> void:
+## Sets NetworkFlags.ALLOW_UNRESOLVED on the given callable
+func set_method_allow_unresolved(p_callable: Variant) -> void:
 	if p_callable is Callable:
 		p_callable = p_callable.get_method()
 	
-	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
+	set_method_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_UNRESOLVED)
+
+
+## Sets NetworkFlags on the given callable
+func set_callback_network_flags(p_callable: String, p_flags: int) -> void:
+	_networked_callback_flags[p_callable] = p_flags
 
 
 ## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
@@ -274,6 +274,14 @@ func set_callback_allow_deserialize(p_callable: Variant) -> void:
 		p_callable = p_callable.get_method()
 	
 	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
+
+
+## Sets NetworkFlags.ALLOW_UNRESOLVED on the given callable
+func set_callback_allow_unresolved(p_callable: Variant) -> void:
+	if p_callable is Callable:
+		p_callable = p_callable.get_method()
+	
+	set_callback_network_flags(p_callable, NetworkManager.NetworkFlags.ALLOW_UNRESOLVED)
 
 
 ## Sets NetworkFlags on the given callable
@@ -287,14 +295,6 @@ func set_signal_allow_serialize(p_signal: Variant) -> void:
 		p_signal = p_signal.get_name()
 	
 	set_signal_network_flags(p_signal, NetworkManager.NetworkFlags.ALLOW_SERIALIZE)
-
-
-## Sets NetworkFlags.ALLOW_DESERIALIZE on the given callable
-func set_signal_allow_deserialize(p_signal: Variant) -> void:
-	if p_signal is Signal:
-		p_signal = p_signal.get_name()
-	
-	set_signal_network_flags(p_signal, NetworkManager.NetworkFlags.ALLOW_DESERIALIZE)
 
 
 ## Notification

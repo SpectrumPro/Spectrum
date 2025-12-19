@@ -106,6 +106,12 @@ func clear_tags() -> void:
 		_remove_tag(id)
 
 
+## Clears text and tags
+func clear_all() -> void:
+	clear()
+	clear_tags()
+
+
 ## Called for each GUI input
 func _on_gui_input(p_event: InputEvent) -> void:
 	if p_event is InputEventKey and p_event.is_pressed() and p_event.keycode == KEY_BACKSPACE and _tags.get_left() and caret_column == 0 :
