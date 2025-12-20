@@ -181,15 +181,19 @@ func function_can_fade(p_zone: String, p_parameter: String, p_function: String) 
 
 
 ## Internl: Sets the channel
-func _set_channel(p_channel: int) -> void:
+func _set_channel(p_channel: int, p_no_signal: bool = false) -> void:
 	_channel = p_channel
-	channel_changed.emit(_channel)
+	
+	if not p_no_signal:
+		channel_changed.emit(_channel)
 
 
 ## Called when the universe is changed
-func _set_universe(p_universe: Universe) -> void:
+func _set_universe(p_universe: Universe, p_no_signal: bool = false) -> void:
 	_universe = p_universe
-	universe_changed.emit(_universe)
+	
+	if not p_no_signal:
+		universe_changed.emit(_universe)
 
 
 ## Sets the FixtureManifest

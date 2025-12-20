@@ -191,7 +191,8 @@ func _add_fixture(p_fixture: DMXFixture, p_channel: int = -1, p_no_signal: bool 
 		return false
 
 	var fixture_channel: int = p_fixture.get_channel() if p_channel == -1 else p_channel
-	p_fixture._set_channel(fixture_channel)
+	p_fixture._set_channel(fixture_channel, p_no_signal)
+	p_fixture._set_universe(self, p_no_signal)
 	
 	if not _fixture_channels.get(fixture_channel):
 		_fixture_channels[fixture_channel] = []

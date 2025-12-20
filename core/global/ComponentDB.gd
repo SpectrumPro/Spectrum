@@ -164,7 +164,7 @@ func _emit_class_callbacks() -> void:
 				if callback.is_valid():
 					callback.callv(_just_changed_components[classname].values())
 				else:
-					_class_callbacks[classname].erace(callback)
+					_class_callbacks[classname].erase(callback)
 	
 	_just_changed_components = {}
 	_emit_class_callbacks_queued = false
