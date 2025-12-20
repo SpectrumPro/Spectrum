@@ -8,6 +8,17 @@ class_name UIDesk extends UIPanel
 ## Emitted when the snapping distance is changed. Will be Vector2.ZERO when snapping is disabled.
 signal snapping_distance_changed(snapping_distance: Vector2)
 
+## Emitted when the GridSize is changed
+signal grid_size_changed(grid_size: GridSize)
+
+
+## Enum for GridSize
+enum GridSize {
+	SMALL = 24,
+	MEDIUM = 10,
+	LARGE = 6
+}
+
 
 ## Array of buttons to disable when no panel is selected
 @export var disable_on_deselect: Array[Button]
@@ -18,12 +29,18 @@ signal snapping_distance_changed(snapping_distance: Vector2)
 ## The container used for holding the panels
 @export var _container_node: DrawGrid
 
+## The Panel used for the aera indicator
+@export var _area_indicator: Panel
+
 
 ## Whether snapping is enabled in this desk
 var _snapping_enabled: bool = true
 
 ## The snapping distance of desk items in px
 var _snapping_distance: Vector2 = Vector2(80, 80)
+
+## current GridSize
+var _grid_size: GridSize = GridSize.MEDIUM
 
 ## The selected panels
 var _selected_items: Array[UIDeskItemContainer] = []
@@ -34,11 +51,32 @@ var _just_deleted_pos: Vector2 = Vector2.ZERO
 ## The size of the most recently deleted panel
 var _just_deleted_size: Vector2 = Vector2(100, 100)
 
+## Target position for the aera indicator
+var _aera_indicator_target: Rect2 = Rect2()
+
+## True if mouse selection was just used
+var _used_mouse_select: bool = false
+
 
 ## Init
 func _init() -> void:
 	super._init()
+	
 	_set_class_name("UIDesk")
+	
+	settings_manager.register_setting("GridSize", Data.Type.ENUM, set_grid_size, get_grid_size, [grid_size_changed]).set_enum_dict(GridSize)
+
+
+## Process
+func _process(delta: float) -> void:
+	var pos_speed: float = max(_area_indicator.position.distance_to(_aera_indicator_target.position) / ThemeManager.Constants.Times.DeskAreaMoveTime, 0.1)
+	var size_speed: float = max(_area_indicator.size.distance_to(_aera_indicator_target.size) / ThemeManager.Constants.Times.DeskAreaMoveTime, 0.1)
+	
+	_area_indicator.position = _area_indicator.position.move_toward(_aera_indicator_target.position, pos_speed * delta)
+	_area_indicator.size = _area_indicator.size.move_toward(_aera_indicator_target.size, size_speed * delta)
+	
+	if _area_indicator.position == _aera_indicator_target.position and _area_indicator.size == _aera_indicator_target.size:
+		set_process(false)
 
 
 ## Selects all the panels in this desk
@@ -123,6 +161,22 @@ func open_settings(p_node: UIDeskItemContainer = null) -> void:
 		panel.show_settings()
 
 
+## Sets the GridSize
+func set_grid_size(p_grid_size: GridSize) -> void:
+	if p_grid_size == _grid_size or p_grid_size <= 0:
+		return
+	
+	_grid_size = p_grid_size
+	_update_snapping_size()
+	
+	grid_size_changed.emit(_grid_size)
+
+
+## Returns the GridSize
+func get_grid_size() -> GridSize:
+	return _grid_size
+
+
 ## Returns a dictionary containing all panels, their positions, sizes, and settings
 func _save() -> Dictionary:
 	var items: Array = []
@@ -132,6 +186,7 @@ func _save() -> Dictionary:
 
 	return {
 		"items": items,
+		"grid_size": _grid_size
 	}
 
 
@@ -151,11 +206,63 @@ func _load(p_saved_data: Dictionary) -> void:
 					new_size = Vector2(int(p_panel_data.size[0]), int(p_panel_data.size[1]))
 				
 				add_panel(new_panel, new_position, new_size).load.call_deferred(p_panel_data)
+	
+	set_grid_size(type_convert(p_saved_data.get("grid_size", _grid_size), TYPE_INT))
 
 
 ## Override this function to change state when edit mode is toggled
 func _edit_mode_toggled(state: bool) -> void:
 	_container_node.show_point = state
+
+
+## Updates the position of the aera indicator
+func _update_aera_indicator(p_position: Vector2) -> void:
+	_aera_indicator_target = _get_preset_area_size(p_position)
+	set_process(true)
+
+
+## Updates the snapping size to match the container size
+func _update_snapping_size() -> void:
+	set_snapping_distance(_container_node.size / _grid_size)
+
+
+## Gets the area of a preset zone from a position
+func _get_preset_area_size(p_position: Vector2) -> Rect2i:
+	var width: int = _container_node.size.x
+	var height: int = _container_node.size.y
+	
+	var third_w: int = width / 3
+	var third_h: int = height / 3
+	var half_w: int = width / 2
+	var half_h: int = height / 2
+	
+	var location: Vector2i = Vector2i(
+		int(clamp(floor(p_position.x / third_w), 0, 2)),
+		int(clamp(floor(p_position.y / third_h), 0, 2))
+	)
+
+	match location:
+		Vector2i(0, 0):
+			return Rect2i(0, 0, half_w, half_h) # top-left
+		Vector2i(2, 0):
+			return Rect2i(half_w, 0, half_w, half_h) # top-right
+		Vector2i(0, 2):
+			return Rect2i(0, half_h, half_w, half_h) # bottom-left
+		Vector2i(2, 2):
+			return Rect2i(half_w, half_h, half_w, half_h) # bottom-right
+		
+		Vector2i(1, 0):
+			return Rect2i(0, 0, width, half_h) # top
+		Vector2i(1, 2):
+			return Rect2i(0, half_h, width, half_h) # bottom
+		Vector2i(0, 1):
+			return Rect2i(0, 0, half_w, height) # left
+		Vector2i(2, 1):
+			return Rect2i(half_w, 0, half_w, height) # right
+		
+		_:
+			return Rect2i(0, 0, width, height) # full
+
 
 
 ## Called when the add button is pressed
@@ -234,10 +341,19 @@ func _on_container_gui_input(p_event: InputEvent) -> void:
 		if p_event.is_pressed() and _edit_mode:
 			select_none()
 		
-		if p_event.button_index == MOUSE_BUTTON_RIGHT and p_event.is_pressed() and _edit_mode:
-			Interface.prompt_panel_picker(self).then(func (p_panel_class: String):
-				add_panel(UIDB.instance_panel(p_panel_class))
-			)
+		if p_event.button_index == MOUSE_BUTTON_LEFT and p_event.is_released():
+			if _used_mouse_select:
+				_used_mouse_select = false
+			
+			else:
+				var area_rect: Rect2i = _get_preset_area_size(p_event.position)
+				
+				Interface.prompt_panel_picker(self).then(func (p_panel_class: String):
+					add_panel(UIDB.instance_panel(p_panel_class), area_rect.position, area_rect.size)
+				)
+	
+	if p_event is InputEventMouseMotion:
+		_update_aera_indicator(p_event.position)
 
 
 ## Called when the selection is released in the select box
@@ -247,3 +363,28 @@ func _on_select_box_released() -> void:
 	Interface.prompt_panel_picker(self).then(func (p_panel_class: String):
 		add_panel(UIDB.instance_panel(p_panel_class), rect.position.snapped(_snapping_distance), rect.size.snapped(_snapping_distance))
 	)
+	
+	Interface.show_and_fade(_area_indicator)
+
+
+## Called when the select box starts
+func _on_select_box_pressed() -> void:
+	_used_mouse_select = true
+	Interface.fade_and_hide(_area_indicator)
+
+
+## Called when the mouse enters the container
+func _on_container_mouse_entered() -> void:
+	if not _select_box.is_selecting():
+		Interface.show_and_fade(_area_indicator)
+		_update_aera_indicator(_container_node.get_local_mouse_position())
+
+
+## Called when the mouse exits the container
+func _on_container_mouse_exited() -> void:
+	Interface.fade_and_hide(_area_indicator)
+
+
+## Called when the container is resized
+func _on_container_resized() -> void:
+	_update_snapping_size()

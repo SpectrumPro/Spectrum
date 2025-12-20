@@ -46,7 +46,8 @@ func _ready() -> void:
 
 ## Takes focus to this node
 func focus() -> void:
-	search_bar.edit()
+	search_bar.grab_focus()
+	search_bar.select()
 
 
 ## Searched for the given text

@@ -76,6 +76,11 @@ func get_selection() -> Rect2:
 	return _current_selection
 
 
+## Returns true if the select box is selecting
+func is_selecting() -> bool:
+	return _is_selecting
+
+
 ## Called on any GUI input
 func _on_event_control_gui_input(event: InputEvent) -> void:
 	if not event_control:

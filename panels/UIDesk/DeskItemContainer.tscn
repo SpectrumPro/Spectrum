@@ -94,6 +94,7 @@ X:0 Y:0"
 label_settings = SubResource("LabelSettings_burcd")
 horizontal_alignment = 1
 
+[connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="resized" from="Handles" to="Handles" method="_on_resized"]
 [connection signal="gui_input" from="Handles/Background" to="." method="_on_background_gui_input"]
 [connection signal="gui_input" from="Handles/Handle" to="." method="_on_br_handle_gui_input"]

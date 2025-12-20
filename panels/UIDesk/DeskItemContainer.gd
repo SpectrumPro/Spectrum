@@ -50,6 +50,9 @@ var _panel: UIPanel = null
 ## Mouse move on right click state
 var _has_moved_on_right_click: bool = false
 
+## True if the last time this node was moved was from _process
+var _moved_on_process: bool = false
+ 
 
 ## Init
 func _init() -> void:
@@ -59,9 +62,11 @@ func _init() -> void:
 
 ## Ready
 func _ready() -> void:
-	$Handles/Background.add_theme_stylebox_override("panel", $Handles/Background.get_theme_stylebox("panel").duplicate())
-	
+	_background.add_theme_stylebox_override("panel", _background.get_theme_stylebox("panel").duplicate())
 	_label_node.label_settings = _label_node.label_settings.duplicate()
+	
+	_set_anchors_to_current_size()
+	
 	update_label()
 	set_process(false)
 
@@ -71,10 +76,14 @@ func _process(delta: float) -> void:
 	var pos_speed: float = max(position.distance_to(_target_position) / ThemeManager.Constants.Times.DeskItemMoveTime, 0.1)
 	var size_speed: float = max(size.distance_to(_target_size) / ThemeManager.Constants.Times.DeskItemMoveTime, 0.1)
 	
+	_moved_on_process = true
+	
 	position = position.move_toward(_target_position, pos_speed * delta)
 	size = size.move_toward(_target_size, size_speed * delta)
 	
 	if position == _target_position and size == _target_size:
+		_moved_on_process = false
+		_set_anchors_to_current_size()
 		set_process(false)
 
 
@@ -85,7 +94,7 @@ func set_edit_mode(p_edit_mode: bool) -> void:
 
 ## Sets the selection state of this item, changing the background color
 func set_selected(p_is_selected: bool) -> void:
-	Interface.fade_property($Handles/Background.get_theme_stylebox("panel"), "bg_color", _selected_color if p_is_selected else _normal_color)
+	Interface.fade_property(_background.get_theme_stylebox("panel"), "bg_color", _selected_color if p_is_selected else _normal_color)
 
 
 ## Sets the snapping distance of this item
@@ -178,6 +187,26 @@ func _update_position_from_event(p_event: InputEventMouse) -> void:
 	_update_transform()
 
 
+## Sets anchors to current size
+func _set_anchors_to_current_size():
+	var parent_rect = get_parent().get_rect()
+	if parent_rect.size.x == 0 or parent_rect.size.y == 0:
+		# Avoid division by zero if parent has no size yet
+		return
+
+	# Calculate anchor positions as a percentage of the parent's size
+	var anchor_left_ratio = position.x / parent_rect.size.x
+	var anchor_top_ratio = position.y / parent_rect.size.y
+	var anchor_right_ratio = (position.x + size.x) / parent_rect.size.x
+	var anchor_bottom_ratio = (position.y + size.y) / parent_rect.size.y
+
+	# Set the anchors
+	set_anchor(SIDE_LEFT, anchor_left_ratio)
+	set_anchor(SIDE_TOP, anchor_top_ratio)
+	set_anchor(SIDE_RIGHT, anchor_right_ratio)
+	set_anchor(SIDE_BOTTOM, anchor_bottom_ratio)
+
+
 ## Handles drag motion on the background to move the item
 func _on_background_gui_input(p_event: InputEvent) -> void:
 	if p_event is InputEventMouseMotion:
@@ -229,3 +258,15 @@ func _on_panel_request_move(p_by: Vector2) -> void:
 	_target_position = snapped(_new_position, _snapping_distance)
 	move_to_front()
 	_update_transform()
+
+
+## Called when self is resizes
+func _on_resized() -> void:
+	if _moved_on_process:
+		_moved_on_process = false
+		return
+	
+	_new_position = position
+	_new_size = size
+	_target_position = position
+	_target_size = size

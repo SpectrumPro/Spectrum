@@ -118,11 +118,21 @@ func _update_outline_feedback(p_state: Variant) -> void:
 	_unsaved = false
 	Interface.kill_fade(_outline, "modulate")
 	
-	if (p_state is bool and p_state) or p_state is not bool:
-		_outline.set_modulate(ThemeManager.Colors.Statuses.Normal)
-		value_change_sucess.emit()
-	else:
-		_outline.set_modulate(ThemeManager.Colors.Statuses.Error)
+	match typeof(p_state):
+		TYPE_BOOL when p_state:
+			_outline.set_modulate(ThemeManager.Colors.Statuses.Normal)
+			value_change_sucess.emit()
+		
+		TYPE_BOOL when not p_state:
+			_outline.set_modulate(ThemeManager.Colors.Statuses.Error)
+		
+		TYPE_OBJECT when p_state is Promise:
+			_outline.set_modulate(ThemeManager.Colors.Statuses.Standby)
+			p_state.then(_update_outline_feedback)
+		
+		_:
+			_outline.set_modulate(ThemeManager.Colors.Statuses.Normal)
+			value_change_sucess.emit()
 	
 	await get_tree().create_timer(ThemeManager.Constants.Times.DataInputOutlineWait).timeout
 	

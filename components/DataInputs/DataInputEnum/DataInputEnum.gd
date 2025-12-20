@@ -30,7 +30,7 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 ## Called when the orignal value is changed
 func _module_value_changed(p_value: Variant, ...p_args) -> void:
 	if p_value is int and not _unsaved:
-		_button.select(p_value)
+		_button.select(_module.get_enum_dict().values().find(p_value))
 
 
 ## Resets this DataInputString
@@ -45,4 +45,4 @@ func _set_editable(p_editable: bool) -> void:
 
 ## Called when an item is selected
 func _on_button_item_selected(p_index: int) -> void:
-	_update_outline_feedback(_module.get_setter().call(p_index))
+	_update_outline_feedback(_module.get_setter().call(_module.get_enum_dict().values()[p_index]))

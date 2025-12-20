@@ -61,6 +61,7 @@ class Constants:
 	class Times:
 		static var InterfaceFadeTime 	= 0.15
 		static var DeskItemMoveTime		= 0.1
+		static var DeskAreaMoveTime		= 0.06
 		static var SelectBoxMoceTime	= 0.06
 		static var EditControlResolve	= 0.3
 		static var UIPanelFlashTime		= 0.5
