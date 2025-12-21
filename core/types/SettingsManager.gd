@@ -305,6 +305,5 @@ func set_signal_allow_serialize(p_signal: Variant) -> void:
 ## Notification
 func _notification(p_what: int) -> void:
 	if p_what == NOTIFICATION_PREDELETE:
-		print("Settings manager is freeing")
 		for module: SettingsModule in _entrys.values():
 			module.free()
