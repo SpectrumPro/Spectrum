@@ -24,6 +24,7 @@ signal address_selected(address: IPAddr)
 func _init() -> void:
 	super._init()
 	
+	_set_class_name("UIInterfaceSelector")
 	set_custom_accepted_signal(address_selected)
 
 

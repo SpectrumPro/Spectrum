@@ -80,6 +80,7 @@ var _search_mode_search_active_tree: Tree
 func _init() -> void:
 	super._init()
 	
+	_set_class_name("UIManifestPicker")
 	set_custom_accepted_signal(manifest_selected)
 
 

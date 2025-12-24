@@ -34,12 +34,15 @@ func _ready() -> void:
 
 
 ## Saves all the tabs
-func _save() -> Dictionary:
-	return {
-		"tabs": _side_bar.save(),
-	}
+func serialize() -> Dictionary:
+	return super.serialize().merged({
+		"tabs": _side_bar.serialize(),
+	})
 
 
 ## Loads all the tabs
-func _load(saved_data: Dictionary) -> void:
-	_side_bar.load(saved_data)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	var tabs: Dictionary = type_convert(p_serialized_data.get("tabs", {}), TYPE_DICTIONARY)
+	_side_bar.deserialize(tabs)

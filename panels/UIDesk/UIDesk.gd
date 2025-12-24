@@ -42,6 +42,9 @@ var _snapping_distance: Vector2 = Vector2(80, 80)
 ## current GridSize
 var _grid_size: GridSize = GridSize.MEDIUM
 
+## Array of all items in the desk
+var _items: Array[UIDeskItemContainer]
+
 ## The selected panels
 var _selected_items: Array[UIDeskItemContainer] = []
 
@@ -132,14 +135,14 @@ func set_snapping_distance(p_distance: Vector2) -> void:
 func add_panel(p_panel: UIPanel, p_position: Vector2 = _just_deleted_pos, p_size: Vector2 = _just_deleted_size) -> UIDeskItemContainer:
 	var new_node: UIDeskItemContainer = preload("uid://cebqk3au5iwx0").instantiate()
 	new_node.set_edit_mode(true)
-
+	
 	# Connect signals to the item container
 	edit_mode_toggled.connect(new_node.set_edit_mode)
 	snapping_distance_changed.connect(new_node.set_snapping_distance)
-
+	
 	new_node.clicked.connect(_on_item_clicked.bind(new_node))
 	new_node.right_clicked.connect(_on_item_right_clicked.bind(new_node))
-
+	
 	# Add the new panel
 	new_node.set_panel(p_panel)
 	new_node.set_edit_mode(get_edit_mode())
@@ -148,6 +151,8 @@ func add_panel(p_panel: UIPanel, p_position: Vector2 = _just_deleted_pos, p_size
 	new_node.position = p_position
 	new_node.size = p_size.clamp(_snapping_distance, Vector2.INF)
 	_container_node.add_child(new_node, true)
+	
+	_items.append(new_node)
 	
 	new_node.hide()
 	Interface.show_and_fade(new_node)
@@ -178,36 +183,53 @@ func get_grid_size() -> GridSize:
 
 
 ## Returns a dictionary containing all panels, their positions, sizes, and settings
-func _save() -> Dictionary:
+func serialize() -> Dictionary:
 	var items: Array = []
-
-	for desk_item_container: UIDeskItemContainer in _container_node.get_children():
-		items.append(desk_item_container.save())
-
-	return {
+	
+	for desk_item_container: UIDeskItemContainer in _items:
+		items.append(desk_item_container.serialize())
+	
+	return super.serialize().merged({
 		"items": items,
 		"grid_size": _grid_size
-	}
+	})
 
 
 ## Loads all items in this desk from a saved dictionary
-func _load(p_saved_data: Dictionary) -> void:
-	if p_saved_data.get("items") is Array:
-		for p_panel_data: Dictionary in p_saved_data.items:
-			if p_panel_data.get("type", "") in Interface.panels:
-				var new_panel: Control = Interface.panels[p_panel_data.type].instantiate()
-				
-				var new_position: Vector2 = Vector2.ZERO
-				if len(p_panel_data.get("position", [])) == 2:
-					new_position = Vector2(int(p_panel_data.position[0]), int(p_panel_data.position[1]))
-				
-				var new_size: Vector2 = Vector2(100, 100)
-				if len(p_panel_data.get("size", [])) == 2:
-					new_size = Vector2(int(p_panel_data.size[0]), int(p_panel_data.size[1]))
-				
-				add_panel(new_panel, new_position, new_size).load.call_deferred(p_panel_data)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	set_grid_size(type_convert(p_saved_data.get("grid_size", _grid_size), TYPE_INT))
+	var items: Array = type_convert(p_serialized_data.get("items", []), TYPE_ARRAY)
+	
+	for serialized_container: Variant in items:
+		if not serialized_container is Dictionary:
+			continue
+		
+		var serialized_panel: Dictionary = type_convert(serialized_container.get("serialized_panel", []), TYPE_DICTIONARY)
+		var panel_class: String = type_convert(serialized_panel.get("class", []), TYPE_STRING)
+		
+		var saved_position: Array = type_convert(serialized_container.get("position", []), TYPE_ARRAY)
+		var panel_position: Vector2 = Vector2.ZERO
+		
+		var saved_size: Array = type_convert(serialized_container.get("size", []), TYPE_ARRAY)
+		var panel_size: Vector2 = Vector2.ZERO
+		
+		if saved_position.size() == 2:
+			panel_position = Vector2(type_convert(saved_position[0], TYPE_INT), type_convert(saved_position[1], TYPE_INT))
+		
+		if saved_size.size() == 2:
+			panel_size = Vector2(type_convert(saved_size[0], TYPE_INT), type_convert(saved_size[1], TYPE_INT))
+		
+		var panel: UIPanel = UIDB.instance_panel(panel_class)
+		
+		if not is_instance_valid(panel):
+			continue
+		
+		add_panel(panel, panel_position, panel_size)
+		panel.deserialize(serialized_panel)
+		
+	
+	set_grid_size(type_convert(p_serialized_data.get("grid_size", _grid_size), TYPE_INT))
 
 
 ## Override this function to change state when edit mode is toggled
@@ -264,7 +286,6 @@ func _get_preset_area_size(p_position: Vector2) -> Rect2i:
 			return Rect2i(0, 0, width, height) # full
 
 
-
 ## Called when the add button is pressed
 func _on_add_pressed() -> void:
 	Interface.prompt_panel_picker(self).then(func (p_panel_class: String):
@@ -279,6 +300,8 @@ func _on_delete_pressed() -> void:
 		
 		_just_deleted_pos = item.position
 		_just_deleted_size = item.size
+		
+		_items.erase(item)
 		
 		Interface.fade_and_hide(item, func ():
 			item.queue_free()

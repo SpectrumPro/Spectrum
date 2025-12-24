@@ -51,6 +51,13 @@ var _preset_config: Dictionary[Preset, Callable] = {
 }
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIPopupDialog")
+
+
 ## Ready
 func _ready() -> void:
 	new_line()

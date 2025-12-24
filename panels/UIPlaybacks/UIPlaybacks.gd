@@ -211,18 +211,20 @@ func _on_object_picker_button_object_selected(object: EngineComponent) -> void:
 	set_trigger_block(object)
 
 
-## Saves this into a dict
-func _save() -> Dictionary:
-	return { 
-			"trigger_block": _trigger_block.uuid if _trigger_block else "",
+## Serializes this into a dict
+func serialize() -> Dictionary:
+	return super.serialize().merged({ 
+			"trigger_block": _trigger_block.uuid() if _trigger_block else "",
 			"columns": _visable_columns,
-		}
+		})
 
 
 ## Loads this from a dict
-func _load(saved_data: Dictionary) -> void:
-	_object_picker_button.look_for(type_convert(saved_data.get("trigger_block", ""), TYPE_STRING))
-	_visable_columns = type_convert(saved_data.get("columns", _visable_columns), TYPE_INT)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_object_picker_button.look_for(type_convert(p_serialized_data.get("trigger_block", ""), TYPE_STRING))
+	_visable_columns = type_convert(p_serialized_data.get("columns", _visable_columns), TYPE_INT)
 	
 	_columns_set_from_load = true
 	_set_columns(_visable_columns)

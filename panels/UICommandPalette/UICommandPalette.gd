@@ -25,6 +25,13 @@ var _command_items: RefMap = RefMap.new()
 var _search_mode: SearchMode = SearchMode.COMMAND
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UISaveLoad")
+
+
 ## Ready
 func _ready() -> void:
 	command_tree.set_column_expand(1, false)

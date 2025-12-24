@@ -65,7 +65,7 @@ func _ready() -> void:
 	_background.add_theme_stylebox_override("panel", _background.get_theme_stylebox("panel").duplicate())
 	_label_node.label_settings = _label_node.label_settings.duplicate()
 	
-	_set_anchors_to_current_size()
+	_set_anchors_to_current_size.call_deferred()
 	
 	update_label()
 	set_process(false)
@@ -135,28 +135,13 @@ func update_label() -> void:
 
 
 ## Saves the state of this item for restoration later
-func _save() -> Dictionary:
-	var saved_data: Dictionary = {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"type": "",
 		"position": [position.x, position.y],
 		"size": [size.x, size.y],
-		"settings": {}
-	}
-
-	if _panel:
-		var script_name: String = _panel.get_script().resource_path.get_file()
-		saved_data.merge({
-			"type": script_name.substr(0, script_name.rfind(".")),
-			"settings": _panel.save()
-		}, true)
-
-	return saved_data
-
-
-## Loads the settings for this node from saved data
-func _load(p_saved_data: Dictionary) -> void:
-	if _panel:
-		_panel.load(p_saved_data.get("settings", {}))
+		"serialized_panel": _panel.serialize() if _panel else {}
+	})
 
 
 ## Updates the position and scale if needed

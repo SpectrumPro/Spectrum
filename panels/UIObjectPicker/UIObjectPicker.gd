@@ -37,6 +37,7 @@ var _select_mode: SelectMode = SelectMode.OBJECT
 ## Init
 func _init() -> void:
 	super._init()
+	_set_class_name("UIObjectPicker")
 	set_custom_accepted_signal(object_selected)
 
 

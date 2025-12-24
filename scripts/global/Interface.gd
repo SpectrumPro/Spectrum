@@ -149,6 +149,9 @@ var _palette_search_index: Dictionary[String, Dictionary]
 ## Config items for the ObjectPicker
 var _object_picker_index: Dictionary[Script, ClassTreeConfig]
 
+## An instance of InterfaceConfig
+var _config: InterfaceConfig = null
+
 ## The settings manager for ClientInterface
 var settings_manager: SettingsManager = SettingsManager.new()
 
@@ -168,7 +171,7 @@ func _init() -> void:
 
 ## Ready ClientInterface
 func _ready() -> void:
-	_load_config(load("res://InterfaceConfig.gd").config)
+	_load_config(load("res://InterfaceConfig.gd").new())
 	get_window().set_script(UIWindow)
 	
 	var popups: Control = _window_popups_scene.instantiate()
@@ -180,6 +183,10 @@ func _ready() -> void:
 	
 	_window_popups[root] = popups
 	_windows.map("main", get_window())
+	
+	(func () -> void:
+		load_ui()
+	).call_deferred()
 
 
 ## Registers all WindowPopups into the corrisponding PopupConfig class
@@ -414,6 +421,43 @@ func hide_all_popup_panels() -> void:
 		_hide_window_popup(popup_type, get_window())
 
 
+## Saves the UI to the ui save file
+func save_ui() -> void:
+	Utils.save_json_to_file(_config.ui_save_location, _config.ui_save_file, serialize())
+
+
+## Loads the UI from the ui save file
+func load_ui() -> void:
+	deserialize(Utils.load_json_from_file(_config.ui_save_location, _config.ui_save_file))
+
+
+func serialize() -> Dictionary:
+	var serialize_data: Dictionary = {
+		"windows": {}
+	}
+	
+	for window_uuid: String in _windows.get_left():
+		serialize_data.windows[window_uuid] = _windows.left(window_uuid).serialize()
+	
+	return serialize_data
+
+
+## Deserializes the serialized data
+func deserialize(p_serialized_data) -> void:
+	var windows: Dictionary = type_convert(p_serialized_data.get("windows", {}), TYPE_DICTIONARY)
+	
+	for window_uuid: Variant in windows:
+		if not window_uuid is String or not windows[window_uuid] is Dictionary: 
+			continue
+		
+		var serialized_window: Dictionary = windows[window_uuid]
+		
+		if window_uuid == "main":
+			get_window_node(self).deserialize(serialized_window)
+		else:
+			add_window(null).deserialize(serialized_window)
+
+
 ## Gets the WindowPopup for the window containing the p_source node
 func get_window_popup(p_window_popup: WindowPopup, p_source: Node) -> UIBase:
 	if not _window_popup_config.has(p_window_popup):
@@ -514,15 +558,15 @@ func add_window(p_base_panel: Script = UICore) -> UIWindow:
 	_window_popups[new_window] = popups
 	_windows.map(uuid, new_window)
 	
-	(func():
+	new_window.set_initial_position(Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS)
+	add_child(new_window)
+	
+	(func () -> void:
 		new_window.set_name("New Window")
 		new_window.set_window_popups(popups)
 		new_window.set_base_panel(UIDB.instance_panel(p_base_panel))
 		new_window.set_window_title(new_window.name)
 	).call_deferred()
-	
-	new_window.set_initial_position(Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS)
-	add_child(new_window)
 	
 	window_added.emit(new_window)
 	return new_window
@@ -653,7 +697,9 @@ func exit_resolve_mode() -> bool:
 
 
 ## Loads the local config file
-func _load_config(p_config: Dictionary) -> void:
+func _load_config(p_config: InterfaceConfig) -> void:
+	_config = p_config
+	
 	for entry: CommandPaletteEntry in p_config.command_palette_default_items:
 		add_command_palette_entry(entry)
 	

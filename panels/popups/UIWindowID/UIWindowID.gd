@@ -14,6 +14,13 @@ class_name UIWindowID extends UIPopup
 var _window: UIWindow
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIWindowID")
+
+
 ## Ready
 func _ready() -> void:
 	_window = Interface.get_window_node(self)

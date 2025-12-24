@@ -71,28 +71,16 @@ func _set_class_name(p_class_name: String) -> void:
 	_class_tree.append(p_class_name)
 
 
-## Saves this ClientComponent into a Dictionary
-func save() -> Dictionary:
+## Serialize this ClientComponent into a Dictionary
+func serialize() -> Dictionary:
 	return {
 		"uuid": _uuid,
 		"name": _ui_name,
 		"class": _self_class_name,
-	}.merged(_save())
+	}
 
 
-## Loads this ClientComponent from a dictionary
-func load(saved_data: Dictionary) -> void:
-	_uuid = type_convert(saved_data.get("uuid", _uuid), TYPE_STRING)
-	_ui_name = type_convert(saved_data.get("name", name), TYPE_STRING)
-	
-	_load(saved_data)
-
-
-## Override this to provide a save function to your ClientComponent
-func _save() -> Dictionary:
-	return {}
-
-
-## Override this to provide a load function to your ClientComponent
-func _load(saved_data: Dictionary) -> void:
-	pass
+## Deserializes this ClientComponent from a dictionary
+func deserialize(p_serialized_data: Dictionary) -> void:
+	_uuid = type_convert(p_serialized_data.get("uuid", _uuid), TYPE_STRING)
+	_ui_name = type_convert(p_serialized_data.get("name", name), TYPE_STRING)

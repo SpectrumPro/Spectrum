@@ -52,6 +52,13 @@ class_name UIMainMenu extends UIPanel
 @onready var _save_load_panel: UISaveLoad = Interface.get_window_popup(Interface.WindowPopup.SAVE_LOAD, self)
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIMainMenu")
+
+
 ## Ready
 func _ready() -> void:
 	_settings_panel.visibility_changed.connect(func (): all_settings_button.set_pressed_no_signal(_settings_panel.visible))

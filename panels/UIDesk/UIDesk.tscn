@@ -57,7 +57,6 @@ _select_box = NodePath("VBoxContainer/PanelContainer2/Container/SelectBox")
 _container_node = NodePath("VBoxContainer/PanelContainer2/Container")
 _area_indicator = NodePath("VBoxContainer/PanelContainer2/Container/AeraIndicator")
 edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
-display_mode = null
 edit_mode_nodes = [NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/MainControls"), NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/LayerControls")]
 menu_bar = NodePath("VBoxContainer/PanelMenuBar")
 

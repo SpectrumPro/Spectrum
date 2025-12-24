@@ -4,3 +4,10 @@
 
 class_name UIWindowManager extends UIPanel
 ## UIWindowManager for managing windows
+
+
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIWindowManager")

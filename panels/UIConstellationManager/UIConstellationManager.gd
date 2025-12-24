@@ -40,6 +40,13 @@ var _status_colors: Dictionary[NetworkHandler.NetworkState, Color] = {
 }
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIConstellationManager")
+
+
 ## Ready
 func _ready() -> void:
 	_constellation = Network.get_active_handler_by_name("Constellation")

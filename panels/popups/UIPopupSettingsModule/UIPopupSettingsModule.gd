@@ -20,6 +20,13 @@ var _current_data_input: DataInput
 var _focus_on_ready: bool = false
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIPopupSettingsModule")
+
+
 ## Sets the SettingsModule to be shown
 func set_module(p_module: SettingsModule) -> void:
 	if _current_data_input:

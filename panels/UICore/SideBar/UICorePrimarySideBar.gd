@@ -292,6 +292,47 @@ func get_tabs() -> Array[TabItem]:
 	return result
 
 
+## Saves all the tabs
+func serialize() -> Dictionary:
+	var tabs: Dictionary[int, Dictionary] = {
+	}
+	
+	for tab_id: int in _tabs.get_left():
+		tabs[tab_id] = _tabs.left(tab_id).serialize()
+	
+	return {
+		"tabs": tabs,
+		"current": _current_tab.get_index() if _current_tab else -1
+	}
+
+
+## Loads all the tabs
+func deserialize(p_saved_data: Dictionary) -> void:
+	var tabs: Dictionary = type_convert(p_saved_data.get("tabs", []), TYPE_DICTIONARY)
+	var current_tab: int = type_convert(p_saved_data.get("current", 0), TYPE_INT)
+	
+	for tab_id: Variant in tabs:
+		if not tab_id is String or not tabs[tab_id] is Dictionary:
+			continue
+		
+		var title: String = type_convert(tabs[tab_id].get("title", ""), TYPE_STRING)
+		var serialized_panel: Dictionary = type_convert(tabs[tab_id].get("panel", ""), TYPE_DICTIONARY)
+		var panel_class: String = serialized_panel.get("class")
+		
+		var tab_id_int: int = int(tab_id)
+		var tab_item: TabItem
+		
+		if _tabs.has_left(tab_id_int):
+			tab_item = _tabs.left(tab_id_int)
+		else:
+			tab_item = create_tab(UIDB.instance_panel(panel_class), tab_id_int)
+		
+		tab_item.set_title(title)
+		tab_item.get_panel().deserialize(serialized_panel)
+	
+	switch_to_tab(_tabs.left(current_tab))
+
+
 ## Loads the default number of buttons
 func _load_default_buttons() -> void:
 	for i in range(max_visable_tabs + 1):
@@ -494,6 +535,14 @@ class TabItem extends RefCounted:
 		return _label
 	
 	
+	## Returns a serialized version of this TabItem
+	func serialize() -> Dictionary:
+		return {
+			"title": get_title(),
+			"panel": get_panel().serialize() if get_panel() else {},
+		}
+	
+	
 	## Sets the index
 	func _set_index(p_index: int) -> void:
 		_index = p_index
@@ -686,45 +735,7 @@ class TabItem extends RefCounted:
 	#_button_group = ButtonGroup.new()
 #
 #
-### Saves all the tabs
-#func save() -> Dictionary:
-	#var tabs: Dictionary[int, Dictionary] = {
-	#}
-	#
-	#for tab_id: int in range(len(_tab_buttons)):
-		#tabs[tab_id] = {
-			#"name": _tab_buttons[tab_id].get_child(0).text,
-			#"type": _tab_controls.left(tab_id).get_class_name()
-		#}
-	#
-	#return {
-		#"tabs": tabs,
-		#"current": get_current_tab()
-	#}
-#
-#
-### Loads all the tabs
-#func load(saved_data: Dictionary) -> void:
-	#var tabs: Array = type_convert(saved_data.get("tabs", []), TYPE_ARRAY)
-	#
-	#for tab_id: int in range(len(tabs)):
-		#if not tabs[tab_id] is Dictionary:
-			#return
-		#
-		#var tab: Dictionary = tabs[tab_id]
-		#var tab_class: String = type_convert(tab.get("type", ""), TYPE_STRING)
-		#var tab_name: String = type_convert(tab.get("name", ""), TYPE_STRING)
-		#
-		#change_to_tab(tab_id)
-		#var panel: UIPanel = create_custom(tab_class)
-		#
-		#if panel:
-			#set_tab_name(tab_id, tab_name)
-			#panel.load(type_convert(tab.get("settings", {}), TYPE_DICTIONARY))
-		#else:
-			#breakpoint
-	#
-	#change_to_tab(type_convert(saved_data.get("current", 0), TYPE_INT))
+
 #
 #
 

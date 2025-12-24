@@ -164,6 +164,7 @@ offset_right = 343.0
 offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
+column_min_size = 150
 display_mode = 1
 
 [node name="UIInterfaceSelector" parent="." instance=ExtResource("12_jcqk3")]

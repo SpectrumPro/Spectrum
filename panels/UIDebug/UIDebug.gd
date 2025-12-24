@@ -19,6 +19,13 @@ class_name UIDebug extends UIPanel
 @export var local_remote_option: OptionButton
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIDebug")
+
+
 ## Sets the text in the output
 func set_output(output: Variant) -> void:
 	var result: String = ""
@@ -120,20 +127,22 @@ func _on_send_message_to_server_pressed() -> void:
 			)
 
 ## Saves this panel into a dictonary
-func _save() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"message": {
 			"for": message_for.text,
 			"method": message_method.text,
 			"args": message_args.text
 		}
-	}
+	})
 
 
 ## Loads this panel from a dictonary
-func _load(saved_data: Dictionary) -> void:
-	var message: Dictionary = saved_data.get_or_add("message", {})
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	message_for.text = message.get("for", "")
-	message_method.text = message.get("method", "")
-	message_args.text = message.get("args", "")
+	var message: Dictionary = type_convert(p_serialized_data.get("message", {}), TYPE_DICTIONARY)
+	
+	message_for.text = type_convert(message.get("for", {}), TYPE_STRING)
+	message_method.text = type_convert(message.get("method", {}), TYPE_STRING)
+	message_args.text = type_convert(message.get("args", {}), TYPE_STRING)

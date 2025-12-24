@@ -20,13 +20,13 @@ static var _signal_connections: Dictionary
 
 ## Saves a JSON valid dictonary to a file, creates the file and folder if it does not exist
 static func save_json_to_file(file_path: String, file_name: String, json: Dictionary) -> Error:
-	
 	if not DirAccess.dir_exists_absolute(file_path):
 		print("The folder \"" + file_path + "\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(file_path))
 
 	var file_access: FileAccess = FileAccess.open(file_path+"/"+file_name, FileAccess.WRITE)
 	
 	if FileAccess.get_open_error():
+		print(FileAccess.get_open_error())
 		return FileAccess.get_open_error()
 	
 	file_access.store_string(JSON.stringify(json, "\t"))
@@ -34,6 +34,20 @@ static func save_json_to_file(file_path: String, file_name: String, json: Dictio
 	
 	return file_access.get_error()
 
+
+## Loads JSON from a file, returning the JSON dictionary or {}
+static func load_json_from_file(p_file_path: String, p_file_name: String) -> Dictionary:
+	if not DirAccess.dir_exists_absolute(p_file_path):
+		return {}
+	
+	var file_access: FileAccess = FileAccess.open(p_file_path + p_file_name, FileAccess.READ)
+	print(FileAccess.get_open_error())
+	var json: Variant = JSON.parse_string(file_access.get_as_text())
+	
+	if json is Dictionary:
+		return json
+	else:
+		return {}
 
 
 ## Calculates the HTP value of two colors

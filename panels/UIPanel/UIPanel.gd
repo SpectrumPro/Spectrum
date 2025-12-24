@@ -296,8 +296,8 @@ func get_button_actions(button: Button) -> Array:
 	return _button_actions.get(button, [])
 
 
-## Saves this UIPanel into a dictonary
-func save() -> Dictionary:
+## Serializes this UIPanel into a dictonary
+func serialize() -> Dictionary:
 	var button_actions: Dictionary[String, Array]
 	
 	for button: Button in _buttons_map.get_left():
@@ -307,40 +307,32 @@ func save() -> Dictionary:
 		
 		button_actions[button.name] = actions
 	
-	return _save().merged({
+	return super.serialize().merged({
 		"button_actions": button_actions
 	})
 
 
 ## Loads this UIPanel from dictionary
-func load(saved_data: Dictionary) -> void: 
-	_load(saved_data)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	var button_actions: Dictionary = type_convert(saved_data.get("button_actions"), TYPE_DICTIONARY)
+	var button_actions: Dictionary = type_convert(p_serialized_data.get("button_actions"), TYPE_DICTIONARY)
 	
 	for button_name: Variant in button_actions.keys():
-		if button_name is String and _buttons_map.has_right(button_name) and button_actions[button_name] is Array:
-			for action_uuid: Variant in button_actions[button_name]:
-				if action_uuid is String:
-					var button: Button = _buttons_map.right(button_name)
-					var action: InputAction = InputServer.get_input_action(action_uuid)
-					
-					if action:
-						asign_button_action(button, action)
+		if not button_name is String or not _buttons_map.has_right(button_name) or not button_actions[button_name] is Array:
+			return
+		
+		for action_uuid: Variant in button_actions[button_name]:
+			if action_uuid is String:
+				var button: Button = _buttons_map.right(button_name)
+				var action: InputAction = InputServer.get_input_action(action_uuid)
+				
+				if action:
+					asign_button_action(button, action)
 
 
 ## Override this function to change state when edit mode is toggled
 func _edit_mode_toggled(state: bool) -> void:
-	pass
-
-
-## Override to provide save function to your panel
-func _save() -> Dictionary: 
-	return {}
-
-
-## Override to provide load function to your panel
-func _load(saved_data: Dictionary) -> void: 
 	pass
 
 

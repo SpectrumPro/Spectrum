@@ -38,6 +38,14 @@ var _sort_orientation: bool = true
 var _files: Array[Dictionary]
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UICommandPalette")
+
+
+## ready
 func _ready() -> void:
 	Core.synchronizing.connect(_reload_saves)
 	Core.file_name_changed.connect(_set_file_name)
@@ -158,10 +166,10 @@ func _on_open_pressed() -> void:
 		)
 
 
-
 ## Saves the main ui layout
 func _on_save_ui_pressed() -> void: 
-	Interface.save_to_file()
+	Interface.save_ui()
+
 
 ## Called when the save button is pressed
 func _on_save_pressed() -> void: 

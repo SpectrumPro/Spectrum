@@ -1,7 +1,13 @@
 class_name InterfaceConfig
 
-static var config: Dictionary = {
-	"command_palette_default_items": [
+## File location to store the UI Save
+var ui_save_location: String = "user://"
+
+## File name to store the UI Save
+var ui_save_file: String = "ui.json"
+
+## Default items in the UICommandPalette
+var command_palette_default_items: Array[CommandPaletteEntry] = [
 		CommandPaletteEntry.new(
 			Interface.settings_manager,
 			"Interface",
@@ -14,8 +20,10 @@ static var config: Dictionary = {
 			Network.get_active_handler_by_name("Constellation").get_local_node().settings_manager, 
 			"Constellation", 
 		)
-	],
-	"object_picker_default_items": {
+	]
+
+## Default items in the UIObjectPicker
+var object_picker_default_items: Dictionary[Script, ClassTreeConfig] = {
 		EngineComponent: ClassTreeConfig.new(
 			ClassList.get_global_class_tree(), 
 			ClassList.get_inheritance_map(),
@@ -37,4 +45,3 @@ static var config: Dictionary = {
 			Callable()
 		)
 	}
-}

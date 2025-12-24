@@ -30,6 +30,7 @@ var _search_text: String = ""
 func _init() -> void:
 	super._init()
 	
+	_set_class_name("UIPanelPicker")
 	set_custom_accepted_signal(panel_chosen)
 
 
