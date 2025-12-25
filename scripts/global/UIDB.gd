@@ -28,10 +28,13 @@ var _panels: Dictionary[String, PackedScene] = {
 	"UIPlaybacks":			load(_p("UIPlaybacks")),
 	"UIUniverses":			load(_p("UIUniverses")),
 	"UIFixtures":			load(_p("UIFixtures")),
+	"UIFixtureGroups":		load(_p("UIFixtureGroups")),
 	"UISettings":			load(_p("UISettings")),
 	"UISaveLoad":			load(_p("UISaveLoad")),
 	"UICore":				load(_p("UICore")),
 	"UIDebug":				load(_p("UIDebug")),
+	"UIVirtualFixtures":	load(_p("UIVirtualFixtures")),
+	"UIProgrammer":			load(_p("UIProgrammer"))
 }
 
 
@@ -81,12 +84,17 @@ var _panels_by_category: Dictionary[String, Array] = {
 		"UISettings",
 		"UISaveLoad",
 		"UIDebug",
-		"UICore"
+		"UICore",
+		"UIProgrammer"
 	],
 	"Components": [
 		"UIUniverses",
 		"UIFunctions",
 		"UIFixtures",
+		"UIFixtureGroups"
+	],
+	"Views": [
+		"UIVirtualFixtures"
 	]
 }
 

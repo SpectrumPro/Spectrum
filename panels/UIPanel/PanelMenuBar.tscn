@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="1_1h8qn"]
 [ext_resource type="Script" uid="uid://be06a2r38386h" path="res://panels/UIPanel/PanelMenuBar.gd" id="2_fnf3r"]
 [ext_resource type="PackedScene" uid="uid://bbpvsnjbak1p3" path="res://components/ComponentButton/ComponentButton.tscn" id="3_dnle8"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="3_fnf3r"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="3_fnf3r"]
 
 [node name="PanelMenuBar" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 60)

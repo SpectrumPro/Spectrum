@@ -27,7 +27,7 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_set_name("FunctionGroup")
 	_set_self_class("FunctionGroup")
 	
-	_settings_manager.register_custom_panel("functions", preload("res://components/SettingsManagerCustomPanels/FunctionGroupFunctions.tscn"), "set_function_group")
+	_settings_manager.register_custom_panel("functions", preload("res://components/SettingsManagerCustomPanels/FixtureGroupFixtures.tscn"), "set_fixture_group")
 	
 	_settings_manager.register_networked_callbacks({
 		"on_functions_added": _add_functions,

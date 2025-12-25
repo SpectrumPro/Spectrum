@@ -4,7 +4,7 @@
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_xgsr8"]
 [ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="3_kjule"]
 [ext_resource type="Script" uid="uid://c1mxckcn5x4su" path="res://components/Scripts/TaggedLineEdit.gd" id="4_lx25v"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="5_xgsr8"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="5_xgsr8"]
 
 [node name="UIPanelPicker" type="PanelContainer" node_paths=PackedStringArray("categorised_tree", "panel_tree", "search_bar", "edit_controls")]
 custom_minimum_size = Vector2(0, 60)

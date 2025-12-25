@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name UIProgrammer extends UIPanel
 ## Programmer to adust the settings and paramiters of Fixtures
@@ -88,6 +89,14 @@ var _visible_parameter_controllers: Array[ParameterController] = []
 var _tab_button_override_color: Color = Color(1, 0.518, 0)
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIProgrammer")
+
+
+## ready
 func _ready() -> void:
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
 	button_group.pressed.connect(_on_tab_button_pressed)
@@ -157,7 +166,7 @@ func _update_categorys(new_fixtures: Array) -> void:
 					controlers_to_hide.erase(controller)
 				
 				else:
-					controller = load("res://panels/Programmer/ParameterController/ParameterController.tscn").instantiate()
+					controller = load("uid://bfk7wccmsndfr").instantiate()
 					var category = categories[parameter]
 					
 					if category not in _tab_buttons.keys():

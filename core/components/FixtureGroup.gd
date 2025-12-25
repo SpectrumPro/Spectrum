@@ -14,7 +14,7 @@ signal fixtures_removed(fixtures: Array[Fixture])
 
 
 ## Stores all the fixtures and there positions. Stored as {Fixture: FixtureGroupItem}
-var _fixtures: Dictionary = {}
+var _fixtures: Dictionary[Fixture, FixtureGroupItem] = {}
 
 
 ## init
@@ -24,24 +24,61 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	_set_name("FixtureGroup")
 	_set_self_class("FixtureGroup")
 	
+	_settings_manager.register_custom_panel("Fixtures", preload("res://components/SettingsManagerCustomPanels/FixtureGroupFixtures.tscn"), "set_fixture_group")
+	
 	_settings_manager.register_networked_callbacks({
 		"on_fixtures_added": _add_group_items,
 		"on_fixtures_removed": _remove_fixtures,
 	})
-
-
-## Gets a FixtureGroupItem
-func get_group_item(fixture: Fixture) -> FixtureGroupItem:
-	return _fixtures.get(fixture)
+	
+	_settings_manager.set_callback_allow_deserialize("on_fixtures_added")
 
 
 ## Gets all the fixtures
-func get_fixtures() -> Array:
-	return _fixtures.keys()
+func get_fixtures() -> Array[Fixture]:
+	var result: Array[Fixture]
+	result.assign(_fixtures.keys())
+	
+	return result
+
+
+## Gets all the group items
+func get_group_items() -> Array[FixtureGroupItem]:
+	var result: Array[FixtureGroupItem]
+	result.assign(_fixtures.values())
+	
+	return result
+
+
+## Gets a FixtureGroupItem
+func get_group_item_for(fixture: Fixture) -> FixtureGroupItem:
+	return _fixtures.get(fixture)
 
 
 ## Adds a fixture to this FixtureGroup
-func add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO) -> void: rpc("add_fixture", [fixture, position])
+func add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO) -> Promise: 
+	return rpc("add_fixture", [fixture, position])
+
+
+## Adds a pre-existing FixtureGroupItem. Returns false the fixture is already in this group
+func add_group_item(group_item: FixtureGroupItem) -> Promise: 
+	return rpc("add_group_item", [group_item])
+
+
+## Adds mutiple group items at once
+func add_group_items(group_items: Array) -> Promise: 
+	return rpc("add_group_items", [group_items])
+
+
+## Removes a fixture from this group, returns false if this fixture is not in this group
+func remove_fixture(fixture: Fixture) -> Promise: 
+	return rpc("remove_fixture", [fixture])
+
+
+## Adds mutiple fixtures at once
+func remove_fixtures(fixtures: Array) -> Promise: 
+	return rpc("remove_fixtures", [fixtures])
+
 
 ## Internal: Adds a fixture to this FixtureGroup
 func _add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO, no_signal: bool = false) -> bool:
@@ -56,9 +93,6 @@ func _add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO, no_signal:
 	
 	return true
 
-
-## Adds a pre-existing FixtureGroupItem. Returns false the fixture is already in this group
-func add_group_item(group_item: FixtureGroupItem) -> void: rpc("add_group_item", [group_item])
 
 ## Internal: Adds a pre-existing FixtureGroupItem. Returns false the fixture is already in this group
 func _add_group_item(group_item: FixtureGroupItem, no_signal: bool = false) -> bool:
@@ -75,9 +109,6 @@ func _add_group_item(group_item: FixtureGroupItem, no_signal: bool = false) -> b
 	return true
 
 
-## Adds mutiple group items at once
-func add_group_items(group_items: Array) -> void: rpc("add_group_items", [group_items])
-
 ## Internal: Adds mutiple group items at once
 func _add_group_items(group_items: Array) -> void:
 	var just_added_group_items: Array[FixtureGroupItem]
@@ -91,9 +122,6 @@ func _add_group_items(group_items: Array) -> void:
 		fixtures_added.emit(just_added_group_items)
 
 
-## Removes a fixture from this group, returns false if this fixture is not in this group
-func remove_fixture(fixture: Fixture) -> void: rpc("remove_fixture", [fixture])
-
 ## Internal: Removes a fixture from this group, returns false if this fixture is not in this group
 func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
 	if not _fixtures.has(fixture): return false
@@ -106,9 +134,6 @@ func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
 	
 	return true
 
-
-## Adds mutiple fixtures at once
-func remove_fixtures(fixtures: Array) -> void: rpc("remove_fixtures", [fixtures])
 
 ## Internal: Adds mutiple fixtures at once
 func _remove_fixtures(fixtures: Array) -> void:

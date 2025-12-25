@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/TO_BE_SORTED/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="5_t5bk7"]
 [ext_resource type="PackedScene" uid="uid://c30mlwfrsxbcl" path="res://components/TO_BE_SORTED/IntensityButton/IntensityButton.tscn" id="6_i5qdf"]
 [ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="6_knbom"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="9_ssq7m"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="9_ssq7m"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_fuler"]
 font = ExtResource("6_knbom")

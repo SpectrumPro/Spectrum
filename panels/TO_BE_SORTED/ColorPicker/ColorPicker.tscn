@@ -5,7 +5,7 @@
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="2_dxq6u"]
 [ext_resource type="Texture2D" uid="uid://clt2djtbul2kf" path="res://assets/icons/ColorPalett.svg" id="3_pxh41"]
 [ext_resource type="Texture2D" uid="uid://2p7ffb5yq0hx" path="res://assets/asset_scripts/color_picker.png" id="5_dxq6u"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="5_j1krd"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="5_j1krd"]
 [ext_resource type="Texture2D" uid="uid://b7q628ocmror7" path="res://assets/icons/Crosshair.svg" id="7_7y88r"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_7y88r"]

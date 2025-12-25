@@ -1,8 +1,9 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
-class_name NewVirtualFixture extends Control
-## New virtual fixture
+class_name VirtualFixture extends UIComponent
+## Control to display a fixture in the UIVirtualFixtures tabke
 
 
 ## Emitted when this virtual fixture is moved
@@ -15,16 +16,15 @@ signal clicked()
 signal released()
 
 
-## The position of this virtual fixture not effected by snapping
-@onready var _no_snap_pos: Vector2 = position
-
-
 ## Color of this VF when it the fixture is selected
 const fixture_selected_color: Color = Color.ROYAL_BLUE
 
 ## Color of this VF when self is selected
 const self_selected_color: Color = Color.WHITE
 
+
+## The position of this VirtualFixtue with out grid snapping
+var no_snap_pos: Vector2
 
 ## The fixture linked to this virtual fixture
 var _fixture: Fixture = null
@@ -42,6 +42,18 @@ var _fixture_signal_connections: Dictionary = {
 }
 
 
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("VirtualFixture")
+
+
+## ready
+func _ready() -> void:
+	no_snap_pos = position
+
+
 ## Sets the fixture linked to this virtual fixture
 func set_fixture(control_fixture: Fixture) -> void:
 	Utils.disconnect_signals(_fixture_signal_connections, _fixture)
@@ -56,8 +68,8 @@ func set_fixture(control_fixture: Fixture) -> void:
 	else:
 		render_color()
 	
-	set_label_name(control_fixture.name)
-	$UUID.text = control_fixture.uuid
+	set_label_name(control_fixture.name())
+	$UUID.text = control_fixture.uuid()
 
 
 ## Gets the fixture linked to this virtual fixture
@@ -167,7 +179,7 @@ func _on_override_value_erased(zone: String = "", parameter: String = "") -> voi
 
 
 ## Called when the manifest is changed on a DMXFixture
-func _on_dmx_fixture_manifest_changed(manifest: FixtureManifest):
+func _on_dmx_fixture_manifest_changed(p_manifest: FixtureManifest, p_mode: String):
 	render_color()
 
 

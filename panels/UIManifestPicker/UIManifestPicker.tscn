@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://3shyid6t18bp" path="res://panels/UIManifestPicker/UIManifestPicker.gd" id="2_phqoy"]
 [ext_resource type="Texture2D" uid="uid://70jvrxlq7sgl" path="res://assets/icons/Schema.svg" id="3_jw3ll"]
 [ext_resource type="Script" uid="uid://c1mxckcn5x4su" path="res://components/Scripts/TaggedLineEdit.gd" id="4_3v2kl"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="5_r07w8"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="5_r07w8"]
 [ext_resource type="StyleBox" uid="uid://cftl4b5dnt57b" path="res://assets/styles/ResolveBoxBGLess.tres" id="6_mel6o"]
 
 [node name="UIManifestPicker" type="PanelContainer" node_paths=PackedStringArray("manifest_tree", "manufacturer_tree", "global_fixture_tree", "manufacturer_fixture_tree", "mode_tree", "manufacturer_tree_select_box", "fixture_tree_select_box", "search_bar", "edit_controls")]
@@ -23,9 +23,7 @@ mode_tree = NodePath("VBoxContainer/IndexContainer/ModeTree")
 manufacturer_tree_select_box = NodePath("VBoxContainer/IndexContainer/ManufacturerTree/ManufacturerTreeSelectBox")
 fixture_tree_select_box = NodePath("VBoxContainer/IndexContainer/GlobalFixtureTree/FixtureTreeSelectBox")
 search_bar = NodePath("VBoxContainer/HBoxContainer/ScrollContainer/LineEdit")
-column_min_size = null
 edit_controls = NodePath("VBoxContainer/HBoxContainer/EditControls")
-display_mode = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

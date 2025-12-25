@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://docij3pfkr26p" path="res://panels/TO_BE_SORTED/ComponentControlMethodPicker/ComponentControlMethodPicker.gd" id="1_ombg4"]
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_yhhqg"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="2_yhhqg"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="4_8xt6o"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="4_8xt6o"]
 [ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="5_uhjji"]
 
 [node name="ComponentControlMethodPicker" type="PanelContainer" node_paths=PackedStringArray("_list", "edit_controls")]

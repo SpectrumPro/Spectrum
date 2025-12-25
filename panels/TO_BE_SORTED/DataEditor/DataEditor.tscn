@@ -4,7 +4,7 @@
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="2_ixdss"]
 [ext_resource type="Script" uid="uid://dtpmr3p1f8vf0" path="res://panels/TO_BE_SORTED/DataEditor/DataEditor.gd" id="2_n5nmt"]
 [ext_resource type="Texture2D" uid="uid://dfi7uhhle4irm" path="res://assets/icons/DataContainer.svg" id="3_n5nmt"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="4_jpmer"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="4_jpmer"]
 [ext_resource type="PackedScene" uid="uid://pmm0fpocy30v" path="res://components/TO_BE_SORTED/ObjectPicker/ObjectPickerButton/ObjectPickerButton.tscn" id="4_juk7q"]
 [ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="6_c1jhn"]
 [ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="7_1qlbe"]

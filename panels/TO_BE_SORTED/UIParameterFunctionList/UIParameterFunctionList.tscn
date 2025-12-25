@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="1_dibeb"]
 [ext_resource type="Script" uid="uid://bjh4174cvuyps" path="res://panels/TO_BE_SORTED/UIParameterFunctionList/UiParameterFunctionList.gd" id="2_rhsr6"]
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="3_55w2s"]
-[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/TO_BE_SORTED/UIPanel/EditControls.tscn" id="4_qxuyf"]
+[ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="4_qxuyf"]
 [ext_resource type="Texture2D" uid="uid://bi4ttx5uklwl7" path="res://assets/icons/Check.svg" id="5_rhsr6"]
 
 [node name="UiParameterFunctionList" type="PanelContainer" node_paths=PackedStringArray("_function_list", "edit_controls")]

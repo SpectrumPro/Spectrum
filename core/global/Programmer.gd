@@ -32,20 +32,24 @@ enum MixMode {
 	Subtractive		## Uses Subtractive Mixing
 }
 
-
-## Network Config:
-var network_config: Dictionary = {
-	"callbacks": {
-		"on_cleared": _clear,
-	}
-}
-
-
 ## Current store mode state
 var _store_mode_state: bool = false
 
 ## Callback for store mode
 var _store_mode_callback: Callable
+
+## The SettingsManager for this Programmer
+var settings_manager: SettingsManager = SettingsManager.new()
+
+
+## init
+func _init() -> void:
+	settings_manager.set_owner(self)
+	settings_manager.set_inheritance_array(["Programmer"])
+	
+	settings_manager.register_networked_callbacks({
+		"on_cleared": _clear,
+	})
 
 
 ## Clears the programmer

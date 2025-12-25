@@ -1,12 +1,23 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name VirtualFixtureContainer extends Control
 ## Script to manage virtual fixtures
 
 
 ## Emitted when the selection of virtual fixtures is changed
-signal selected_virtual_fixtures_changed(virtual_fixtures: Array[NewVirtualFixture])
+signal selected_virtual_fixtures_changed(virtual_fixtures: Array[VirtualFixture])
+
+
+## Default spacing between fixtures when adding mutiple at once
+const _fixture_spacing: Vector2 = Vector2(100, 0)
+
+const _grid_align_spacing: Vector2 = Vector2(100, 100)
+
+
+## The virtual fixtures root node
+@export var _virtual_fixtures_root: UIVirtualFixtures
 
 
 ## Snapping distance
@@ -19,9 +30,6 @@ var use_snapping: bool = true
 var fixture_group: FixtureGroup = null : set = set_fixture_group
 
 
-## The virtual fixtures root node
-@export var _virtual_fixtures_root: UIVirtualFixtures
-
 ## Stores all the current virtual fixtures, stored as {Fixture:VF}
 var _virtual_fixtures: RefMap = RefMap.new()
 
@@ -29,7 +37,7 @@ var _virtual_fixtures: RefMap = RefMap.new()
 var _old_selected_fixtures: Array
 
 ## ALl the current selected virtual fixture nodes
-var _selected_virtual_fixtures: Array[NewVirtualFixture]
+var _selected_virtual_fixtures: Array[VirtualFixture]
 
 
 ## Is the user using box selection currently
@@ -53,15 +61,11 @@ var _just_moved_virtual_fixtures: Array = []
 ## Signal connections for FixtureGroupItems, stored as {FixtureGroupItem: {"SignalName": Callable}}
 var _group_item_signal_connections: Dictionary = {}
 
-## Default spacing between fixtures when adding mutiple at once
-const _fixture_spacing: Vector2 = Vector2(100, 0)
-
-const _grid_align_spacing: Vector2 = Vector2(100, 100)
-
 ## Width of the grid align mode
 var _grid_width: int = 1
 
 
+## ready
 func _ready() -> void:
 	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
 
@@ -93,7 +97,7 @@ func set_fixture_group(p_fixture_group: FixtureGroup) -> void:
 			
 		
 		for fixture: Fixture in fixture_group.get_fixtures():
-			var group_item: FixtureGroupItem = fixture_group.get_group_item(fixture)
+			var group_item: FixtureGroupItem = fixture_group.get_group_item_for(fixture)
 			_group_item_signal_connections[group_item] = {
 				"position_changed": _on_fixture_position_changed.bind(fixture)
 			}
@@ -115,7 +119,7 @@ func add_fixture(fixture: Fixture, set_vf_selected: bool = true, at_position: Ve
 		return
 	
 	var vf_uuid: String = UUID_Util.v4()
-	var new_vf: NewVirtualFixture = load("res://panels/VirtualFixtures/VirtualFixture/VirtualFixture.tscn").instantiate()
+	var new_vf: VirtualFixture = load("uid://cen3hxenplnih").instantiate()
 	
 	new_vf.set_fixture(fixture)
 	
@@ -174,7 +178,7 @@ func grid_align() -> void:
 	var updated_position: Vector2 = base_positon
 	var index: int = 0
 	
-	for vf: NewVirtualFixture in _selected_virtual_fixtures:
+	for vf: VirtualFixture in _selected_virtual_fixtures:
 		_set_vf_position(vf, updated_position)
 		if index == _grid_width -1 :
 			updated_position.x = base_positon.x
@@ -224,26 +228,26 @@ func _on_fixture_position_changed(new_position: Vector3, fixture: Fixture) -> vo
 
 #region VF Callbacks
 ## Called when a virtual fixture is moved
-func _on_virtual_fixture_move_requested(by: Vector2, vf: NewVirtualFixture) -> void:
+func _on_virtual_fixture_move_requested(by: Vector2, vf: VirtualFixture) -> void:
 	if not _edit_mode: return
 	
 	var vf_to_move: Array = _selected_virtual_fixtures.duplicate()
 	
 	vf_to_move.erase(vf)
-	vf._no_snap_pos += by
-	_set_vf_position(vf, vf._no_snap_pos.snapped(snapping_distance) if use_snapping else vf._no_snap_pos)
+	vf.no_snap_pos += by
+	_set_vf_position(vf, vf.no_snap_pos.snapped(snapping_distance) if use_snapping else vf.no_snap_pos)
 	
-	for next_vf: NewVirtualFixture in vf_to_move:
-		next_vf._no_snap_pos += by
+	for next_vf: VirtualFixture in vf_to_move:
+		next_vf.no_snap_pos += by
 		if use_snapping:
-			_set_vf_position(next_vf, next_vf._no_snap_pos.snapped(snapping_distance))
+			_set_vf_position(next_vf, next_vf.no_snap_pos.snapped(snapping_distance))
 			
 		else:
 			_set_vf_position(next_vf, next_vf.position + by)
 
 
 ## Called when a virtual fixture is clicked
-func _on_virtual_fixture_clicked(vf: NewVirtualFixture) -> void:
+func _on_virtual_fixture_clicked(vf: VirtualFixture) -> void:
 	if vf.get_fixture() not in Values.get_selection_value("selected_fixtures"):
 		if Input.is_key_pressed(KEY_SHIFT):
 			Values.add_to_selection_value("selected_fixtures", [vf.get_fixture()])
@@ -254,7 +258,7 @@ func _on_virtual_fixture_clicked(vf: NewVirtualFixture) -> void:
 
 #region Positions
 ## Sets the position of a virtual fixture
-func _set_vf_position(vf: NewVirtualFixture, pos: Vector2, no_group_change: bool = false) -> void:
+func _set_vf_position(vf: VirtualFixture, pos: Vector2, no_group_change: bool = false) -> void:
 	if vf.position == pos:
 		return
 	
@@ -267,15 +271,15 @@ func _set_vf_position(vf: NewVirtualFixture, pos: Vector2, no_group_change: bool
 
 ## Returns the Vector2 position from a fixture
 func _get_v2_position(fixture: Fixture) -> Vector2:
-	var pos3: Vector3 = fixture_group.get_group_item(fixture).get_position()
+	var pos3: Vector3 = fixture_group.get_group_item_for(fixture).get_position()
 	# TODO: Allow for top, front, left views
 	return Vector2(pos3.x, pos3.z)
 
 
 ## Gets the Vector3 position of a fixture, from the Vector2 position of a Virtual Fixture
-func _get_v3_position(vf: NewVirtualFixture) -> Vector3:
+func _get_v3_position(vf: VirtualFixture) -> Vector3:
 	var pos2: Vector2 = vf.position
-	return _get_v3_position_from_v2(pos2, fixture_group.get_group_item(vf.get_fixture()).get_position())
+	return _get_v3_position_from_v2(pos2, fixture_group.get_group_item_for(vf.get_fixture()).get_position())
 
 
 ## Gets the Vector3 position of a fixture, from from a Vector2
@@ -289,8 +293,8 @@ func _get_v3_position_from_v2(pos2: Vector2, base_pos3: Vector3 = Vector3.ZERO) 
 
 ## Updates the positions of fixtures in the FixtureGroup
 func _update_fixture_group_positions() -> void:
-	for vf: NewVirtualFixture in _just_moved_virtual_fixtures:
-		fixture_group.get_group_item(vf.get_fixture()).set_position(_get_v3_position(vf))
+	for vf: VirtualFixture in _just_moved_virtual_fixtures:
+		fixture_group.get_group_item_for(vf.get_fixture()).set_position(_get_v3_position(vf))
 	
 	_just_moved_virtual_fixtures = []
 
@@ -321,7 +325,7 @@ func _reset_fixture_selected() -> void:
 
 
 ## Sets the self selected state of a virtual fixture
-func _set_selected(vf: NewVirtualFixture, state: bool) -> void:	
+func _set_selected(vf: VirtualFixture, state: bool) -> void:	
 	if vf not in _selected_virtual_fixtures and state:
 		_selected_virtual_fixtures.append(vf)
 	elif not state:
@@ -332,13 +336,13 @@ func _set_selected(vf: NewVirtualFixture, state: bool) -> void:
 
 ## Resets all the virtualFixture's no snap positions
 func _reset_virtual_fixture_no_snap() -> void:
-	for vf: NewVirtualFixture in _virtual_fixtures.get_right():
-		vf._no_snap_pos = vf.position
+	for vf: VirtualFixture in _virtual_fixtures.get_right():
+		vf.no_snap_pos = vf.position
 
 
 ## Resets all values and removes all virtual fixtures
 func _reset_all() -> void:
-	for vf: NewVirtualFixture in _virtual_fixtures.get_right():
+	for vf: VirtualFixture in _virtual_fixtures.get_right():
 		vf.queue_free()
 		
 	_virtual_fixtures.clear()
@@ -370,7 +374,7 @@ func _update_selection_box() -> void:
 	var selection_changed: bool = false
 	
 	for fixture: Fixture in _virtual_fixtures.get_left():
-		var vf: NewVirtualFixture = _virtual_fixtures.left(fixture)
+		var vf: VirtualFixture = _virtual_fixtures.left(fixture)
 		var just_selected: bool = _selection_rect.intersection(Rect2(vf.position, vf.size)).size != Vector2.ZERO
 		var current_selected: Array = Values.get_selection_value("selected_fixtures")
 		
@@ -390,14 +394,14 @@ func _update_selection_box() -> void:
 #region UI Callbacks
 ## Called when the add fixtures button is pressed
 func _on_add_fixtures_pressed() -> void: 
-	Interface.show_object_picker(ObjectPicker.SelectMode.Multi, _on_object_picker_objects_selected, "DMXFixture")
+	Interface.prompt_object_picker(self, EngineComponent, "DMXFixture")
 
 
 ## Called when the remove fixtures button is pressed
 func _on_remove_fixtures_pressed() -> void:
 	var fixtures: Array[Fixture]
 	
-	for vf: NewVirtualFixture in _selected_virtual_fixtures:
+	for vf: VirtualFixture in _selected_virtual_fixtures:
 		fixtures.append(vf.get_fixture())
 	
 	fixture_group.remove_fixtures(fixtures)
@@ -462,7 +466,7 @@ func _on_horizontal_align_pressed() -> void:
 		
 	var base_position: Vector2 = _selected_virtual_fixtures[0].position
 	
-	for vf: NewVirtualFixture in _selected_virtual_fixtures:
+	for vf: VirtualFixture in _selected_virtual_fixtures:
 		_set_vf_position(vf, base_position)
 		base_position.x += _fixture_spacing.x
 		
@@ -476,7 +480,7 @@ func _on_vertical_align_pressed() -> void:
 		
 	var base_position: Vector2 = _selected_virtual_fixtures[0].position
 	
-	for vf: NewVirtualFixture in _selected_virtual_fixtures:
+	for vf: VirtualFixture in _selected_virtual_fixtures:
 		_set_vf_position(vf, base_position)
 		base_position.y += _fixture_spacing.x
 	

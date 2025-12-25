@@ -48,7 +48,7 @@ func reset() -> void:
 
 ## Takes focus to the input
 func focus() -> void:
-	if _module.is_editable():
+	if is_instance_valid(_module) and _module.is_editable():
 		_focus_node.grab_focus()
 
 

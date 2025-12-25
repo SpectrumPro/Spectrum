@@ -1,18 +1,10 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name UIVirtualFixtures extends UIPanel
 ## Layout view for showing vixtures
 
-
-## The fake scroll container, only used for the scroll bars
-@onready var dummy_scroll: ScrollContainer = $DummyScroll
-
-## The real scroll container that moves the content
-@onready var real_scroll: ScrollContainer = $Table/RealScroll
-
-## The virtual fixture container
-@onready var fixture_container: VirtualFixtureContainer = $Table/RealScroll/ScrollSize/FixtureContainer
 
 ## Zoom step value for zoom buttons
 const zoom_step: Vector2 = Vector2(0.05, 0.05)
@@ -24,6 +16,39 @@ const min_zoom: float = 0.2
 const max_zoom: float = 5
 
 
+## The fake scroll container, only used for the scroll bars
+@export var dummy_scroll: ScrollContainer
+
+## The real scroll container that moves the content
+@export var real_scroll: ScrollContainer
+
+## The virtual fixture container
+@export var fixture_container: VirtualFixtureContainer
+
+## The Remove fixture button
+@export var remove_fixture_button: Button 
+
+## The HorizontalAlign
+@export var horizontal_align_button: Button
+
+## The VerticalAlign
+@export var vertical_align_button: Button
+
+## The GridAlign button
+@export var grid_align_button: Button
+
+## The ComponentButton
+@export var component_button: ComponentButton
+
+
+## init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("UIVirtualFixtures")
+
+
+## ready
 func _ready() -> void:
 	dummy_scroll.get_h_scroll_bar().value_changed.connect(real_scroll.set_h_scroll)
 	dummy_scroll.get_v_scroll_bar().value_changed.connect(real_scroll.set_v_scroll)
@@ -36,8 +61,6 @@ func _ready() -> void:
 	real_scroll.scroll_vertical = (canvas_size.y / 2) - size.y / 2
 	
 	fixture_container.selected_virtual_fixtures_changed.connect(_on_selected_virtual_fixtures_changed)
-	Values.connect_to_selection_value("selected_fixtures", _on_selected_fixtures_changed)
-	
 	set_edit_mode_disabled(true)
 
 
@@ -58,29 +81,18 @@ func _edit_mode_toggled(p_edit_mode: bool) -> void:
 	fixture_container.set_edit_mode(_edit_mode)
 	$TitleBar/HBoxContainer/EditControls/HBoxContainer/Edit.button_pressed = _edit_mode
 	$GridAlignSize.hide()
-	
-	$TitleBar/HBoxContainer/GridControls.visible = _edit_mode
-	$TitleBar/HBoxContainer/VSeparator.visible = _edit_mode
-	$TitleBar/HBoxContainer/PanelContainer.visible = _edit_mode
-	$TitleBar/HBoxContainer/VSeparator2.visible = _edit_mode
-	$TitleBar/HBoxContainer/AlignControls.visible = _edit_mode
-	$TitleBar/HBoxContainer/VSeparator3.visible = _edit_mode
 
 
 ## Called when the selected virtual fixtures changes
 func _on_selected_virtual_fixtures_changed(p_fixtures: Array) -> void:
 	var disabled: bool = p_fixtures == []
-	$TitleBar/HBoxContainer/PanelContainer/HBoxContainer/RemoveFixtures.disabled = disabled
-	$TitleBar/HBoxContainer/AlignControls/HBoxContainer/HorizontalAlign.disabled = disabled
-	$TitleBar/HBoxContainer/AlignControls/HBoxContainer/VerticalAlign.disabled = disabled
-	$TitleBar/HBoxContainer/AlignControls/HBoxContainer/GridAlign.disabled = disabled
+	remove_fixture_button.disabled = disabled
+	horizontal_align_button.disabled = disabled
+	vertical_align_button.disabled = disabled
+	grid_align_button.disabled = disabled
 	
 	if disabled:
 		$GridAlignSize.hide()
-
-## Called when the fixture selection changed
-func _on_selected_fixtures_changed(fixtures: Array) -> void:
-	$TitleBar/HBoxContainer/PanelContainer/HBoxContainer/Import.disabled = fixtures == []
 
 
 ## Called when when there is a GUI input on the fixture container
@@ -99,41 +111,34 @@ func _update_scroll_containers() -> void:
 	dummy_scroll.get_node("ScrollSize").custom_minimum_size = fixture_container.size * fixture_container.scale
 
 
+## Calle when the grid align button is pressed
 func _on_grid_align_pressed() -> void:
 	$GridAlignSize.show()
 
 
-
 ## Saves this VirtualFixture layout into a dict
-func _save() -> Dictionary:
-	if fixture_container.fixture_group:
-		return {
-			"fixture_group": fixture_container.fixture_group.uuid,
-			"scroll_h": real_scroll.scroll_horizontal,
-			"scroll_v": real_scroll.scroll_vertical,
-			"zoom": fixture_container.scale.x
-		}
-	else:
-		return {}
+func serialize() -> Dictionary:
+	return super.serialize().merged({
+	"fixture_group": fixture_container.fixture_group.uuid(),
+		"scroll_h": real_scroll.scroll_horizontal,
+		"scroll_v": real_scroll.scroll_vertical,
+		"zoom": fixture_container.scale.x
+	} if fixture_container.fixture_group else {})
 
 
 ## Loads this VirtualFixture layout from a dict
-func _load(saved_data) -> void:
-	if saved_data.get("fixture_group") is String:
-		ComponentDB.request_component(saved_data.fixture_group, func (fixture_group: EngineComponent):
-			if fixture_group is FixtureGroup:
-				fixture_container.set_fixture_group(fixture_group)
-		)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	real_scroll.scroll_horizontal = type_convert(saved_data.get("scroll_h"), TYPE_INT)
-	real_scroll.scroll_vertical = type_convert(saved_data.get("scroll_v"), TYPE_INT)
+	var group_uuid: String = type_convert(p_serialized_data.get("fixture_group", ""), TYPE_STRING)
+	var zoom: int = type_convert(p_serialized_data.get("zoom", fixture_container.scale.x), TYPE_INT)
+	
+	component_button.look_for(group_uuid)
+	
+	real_scroll.scroll_horizontal = type_convert(p_serialized_data.get("scroll_h", real_scroll.scroll_horizontal), TYPE_INT)
+	real_scroll.scroll_vertical = type_convert(p_serialized_data.get("scroll_v", real_scroll.scroll_vertical), TYPE_INT)
 	
 	fixture_container.scale = Vector2(
-		type_convert(saved_data.get("zoom"), TYPE_FLOAT),
-		type_convert(saved_data.get("zoom"), TYPE_FLOAT)
+		zoom,
+		zoom
 	)
-
-
-
-func _on_table_gui_input(event: InputEvent) -> void:
-	print(event)

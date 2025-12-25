@@ -125,4 +125,5 @@ func _handle_resolve_request(p_type: Interface.ResolveType, p_hint: Interface.Re
 		Interface.fade_property(resolve_box, "modulate", p_color_hint, Callable(), ThemeManager.Constants.Times.EditControlResolve)
 	
 	else:
-		Interface.fade_property(resolve_box, "modulate", Color.TRANSPARENT, resolve_box.hide, ThemeManager.Constants.Times.EditControlResolve)
+		if resolve_box.is_visible():
+			Interface.fade_property(resolve_box, "modulate", Color.TRANSPARENT, resolve_box.hide, ThemeManager.Constants.Times.EditControlResolve)
