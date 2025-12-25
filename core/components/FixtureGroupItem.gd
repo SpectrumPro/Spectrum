@@ -62,18 +62,20 @@ func get_position() -> Vector3: return _position
 
 
 ## Saves this component into a dict
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"fixture": _fixture.uuid,
 		"position": var_to_str(_position)
-	}
+	})
 
 
 ## Loads this component from a dict
-func _load_request(serialized_data: Dictionary) -> void:
-	if serialized_data.get("fixture") is String and ComponentDB.get_component(serialized_data.fixture) is Fixture:
-		_set_fixture(ComponentDB.get_component(serialized_data.fixture))
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	var position: Variant = serialized_data.get("position", null)
+	if p_serialized_data.get("fixture") is String and ComponentDB.get_component(p_serialized_data.fixture) is Fixture:
+		_set_fixture(ComponentDB.get_component(p_serialized_data.fixture))
+	
+	var position: Variant = p_serialized_data.get("position", null)
 	if position is String and str_to_var(position) is Vector3:
 		_set_position(str_to_var(position))

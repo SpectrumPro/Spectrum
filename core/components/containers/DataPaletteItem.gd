@@ -11,13 +11,14 @@ var position: Vector2i = Vector2i.ZERO
 
 
 ## Serializes this scene and returnes it in a dictionary
-func _serialize_request() -> Dictionary:
-	return _serialize().merged({
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"position": var_to_str(position)
 	})
 
 
 ## Called when this scene is to be loaded from serialized data
-func _load_request(serialized_data: Dictionary) -> void:
-	_load(serialized_data)
-	position = str_to_var(serialized_data.get("position"))
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	position = type_convert(str_to_var(p_serialized_data.get("position")), TYPE_VECTOR2)

@@ -69,18 +69,20 @@ func _set_fade_out_speed(p_fade_out_speed: float) -> void:
 
 
 ## Serializes this scene and returnes it in a dictionary
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"fade_in_speed": _fade_in_speed,
 		"fade_out_speed": _fade_out_speed,
 		"save_data": _data_container.serialize()
-	}
+	})
 
 
-func _load_request(serialized_data: Dictionary) -> void:
-	_fade_in_speed = type_convert(serialized_data.get("fade_in_speed", _fade_in_speed), TYPE_FLOAT)
-	_fade_out_speed = type_convert(serialized_data.get("fade_out_speed", _fade_out_speed), TYPE_FLOAT)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_fade_in_speed = type_convert(p_serialized_data.get("fade_in_speed", _fade_in_speed), TYPE_FLOAT)
+	_fade_out_speed = type_convert(p_serialized_data.get("fade_out_speed", _fade_out_speed), TYPE_FLOAT)
 	
 	Network.deregister_network_object(_data_container.settings())
-	_data_container.load(serialized_data.get("save_data", {}))
+	_data_container.deserialize(p_serialized_data.get("save_data", {}))
 	Network.register_network_object(_data_container.uuid(), _data_container.settings())

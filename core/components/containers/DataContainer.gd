@@ -123,6 +123,26 @@ func set_stop(p_items: Array, p_stop: float) -> Promise:
 	return rpc("set_stop", [p_items, p_stop])
 
 
+## Handles delete requests
+func delete() -> void:
+	for item: ContainerItem in _items:
+		item.delete()
+	
+	super.delete()
+
+
+## Serializes this Datacontainer and returnes it in a dictionary
+func serialize() -> Dictionary:
+	return super.serialize().merged(_serialize())
+
+
+## Loads this DataContainer from a dictonary
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_load(p_serialized_data)
+
+
 ## Internal: Stores a ContainerItem
 func _store_item(p_item: ContainerItem, no_signal: bool = false) -> bool:
 	if not p_item or p_item in _items or not p_item.is_valid():
@@ -255,24 +275,3 @@ func _serialize() -> Dictionary:
 ## Called when this DataContainer is to be loaded from serialized data
 func _load(serialized_data: Dictionary) -> void:
 	_store_items(Utils.deseralise_component_array(type_convert(serialized_data.get("items", []), TYPE_ARRAY)))
-
-
-## Handles delete requests
-func _delete() -> void:
-	for item: ContainerItem in _items:
-		item.local_delete()
-
-
-## Serializes this Datacontainer and returnes it in a dictionary
-func _serialize_request() -> Dictionary: 
-	return _serialize()
-
-
-## Loads this DataContainer from a dictonary
-func _load_request(serialized_data) -> void: 
-	_load(serialized_data)
-
-
-## Handles delete requests
-func _delete_request() -> void:
-	_delete()

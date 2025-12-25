@@ -60,12 +60,12 @@ func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	
 	_settings_manager.register_networked_callbacks({
 		"on_name_changed": _set_name,
-		"on_delete_requested": local_delete,
+		"on_delete_requested": delete,
 		"on_user_meta_changed": _set_user_meta,
 		"on_user_meta_deleted": _delete_user_meta
 	})
 	
-	print("I am: ", _name, " | ", _uuid)
+	print_verbose("I am: ", name(), " | ", uuid())
 
 
 ## Shorthand for get_cid()
@@ -154,14 +154,12 @@ func get_class_tree() -> Array[String]:
 
 
 ## Always call this function when you want to delete this component. 
-func delete() -> void: 
+func delete_rpc() -> void: 
 	rpc("delete")
 
 
 ## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
-func local_delete() -> void:
-	_delete_request()
-	
+func delete() -> void:
 	delete_requested.emit()
 	print(_uuid, " Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
 
@@ -169,7 +167,6 @@ func local_delete() -> void:
 ## Returns serialized version of this component
 func serialize() -> Dictionary:
 	var serialized_data: Dictionary = {}
-	serialized_data = _serialize_request()
 	
 	serialized_data.uuid = _uuid
 	serialized_data.name = _name
@@ -179,7 +176,7 @@ func serialize() -> Dictionary:
 
 
 ## Loades this object from a serialized version
-func load(p_serialized_data: Dictionary) -> void:
+func deserialize(p_serialized_data: Dictionary) -> void:
 	_name = p_serialized_data.get("name", "Unnamed EngineComponent")
 	name_changed.emit(_name)
 
@@ -194,65 +191,6 @@ func load(p_serialized_data: Dictionary) -> void:
 	
 	if not "uuid" in p_serialized_data:
 		print(_name, " No uuid found in serialized_data, making new one: ", _uuid)
-	
-	_load_request(p_serialized_data)
-
-
-#region DeleteMe
-## Gets a control method by name
-func get_control_methods() -> Dictionary[String, Dictionary]:
-	return {}
-
-
-## Gets a control method by name
-func get_control_method(p_control_name: String) -> Dictionary:
-	return {}
-
-
-## Registers a callback to a server signal
-func register_callback(p_signal_name: String, p_callback: Callable) -> void:
-	pass
-
-
-## Registers a setting
-func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: Data.Type, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null, p_enum: Dictionary = {}) -> void:
-	pass
-
-
-## Shorthand for register_setting() for a string value
-func register_setting_string(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
-	pass
-
-
-## Shorthand for register_setting() for a float value
-func register_setting_bool(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
-	pass
-
-
-## Shorthand for register_setting() for a float value
-func register_setting_float(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_min: float, p_max: float) -> void:
-	pass
-
-
-## Shorthand for register_setting() for a float value
-func register_setting_enum(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_enum: Dictionary) -> void:
-	pass
-
-
-## Registers a custom setting panel
-func register_custom_panel(p_classname: String, p_key: String, p_entry_point: String, p_custom_panel: PackedScene) -> void:
-	pass
-
-
-## Gets the settings for the given class
-func get_settings(p_classname: String) -> Dictionary:
-	return {}
-
-
-## Registers a method that can be called by external control systems
-func register_control_method(p_name: String, p_down_method: Callable, p_up_method: Callable = Callable(), p_signal: Signal = Signal(), p_args: Array[int] = []) -> void:
-	pass
-#endregion
 
 
 ## Internal: Sets the name of this component
@@ -277,21 +215,6 @@ func _set_user_meta(p_key: String, p_value: Variant) -> void:
 func _delete_user_meta(p_key: String) -> void:
 	if _user_meta.erase(p_key):
 		user_meta_deleted.emit(p_key)
-
-
-## Overide this function to handle delete requests
-func _delete_request() -> void: 
-	return
-
-
-## Overide this function to serialize your object
-func _serialize_request() -> Dictionary: 
-	return {}
-
-
-## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void: 
-	return
 
 
 ## Debug function to tell if this component is freed from memory

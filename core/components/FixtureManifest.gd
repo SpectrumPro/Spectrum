@@ -225,8 +225,8 @@ func has_force_default(p_parameter) -> bool:
 
 
 ## Overide this function to serialize your object
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"type": type,
 		"manufacturer": manufacturer,
 		"importer": importer,
@@ -234,11 +234,13 @@ func _serialize_request() -> Dictionary:
 		"modes": _modes,
 		"categorys": _categorys,
 		"force_defaults": _force_defaults
-	}
+	})
 
 
 ## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void:
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
 	type = type_convert(p_serialized_data.get("type"), TYPE_INT)
 	manufacturer = type_convert(p_serialized_data.get("manufacturer"), TYPE_STRING)
 	importer = type_convert(p_serialized_data.get("importer"), TYPE_STRING)

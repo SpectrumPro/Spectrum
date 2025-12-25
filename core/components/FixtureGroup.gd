@@ -80,6 +80,48 @@ func remove_fixtures(fixtures: Array) -> Promise:
 	return rpc("remove_fixtures", [fixtures])
 
 
+## Deletes this FixtureGroup
+func delete() -> void:
+	for group_item: FixtureGroupItem in _fixtures.values():
+		group_item.delete()
+	
+	super.delete()
+
+
+## Saves this FixtureGroup into a dictionary
+func serialize() -> Dictionary:
+	var serialized_data: Dictionary = {
+		"fixtures": {}
+	}
+	
+	for fixture: Fixture in _fixtures:
+		serialized_data.fixtures[fixture.uuid] = _fixtures[fixture].serialize()
+	
+	return super.serialize().merged(serialized_data)
+
+
+## Loads this FixtureGroup from serialized data
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	var just_added_fixtures: Array[FixtureGroupItem] = []
+	
+	if p_serialized_data.get("fixtures") is Dictionary: 
+		var fixtures: Dictionary = p_serialized_data.fixtures
+		
+		for fixture_uuid: Variant in fixtures:
+			if ComponentDB.get_component(fixture_uuid) is Fixture:
+				
+				var new_group_item: FixtureGroupItem = FixtureGroupItem.new()
+				new_group_item.deserialize(fixtures[fixture_uuid])
+				
+				if _add_group_item(new_group_item, true):
+					just_added_fixtures.append(new_group_item)
+	
+	if just_added_fixtures:
+		fixtures_added.emit(just_added_fixtures)
+
+
 ## Internal: Adds a fixture to this FixtureGroup
 func _add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO, no_signal: bool = false) -> bool:
 	if fixture in _fixtures: return false
@@ -146,40 +188,3 @@ func _remove_fixtures(fixtures: Array) -> void:
 	
 	if just_removed_fixtures:
 		fixtures_removed.emit(just_removed_fixtures)
-
-
-func _delete_request() -> void:
-	for group_item: FixtureGroupItem in _fixtures.values():
-		group_item.local_delete()
-
-
-## Saves this FixtureGroup into a dictionary
-func _serialize_request() -> Dictionary:
-	var serialized_data: Dictionary = {
-		"fixtures": {}
-	}
-	
-	for fixture: Fixture in _fixtures:
-		serialized_data.fixtures[fixture.uuid] = _fixtures[fixture].serialize()
-	
-	return serialized_data
-
-
-## Loads this FixtureGroup from serialized data
-func _load_request(serialized_data: Dictionary) -> void:
-	var just_added_fixtures: Array[FixtureGroupItem] = []
-	
-	if serialized_data.get("fixtures") is Dictionary: 
-		var fixtures: Dictionary = serialized_data.fixtures
-		
-		for fixture_uuid: Variant in fixtures:
-			if ComponentDB.get_component(fixture_uuid) is Fixture:
-				
-				var new_group_item: FixtureGroupItem = FixtureGroupItem.new()
-				new_group_item.load(fixtures[fixture_uuid])
-				
-				if _add_group_item(new_group_item, true):
-					just_added_fixtures.append(new_group_item)
-	
-	if just_added_fixtures:
-		fixtures_added.emit(just_added_fixtures)

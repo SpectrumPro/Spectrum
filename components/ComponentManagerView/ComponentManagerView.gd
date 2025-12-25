@@ -124,7 +124,7 @@ func _on_new_button_pressed() -> void:
 
 ## Called when the DeleteComponent Button is presse
 func _on_delete_button_pressed() -> void:
-	settings_manager_multi_view.get_selected_manager().get_owner().delete()
+	settings_manager_multi_view.get_selected_manager().get_owner().delete_rpc()
 
 
 ## Called when the DuplicateComponent Button is pressed

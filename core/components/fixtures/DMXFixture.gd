@@ -246,14 +246,16 @@ func _erase_all_overrides() -> void:
 
 
 ## Saves this DMXFixture to a dictonary
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		 "channel": _channel
-	}
+	})
 
 
 ## Loads this DMXFixture from a dictonary
-func _load_request(p_serialized_data: Dictionary) -> void:
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
 	_channel = type_convert(p_serialized_data.get("channel"), TYPE_INT)
 	_set_manifest(type_convert(p_serialized_data.get("manifest_uuid"), TYPE_STRING), type_convert(p_serialized_data.get("mode", ""), TYPE_STRING), true)
 	

@@ -81,6 +81,50 @@ func get_triggers() -> Dictionary[int, Dictionary]:
 	return _triggers.duplicate()
 
 
+## Overide this function to serialize your object
+func serialize() -> Dictionary:
+	var triggers: Dictionary[int, Dictionary]
+	
+	for row: int in _triggers:
+		triggers[row] = {}
+		for column: int in _triggers[row]:
+			triggers[row][column] = {
+				"component": _triggers[row][column].component.uuid,
+				"up": _triggers[row][column].up.get_method() if _triggers[row][column].up else "",
+				"down": _triggers[row][column].down.get_method() if _triggers[row][column].down else "",
+				"name": _triggers[row][column].name,
+				"id": _triggers[row][column].id
+			}
+	
+	return super.serialize().merged({
+		"triggers": triggers
+	})
+
+
+## Overide this function to handle load requests
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	var triggers: Dictionary = type_convert(p_serialized_data.get("triggers", {}), TYPE_DICTIONARY)
+	
+	for row_key: int in triggers.keys():
+		var row_dict: Dictionary = type_convert(triggers.get(row_key, {}), TYPE_DICTIONARY)
+		
+		for column_key: int in row_dict.keys():
+			var trigger_data: Dictionary = type_convert(row_dict.get(column_key, {}), TYPE_DICTIONARY)
+			
+			var component_id: String = type_convert(trigger_data.get("component", ""), TYPE_STRING)
+			var id: String = type_convert(trigger_data.get("id", ""), TYPE_STRING)
+			var name: String = type_convert(trigger_data.get("name", ""), TYPE_STRING)
+			
+			if component_id == null:
+				continue
+			
+			ComponentDB.request_component(component_id, func(component: EngineComponent) -> void:
+				_add_trigger(component, id, name, row_key, column_key, true)
+			)
+
+
 ## Internal: Adds a trigger at the given row and column
 func _add_trigger(p_component: EngineComponent, p_id: String, p_name: String, p_row: int, p_column: int, no_signal: bool = false) -> bool:
 	if not p_component.get_control_method(p_id):
@@ -152,46 +196,3 @@ func _call_trigger_down(p_row: int, p_column: int, p_value: Variant = null) -> v
 		return
 	
 	trigger_down.emit(p_row, p_column, p_value)
-
-
-## Overide this function to serialize your object
-func _serialize_request() -> Dictionary:
-	var triggers: Dictionary[int, Dictionary]
-
-	for row: int in _triggers:
-		triggers[row] = {}
-		for column: int in _triggers[row]:
-			triggers[row][column] = {
-				"component": _triggers[row][column].component.uuid,
-				"up": _triggers[row][column].up.get_method() if _triggers[row][column].up else "",
-				"down": _triggers[row][column].down.get_method() if _triggers[row][column].down else "",
-				"name": _triggers[row][column].name,
-				"id": _triggers[row][column].id
-			}
-
-	return {
-		"triggers": triggers
-	}
-
-
-## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void:
-	var triggers: Dictionary = type_convert(p_serialized_data.get("triggers", {}), TYPE_DICTIONARY)
-
-	for row_key: int in triggers.keys():
-		var row_dict: Dictionary = type_convert(triggers.get(row_key, {}), TYPE_DICTIONARY)
-
-		for column_key: int in row_dict.keys():
-			var trigger_data: Dictionary = type_convert(row_dict.get(column_key, {}), TYPE_DICTIONARY)
-
-			var component_id: String = type_convert(trigger_data.get("component", ""), TYPE_STRING)
-			var id: String = type_convert(trigger_data.get("id", ""), TYPE_STRING)
-			var name: String = type_convert(trigger_data.get("name", ""), TYPE_STRING)
-
-			if component_id == null:
-				continue
-			
-			ComponentDB.request_component(component_id, func(component: EngineComponent) -> void:
-				_add_trigger(component, id, name, row_key, column_key, true)
-			)
-		

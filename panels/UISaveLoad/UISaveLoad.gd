@@ -173,7 +173,7 @@ func _on_save_ui_pressed() -> void:
 
 ## Called when the save button is pressed
 func _on_save_pressed() -> void: 
-	Core.save()
+	Core.save_to_file()
 
 
 ## Called when the new button is clicked

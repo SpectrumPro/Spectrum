@@ -104,8 +104,8 @@ func serialize() -> Promise:
 
 
 ## Saves this file to disk on the server
-func save(file_name: String = _current_file_name) -> Promise: 
-	return Network.send_command("engine", "save", [file_name])
+func save_to_file(file_name: String = _current_file_name) -> Promise: 
+	return Network.send_command("engine", "save_to_file", [file_name])
 
 
 ## Loads a file on the server
@@ -265,13 +265,16 @@ func _load_from(serialized_data: Dictionary) -> void:
 	for object_class_name: String in _config.root_classes:
 		for component_uuid: String in serialized_data.get(object_class_name, {}):
 			var serialized_component: Dictionary = serialized_data[object_class_name][component_uuid]
-		
+			var classname: String = type_convert(serialized_component.get("class_name", ""), TYPE_STRING)
+
 			# Check if the components class name is a valid class type in the engine
-			if ClassList.has_class(serialized_component.get("class_name", "")):
-				var new_component: EngineComponent = ClassList.get_class_script(serialized_component.class_name).new(component_uuid)
-				new_component.load(serialized_component)
-				_add_component(new_component, true)
-				
+			if not ClassList.has_class(classname):
+				continue
+			
+			var new_component: EngineComponent = ClassList.get_class_script(serialized_component.class_name).new(component_uuid)
+			new_component.deserialize(serialized_component)
+			
+			if _add_component(new_component, true):
 				just_added_components.append(new_component)
 	
 	components_added.emit.call_deferred(just_added_components)

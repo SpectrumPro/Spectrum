@@ -256,8 +256,16 @@ func _remove_fixtures(p_fixtures: Array, p_no_signal: bool = false, p_delete: bo
 		fixtures_removed.emit(just_removed_fixtures)
 
 
+## Called when this universe is to be deleted, see [method EngineComponent.delete]
+func delete() -> void:
+	_remove_outputs(_outputs.values(), false, true)
+	_remove_fixtures(_fixtures.values(), false, true)
+	
+	super.delete()
+
+
 ## Serializes this universe
-func _serialize_request() -> Dictionary:
+func serialize() -> Dictionary:
 	var serialized_outputs: Dictionary[String, Dictionary] = {}
 	var serialized_fixtures: Dictionary[String, Array] = {}
 
@@ -270,20 +278,17 @@ func _serialize_request() -> Dictionary:
 		for fixture: DMXFixture in _fixture_channels[channel]:
 			serialized_fixtures[str(channel)].append(fixture.uuid)
 
-	return {
+	return super.serialize().merged({
 		"outputs": serialized_outputs,
 		"fixtures": serialized_fixtures
-	}
+	})
 
-
-## Called when this universe is to be deleted, see [method EngineComponent.delete]
-func _delete_request():
-	_remove_outputs(_outputs.values(), false, true)
-	_remove_fixtures(_fixtures.values(), false, true)
 
 
 ## Loads this universe from a serialised universe
-func _load_request(p_serialized_data: Dictionary) -> void:
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
 	var just_added_fixtures: Array[DMXFixture] = []
 	var just_added_output: Array[DMXOutput] = []
 
@@ -299,7 +304,7 @@ func _load_request(p_serialized_data: Dictionary) -> void:
 		var classname: String = p_serialized_data.outputs[output_uuid].get("class_name", "")
 		if ClassList.has_class(classname, "DMXOutput"):
 			var new_output: DMXOutput = ClassList.get_class_script(classname).new(output_uuid)
-			new_output.load(p_serialized_data.outputs[output_uuid])
+			new_output.deserialize(p_serialized_data.outputs[output_uuid])
 			
 			_add_output(new_output, true)
 			just_added_output.append(new_output)

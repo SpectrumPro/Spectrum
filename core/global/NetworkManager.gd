@@ -232,7 +232,7 @@ func deserialize_objects(p_data: Variant, p_flags: int = NetworkFlags.NONE) -> V
 					var initialized_object: EngineComponent = ClassList.get_class_script(p_data._class_name).new(p_data._object_ref)
 					
 					if p_data.has("_serialized_object") and typeof(p_data._serialized_object) == TYPE_DICTIONARY:
-						initialized_object.load(p_data._serialized_object)
+						initialized_object.deserialize(p_data._serialized_object)
 						
 					return initialized_object
 				

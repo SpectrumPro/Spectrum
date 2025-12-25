@@ -205,6 +205,45 @@ func seek_to(cue: Cue) -> Promise:
 	return rpc("seek_to", [cue])
 
 
+## Called when this CueList is to be deleted
+func delete() -> void:
+	for cue: Cue in _cues.duplicate():
+		cue.local_delete()
+	
+	super.delete()
+
+
+## Saves this cue list to a Dictionary
+func serialize() -> Dictionary:
+	return super.serialize().merged({
+		"use_global_fade": _use_global_fade,
+		"use_global_pre_wait": _use_global_pre_wait,
+		"global_fade": _global_fade,
+		"global_pre_wait": _global_pre_wait,
+		"allow_triggered_looping": _allow_triggered_looping,
+		"loop_mode": _loop_mode,
+		"cues": Utils.seralise_component_array(_cues)
+	})
+
+
+## Loads this cue list from a Dictionary
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_use_global_fade = type_convert(p_serialized_data.get("use_global_fade", _use_global_fade), TYPE_BOOL)
+	_use_global_pre_wait = type_convert(p_serialized_data.get("use_global_pre_wait", _use_global_pre_wait), TYPE_BOOL)
+	_global_fade = type_convert(p_serialized_data.get("global_fade", _global_fade), TYPE_FLOAT)
+	_global_pre_wait = type_convert(p_serialized_data.get("global_pre_wait", _global_pre_wait), TYPE_FLOAT)
+	_allow_triggered_looping = type_convert(p_serialized_data.get("allow_triggered_looping", _allow_triggered_looping), TYPE_BOOL)
+	_loop_mode = type_convert(p_serialized_data.get("loop_mode", _loop_mode), TYPE_INT)
+	
+	_add_cues(Utils.deseralise_component_array(type_convert(p_serialized_data.get("cues", []), TYPE_ARRAY)))
+	
+	var active_cue: EngineComponent = ComponentDB.get_component(type_convert(p_serialized_data.get("active_cue_uuid", ""), TYPE_STRING))
+	
+	if _cues.has(active_cue):
+		_active_cue = active_cue
+
 
 ## Adds a cue to the list
 func _add_cue(p_cue: Cue, p_no_signal: bool = false) -> bool:
@@ -328,39 +367,3 @@ func _set_global_pre_wait_speed(global_pre_wait_speed: float) -> void:
 func _on_active_cue_changed(p_cue: Cue) -> void:
 	_active_cue = p_cue
 	active_cue_changed.emit(_active_cue)
-
-
-## Saves this cue list to a Dictionary
-func _serialize_request() -> Dictionary:
-	return {
-		"use_global_fade": _use_global_fade,
-		"use_global_pre_wait": _use_global_pre_wait,
-		"global_fade": _global_fade,
-		"global_pre_wait": _global_pre_wait,
-		"allow_triggered_looping": _allow_triggered_looping,
-		"loop_mode": _loop_mode,
-		"cues": Utils.seralise_component_array(_cues)
-	}
-
-
-## Loads this cue list from a Dictionary
-func _load_request(serialized_data: Dictionary) -> void:
-	_use_global_fade = type_convert(serialized_data.get("use_global_fade", _use_global_fade), TYPE_BOOL)
-	_use_global_pre_wait = type_convert(serialized_data.get("use_global_pre_wait", _use_global_pre_wait), TYPE_BOOL)
-	_global_fade = type_convert(serialized_data.get("global_fade", _global_fade), TYPE_FLOAT)
-	_global_pre_wait = type_convert(serialized_data.get("global_pre_wait", _global_pre_wait), TYPE_FLOAT)
-	_allow_triggered_looping = type_convert(serialized_data.get("allow_triggered_looping", _allow_triggered_looping), TYPE_BOOL)
-	_loop_mode = type_convert(serialized_data.get("loop_mode", _loop_mode), TYPE_INT)
-	
-	_add_cues(Utils.deseralise_component_array(type_convert(serialized_data.get("cues", []), TYPE_ARRAY)))
-	
-	var active_cue: EngineComponent = ComponentDB.get_component(type_convert(serialized_data.get("active_cue_uuid", ""), TYPE_STRING))
-	
-	if _cues.has(active_cue):
-		_active_cue = active_cue
-
-
-## Called when this CueList is to be deleted
-func _delete_request() -> void:
-	for cue: Cue in _cues.duplicate():
-		cue.local_delete()

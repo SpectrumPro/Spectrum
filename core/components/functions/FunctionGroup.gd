@@ -149,24 +149,28 @@ func _set_function_index(p_function: Function, p_index: int) -> bool:
 
 
 ## Overide this function to serialize your object
-func _serialize_request() -> Dictionary:
+func serialize() -> Dictionary:
 	var function_uuids: Array[String]
 	
 	for function: Function in _functions:
 		function_uuids.append(function.uuid)
 	
-	return {
+	return super.serialize().merged({
 		"functions": function_uuids,
-	}
+	})
 
 
 ## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void:
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
 	var function_uuids: Array = type_convert(p_serialized_data.get("functions", []), TYPE_ARRAY)
 	
 	for uuid: Variant in function_uuids:
-		if uuid is String:
-			ComponentDB.request_component(uuid, func (function: EngineComponent):
-				if function is Function:
-					_add_function(function)
-			)
+		if not uuid is String:
+			continue
+		
+		ComponentDB.request_component(uuid, func (function: EngineComponent):
+			if function is Function:
+				_add_function(function)
+		)
