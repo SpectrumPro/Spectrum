@@ -22,11 +22,6 @@ jobs:
           lfs: true
           fetch-depth: 0
 
-      - name: Create git tag
-        run: |
-          git tag ${{ inputs.version }}
-          git push origin ${{ inputs.version }}
-
       - name: Export Spectrum
         id: export
         uses: firebelley/godot-export@v6.0.0
@@ -36,6 +31,11 @@ jobs:
           relative_project_path: ./
           archive_output: true
           presets_to_export: Windows, Linux, macOS
+      
+      - name: Create git tag
+        run: |
+          git tag ${{ inputs.version }}
+          git push origin ${{ inputs.version }}
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1.14.0
