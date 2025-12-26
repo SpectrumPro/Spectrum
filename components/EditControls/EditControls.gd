@@ -53,8 +53,8 @@ func _ready() -> void:
 	set_show_close(show_close)
 	set_show_handle(show_handle)
 	
-	Interface.resolve_requested.connect(_handle_resolve_request)
-	_handle_resolve_request(Interface.get_current_resolve_type(), Interface.get_current_resolve_hint(), Interface.get_current_resolve_classname(), Interface.get_current_resolve_color())
+	#Interface.resolve_requested.connect(_handle_resolve_request)
+	#_handle_resolve_request(Interface.get_current_resolve_type(), Interface.get_current_resolve_hint(), Interface.get_current_resolve_classname(), Interface.get_current_resolve_color())
 
 
 ## Sets the visibility of the edit button
