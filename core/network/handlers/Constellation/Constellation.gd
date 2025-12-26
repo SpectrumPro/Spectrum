@@ -443,10 +443,10 @@ func _logv(...args) -> void:
 
 ## Starts this node, opens network connection
 func _bind_network() -> void:
-	#_mcast_tx.set_reuse_address_enabled(true)
-	#_mcast_rx.set_reuse_address_enabled(true)
-	#_mcast_tx.set_reuse_port_enabled(true)
-	#_mcast_rx.set_reuse_port_enabled(true)
+	_mcast_tx.set_reuse_address_enabled(true)
+	_mcast_rx.set_reuse_address_enabled(true)
+	_mcast_tx.set_reuse_port_enabled(true)
+	_mcast_rx.set_reuse_port_enabled(true)
 	
 	var rx_address: String = ConstellationConfig.bind_address if OS.has_feature("windows") else MCAST_GROUP
 	
