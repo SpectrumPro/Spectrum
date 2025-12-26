@@ -17,20 +17,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           fetch-depth: 0
 
       - name: Export Spectrum
         id: export
-        uses: firebelley/godot-export@v6.0.0
+        uses: firebelley/godot-export@v7.0.0
         with:
           godot_executable_download_url: https://github.com/not-my-username/godot/releases/download/4.5.2-so_reusraddr/godot.linuxbsd.editor.x86_64.zip
           godot_export_templates_download_url: https://github.com/not-my-username/godot/releases/download/4.5.2-so_reusraddr/4.5.2.stable.so_reuseaddr.zip
           relative_project_path: ./
           archive_output: true
-          presets_to_export: Windows, Linux, macOS
+          cache: true
+          presets_to_export: windows.x86_64, macOS.universal, linux.x86.64
       
       - name: Create git tag
         run: |
