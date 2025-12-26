@@ -1,21 +1,31 @@
 name: Build and Release Spectrum Client
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag to release (e.g. v1.2.3)"
+        required: true
+        type: string
 
 jobs:
   export_spectrum:
     name: Build Spectrum Client
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
+
+      - name: Create git tag
+        run: |
+          git tag ${{ inputs.version }}
+          git push origin ${{ inputs.version }}
 
       - name: Export Spectrum
         id: export
@@ -25,13 +35,14 @@ jobs:
           godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz
           relative_project_path: ./
           archive_output: true
-          presets_to_export: Windows, Linux, macOS 
+          presets_to_export: Windows, Linux, macOS
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1.14.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.version }}
+          name: ${{ inputs.version }}
           generateReleaseNotes: true
-          tag: ${{ github.ref_name }}
           artifacts: ${{ steps.export.outputs.archive_directory }}/*
 
