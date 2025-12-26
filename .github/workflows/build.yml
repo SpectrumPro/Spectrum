@@ -29,41 +29,9 @@ jobs:
           godot_executable_download_url: https://github.com/not-my-username/godot/releases/download/4.5.2-so_reusraddr/godot.linuxbsd.editor.x86_64.zip
           godot_export_templates_download_url: https://github.com/not-my-username/godot/releases/download/4.5.2-so_reusraddr/4.5.2.stable.so_reuseaddr.zip
           relative_project_path: ./
-          archive_output: false
+          archive_output: true 
           cache: true
           presets_to_export: windows.x86_64, macOS.universal, linux.x86.64
-
-      - name: Append version to exported binaries
-        run: |
-          set -e
-
-          VERSION="${{ inputs.version }}"
-          DIR="${{ steps.export.outputs.build_directory }}"
-
-          for platform_dir in "$DIR"/*; do
-            echo "Processing $platform_dir"
-            cd "$platform_dir"
-
-            # Windows
-            for exe in *.exe; do
-              [ -e "$exe" ] || continue
-              mv "$exe" "${exe%.exe}-${VERSION}.exe"
-            done
-
-            # Linux
-            for bin in *.x86_64; do
-              [ -e "$bin" ] || continue
-              mv "$bin" "${bin%.x86_64}-${VERSION}.x86_64"
-            done
-
-            # macOS
-            for app in *.app; do
-              [ -e "$app" ] || continue
-              mv "$app" "${app%.app}-${VERSION}.app"
-            done
-
-            cd - >/dev/null
-          done
 
       - name: Create git tag
         run: |
@@ -77,5 +45,5 @@ jobs:
           tag: ${{ inputs.version }}
           name: ${{ inputs.version }}
           generateReleaseNotes: true
-          artifacts: ${{ steps.export.outputs.build_directory }}/*
+          artifacts: ${{ steps.export.outputs.archive_directory }}/*
 
