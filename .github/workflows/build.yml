@@ -38,7 +38,7 @@ jobs:
           set -e
 
           VERSION="${{ inputs.version }}"
-          DIR="${{ steps.export.outputs.archive_directory }}"
+          DIR="${{ steps.export.outputs.build_directory }}"
 
           for platform_dir in "$DIR"/*; do
             echo "Processing $platform_dir"
