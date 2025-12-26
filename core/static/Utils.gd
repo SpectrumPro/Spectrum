@@ -41,7 +41,10 @@ static func load_json_from_file(p_file_path: String, p_file_name: String) -> Dic
 		return {}
 	
 	var file_access: FileAccess = FileAccess.open(p_file_path + p_file_name, FileAccess.READ)
-	print(FileAccess.get_open_error())
+	
+	if file_access.get_open_error() or not is_instance_valid(file_access):
+		return {}
+	
 	var json: Variant = JSON.parse_string(file_access.get_as_text())
 	
 	if json is Dictionary:
