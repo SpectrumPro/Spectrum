@@ -135,7 +135,7 @@ var _windows: RefMap = RefMap.new()
 var _window_popups: Dictionary[Window, Control]
 
 ## The WindowPopups scene to be instanced on each window
-var _window_popups_scene: PackedScene = load("res://WindowPopups.tscn")
+var _window_popups_scene: PackedScene = load("uid://ds42t8h4nusm4")
 
 ## All active fade animations
 var _active_fade_animations: Dictionary[Object, Dictionary]

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="SpectrumClient"
-config/description="Realtime node based DMX controller"
+config/description="The modular lighting system."
 config/version="v1.0.0-beta.3"
 run/main_scene="uid://d00fmrh7nbaua"
 config/use_custom_user_dir=true
@@ -20,9 +20,10 @@ config/auto_accept_quit=false
 config/features=PackedStringArray("4.5")
 boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
 boot_splash/fullsize=false
-boot_splash/image="uid://dluxck1anmg75"
-config/icon="res://assets/Icon.png"
-config/windows_native_icon="res://icon.ico"
+boot_splash/image="uid://bg5hotmf8svep"
+config/icon="uid://m2tieo4unrrd"
+config/macos_native_icon="res://assets/logos/spectrum/spectrum_dark.icns"
+config/windows_native_icon="res://assets/logos/spectrum/spectrum_dark.ico"
 
 [audio]
 

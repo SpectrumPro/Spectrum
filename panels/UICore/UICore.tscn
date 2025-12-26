@@ -16,7 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://cbwmiekm47cot" path="res://assets/icons/Action.svg" id="11_q5s34"]
 [ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="12_ucqqu"]
 [ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="13_c1is7"]
-[ext_resource type="Texture2D" uid="uid://dvabce3i3r2cu" path="res://assets/LogoTextSM.svg" id="14_7uvc5"]
+[ext_resource type="Texture2D" uid="uid://bg5hotmf8svep" path="res://assets/logos/spectrum/dark_scaled/spectrum_dark-256x256.png" id="17_r218t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aoeir"]
 content_margin_left = 4.0
@@ -320,7 +320,6 @@ layout_mode = 2
 label_settings = SubResource("LabelSettings_7y6be")
 
 [node name="StartupBG" type="PanelContainer" parent="."]
-visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bphhv")
 
@@ -334,16 +333,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -479.99985
-offset_top = -75.0
-offset_right = 479.99985
-offset_bottom = 75.0
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("14_7uvc5")
-expand_mode = 1
+texture = ExtResource("17_r218t")
 stretch_mode = 4
 
 [connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Menu" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_menu_toggled"]
