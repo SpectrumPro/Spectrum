@@ -23,10 +23,10 @@ var _input_actions: RefMap = RefMap.new()
 
 ## Internal actions
 var _internal_actions: Dictionary[String, Callable] = {
-	"reload": Client.connect_to_server,
 	"clear_programmer": Programmer.clear,
-	"store_mode": _handle_store_mode_action
-
+	"store_mode": _handle_store_mode_action,
+	"ui_cancel": Interface.hide_all_popup_panels,
+	"command_palette": Interface.toggle_popup_visable.bind(Interface.WindowPopup.COMMAND_PALETTE, self),
 }
 
 ## Allowed input events for shortcuts
@@ -83,6 +83,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 		elif event.is_action_released(input_action.uuid()):
 			input_action.deactivate()
+
+
+## Notification
+func _notification(p_what: int) -> void:
+	if p_what == NOTIFICATION_WM_CLOSE_REQUEST:
+		Interface.prompt_popup_dialog(self, "Close Main Window?")\
+		.button("Cancel", false)\
+		.button("Close", true, Color.RED)\
+		.then(func ():
+			get_tree().quit()
+		)
 
 
 ## Resets to a default state

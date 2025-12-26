@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name FixtureGroup extends EngineComponent
 ## Stores a group of fixtures, using FixtureGroupItem
@@ -13,29 +14,113 @@ signal fixtures_removed(fixtures: Array[Fixture])
 
 
 ## Stores all the fixtures and there positions. Stored as {Fixture: FixtureGroupItem}
-var _fixtures: Dictionary = {}
+var _fixtures: Dictionary[Fixture, FixtureGroupItem] = {}
 
 
-## Called when this EngineComponent is ready
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("FixtureGroup")
 	_set_self_class("FixtureGroup")
 	
-	register_callback("on_fixtures_added", _add_group_items)
-	register_callback("on_fixtures_removed", _remove_fixtures)
-
-
-## Gets a FixtureGroupItem
-func get_group_item(fixture: Fixture) -> FixtureGroupItem:
-	return _fixtures.get(fixture)
+	_settings_manager.register_custom_panel("Fixtures", preload("res://components/SettingsManagerCustomPanels/FixtureGroupFixtures.tscn"), "set_fixture_group")
+	
+	_settings_manager.register_networked_callbacks({
+		"on_fixtures_added": _add_group_items,
+		"on_fixtures_removed": _remove_fixtures,
+	})
+	
+	_settings_manager.set_callback_allow_deserialize("on_fixtures_added")
 
 
 ## Gets all the fixtures
-func get_fixtures() -> Array:
-	return _fixtures.keys()
+func get_fixtures() -> Array[Fixture]:
+	var result: Array[Fixture]
+	result.assign(_fixtures.keys())
+	
+	return result
+
+
+## Gets all the group items
+func get_group_items() -> Array[FixtureGroupItem]:
+	var result: Array[FixtureGroupItem]
+	result.assign(_fixtures.values())
+	
+	return result
+
+
+## Gets a FixtureGroupItem
+func get_group_item_for(fixture: Fixture) -> FixtureGroupItem:
+	return _fixtures.get(fixture)
 
 
 ## Adds a fixture to this FixtureGroup
-func add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO) -> void: rpc("add_fixture", [fixture, position])
+func add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO) -> Promise: 
+	return rpc("add_fixture", [fixture, position])
+
+
+## Adds a pre-existing FixtureGroupItem. Returns false the fixture is already in this group
+func add_group_item(group_item: FixtureGroupItem) -> Promise: 
+	return rpc("add_group_item", [group_item])
+
+
+## Adds mutiple group items at once
+func add_group_items(group_items: Array) -> Promise: 
+	return rpc("add_group_items", [group_items])
+
+
+## Removes a fixture from this group, returns false if this fixture is not in this group
+func remove_fixture(fixture: Fixture) -> Promise: 
+	return rpc("remove_fixture", [fixture])
+
+
+## Adds mutiple fixtures at once
+func remove_fixtures(fixtures: Array) -> Promise: 
+	return rpc("remove_fixtures", [fixtures])
+
+
+## Deletes this FixtureGroup
+func delete() -> void:
+	for group_item: FixtureGroupItem in _fixtures.values():
+		group_item.delete()
+	
+	super.delete()
+
+
+## Saves this FixtureGroup into a dictionary
+func serialize() -> Dictionary:
+	var serialized_data: Dictionary = {
+		"fixtures": {}
+	}
+	
+	for fixture: Fixture in _fixtures:
+		serialized_data.fixtures[fixture.uuid] = _fixtures[fixture].serialize()
+	
+	return super.serialize().merged(serialized_data)
+
+
+## Loads this FixtureGroup from serialized data
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	var just_added_fixtures: Array[FixtureGroupItem] = []
+	
+	if p_serialized_data.get("fixtures") is Dictionary: 
+		var fixtures: Dictionary = p_serialized_data.fixtures
+		
+		for fixture_uuid: Variant in fixtures:
+			if ComponentDB.get_component(fixture_uuid) is Fixture:
+				
+				var new_group_item: FixtureGroupItem = FixtureGroupItem.new()
+				new_group_item.deserialize(fixtures[fixture_uuid])
+				
+				if _add_group_item(new_group_item, true):
+					just_added_fixtures.append(new_group_item)
+	
+	if just_added_fixtures:
+		fixtures_added.emit(just_added_fixtures)
+
 
 ## Internal: Adds a fixture to this FixtureGroup
 func _add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO, no_signal: bool = false) -> bool:
@@ -50,9 +135,6 @@ func _add_fixture(fixture: Fixture, position: Vector3 = Vector3.ZERO, no_signal:
 	
 	return true
 
-
-## Adds a pre-existing FixtureGroupItem. Returns false the fixture is already in this group
-func add_group_item(group_item: FixtureGroupItem) -> void: rpc("add_group_item", [group_item])
 
 ## Internal: Adds a pre-existing FixtureGroupItem. Returns false the fixture is already in this group
 func _add_group_item(group_item: FixtureGroupItem, no_signal: bool = false) -> bool:
@@ -69,9 +151,6 @@ func _add_group_item(group_item: FixtureGroupItem, no_signal: bool = false) -> b
 	return true
 
 
-## Adds mutiple group items at once
-func add_group_items(group_items: Array) -> void: rpc("add_group_items", [group_items])
-
 ## Internal: Adds mutiple group items at once
 func _add_group_items(group_items: Array) -> void:
 	var just_added_group_items: Array[FixtureGroupItem]
@@ -84,9 +163,6 @@ func _add_group_items(group_items: Array) -> void:
 	if just_added_group_items:
 		fixtures_added.emit(just_added_group_items)
 
-
-## Removes a fixture from this group, returns false if this fixture is not in this group
-func remove_fixture(fixture: Fixture) -> void: rpc("remove_fixture", [fixture])
 
 ## Internal: Removes a fixture from this group, returns false if this fixture is not in this group
 func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
@@ -101,9 +177,6 @@ func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
 	return true
 
 
-## Adds mutiple fixtures at once
-func remove_fixtures(fixtures: Array) -> void: rpc("remove_fixtures", [fixtures])
-
 ## Internal: Adds mutiple fixtures at once
 func _remove_fixtures(fixtures: Array) -> void:
 	var just_removed_fixtures: Array[Fixture] = []
@@ -115,40 +188,3 @@ func _remove_fixtures(fixtures: Array) -> void:
 	
 	if just_removed_fixtures:
 		fixtures_removed.emit(just_removed_fixtures)
-
-
-func _delete_request() -> void:
-	for group_item: FixtureGroupItem in _fixtures.values():
-		group_item.local_delete()
-
-
-## Saves this FixtureGroup into a dictionary
-func _serialize_request() -> Dictionary:
-	var serialized_data: Dictionary = {
-		"fixtures": {}
-	}
-	
-	for fixture: Fixture in _fixtures:
-		serialized_data.fixtures[fixture.uuid] = _fixtures[fixture].serialize()
-	
-	return serialized_data
-
-
-## Loads this FixtureGroup from serialized data
-func _load_request(serialized_data: Dictionary) -> void:
-	var just_added_fixtures: Array[FixtureGroupItem] = []
-	
-	if serialized_data.get("fixtures") is Dictionary: 
-		var fixtures: Dictionary = serialized_data.fixtures
-		
-		for fixture_uuid: Variant in fixtures:
-			if ComponentDB.get_component(fixture_uuid) is Fixture:
-				
-				var new_group_item: FixtureGroupItem = FixtureGroupItem.new()
-				new_group_item.load(fixtures[fixture_uuid])
-				
-				if _add_group_item(new_group_item, true):
-					just_added_fixtures.append(new_group_item)
-	
-	if just_added_fixtures:
-		fixtures_added.emit(just_added_fixtures)

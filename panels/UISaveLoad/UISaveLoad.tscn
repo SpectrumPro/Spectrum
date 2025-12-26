@@ -1,0 +1,200 @@
+[gd_scene load_steps=15 format=3 uid="uid://dm6rs78fm1lh4"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_4n2ck"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_252qo"]
+[ext_resource type="Script" uid="uid://vwxcnn2f2rl6" path="res://panels/UISaveLoad/UISaveLoad.gd" id="3_yqnd6"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="4_01dry"]
+[ext_resource type="Texture2D" uid="uid://dpncjre34kf25" path="res://assets/icons/Storage.svg" id="5_868id"]
+[ext_resource type="Texture2D" uid="uid://c6rls43ddilxg" path="res://assets/icons/Save.svg" id="6_einec"]
+[ext_resource type="Texture2D" uid="uid://b7f3pgpifntmh" path="res://assets/icons/SaveAs.svg" id="7_hynpq"]
+[ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="8_a55ru"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="9_2kwnv"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="10_xgi71"]
+[ext_resource type="Texture2D" uid="uid://dhhbjjtkgbfl0" path="res://assets/icons/FileOpen.svg" id="11_08ept"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="12_cy36i"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="13_e2vsh"]
+[ext_resource type="Texture2D" uid="uid://ddo26yd8qpx5r" path="res://assets/icons/Refresh.svg" id="14_g48wy"]
+
+[node name="UISaveLoad" type="PanelContainer" node_paths=PackedStringArray("_tree", "_loading_label", "_file_action_buttons", "_current_file_name", "_save_button", "edit_controls", "menu_bar")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_4n2ck")
+theme_override_styles/panel = ExtResource("2_252qo")
+script = ExtResource("3_yqnd6")
+_tree = NodePath("VBoxContainer/Tree")
+_loading_label = NodePath("VBoxContainer/Tree/LoadingLabel")
+_file_action_buttons = [NodePath("VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Open"), NodePath("VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Rename"), NodePath("VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Delete")]
+_current_file_name = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer/LineEdit")
+_save_button = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/Save")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("4_01dry")]
+layout_mode = 2
+
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "Save Load"
+icon = ExtResource("5_868id")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+disabled = true
+text = "Save"
+icon = ExtResource("6_einec")
+
+[node name="SaveAs" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Save As"
+icon = ExtResource("7_hynpq")
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Current File: "
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Current File Name"
+editable = false
+expand_to_text_length = true
+
+[node name="PanelContainer4" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer4"]
+layout_mode = 2
+
+[node name="SaveUI" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer4/HBoxContainer"]
+layout_mode = 2
+text = "Save UI"
+icon = ExtResource("8_a55ru")
+
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="3"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="New" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+text = "New"
+icon = ExtResource("9_2kwnv")
+
+[node name="Tree" type="Tree" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 4
+column_titles_visible = true
+hide_root = true
+select_mode = 1
+
+[node name="LoadingLabel" type="Label" parent="VBoxContainer/Tree"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.5
+offset_top = -11.5
+offset_right = 5.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Loading..."
+
+[node name="BottomBar" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = ExtResource("10_xgi71")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BottomBar"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/BottomBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="FileActionButtons" type="HBoxContainer" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Open" type="Button" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+disabled = true
+text = "Open"
+icon = ExtResource("11_08ept")
+
+[node name="Rename" type="Button" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+disabled = true
+text = "Rename"
+icon = ExtResource("12_cy36i")
+
+[node name="Delete" type="Button" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+disabled = true
+text = "Delete"
+icon = ExtResource("13_e2vsh")
+
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="Reload" type="Button" parent="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("14_g48wy")
+
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer/HBoxContainer/SaveAs" to="." method="_on_save_as_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer4/HBoxContainer/SaveUI" to="." method="_on_save_ui_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/PanelContainer3/HBoxContainer/New" to="." method="_on_new_pressed"]
+[connection signal="column_title_clicked" from="VBoxContainer/Tree" to="." method="_on_tree_column_title_clicked"]
+[connection signal="item_activated" from="VBoxContainer/Tree" to="." method="_on_open_pressed"]
+[connection signal="item_selected" from="VBoxContainer/Tree" to="." method="_dissable_action_buttons" binds= [false]]
+[connection signal="nothing_selected" from="VBoxContainer/Tree" to="." method="_on_tree_nothing_selected"]
+[connection signal="pressed" from="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Open" to="." method="_on_open_pressed"]
+[connection signal="pressed" from="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Rename" to="." method="_on_rename_pressed"]
+[connection signal="pressed" from="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer2/FileActionButtons/Delete" to="." method="_on_delete_pressed"]
+[connection signal="pressed" from="VBoxContainer/BottomBar/HBoxContainer/ScrollContainer/HBoxContainer/PanelContainer3/HBoxContainer/Reload" to="." method="_reload_saves"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name ContainerItem extends EngineComponent
 ## Item for DataContainer
@@ -34,7 +35,9 @@ var _attribute_id: String = ""
 
 
 ## Ready function
-func _component_ready() -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("ContainerItem")
 	_set_self_class("ContainerItem")
 
@@ -183,14 +186,9 @@ func get_attribute_id() -> String:
 	return _attribute_id
 
 
-## Updates the attribute id
-func _update_attribute_id() -> void:
-	_attribute_id = (_fixture.uuid if _fixture else "") + _zone + _parameter
-
-
 ## Saves this component into a dict
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.settings().merged({
 		"fixture": _fixture.uuid,
 		"zone": _zone,
 		"parameter": _parameter,
@@ -199,19 +197,26 @@ func _serialize_request() -> Dictionary:
 		"can_fade": _can_fade,
 		"start": _start,
 		"stop": _stop,
-	}
+	})
 
 
 ## Loads this component from a dict
-func _load_request(serialized_data: Dictionary) -> void:
-	_fixture = ComponentDB.get_component(type_convert((serialized_data.get("fixture", "")), TYPE_STRING))
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_fixture = ComponentDB.get_component(type_convert((p_serialized_data.get("fixture", "")), TYPE_STRING))
+	
+	_zone = type_convert((p_serialized_data.get("zone", "")), TYPE_STRING)
+	_parameter = type_convert((p_serialized_data.get("parameter", "")), TYPE_STRING)
+	_function = type_convert((p_serialized_data.get("function", "")), TYPE_STRING)
+	_value = type_convert((p_serialized_data.get("value", "")), TYPE_FLOAT)
+	
+	_can_fade = type_convert((p_serialized_data.get("zone", _can_fade)), TYPE_BOOL)
+	
+	_start = type_convert((p_serialized_data.get("start", _start)), TYPE_FLOAT)
+	_stop = type_convert((p_serialized_data.get("stop", _stop)), TYPE_FLOAT)
 
-	_zone = type_convert((serialized_data.get("zone", "")), TYPE_STRING)
-	_parameter = type_convert((serialized_data.get("parameter", "")), TYPE_STRING)
-	_function = type_convert((serialized_data.get("function", "")), TYPE_STRING)
-	_value = type_convert((serialized_data.get("value", "")), TYPE_FLOAT)
 
-	_can_fade = type_convert((serialized_data.get("zone", _can_fade)), TYPE_BOOL)
-
-	_start = type_convert((serialized_data.get("start", _start)), TYPE_FLOAT)
-	_stop = type_convert((serialized_data.get("stop", _stop)), TYPE_FLOAT)
+## Updates the attribute id
+func _update_attribute_id() -> void:
+	_attribute_id = (_fixture.uuid() if _fixture else "") + _zone + _parameter

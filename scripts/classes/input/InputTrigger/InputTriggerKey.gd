@@ -45,7 +45,7 @@ func _component_ready() -> void:
 	set_name("InputTriggerKey")
 	_set_class_name("InputTriggerKey")
 	
-	register_setting("InputTriggerKey", "listen", set_input_event, get_input_event, Signal(), Utils.TYPE_INPUTEVENTKEY, 0, "Listen")
+	register_setting("InputTriggerKey", "listen", set_input_event, get_input_event, Signal(), Data.Type.INPUTEVENT, 0, "Listen")
 	register_setting_int("Keycode", set_keycode, get_keycode, keycode_changed, 0, 0x7FFFFFFF)
 	register_setting_bool("Shift", set_shift_pressed, get_shift_pressed, shift_pressed_state_changed)
 	register_setting_bool("Control", set_control_pressed, get_control_pressed, control_pressed_state_changed)

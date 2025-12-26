@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name CoreProgrammer extends Node
 ## Engine class for programming lights, colors, positions, etc.
@@ -31,25 +32,29 @@ enum MixMode {
 	Subtractive		## Uses Subtractive Mixing
 }
 
-
-## Network Config:
-var network_config: Dictionary = {
-	"callbacks": {
-		"on_cleared": _clear,
-	}
-}
-
-
 ## Current store mode state
 var _store_mode_state: bool = false
 
 ## Callback for store mode
 var _store_mode_callback: Callable
 
+## The SettingsManager for this Programmer
+var settings_manager: SettingsManager = SettingsManager.new()
+
+
+## init
+func _init() -> void:
+	settings_manager.set_owner(self)
+	settings_manager.set_inheritance_array(["Programmer"])
+	
+	settings_manager.register_networked_callbacks({
+		"on_cleared": _clear,
+	})
+
 
 ## Clears the programmer
 func clear() -> Promise: 
-	return Client.send_command("Programmer", "clear")
+	return Network.send_command("Programmer", "clear")
 
 
 ## Called when the programmer is cleared on the server
@@ -59,27 +64,27 @@ func _clear() -> void:
 
 ## Function to set the fixture data at the given chanel key
 func set_parameter(p_fixtures: Array, p_parameter: String, p_function: String, p_value: float, p_zone: String) -> Promise:
-	return Client.send_command("Programmer", "set_parameter", [p_fixtures, p_parameter, p_function, p_value, p_zone])
+	return Network.send_command("Programmer", "set_parameter", [p_fixtures, p_parameter, p_function, p_value, p_zone])
 
 
 ## Sets a fixture parameter to a random value
 func set_parameter_random(p_fixtures: Array, p_parameter: String, p_function: String, p_zone: String, p_mode: RandomMode) -> Promise:
-	return Client.send_command("Programmer", "set_parameter_random", [p_fixtures, p_parameter, p_function, p_zone, p_mode])
+	return Network.send_command("Programmer", "set_parameter_random", [p_fixtures, p_parameter, p_function, p_zone, p_mode])
 
 
 ## Erases a parameter
 func erase_parameter(p_fixtures: Array, p_parameter: String, p_zone: String) -> Promise:
-	return Client.send_command("Programmer", "erase_parameter", [p_fixtures, p_parameter, p_zone])
+	return Network.send_command("Programmer", "erase_parameter", [p_fixtures, p_parameter, p_zone])
 
 
 ## Saves the current state of this programmer to a scene
 func save_to_new_scene(fixtures: Array, mode: SaveMode = SaveMode.MODIFIED) -> Promise:
-	return Client.send_command("Programmer", "save_to_new_scene", [fixtures, mode])
+	return Network.send_command("Programmer", "save_to_new_scene", [fixtures, mode])
 
 
 ## Shortcut to set the color of fixtures
 func shortcut_set_color(p_fixtures: Array, p_color: Color, p_mode: MixMode) -> Promise:
-	return Client.send_command("Programmer", "shortcut_set_color", [p_fixtures, p_color, p_mode])
+	return Network.send_command("Programmer", "shortcut_set_color", [p_fixtures, p_color, p_mode])
 
 
 ## Enters store mode
@@ -109,7 +114,7 @@ func resolve_store_mode(with: EngineComponent) -> void:
 	exit_store_mode()
 	
 	var fixtures: Array = Values.get_selection_value("selected_fixtures")
-	Client.send_command("Programmer", "store_into", [with, fixtures])
+	Network.send_command("Programmer", "store_into", [with, fixtures])
 
 
 ## Resolves the store mode by handing back a classname for a new component
@@ -117,7 +122,7 @@ func resolve_store_mode_with_new(classname: String) -> Promise:
 	exit_store_mode()
 	
 	var fixtures: Array = Values.get_selection_value("selected_fixtures")
-	var promise: Promise = Client.send_command("Programmer", "store_into_new", [classname, fixtures])
+	var promise: Promise = Network.send_command("Programmer", "store_into_new", [classname, fixtures])
 	
 	promise.then(_store_callback)
 	return promise

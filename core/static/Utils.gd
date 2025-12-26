@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name Utils extends Object
 ## Usefull function that would be annoying to write out each time
@@ -16,29 +17,16 @@ class_name Utils extends Object
 static var _signal_connections: Dictionary
 
 
-## Custom Types:
-const TYPE_STRING := "STRING"
-const TYPE_IP := "IP"
-const TYPE_BOOL := "BOOL"
-const TYPE_INT := "INT"
-const TYPE_FLOAT := "FLOAT"
-const TYPE_ENUM := "ENUM"
-const TYPE_NULL := "NULL"
-const TYPE_CUSTOM := "CUSTOM"
-const TYPE_CID := "CID"
-const TYPE_INPUTEVENTKEY := "INPUTEVENTKEY"
-const TYPE_INPUTEVENTJOYBUTTON := "INPUTEVENTJOYBUTTON"
-
 
 ## Saves a JSON valid dictonary to a file, creates the file and folder if it does not exist
 static func save_json_to_file(file_path: String, file_name: String, json: Dictionary) -> Error:
-	
 	if not DirAccess.dir_exists_absolute(file_path):
 		print("The folder \"" + file_path + "\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(file_path))
 
 	var file_access: FileAccess = FileAccess.open(file_path+"/"+file_name, FileAccess.WRITE)
 	
 	if FileAccess.get_open_error():
+		print(FileAccess.get_open_error())
 		return FileAccess.get_open_error()
 	
 	file_access.store_string(JSON.stringify(json, "\t"))
@@ -47,70 +35,19 @@ static func save_json_to_file(file_path: String, file_name: String, json: Dictio
 	return file_access.get_error()
 
 
-## Replaces any object in the given data with uuid refernces. Checks sub arrays and dictionarys
-static func objects_to_uuids(data: Variant) -> Variant:
-	match typeof(data):
-		TYPE_OBJECT:
-			return {
-					"_object_ref": str(data.get("uuid")),
-					"_serialized_object": data.serialize() if ClassList.should_class_searlize(data.self_class_name if data is EngineComponent else "") else {},
-					"_class_name": data.get("self_class_name")
-				}
-		
-		TYPE_DICTIONARY:
-			var new_dict = {}
-			for key in data.keys():
-				new_dict[key] = objects_to_uuids(data[key])
-			return new_dict
-		
-		TYPE_ARRAY:
-			var new_array = []
-			for item in data:
-				new_array.append(objects_to_uuids(item))
-			return new_array
-		
-		TYPE_COLOR:
-			return var_to_str(data)
+## Loads JSON from a file, returning the JSON dictionary or {}
+static func load_json_from_file(p_file_path: String, p_file_name: String) -> Dictionary:
+	if not DirAccess.dir_exists_absolute(p_file_path):
+		return {}
 	
-	return data
-
-
-## Checks for uuid refernces left by objects_to_uuids(). If one is found the corrisponding object will be created or found via ComponentDB
-static func uuids_to_objects(data: Variant, networked_objects: Dictionary):
-	match typeof(data):
-		TYPE_DICTIONARY:
-			if "_object_ref" in data.keys():
-				if data._object_ref in networked_objects.keys():
-					return networked_objects[data._object_ref].get("object", null)
-					
-				elif "_class_name" in data.keys():
-					if ClassList.has_class(data["_class_name"]):
-						var initialized_object = ClassList.get_class_script(data["_class_name"]).new(data._object_ref)
-						
-						if initialized_object.has_method("load") and "_serialized_object" in data.keys():
-							initialized_object.load(data._serialized_object)
-							
-						return initialized_object
-				else:
-					return null
-				
-			else:
-				var new_dict = {}
-				for key in data.keys():
-					new_dict[key] = uuids_to_objects(data[key], networked_objects)
-				return new_dict
-		
-		TYPE_ARRAY:
-			var new_array = []
-			for item in data:
-				new_array.append(uuids_to_objects(item, networked_objects))
-			return new_array
-		
-		TYPE_STRING:
-			if data.contains("Color("):
-				return str_to_var(data)
+	var file_access: FileAccess = FileAccess.open(p_file_path + p_file_name, FileAccess.READ)
+	print(FileAccess.get_open_error())
+	var json: Variant = JSON.parse_string(file_access.get_as_text())
 	
-	return data
+	if json is Dictionary:
+		return json
+	else:
+		return {}
 
 
 ## Calculates the HTP value of two colors
@@ -194,7 +131,7 @@ static func _split_sort_key(s: String) -> Array:
 	var regex = RegEx.new()
 	regex.compile(r"\d+|\D+")
 	
-	var parts = []
+	var parts: Array = []
 	for match in regex.search_all(s):
 		var sub = match.get_string()
 		parts.append(int(sub) if sub.is_valid_int() else sub)
@@ -278,7 +215,7 @@ static func deseralise_component_array(array: Array) -> Array[EngineComponent]:
 		if seralized_component is Dictionary and seralized_component.has("class_name"):
 			var component: EngineComponent = ClassList.get_class_script(seralized_component.class_name).new()
 
-			component.load(seralized_component)
+			component.deserialize(seralized_component)
 			result.append(component)
 
 	return result

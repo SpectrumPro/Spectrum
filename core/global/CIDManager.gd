@@ -27,12 +27,12 @@ func _ready() -> void:
 
 ## Sets a component's CID, returning false if it was alreay taken
 func set_component_id(cid: int, p_component: EngineComponent) -> Promise:
-	return Client.send_command("CIDManager", "set_component_id", [cid, p_component])
+	return Network.send_command("CIDManager", "set_component_id", [cid, p_component])
 
 
 ## Sets a component's CID, returning false if it was alreay taken
 func set_component_id_local(cid: int, p_component: EngineComponent, no_signal: bool = false) -> bool:
-	var class_cid_map: RefMap = _cids_by_classname.get_or_add(p_component.self_class_name, RefMap.new())
+	var class_cid_map: RefMap = _cids_by_classname.get_or_add(p_component.classname(), RefMap.new())
 
 	if class_cid_map.right(cid):
 		return false

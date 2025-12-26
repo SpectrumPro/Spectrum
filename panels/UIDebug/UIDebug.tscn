@@ -1,0 +1,249 @@
+[gd_scene load_steps=10 format=3 uid="uid://dqatkkghk5b2q"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_g10eh"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_gdvvh"]
+[ext_resource type="Script" uid="uid://bshfmstayckth" path="res://panels/UIDebug/UIDebug.gd" id="3_stwxr"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="4_04ogp"]
+[ext_resource type="Texture2D" uid="uid://chva73v2q1246" path="res://assets/icons/Bug.svg" id="5_5xvlq"]
+[ext_resource type="Texture2D" uid="uid://dlikb8or3xepr" path="res://assets/icons/Reset.svg" id="6_fgsol"]
+[ext_resource type="Texture2D" uid="uid://qporw0h5fc8b" path="res://assets/icons/Stop.svg" id="7_q0gbw"]
+[ext_resource type="Texture2D" uid="uid://bjpa56jg5lki7" path="res://assets/icons/Skull.svg" id="8_q38qm"]
+
+[sub_resource type="SystemFont" id="SystemFont_fhcgp"]
+font_names = PackedStringArray("Open Sans")
+font_weight = 925
+
+[node name="UIDebug" type="PanelContainer" node_paths=PackedStringArray("message_for", "message_method", "message_args", "local_remote_option", "edit_controls", "menu_bar")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_g10eh")
+theme_override_styles/panel = ExtResource("2_gdvvh")
+script = ExtResource("3_stwxr")
+message_for = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer/For")
+message_method = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer/Method")
+message_args = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer/Args")
+local_remote_option = NodePath("VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/LocalRemoteOption")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("4_04ogp")]
+layout_mode = 2
+
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "Debug"
+icon = ExtResource("5_5xvlq")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Reset" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "Resets the server and all clients to there default state"
+disabled = true
+text = "Reset Server"
+icon = ExtResource("6_fgsol")
+
+[node name="Stop" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Stops the server"
+disabled = true
+text = "Stop Server"
+icon = ExtResource("7_q0gbw")
+
+[node name="Crash" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "CRASH THE SERVER"
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0.713726, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/icon_disabled_color = Color(0.713726, 0, 0, 1)
+theme_override_fonts/font = SubResource("SystemFont_fhcgp")
+disabled = true
+text = "CRASH SERVER"
+icon = ExtResource("8_q38qm")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 3
+
+[node name="DumpNetworkedObjects" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Dump Networked Objects"
+
+[node name="GetUniqueId" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "OS.get_unique_id()"
+
+[node name="ListFunctions" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "List Functions"
+
+[node name="GetComponentUUID" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Get Component UUID"
+
+[node name="ChangeName" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+disabled = true
+text = "Change Component Name"
+
+[node name="DumpFixtureData" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+disabled = true
+text = "Dump Fxture Data"
+
+[node name="GetSerializedComponentRemote" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+disabled = true
+text = "Get Serialized Component Remote"
+
+[node name="GetSerializedComponentLocal" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer"]
+layout_mode = 2
+disabled = true
+text = "Get Serialized Component Local"
+
+[node name="Output" type="CodeEdit" parent="VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 59.43)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer2"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "Send Command:"
+
+[node name="For" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer"]
+layout_mode = 2
+text = "For:"
+
+[node name="For" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/For/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "UUID"
+expand_to_text_length = true
+
+[node name="Call" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer"]
+layout_mode = 2
+text = "Call:"
+
+[node name="Method" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Call/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Method"
+expand_to_text_length = true
+
+[node name="Args" type="PanelContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer"]
+layout_mode = 2
+text = "Args:"
+
+[node name="Args" type="LineEdit" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/Args/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "[]"
+placeholder_text = "Args: Array"
+expand_to_text_length = true
+
+[node name="LocalRemoteOption" type="OptionButton" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Remote"
+popup/item_0/id = 0
+popup/item_1/text = "Local"
+popup/item_1/id = 1
+
+[node name="SendMessage" type="Button" parent="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Send"
+
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/Reset" to="." method="_on_reset_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/Crash" to="." method="_on_crash_pressed"]
+[connection signal="resized" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer" to="." method="_on_grid_container_resized"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/DumpNetworkedObjects" to="." method="_on_dump_networked_objects_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetUniqueId" to="." method="_on_get_unique_id_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ListFunctions" to="." method="_on_list_functions_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetComponentUUID" to="." method="_on_get_component_uuid_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/ChangeName" to="." method="_on_change_name_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/DumpFixtureData" to="." method="_on_dump_fixture_data_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetSerializedComponentRemote" to="." method="_on_get_serialized_component_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/HBoxContainer/ScrollContainer/GridContainer/GetSerializedComponentLocal" to="." method="_on_get_serialized_component_local_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer/SendMessage" to="." method="_on_send_message_to_server_pressed"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

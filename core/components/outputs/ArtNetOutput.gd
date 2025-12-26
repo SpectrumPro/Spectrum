@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name ArtNetOutput extends DMXOutput
 ## Art-Net DMX Output
@@ -29,16 +30,21 @@ var _universe_number: int = 0
 
 
 ## Called when this object is first created
-func _component_ready():
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("ArtNetOutput")
 	_set_self_class("ArtNetOutput")
 	
-	register_setting("ArtNetOutput", "ip_address", set_ip, get_ip, ip_changed, Utils.TYPE_IP, 0, "IP Address")
-	register_setting("ArtNetOutput", "use_broadcast", set_use_broadcast, get_use_broadcast, broadcast_state_changed, Utils.TYPE_BOOL, 1, "Use Broadcast")
-	register_setting("ArtNetOutput", "universe_number", set_universe_number, get_universe_number, universe_number_changed, Utils.TYPE_INT, 2, "Universe Number")
+	_settings_manager.register_setting("ip_address", Data.Type.STRING, set_ip, get_ip, [ip_changed])
+	_settings_manager.register_setting("use_broadcast", Data.Type.BOOL, set_use_broadcast, get_use_broadcast, [broadcast_state_changed])
+	_settings_manager.register_setting("universe_number", Data.Type.INT, set_universe_number, get_universe_number, [universe_number_changed])
 	
-	register_callback("on_ip_changed", _set_ip)
-	register_callback("on_broadcast_state_changed", _set_use_broadcast)
-	register_callback("on_universe_number_changed", _set_universe_number)
+	_settings_manager.register_networked_callbacks({
+		"on_ip_changed": _set_ip,
+		"on_broadcast_state_changed": _set_use_broadcast,
+		"on_universe_number_changed": _set_universe_number,
+	})
 
 
 ## Sets the ip address
@@ -75,18 +81,32 @@ func _set_universe_number(p_universe_number: int) -> void:
 	_universe_number = p_universe_number
 	universe_number_changed.emit()
 
+
 ## Gets the universe number
 func get_universe_number() -> int:
 	return _universe_number
 
 
+## Saves this component to a dictonary
+func serialize() -> Dictionary:
+	return super.serialize().merged({
+		"ip_address": _ip_address,
+		"port": _port,
+		"use_broadcast": _use_broadcast,
+		"universe_number": _universe_number,
+		"auto_start": _auto_start
+	})
+
+
 ## Loads this component from a dictonary
-func _load_request(serialized_data: Dictionary) -> void:
-	_ip_address = type_convert(serialized_data.get("ip_address", _ip_address), TYPE_STRING)
-	_port = type_convert(serialized_data.get("port", _port), TYPE_INT)
-	_use_broadcast = type_convert(serialized_data.get("use_broadcast"), TYPE_BOOL)
-	_universe_number = type_convert(serialized_data.get("universe_number", _universe_number), TYPE_INT)
-	_auto_start = type_convert(serialized_data.get("auto_start", _auto_start), TYPE_BOOL)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	_connection_state = type_convert(serialized_data.get("connection_state", _connection_state), TYPE_BOOL)
-	_previous_note = type_convert(serialized_data.get("connection_note", _connection_state), TYPE_STRING)
+	_ip_address = type_convert(p_serialized_data.get("ip_address", _ip_address), TYPE_STRING)
+	_port = type_convert(p_serialized_data.get("port", _port), TYPE_INT)
+	_use_broadcast = type_convert(p_serialized_data.get("use_broadcast"), TYPE_BOOL)
+	_universe_number = type_convert(p_serialized_data.get("universe_number", _universe_number), TYPE_INT)
+	_auto_start = type_convert(p_serialized_data.get("auto_start", _auto_start), TYPE_BOOL)
+	
+	_connection_state = type_convert(p_serialized_data.get("connection_state", _connection_state), TYPE_BOOL)
+	_previous_note = type_convert(p_serialized_data.get("connection_note", _connection_state), TYPE_STRING)

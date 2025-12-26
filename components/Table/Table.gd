@@ -1,262 +1,323 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
-class_name Table extends PanelContainer
-## A table for displaying and editing data
-
-
-## Emitted when the add row button is pressed
-signal add_row_button_pressed()
-
-## Emitted when a row is selected
-signal row_selected(row: RowHeadder)
-
-## Emitted when a column is selected
-signal column_selected(colum: ColumnIndex)
-
-## Emitted when nothing is selected
-signal nothing_selected()
+class_name Table extends UIComponent
+## Class to create a spreadsheet like table
 
 
-## The Scroll Containers
-@onready var table_scroll_container: ScrollContainer = $VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer
-@onready var row_index_scroll_container: ScrollContainer = $VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer
-@onready var column_index_scroll_container: ScrollContainer = $VBoxContainer/HBoxContainer/PanelContainer2/ScrollContainer
-
-## Row and Column item containers
-@onready var column_item_container: HBoxContainer = $VBoxContainer/HBoxContainer/PanelContainer2/ScrollContainer/HBoxContainer
-@onready var row_item_container: VBoxContainer = $VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer
-@onready var cell_item_container: VBoxContainer = $VBoxContainer/HBoxContainer2/PanelContainer2/ScrollContainer/VBoxContainer
-
-## The add button
-@onready var add_row_button: Button = $VBoxContainer/HBoxContainer2/PanelContainer/ScrollContainer/VBoxContainer/AddButton
+## Emitted when the cell selection is changed
+signal selection_changed()
 
 
-## Stores all the row items. {{index: RowItem}
-var _row_items: Dictionary[int, RowItem] = {}
-
-## Current selected row
-var _selected_row: RowHeadder
-
-## Current selected column
-var _selected_column: ColumnIndex
+## The Tree Node
+@onready var _tree: Tree = $Tree
 
 
+## All columns in the tree
+var _columns: Array[Column] 
+
+## RefMap for Row: TreeItem
+var _rows: RefMap = RefMap.new()
+
+## The Tree Root
+var _root: TreeItem
+
+## All selected TreeItems, and thier selected columns
+var _selected_items: Dictionary[TreeItem, Array]
+
+## All TreeItems that have a theme select color tint for a selection
+var _active_row_tints: Array[TreeItem]
+
+## Wether or not a selection update and signal emition is queued
+var _is_selection_update_queued: bool = false
+
+
+## Init
+func _init() -> void:
+	super._init()
+	
+	_set_class_name("Table")
+
+
+## Ready
 func _ready() -> void:
-	table_scroll_container.get_h_scroll_bar().value_changed.connect(_on_h_scrolled)
-	table_scroll_container.get_v_scroll_bar().value_changed.connect(_on_v_scrolled)
+	_root = _tree.create_item()
+
+
+## Adds a new column to the table
+func add_column(p_name: String, p_data_type: Data.Type) -> Column:
+	var column_id: int = len(_columns)
+	var new_column: Column = Column.new(column_id, p_name, p_data_type, _tree, _rows)
 	
-	row_index_scroll_container.get_v_scroll_bar().value_changed.connect(_on_v_side_scrolled)
-	column_index_scroll_container.get_h_scroll_bar().value_changed.connect(_on_h_side_scrolled)
-
-
-## Gets the corner node, so you can add custem lables or buttons
-func get_corner_node() -> PanelContainer: 
-	return $VBoxContainer/HBoxContainer/Corner
-
-## Shows or hides the add row button
-func set_show_add_button(show: bool) -> void: 
-	add_row_button.visible = show
-
-
-## Clears this table, removing all items, row, and columns
-func clear() -> void:
-	clear_columns()
-	clear_rows()
-	clear_cells()
-
-
-## Removes all the columns
-func clear_columns() -> void:
-	_selected_column = null
-	for column_item: ColumnIndex in column_item_container.get_children():
-		column_item_container.remove_child(column_item)
-		column_item.queue_free()
-
-
-## Removes all the rows
-func clear_rows() -> void:
-	_selected_row = null
-	for row_item: Node in row_item_container.get_children():
-		if row_item is RowHeadder:
-			row_item_container.remove_child(row_item)
-			row_item.queue_free()
-	_row_items = {}
-
-
-## Removes all the cell items
-func clear_cells() -> void:
-	_selected_column = null
-	_selected_row = null
-	for node: Control in cell_item_container.get_children():
-		cell_item_container.remove_child(node)
-		node.queue_free()
-
-
-## Adds a new column to this table
-func create_column(column_name: String) -> ColumnIndex:
-	var new_column: ColumnIndex = load("res://components/Table/TableItems/ColumnIndex.tscn").instantiate()
-	new_column.set_text(column_name)
-	
-	column_item_container.add_child(new_column)
-	new_column.column_index = new_column.get_index()
-	
-	(func ():
-		cell_item_container.custom_minimum_size.x = new_column.position.x + new_column.size.x
-	).call_deferred()
-	
-	for row: RowItem in _row_items.values():
-		row.add_blank()
+	_columns.append(new_column)
+	_tree.columns = max(column_id + 1, 1)
+	_tree.set_column_title.call_deferred(column_id, p_name)
 	
 	return new_column
 
 
-## Created mutiple columns at once
-func create_columns(columns: Array[String]) -> Array[ColumnIndex]:
-	if not columns: return []
-	var new_columns: Array[ColumnIndex]
+## Adds a new row to the table
+func add_row(p_data: Dictionary[int, Variant], p_icon: Texture2D = null) -> Row:
+	var new_item: TreeItem = _root.create_child()
+	var new_row: Row = Row.new(new_item, _columns, p_data, _tree)
 	
-	for column_name: String in columns:
-		new_columns.append(create_column(column_name))
+	if is_instance_valid(p_icon):
+		new_item.set_icon(0, p_icon)
 	
-	return new_columns
-
-
-## Adds a new row to this table
-func create_row(row_name: String) -> RowHeadder:
-	var new_row: RowHeadder = load("res://components/Table/TableItems/RowHeadder.tscn").instantiate()
-	var new_row_item: RowItem = load("res://components/Table/TableItems/RowItem.tscn").instantiate()
-	
-	row_item_container.add_child(new_row)
-	cell_item_container.add_child(new_row_item)
-	add_row_button.move_to_front()
-	
-	new_row.set_text(row_name)
-	new_row.index = new_row.get_index()
-	
-	new_row.row_item = new_row_item
-	new_row_item.headder = new_row
-	
-	new_row.clicked.connect(func ():
-		set_row_selected(new_row.index)
-	)
-	
-	for column: ColumnIndex in column_item_container.get_children():
-		new_row_item.add_blank()
-	
-	_row_items[new_row.index] = new_row_item
+	_rows.map(new_row, new_item)
 	return new_row
 
 
-## Created mutiple rows at once
-func create_rows(rows: Array[String]) -> Array[RowHeadder]:
-	var new_rows: Array[RowHeadder]
+## Removes a row from the table
+func remove_row(p_row: Row) -> bool:
+	var item: TreeItem = _rows.left(p_row)
 	
-	for row_name: String in rows:
-		new_rows.append(create_row(row_name))
+	if not item:
+		return false
 	
-	return new_rows
-
-
-## Removes a row
-func remove_row(row_index: int) -> void:
-	if not row_index in _row_items: return
+	if item in _selected_items:
+		_selected_items.erase(item)
 	
-	if _selected_row and _selected_row.index == row_index:
-		deselect_all()
+	_rows.erase_left(p_row)
+	_update_selection()
 	
-	var row_header: RowHeadder = _row_items[row_index].headder
-	row_item_container.remove_child(row_header)
-	cell_item_container.remove_child(row_header.row_item)
+	p_row.free()
+	item.free()
+	return true
+
+
+## Clears all rows
+func clear() -> void:
+	_rows.clear()
+	_selected_items.clear()
+	_active_row_tints.clear()
+	_is_selection_update_queued = false
 	
-	_row_items.erase(row_index)
+	_tree.clear()
+	_root = _tree.create_item()
 
 
-## Moves a row, by changing the child order
-func move_row(row_index: int, to: int) -> void:
-	if not row_index in _row_items: return
-	
-	var row_header: RowHeadder = _row_items[row_index].headder
-	row_item_container.move_child(row_header, to)
-	cell_item_container.move_child(row_header.row_item, to)
+## Clears all columns
+func clear_columns() -> void:
+	_columns.clear()
+	_tree.set_columns(1)
 
 
-## Adds a cellitem with data in it
-func add_data(row_index: int, data: Variant, setter: Callable, changer: Signal, index: int = -1) -> CellItem:
-	if not row_index in _row_items: return null
-	
-	return (_row_items[row_index] as RowItem).add_data(data, setter, changer, index)
-
-
-## Adds a button
-func add_button(row_index: int, text: String, callback: Callable, index: int = -1) -> CellItem:
-	if not row_index in _row_items: return null
-	
-	return (_row_items[row_index] as RowItem).add_button(text, callback, index)
-
-
-## Adds a dropdown
-func add_dropdown(row_index: int, items: Array, current: int ,callback: Callable, changer: Signal, index: int = -1) -> CellItem:
-	if not row_index in _row_items: return null
-	
-	return (_row_items[row_index] as RowItem).add_dropdown(items, current, callback, changer, index)
-
-
-## Selectes nothing
+## Deselects all items
 func deselect_all() -> void:
-	if _selected_row:
-		_selected_row.set_selected(false)
-		_selected_row = null
+	_tree.deselect_all()
+	_selected_items.clear()
+	_update_selection()
+
+
+## Returns the first selected row
+func get_selected_row() -> Row:
+	if _selected_items:
+		return _rows.right(_selected_items.keys()[0])
+	else:
+		return null
+
+
+## Gets the column from an ID
+func get_column(p_id) -> Column:
+	if p_id > _columns.size():
+		return null
+	else:
+		return _columns[p_id]
+
+
+## Returns True if there are selected items in the tree
+func is_any_selected() -> bool:
+	return not _selected_items.is_empty()
+
+
+## Updates all the row selection, adding a light blue tint to selected rows
+func _update_selection() -> void:
+	var rows_to_reset: Array[TreeItem] = _active_row_tints.duplicate()
+	_active_row_tints.clear()
 	
-	nothing_selected.emit()
-
-
-## Sets a row selected
-func set_row_selected(index: int) -> void:
-	if _row_items.has(index):
-		if _selected_row:
-			_selected_row.set_selected(false)
+	for item: TreeItem in _selected_items:
+		rows_to_reset.erase(item)
+		_active_row_tints.append(item)
 		
-		_selected_row = _row_items[index].headder
-		_selected_row.set_selected(true)
+		for column: Column in _columns:
+			item.set_custom_bg_color(column._id, ThemeManager.Colors.Selections.SelectedDimmed)
+	
+	for item: TreeItem in rows_to_reset:
+		for column: Column in _columns:
+			item.set_custom_bg_color(column._id, Color.TRANSPARENT)
+	
+	selection_changed.emit()
+	_is_selection_update_queued = false
+
+
+## Called when a cell in the tree is selected
+func _on_tree_multi_selected(p_item: TreeItem, p_column: int, p_selected: bool) -> void:
+	if p_selected:
+		var columns: Array = _selected_items.get_or_add(p_item, [])
 		
-		row_selected.emit(_selected_row)
-
-
-## Returns the selected row or null
-func get_selected_row() -> RowHeadder:
-	return _selected_row
-
-
-## Updates the min Y size of the rows, fixing issues with scrolling
-func _update_row_min_size() -> void:
-	row_item_container.custom_minimum_size.y = 0
+		if p_column not in columns:
+			columns.append(p_column)
 	
-	var row_container_y: int = row_item_container.size.y
+	else:
+		var columns: Array = _selected_items.get(p_item, [])
+		columns.erase(p_column)
+		
+		if not columns:
+			_selected_items.erase(p_item)
 	
-	cell_item_container.custom_minimum_size.y = row_container_y - 20 
+	if not _is_selection_update_queued:
+		_update_selection.call_deferred()
+		_is_selection_update_queued = true
 
 
-## Called when the table_scroll_container is scrolled horizontally
-func _on_h_scrolled(value: float) -> void:column_index_scroll_container.scroll_horizontal = int(value)
-
-## Called when the table_scroll_container is scrolled vertically 
-func _on_v_scrolled(value: float) -> void: row_index_scroll_container.scroll_vertical = int(value)
-
-## Called when the side bar scroll container is scrolled 
-func _on_v_side_scrolled(value: float) -> void: table_scroll_container.scroll_vertical = value
-
-## Called when the top bar scroll container is scrolled 
-func _on_h_side_scrolled(value: float) -> void: table_scroll_container.scroll_horizontal = value
-
-## Called when the add row button is pressed
-func _on_add_button_pressed() -> void: add_row_button_pressed.emit()
-
-
-func _on_v_box_container_minimum_size_changed() -> void:
-	_update_row_min_size()
+## Called for each GUI input on the tree
+func _on_tree_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
+		var mouse_pos: Vector2 = _tree.get_local_mouse_position()
+		var row: Row = _rows.right(_tree.get_item_at_position(mouse_pos))
+		
+		if not row:
+			return
+		
+		var column: int = _tree.get_column_at_position(mouse_pos)
+		var data: Variant = row.get_cell_data(column)
+		
+		if data is SettingsModule:
+			Interface.prompt_settings_module(self, data)
 
 
-func _on_h_box_container_2_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_mask == MOUSE_BUTTON_MASK_LEFT and event.is_pressed():
-		deselect_all()
+## Class to repersent a row in the tree
+class Row extends Object:
+	## The TreeItem
+	var _item: TreeItem
+	
+	## The tree this Row is in
+	var _tree: Tree
+	
+	## All the Columns in the table
+	var _columns: Array[Column] 
+	
+	## Data for each cell in this row
+	var _cells: Dictionary[int, Variant]
+	
+	## All bound callables for a SettingsModule
+	var _module_bound_methods: Dictionary[int, Callable]
+	
+	
+	## Init
+	func _init(p_item: TreeItem, p_columns: Array[Column], p_data: Dictionary[int, Variant], p_tree: Tree) -> void:
+		_item = p_item
+		_columns = p_columns
+		_tree = p_tree
+		
+		for column: int in p_data:
+			set_cell_data(column, p_data[column])
+	
+	
+	## Sets the data with in a cell
+	func set_cell_data(p_column: int, p_value: Variant) -> void:
+		if p_column > len(_columns):
+			return
+		
+		if _module_bound_methods.has(p_column):
+			(_cells[p_column] as SettingsModule).unsubscribe(_module_bound_methods[p_column])
+			_module_bound_methods.erase(p_column)
+		
+		if p_value is SettingsModule:
+			if p_value.get_data_type() != _columns[p_column]._data_type:
+				_cells.erase(p_column)
+				_item.set_text(p_column, "")
+				
+				return
+			
+			_module_bound_methods[p_column] = p_value.subscribe(_set_cell_data_module.bind(p_column))
+			
+			_cells[p_column] = p_value
+			_item.set_text(p_column, p_value.get_value_string())
+		
+		else:
+			_cells[p_column] = Data.data_type_convert(p_value, _columns[p_column]._data_type)
+			_item.set_text(p_column, str(_cells[p_column]))
+	
+	
+	## Gets the data in a cell
+	func get_cell_data(p_column: int) -> Variant:
+		return _cells.get(p_column, null)
+	
+	
+	## Selects this row
+	func select(p_column: int = 0) -> void:
+		_tree.deselect_all()
+		_item.select(p_column)
+		_tree.multi_selected.emit(_item, p_column, true)
+	
+	
+	## Sets the cell data from a SettingsModule callback
+	func _set_cell_data_module(p_data: Variant, p_column: int) -> void:
+		if is_instance_valid(_item):
+			_item.set_text(p_column, _cells[p_column].get_value_string())
+
+
+## Class to repersent a column in the tree
+class Column extends Object:
+	## Column number
+	var _id: int = 0
+	
+	## Name of this column
+	var _name: String = ""
+	
+	## DataType for this column
+	var _data_type: Data.Type = Data.Type.NULL
+	
+	## The tree this column is in
+	var _tree: Tree 
+	
+	## The RefMap containing all rows
+	var _rows: RefMap
+	
+	
+	## Init
+	func _init(p_id: int, p_name: String, p_data_type: Data.Type, p_tree: Tree, p_rows: RefMap) -> void:
+		_id = p_id
+		_name = p_name
+		_data_type = p_data_type
+		_tree = p_tree
+		_rows = p_rows
+	
+	
+	## Sets the column title
+	func set_title(p_title: String) -> void:
+		_tree.set_column_title(_id, p_title)
+	
+	
+	## Sets the expand flag on a given column
+	func set_expand(p_expand: bool) -> void:
+		_tree.set_column_expand(_id, p_expand)
+	
+	
+	## Sets this columns datatype
+	func set_data_type(p_data_type: Data.Type) -> void:
+		if p_data_type == _data_type:
+			return
+		
+		_data_type = p_data_type
+		
+		for row: Row in _rows.get_left():
+			row.set_cell_data(_id, row.get_cell_data(_id))
+	
+	
+	## Gets the column title
+	func get_title() -> String:
+		return _tree.get_column_title(_id)
+	
+	
+	## Gets the column Data.Type
+	func get_data_type() -> Data.Type:
+		return _data_type
+	
+	
+	## Gets the id of this column
+	func get_id() -> int:
+		return _id

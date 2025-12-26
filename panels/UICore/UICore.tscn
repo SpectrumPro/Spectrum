@@ -1,0 +1,356 @@
+[gd_scene load_steps=25 format=3 uid="uid://d00fmrh7nbaua"]
+
+[ext_resource type="StyleBox" uid="uid://c248eat6flpbo" path="res://assets/styles/UIPanelImbed.tres" id="1_7kg0u"]
+[ext_resource type="Script" uid="uid://cjbnp24htiy3i" path="res://panels/UICore/UICore.gd" id="1_febpr"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="2_dciud"]
+[ext_resource type="Script" uid="uid://cpdu3qjv70rxp" path="res://panels/UICore/SideBar/UICorePrimarySideBar.gd" id="2_hksc6"]
+[ext_resource type="Texture2D" uid="uid://vw0vs7dlct55" path="res://assets/icons/menu.svg" id="3_prxic"]
+[ext_resource type="Texture2D" uid="uid://rqf8w11gk6ud" path="res://assets/icons/Edit.svg" id="4_avgbi"]
+[ext_resource type="FontFile" uid="uid://crlak6jhg5jy2" path="res://assets/font/RubikMonoOne-Regular.ttf" id="5_kdrkr"]
+[ext_resource type="Texture2D" uid="uid://cbevvqqcn6jof" path="res://assets/icons/Dashboard.svg" id="6_g4gss"]
+[ext_resource type="Texture2D" uid="uid://bly6v8fqc5sdb" path="res://assets/icons/Panel.svg" id="7_s5yey"]
+[ext_resource type="StyleBox" uid="uid://btn6vaav0vau3" path="res://assets/styles/PanelMenuBarPopup.tres" id="8_x6rwm"]
+[ext_resource type="Script" uid="uid://comuawwwqayh3" path="res://panels/UICore/UICoreResolveButtons.gd" id="9_h7bru"]
+[ext_resource type="Script" uid="uid://br6f2mp8wonk3" path="res://panels/UICore/UICorePanelTypeOption.gd" id="9_r218t"]
+[ext_resource type="Script" uid="uid://5twbcqrk7as1" path="res://panels/UICore/UICoreStatusBar.gd" id="10_00dbt"]
+[ext_resource type="Texture2D" uid="uid://cbwmiekm47cot" path="res://assets/icons/Action.svg" id="11_q5s34"]
+[ext_resource type="FontFile" uid="uid://cn86ussko5res" path="res://assets/font/IntelOneMono-VariableFont_wght.ttf" id="12_ucqqu"]
+[ext_resource type="LabelSettings" uid="uid://ci6veq1d2x5c4" path="res://assets/styles/DimText.tres" id="13_c1is7"]
+[ext_resource type="Texture2D" uid="uid://dvabce3i3r2cu" path="res://assets/LogoTextSM.svg" id="14_7uvc5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aoeir"]
+content_margin_left = 4.0
+content_margin_top = 12.0
+content_margin_right = 4.0
+content_margin_bottom = 12.0
+bg_color = Color(0.188067, 0.188067, 0.188067, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_tdt00"]
+font = ExtResource("5_kdrkr")
+font_size = 71
+font_color = Color(0, 0, 0, 0.105882)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tdt00"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.188067, 0.188067, 0.188067, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pj23w"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.188067, 0.188067, 0.188067, 1)
+border_color = Color(0.309804, 0.309804, 0.309804, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="FontVariation" id="FontVariation_aoeir"]
+base_font = ExtResource("12_ucqqu")
+variation_embolden = 0.94
+
+[sub_resource type="LabelSettings" id="LabelSettings_7y6be"]
+font = SubResource("FontVariation_aoeir")
+font_color = Color(0.789062, 0.789062, 0.789062, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphhv"]
+bg_color = Color(0.09, 0.09, 0.09, 1)
+
+[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar", "_startup_bg", "edit_controls", "menu_bar")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_7kg0u")
+script = ExtResource("1_febpr")
+_side_bar = NodePath("VBoxContainer/HBoxContainer/UICorePrimarySideBar")
+_startup_bg = NodePath("StartupBG")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("2_dciud")]
+layout_mode = 2
+
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "UICore"
+icon = ExtResource("7_s5yey")
+
+[node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
+show_settings = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UICorePrimarySideBar" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_tab_button_container", "_menu_button", "_tab_control_container", "_overlay_container", "_tab_button_scroll", "_ui_core")]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_aoeir")
+script = ExtResource("2_hksc6")
+_tab_button_container = NodePath("VBoxContainer/ScrollContainer/TabButtonContainer")
+_menu_button = NodePath("VBoxContainer/Menu")
+_tab_control_container = NodePath("../MainContent/HSplitContainer/VSplitContainer/TabControlContainer")
+_overlay_container = NodePath("../MainContent/OverlayContainer")
+_tab_button_scroll = NodePath("VBoxContainer/ScrollContainer")
+_ui_core = NodePath("../../..")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar"]
+layout_mode = 2
+
+[node name="Menu" type="Button" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+toggle_mode = true
+icon = ExtResource("3_prxic")
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
+custom_minimum_size = Vector2(0, 4.77)
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="TabButtonContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="Control2" type="Control" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
+custom_minimum_size = Vector2(0, 4.77)
+layout_mode = 2
+
+[node name="Edit" type="Button" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+toggle_mode = true
+icon = ExtResource("4_avgbi")
+
+[node name="MainContent" type="Control" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/MainContent"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -246.5
+offset_top = -44.0
+offset_right = 246.5
+offset_bottom = 44.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+text = "SPECTRUM"
+label_settings = SubResource("LabelSettings_tdt00")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/HBoxContainer/MainContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer/HBoxContainer/MainContent/HSplitContainer"]
+layout_mode = 2
+
+[node name="TabControlContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent/HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OverlayContainer" type="Control" parent="VBoxContainer/HBoxContainer/MainContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="UICorePanelTypeOption" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer" node_paths=PackedStringArray("add_desk_button", "add_custom_button", "side_bar")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -114.0
+offset_top = -62.0
+offset_right = 114.0
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_tdt00")
+script = ExtResource("9_r218t")
+add_desk_button = NodePath("HBoxContainer/AddDesk")
+add_custom_button = NodePath("HBoxContainer/AddCustom")
+side_bar = NodePath("../../../UICorePrimarySideBar")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/UICorePanelTypeOption"]
+layout_mode = 2
+
+[node name="AddDesk" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/UICorePanelTypeOption/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.753984, 0.753984, 0.753984, 1)
+theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+text = "Desk"
+icon = ExtResource("6_g4gss")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
+
+[node name="AddCustom" type="Button" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/UICorePanelTypeOption/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.753984, 0.753984, 0.753984, 1)
+theme_override_colors/icon_focus_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_pressed_color = Color(0.752941, 0.752941, 0.752941, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+text = "Custom"
+icon = ExtResource("7_s5yey")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
+
+[node name="UICoreResolveButtons" type="PanelContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer" node_paths=PackedStringArray("_button_container")]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -70.0
+offset_right = 5.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = ExtResource("8_x6rwm")
+script = ExtResource("9_h7bru")
+_button_container = NodePath("HBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/MainContent/OverlayContainer/UICoreResolveButtons"]
+layout_mode = 2
+
+[node name="UICoreStatusBar" type="PanelContainer" parent="VBoxContainer" node_paths=PackedStringArray("_version_label", "_info_label", "_resolve_button_container")]
+custom_minimum_size = Vector2(0, 61)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pj23w")
+script = ExtResource("10_00dbt")
+_version_label = NodePath("HBoxContainer/VersionLabel")
+_info_label = NodePath("HBoxContainer/PanelContainer/HBoxContainer/Label")
+_resolve_button_container = NodePath("../HBoxContainer/MainContent/OverlayContainer/UICoreResolveButtons")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar"]
+layout_mode = 2
+
+[node name="QuickAccessContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="ActionButton" type="Button" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer2/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("11_q5s34")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_7y6be")
+
+[node name="VersionLabel" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Version"
+label_settings = ExtResource("13_c1is7")
+
+[node name="StartupBG" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bphhv")
+
+[node name="Control" type="Control" parent="StartupBG"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="StartupBG/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -479.99985
+offset_top = -75.0
+offset_right = 479.99985
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("14_7uvc5")
+expand_mode = 1
+stretch_mode = 4
+
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Menu" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_menu_toggled"]
+[connection signal="resized" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/ScrollContainer" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="match_visable_to_size"]
+[connection signal="gui_input" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Edit" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_edit_gui_input"]
+[connection signal="toggled" from="VBoxContainer/HBoxContainer/UICorePrimarySideBar/VBoxContainer/Edit" to="VBoxContainer/HBoxContainer/UICorePrimarySideBar" method="_on_edit_toggled"]
+[connection signal="toggled" from="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer2/HBoxContainer/ActionButton" to="VBoxContainer/UICoreStatusBar" method="_on_action_button_toggled"]
+
+[editable path="VBoxContainer/PanelMenuBar"]

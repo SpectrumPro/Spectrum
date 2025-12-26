@@ -1,0 +1,73 @@
+[gd_scene load_steps=10 format=3 uid="uid://dut26fusowr8i"]
+
+[ext_resource type="Theme" uid="uid://cyua45ur0ijqo" path="res://assets/Main.theme" id="1_egktx"]
+[ext_resource type="StyleBox" uid="uid://daxhx5qr5qdeu" path="res://assets/styles/UIPanelBase.tres" id="2_wpgpr"]
+[ext_resource type="Script" uid="uid://ny6rdbl4hjv4" path="res://panels/UIFixtures/UIFixtures.gd" id="3_ti08j"]
+[ext_resource type="PackedScene" uid="uid://dr0kfolsg46yu" path="res://panels/UIPanel/PanelMenuBar.tscn" id="4_4ox1a"]
+[ext_resource type="Texture2D" uid="uid://dqr6mygroiluf" path="res://assets/icons/NewPanel.svg" id="5_8ppod"]
+[ext_resource type="Texture2D" uid="uid://bc3qxkbsra1x8" path="res://assets/icons/Fixture.svg" id="5_sf6va"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="6_rpcjh"]
+[ext_resource type="Texture2D" uid="uid://cuvwwbojtcpg6" path="res://assets/icons/Duplicate.svg" id="7_xqphx"]
+[ext_resource type="PackedScene" uid="uid://7prnynnrdn4n" path="res://components/ComponentManagerView/ComponentManagerView.tscn" id="8_sypgw"]
+
+[node name="UIFixtures" type="PanelContainer" node_paths=PackedStringArray("edit_controls", "menu_bar")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_egktx")
+theme_override_styles/panel = ExtResource("2_wpgpr")
+script = ExtResource("3_ti08j")
+edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
+menu_bar = NodePath("VBoxContainer/PanelMenuBar")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PanelMenuBar" parent="VBoxContainer" instance=ExtResource("4_4ox1a")]
+layout_mode = 2
+
+[node name="ComponentButton" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="0"]
+text = "Fixtures"
+icon = ExtResource("5_sf6va")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer" index="0"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="NewComponent" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "New"
+icon = ExtResource("5_8ppod")
+
+[node name="DeleteComponent" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Delete"
+icon = ExtResource("6_rpcjh")
+
+[node name="DuplicateComponent" type="Button" parent="VBoxContainer/PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Duplicate"
+icon = ExtResource("7_xqphx")
+
+[node name="ComponentManagerView" parent="VBoxContainer" node_paths=PackedStringArray("new_button", "delete_button", "duplicate_button") instance=ExtResource("8_sypgw")]
+layout_mode = 2
+classname = "Fixture"
+table_column_names = Array[String](["name"])
+new_button = NodePath("../PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/NewComponent")
+delete_button = NodePath("../PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/DeleteComponent")
+duplicate_button = NodePath("../PanelMenuBar/HBoxContainer/ScrollContainer/PanelContainer/HBoxContainer/DuplicateComponent")
+
+[node name="PanelContainer" parent="VBoxContainer/ComponentManagerView/VBoxContainer" index="1"]
+visible = false
+
+[editable path="VBoxContainer/PanelMenuBar"]
+[editable path="VBoxContainer/ComponentManagerView"]

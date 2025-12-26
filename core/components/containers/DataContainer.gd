@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name DataContainer extends EngineComponent
 ## DataContainer stores fixture data
@@ -34,20 +35,22 @@ var _items: Array[ContainerItem]
 var _fixture: Dictionary[Fixture, Dictionary]
 
 
-## Constructor
-func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("DataContainer")
 	_set_self_class("DataContainer")
 	
-	register_callback("on_items_stored", _store_items)
-	register_callback("on_items_erased", _erase_items)
-	register_callback("on_items_function_changed", _set_function)
-	register_callback("on_items_value_changed", _set_value)
-	register_callback("on_items_can_fade_changed", _set_can_fade)
-	register_callback("on_items_start_changed", _set_start)
-	register_callback("on_items_stop_changed", _set_stop)
-	
-	super._init(p_uuid, p_name)
+	_settings_manager.register_networked_callbacks({
+		"on_items_stored": _store_items,
+		"on_items_erased": _erase_items,
+		"on_items_function_changed": _set_function,
+		"on_items_value_changed": _set_value,
+		"on_items_can_fade_changed": _set_can_fade,
+		"on_items_start_changed": _set_start,
+		"on_items_stop_changed": _set_stop,
+	})
 
 
 ## Gets all the ContainerItems
@@ -118,6 +121,26 @@ func set_start(p_items: Array, p_start: float) -> Promise:
 ## Sets the value of mutiple items
 func set_stop(p_items: Array, p_stop: float) -> Promise:
 	return rpc("set_stop", [p_items, p_stop])
+
+
+## Handles delete requests
+func delete() -> void:
+	for item: ContainerItem in _items:
+		item.delete()
+	
+	super.delete()
+
+
+## Serializes this Datacontainer and returnes it in a dictionary
+func serialize() -> Dictionary:
+	return super.serialize().merged(_serialize())
+
+
+## Loads this DataContainer from a dictonary
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_load(p_serialized_data)
 
 
 ## Internal: Stores a ContainerItem
@@ -252,24 +275,3 @@ func _serialize() -> Dictionary:
 ## Called when this DataContainer is to be loaded from serialized data
 func _load(serialized_data: Dictionary) -> void:
 	_store_items(Utils.deseralise_component_array(type_convert(serialized_data.get("items", []), TYPE_ARRAY)))
-
-
-## Handles delete requests
-func _delete() -> void:
-	for item: ContainerItem in _items:
-		item.local_delete()
-
-
-## Serializes this Datacontainer and returnes it in a dictionary
-func _serialize_request() -> Dictionary: 
-	return _serialize()
-
-
-## Loads this DataContainer from a dictonary
-func _load_request(serialized_data) -> void: 
-	_load(serialized_data)
-
-
-## Handles delete requests
-func _delete_request() -> void:
-	_delete()

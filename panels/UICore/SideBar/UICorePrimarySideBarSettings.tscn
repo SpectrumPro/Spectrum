@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3 uid="uid://cawcd1x6kkihy"]
+
+[ext_resource type="Script" uid="uid://b4lpvcf5mgeyv" path="res://panels/UICore/SideBar/UICorePrimarySideBarSettings.gd" id="1_67xso"]
+[ext_resource type="PackedScene" uid="uid://kjup3yrjifr5" path="res://components/SettingsManagerView/SettingsManagerView.tscn" id="1_hx8ak"]
+[ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="2_lkmdf"]
+[ext_resource type="PackedScene" uid="uid://bf3cbsyaotnnq" path="res://components/Table/Table.tscn" id="2_vrj4d"]
+[ext_resource type="Texture2D" uid="uid://bbennjke0ioen" path="res://assets/icons/Add.svg" id="3_7nj6a"]
+[ext_resource type="Texture2D" uid="uid://dhhbjjtkgbfl0" path="res://assets/icons/FileOpen.svg" id="4_cpjgq"]
+[ext_resource type="Texture2D" uid="uid://dfrrs2dnvlvsu" path="res://assets/icons/Delete.svg" id="5_us6l3"]
+
+[node name="UICorePrimarySideBarSettings" type="PanelContainer" node_paths=PackedStringArray("table", "settings_manager_view", "open_tab_button", "delete_tab_button")]
+custom_minimum_size = Vector2(0, 350)
+offset_right = 521.0
+offset_bottom = 337.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_67xso")
+table = NodePath("VBoxContainer/HSplitContainer/Table")
+settings_manager_view = NodePath("VBoxContainer/HSplitContainer/SettingsManagerView")
+open_tab_button = NodePath("VBoxContainer/PanelContainer/PanelContainer/HBoxContainer/OpenTab")
+delete_tab_button = NodePath("VBoxContainer/PanelContainer/PanelContainer/HBoxContainer/DeleteTab")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = -105
+
+[node name="Table" parent="VBoxContainer/HSplitContainer" instance=ExtResource("2_vrj4d")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SettingsManagerView" parent="VBoxContainer/HSplitContainer" instance=ExtResource("1_hx8ak")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_lkmdf")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="CreateTab" type="Button" parent="VBoxContainer/PanelContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Create Tab"
+icon = ExtResource("3_7nj6a")
+
+[node name="OpenTab" type="Button" parent="VBoxContainer/PanelContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "OpenTab"
+icon = ExtResource("4_cpjgq")
+
+[node name="DeleteTab" type="Button" parent="VBoxContainer/PanelContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Delete Tab"
+icon = ExtResource("5_us6l3")
+
+[connection signal="selection_changed" from="VBoxContainer/HSplitContainer/Table" to="." method="_update_selection"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/PanelContainer/HBoxContainer/CreateTab" to="." method="_on_create_tab_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/PanelContainer/HBoxContainer/OpenTab" to="." method="_on_open_tab_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/PanelContainer/HBoxContainer/DeleteTab" to="." method="_on_delete_tab_pressed"]

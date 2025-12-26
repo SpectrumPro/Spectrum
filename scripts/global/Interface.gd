@@ -1,596 +1,707 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name ClientInterface extends Node
-## Main script for the spectrum interface
+## Main script for the Spectrum Lighting Controller UI interface
 
 
-## Stores all the components found in the folder, stored as {"folder_name": PackedScene}
-var components: Dictionary = {
-	"ChannelSlider": load("res://components/ChannelSlider/ChannelSlider.tscn"),
-	"ColorSlider": load("res://components/ColorSlider/ColorSlider.tscn"),
-	"ConfirmationBox": load("res://components/ConfirmationBox/ConfirmationBox.tscn"),
-	"CreateComponent": load("res://components/CreateComponent/CreateComponent.tscn"),
-	"ComponentNamePopup": load("res://components/ComponentNamePopup/ComponentNamePopup.tscn"),
-	"NameDialogBox": load("res://components/NameDialogBox/NameDialogBox.tscn"),
-	"DialogBoxContainer": load("res://components/DialogBoxContainer/DialogBoxContainer.tscn"),
-	"CueItem": load("res://components/CueItem/CueItem.tscn"),
-	"CueTriggerModeOption": load("res://components/CueTriggerModeOption/CueTriggerModeOption.tscn"),
-	"DeskItemContainer": load("res://components/DeskItemContainer/DeskItemContainer.tscn"),
-	"ItemListView": load("res://components/ItemListView/ItemListView.tscn"),
-	"Knob": load("res://components/Knob/Knob.tscn"),
-	"ListItem": load("res://components/ListItem/ListItem.tscn"),
-	"ObjectPicker": load("res://components/ObjectPicker/ObjectPicker.tscn"),
-	"PanelContainer": load("res://components/PanelContainer/PanelContainer.tscn"),
-	"PanelPicker": load("res://components/PanelPicker/PanelPicker.tscn"),
-	"SettingsContainer": load("res://components/SettingsContainer/SettingsContainer.tscn"),
-	"PlaybackRow": load("res://components/PlaybackRow/PlaybackRow.tscn"),
-	"PopupWindow": load("res://components/PopupWindow/PopupWindow.tscn"),
-	"TimerPicker": load("res://components/TimePicker/TimePicker.tscn"),
-	"TriggerButton": load("res://components/TriggerButton/TriggerButton.tscn"),
-	"Warning": load("res://components/Warning/Warning.tscn"),
+## Emitted when a resolve request is required
+signal resolve_requested(type: ResolveType, hint: ResolveHint, classname: String, color_hint: Color)
+
+## Emitted when a window is added
+signal window_added(window: UIWindow)
+
+## Emitted when a window is removed
+signal window_removed(window: UIWindow)
+
+
+## Enum for ResolveTypes
+enum ResolveType {
+	NONE,				## Disables resolve mode
+	ANY,				## Resolves anything
+	COMPONENT,			## Resolves an EngineComponent
+	UIPANEL				## Resolves a UIPanel
 }
 
 
-## Stores all the panels found in the folder, stored as {"folder_name": PackedScene}
-var panels: Dictionary = {
-	"AddFixture": load("res://panels/AddFixture/AddFixture.tscn"),
-	"AnimationEditor": load("res://panels/AnimationEditor/AnimationEditor.tscn"),
-	"ColorPalette": load("res://panels/ColorPalette/ColorPalette.tscn"),
-	"ColorBlock": load("res://panels/ColorBlock/ColorBlock.tscn"),
-	"ColorPicker": load("res://panels/ColorPicker/ColorPicker.tscn"),
-	"CuePlayback": load("res://panels/CuePlayback/CuePlayback.tscn"),
-	"CueListTable": load("res://panels/CueListTable/CueListTable.tscn"),
-	"CueSheet": load("res://panels/CueSheet/CueSheet.tscn"),
-	"DataEditor": load("res://panels/DataEditor/DataEditor.tscn"),
-	"Clock": load('res://panels/Clock/Clock.tscn'),
-	"Debug": load("res://panels/Debug/Debug.tscn"),
-	"Desk": load("res://panels/Desk/Desk.tscn"),
-	"Fixtures": load("res://panels/Fixtures/Fixtures.tscn"),
-	"Functions": load("res://panels/Functions/Functions.tscn"),
-	"IOControls": load("res://panels/IOControls/IOControls.tscn"),
-	"Image": load("res://panels/Image/Image.tscn"),
-	"Settings": load("res://panels/Settings/Settings.tscn"),
-	"PlaybackButtons": load("res://panels/PlaybackButtons/PlaybackButtons.tscn"),
-	"Playbacks": load("res://panels/Playbacks/Playbacks.tscn"),
-	"Pad": load("res://panels/Pad/Pad.tscn"),
-	"Programmer": load("res://panels/Programmer/Programmer.tscn"),
-	"SaveLoad": load("res://panels/SaveLoad/SaveLoad.tscn"),
-	"Universes": load("res://panels/Universes/Universes.tscn"),
-	"UIPanelSettings": load("res://panels/UIPanelSettings/UIPanelSettings.tscn"),
-	"UIControlMethodPicker": load("res://panels/ComponentControlMethodPicker/ComponentControlMethodPicker.tscn"),
-	"UiParameterFunctionList": load("res://panels/UIParameterFunctionList/UIParameterFunctionList.tscn"),
-	"UIInputActionList": load("res://panels/UIInputActionList/UIInputActionList.tscn"),
-	"UISettings": load("res://panels/UISettings/UISettings.tscn"),
-	"VirtualFixtures": load("res://panels/VirtualFixtures/VirtualFixtures.tscn")
+## Enum for ResolveHint
+enum ResolveHint {
+	NONE,				## Default state
+	SELECT,				## Requests to select a component
+	ASSIGN,				## Requests to assign into
+	STORE,				## Requests to store into
+	EDIT,				## Requests to edit
+	RENAME,				## Requests to rename a component
+	EXECUTE,			## Requests to execute a function
+	STOP,				## Requests to stop a function
+	DELETE				## Requests to delete a component
 }
 
 
-## Panels sorted into categories
-var sorted_panels: Dictionary = {
-	"Playbacks": ["CuePlayback", "PlaybackButtons", "Playbacks", "Pad"],
-	"Editors": ["AnimationEditor", "ColorPalette", "ColorPicker", "Fixtures", "Functions", "Universes", "AddFixture", "CueListTable", "DataEditor", "CueSheet"],
-	"Utilities": ["Debug", "SaveLoad", "Settings", "IOControls", "Desk", "Programmer", "UISettings"],
-	"Visualization": ["VirtualFixtures"],
-	"Widgets": ["Clock", "ColorBlock", "Image"],
+## Enum for all WindowPopups
+enum WindowPopup {
+	PANEL_PICKER,		## PanelPicker class for selecting UIPanels
+	PANEL_SETTINGS,		## PanelPicker class for selecting UIPanels
+	MAIN_MENU,			## UI Main Menu
+	SETTINGS,			## UISettings
+	SAVE_LOAD,			## UISaveLoad
+	COMMAND_PALETTE,	## UICommandPalette
+	OBJECT_PICKER,		## UIObjectPicker
+	SETTINGS_MODULE,	## Shows a SettingsModule
+	WINDOW_MANAGER,		## UIWindowManager
+	WINDOW_ID,			## UIWindowID
+	MANIFEST_PICKER,	## UIManifestPicker
+	INTERFACE_SELECTOR,	## UIInterfaceSelector
 }
 
 
-## Stores all panel icons
-var panel_icons: Dictionary = {
-	"CuePlayback": load("res://assets/panel_icons/CuePlayback.png"),
-	"ColorPalette": load("res://assets/panel_icons/ColorPalette.png"),
-	"Playbacks": load("res://assets/panel_icons/Playbacks.png"),
-	"Programmer": load("res://assets/panel_icons/Programmer.png"),
-	"Clock": load("res://assets/panel_icons/Clock.png"),
-	"ColorBlock": load("res://assets/panel_icons/ColorBlock.png"),
-	"VirtualFixtures": load("res://assets/panel_icons/VirtualFixtures.png"),
-	"AnimationEditor": load("res://assets/panel_icons/AnimationEditor.png"),
-	"AddFixture": load("res://assets/panel_icons/AddFixture.png"),
-	"ColorPicker": load("res://assets/panel_icons/ColorPicker.png"),
-	"Debug": load("res://assets/panel_icons/Debug.png"),
-	"Fixtures": load("res://assets/panel_icons/Fixtures.png"),
-	"Functions": load("res://assets/panel_icons/Functions.png"),
-	"IOControls": load("res://assets/panel_icons/IOControls.png"),
-	"PlaybackButtons": load("res://assets/panel_icons/PlaybackButtons.png"),
-	"SaveLoad": load("res://assets/panel_icons/SaveLoad.png"),
-	"Settings": load("res://assets/panel_icons/Settings.png"),
-	"Universes": load("res://assets/panel_icons/Universes.png"),
-	"Desk": load("res://assets/panel_icons/Desk.png"),
+## Stores configuration for a WindowPopup instance
+class PopupConfig:
+	## Name of the node in the WindowPopups.tscn scene
+	var node_name: String = ""
+	
+	## Name of the method used to apply the value
+	var setter: String = ""
+	
+	## Maps each window to its associated node
+	var nodes: Dictionary[Window, UIBase]
+	
+	## Maps each window to its setter callable
+	var setter_callables: Dictionary[Window, Callable]
+	
+	## Maps each popups active state to the window
+	var active_state: Dictionary[Window, bool]
+	
+	## Maps each window to its Promise
+	var promises: Dictionary[Window, Promise]
+	
+	
+	## Constructor
+	func _init(p_node_name: String = "", p_setter: String = "") -> void:
+		node_name = p_node_name
+		setter = p_setter
+
+
+## The current resolve hint, if any
+var _current_resolve_hint: ResolveHint = ResolveHint.NONE
+
+## The current resolve mode, if any
+var _current_resolve_type: ResolveType = ResolveType.NONE
+
+## The current resolve classname
+var _current_resolve_classname: String = ""
+
+## The current resolve color
+var _current_resolve_color: Color = Color.TRANSPARENT
+
+## The resolve Promise
+var _resolve_promise: Promise = Promise.new()
+
+## Colors for each resolve hint
+var _resolve_hint_colors: Dictionary[ResolveHint, Color] = {
+	ResolveHint.NONE:		ThemeManager.Colors.ResolveHint.None,
+	ResolveHint.SELECT:		ThemeManager.Colors.ResolveHint.Select,
+	ResolveHint.ASSIGN:		ThemeManager.Colors.ResolveHint.Assign,
+	ResolveHint.STORE:		ThemeManager.Colors.ResolveHint.Store,
+	ResolveHint.EDIT:		ThemeManager.Colors.ResolveHint.Edit,
+	ResolveHint.RENAME:		ThemeManager.Colors.ResolveHint.Rename,
+	ResolveHint.EXECUTE:	ThemeManager.Colors.ResolveHint.Execute,
+	ResolveHint.STOP:		ThemeManager.Colors.ResolveHint.Stop,
+	ResolveHint.DELETE:		ThemeManager.Colors.ResolveHint.Delete,
 }
 
 
-## Stores the corresponding panel to access settings for each EngineComponent
-var component_settings_panels: Dictionary = {
-	"CueList": {"panel": load("res://panels/CuePlayback/CuePlayback.tscn"), "method": "set_cue_list"}
+## Stores configuration for each WindowPopup that will be instanced on each window
+var _window_popup_config: Dictionary[WindowPopup, PopupConfig] = {
+	WindowPopup.PANEL_PICKER:		PopupConfig.new("UIPanelPicker", ""),
+	WindowPopup.PANEL_SETTINGS:		PopupConfig.new("UIPanelSettings", "set_panel"),
+	WindowPopup.MAIN_MENU:			PopupConfig.new("UIMainMenu", ""),
+	WindowPopup.SETTINGS:			PopupConfig.new("UISettings", ""),
+	WindowPopup.SAVE_LOAD:			PopupConfig.new("UISaveLoad", ""),
+	WindowPopup.COMMAND_PALETTE:	PopupConfig.new("UICommandPalette", ""),
+	WindowPopup.OBJECT_PICKER:		PopupConfig.new("UIObjectPicker", ""),
+	WindowPopup.SETTINGS_MODULE:	PopupConfig.new("UIPopupSettingsModule", "set_module"),
+	WindowPopup.WINDOW_MANAGER:		PopupConfig.new("UIWindowManager", ""),
+	WindowPopup.WINDOW_ID:			PopupConfig.new("UIWindowID", ""),
+	WindowPopup.MANIFEST_PICKER:	PopupConfig.new("UIManifestPicker"),
+	WindowPopup.INTERFACE_SELECTOR: PopupConfig.new("UIInterfaceSelector")
 }
 
+## All windows by UUID RefMap for UUID: Window
+var _windows: RefMap = RefMap.new()
 
-## Stores the default icons for all the classes
-var icon_class_list: Dictionary = {
-	"ArtNetOutput": load("res://assets/icons/ArtNet.svg"),
-	"Cue": load("res://assets/icons/Cue.svg"),
-	"CueList": load("res://assets/icons/CueList.svg"),
-	"DMXFixture": load("res://assets/icons/DMXFixture.svg"),
-	"DMXOutput": load("res://assets/icons/DMXOutput.svg"),
-	"DataPalette": load("res://assets/icons/Palette.svg"),
-	"EngineComponent": load("res://assets/icons/Component.svg"),
-	"Fixture": load("res://assets/icons/Fixture.svg"),
-	"FixtureGroup": load("res://assets/icons/FixtureGroup.svg"),
-	"Function": load("res://assets/icons/Function.svg"),
-	"FunctionGroup": load("res://assets/icons/FunctionGroup.svg"),
-	"Programmer": load("res://assets/icons/Programmer.svg"),
-	"Scene": load("res://assets/icons/Scene.svg"),
-	"TriggerBlock": load("res://assets/icons/TriggerBlock.svg"),
-	"Universe": load("res://assets/icons/Universe.svg"),
-}
+## All WindowPopup scenes per window
+var _window_popups: Dictionary[Window, Control]
 
+## The WindowPopups scene to be instanced on each window
+var _window_popups_scene: PackedScene = load("res://WindowPopups.tscn")
 
-## Home Path
-var home_path := OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
+## All active fade animations
+var _active_fade_animations: Dictionary[Object, Dictionary]
 
-## The location for storing all the save show files
-var ui_library_location: String = "user://UILibrary"
+## All open UIPopupDialog refernced by the source node
+var _open_popup_dialogs: Dictionary[Node, UIPopupDialog]
 
+## Contains all searchable items
+var _palette_search_index: Dictionary[String, Dictionary]
 
-## Confirmation prompt text for deleting a component
-const COMPONENT_DELETE_TEXT: String = "Are you sure you want to delete component: $name?"
+## Config items for the ObjectPicker
+var _object_picker_index: Dictionary[Script, ClassTreeConfig]
 
-## Confirmation prompt text for deleting mutiple components
-const MULTI_COMPONENT_DELETE_TEXT: String = "Are you sure you want to delete $count components?"
+## An instance of InterfaceConfig
+var _config: InterfaceConfig = null
+
+## The settings manager for ClientInterface
+var settings_manager: SettingsManager = SettingsManager.new()
 
 
-## The main object picker
-var _object_picker: ObjectPicker
-
-## The currently connected callable connected to the object picker
-var _object_picker_selected_signal_connection: Callable
-
-## The main panel picker
-var _panel_picker: PanelPicker
-
-## The panel pickers promise callback
-var _panel_picker_promise: Promise = Promise.new()
-
-## The CreateComponent popup
-var _create_component_popup: CreateComponent
-
-## The CreateComponent popup promise callback
-var _create_component_promise: Promise = Promise.new()
-
-## The NamePickerComponent popup
-var _name_popup: NamePickerComponent
-
-## The container that stores all dialog boxes
-var _dialog_box_container: DialogBoxContainer
-
-## The container that stores all dialog boxes
-var _ui_panel_settings: UIPanelSettings
-
-## The container that stores all dialog boxes
-var _parameter_function_list: UiParameterFunctionList
-
-## Promise for UiParameterFunctionList
-var _parameter_function_list_promise: Promise = Promise.new()
-
-## The container that stores all dialog boxes
-var _input_action_list: UIInputActionList
-
-## Promise for UIInputActionList
-var _input_action_list_promise: Promise = Promise.new()
-
-## The UIControlMethodPicker to choose controls
-var _control_method_picker: UIControlMethodPicker
-
-## Promise for the UIControlMethodPicker
-var _method_picker_promise: Promise = Promise.new()
-
-## The container for cusoem popups
-var _custom_popup_container: Control
-
-## All active panel popups
-var _active_panel_popups: Dictionary = {}
-
-## The StyleBox for popups
-var _panel_stylebox: StyleBoxFlat = load("res://assets/styles/SolidPanelPopup.tres")
+## Init
+func _init() -> void:
+	settings_manager.set_owner(self)
+	settings_manager.set_inheritance_array(["Interface"])
+	
+	settings_manager.register_control("HideAllPopups", Data.Type.ACTION, hide_all_popup_panels, Callable(), [])
+	settings_manager.register_control("OpenMainMenu", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
+	settings_manager.register_control("OpenSettings", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
+	settings_manager.register_control("OpenSaveLoad", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.SAVE_LOAD, self, true), Callable(), [])
+	settings_manager.register_control("OpenWindowManager", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.WINDOW_MANAGER, self, true), Callable(), [])
+	settings_manager.register_control("AddWindow", Data.Type.ACTION, add_window, Callable(), [])
 
 
+## Ready ClientInterface
 func _ready() -> void:
-	OS.set_low_processor_usage_mode(true)
+	_load_config(load("res://InterfaceConfig.gd").new())
+	get_window().set_script(UIWindow)
 	
+	var popups: Control = _window_popups_scene.instantiate()
+	var root: UIWindow = get_tree().root
 	
-	if OS.get_cmdline_args().has("--uiv3"):
-		get_tree().root.get_node("Main").queue_free()
-		get_tree().root.add_child.call_deferred(load("res://UIv3.tscn").instantiate())
+	_register_window_popups(popups, root)
+	root.set_window_popups.call_deferred(popups)
+	root._base_panel = root.get_node("UICore")
 	
-	if not DirAccess.dir_exists_absolute(ui_library_location):
-		print("The folder \"ui_library_location\" does not exist, creating one now, errcode: ", DirAccess.make_dir_absolute(ui_library_location))
+	_window_popups[root] = popups
+	_windows.map("main", get_window())
 	
-	ComponentDB.request_class_callback("Fixture", func (added: Array, removed: Array):
-		if removed:
-			Values.remove_from_selection_value("selected_fixtures", removed)
-	)
-	
-	Core.resetting.connect(_on_engine_resetting)
-	
-	_try_auto_load.call_deferred()
-	_set_up_custom_popups()
-	_set_up_custom_pickers()
+	(func () -> void:
+		load_ui()
+	).call_deferred()
 
 
+## Registers all WindowPopups into the corrisponding PopupConfig class
+func _register_window_popups(p_window_popups: Control, p_window: Window) -> void:
+	for window_popup: WindowPopup in _window_popup_config.keys():
+		_register_popup(window_popup, p_window_popups, p_window)
 
-## Called for all notifications
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		show_confirmation_dialog("Are you sure you want to close the app? Unsaved UI changes will lost.").confirmed.connect(func():
-			get_tree().quit()
+
+## Registers a WindowPopup on the given Window
+func _register_popup(p_window_popup: WindowPopup, p_window_popups: Control, p_window: Window) -> void:
+	var config: PopupConfig = _window_popup_config[p_window_popup]
+	var popup: UIBase = p_window_popups.get_node(config.node_name)
+	var setter: Callable
+	var resolve_signal: Signal = popup.get_custom_signal_or_default() if popup is UIPopup else Signal()
+	var reject_signal: Signal = popup.canceled if popup is UIPopup else popup.close_request
+	var promise: Promise = Promise.new()
+	
+	if config.setter:
+		setter = Callable(popup, config.setter)
+	
+	if not resolve_signal.is_null():
+		resolve_signal.connect(func (...p_args):
+			promise.resolve(p_args)
+			_hide_window_popup(p_window_popup, p_window)
 		)
-
-
-## Sets-up all the custom picker components
-func _set_up_custom_pickers():
-	_set_up_object_picker()
-	_set_up_panel_picker()
-	_set_up_create_component()
-	_set_up_name_popup()
-	_set_up_dialog_box_container()
-	_set_up_panel_settings()
-	_set_up_function_list()
-	_set_up_input_action_list()
-	_set_up_control_method_picker()
-
-
-## Called when the engine is resetting, Will reload the whole ui layout
-func _on_engine_resetting() -> void:
-	for popup: Control in _custom_popup_container.get_children():
-		_custom_popup_container.remove_child(popup)
-		popup.queue_free()
 	
-	_set_up_custom_pickers()
-	get_tree().change_scene_to_file("res://Main.tscn")
+	if not reject_signal.is_null():
+		reject_signal.connect(func (...p_args):
+			promise.reject(p_args)
+			_hide_window_popup(p_window_popup, p_window)
+		)
 	
-	# For some reason we need to wait 2 frames for SceneTree.change_scene_to_file to finish and load the new nodes
-	await get_tree().process_frame
-	await get_tree().process_frame
-	
-	_custom_popup_container.move_to_front()
-	_try_auto_load()
-
-## Sets up the custom popup container
-func _set_up_custom_popups() -> void:
-	_custom_popup_container = Control.new()
-	
-	_custom_popup_container.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_custom_popup_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
-	get_tree().root.add_child.call_deferred(_custom_popup_container)
-
-
-## Sets up the object picker
-func _set_up_object_picker() -> void:
-	_object_picker = load("res://components/ObjectPicker/ObjectPicker.tscn").instantiate()
-	
-	_object_picker.set_anchors_preset(Control.PRESET_CENTER)
-	_object_picker.custom_minimum_size = Vector2(820, 430)
-	_object_picker.add_theme_stylebox_override("panel", _panel_stylebox)
-	
-	_object_picker.selection_canceled.connect(func () -> void:
-		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
-		_object_picker_selected_signal_connection = Callable()
-		hide_custom_popup(_object_picker)
-	)
-	
-	add_custom_popup(_object_picker)
-
-
-## Sets up the panel picker
-func _set_up_panel_picker() -> void:
-	_panel_picker = components.PanelPicker.instantiate()
-	
-	_panel_picker.set_anchors_preset(Control.PRESET_CENTER)
-	_panel_picker.custom_minimum_size = Vector2(820, 630)
-	_panel_picker.add_theme_stylebox_override("panel", _panel_stylebox)
-	
-	_panel_picker.panel_chosen.connect(func (panel: PackedScene):
-		_panel_picker_promise.resolve([panel])
-		hide_custom_popup(_panel_picker)
-	)
-	_panel_picker.cancel_pressed.connect(hide_custom_popup.bind(_panel_picker))
-	
-	add_custom_popup(_panel_picker)
-
-
-## Sets up the component creator
-func _set_up_create_component() -> void:
-	_create_component_popup = components.CreateComponent.instantiate()
-	
-	_create_component_popup.set_anchors_preset(Control.PRESET_CENTER)
-	_create_component_popup.custom_minimum_size = Vector2(820, 630)
-	_create_component_popup.add_theme_stylebox_override("panel", _panel_stylebox)
-	
-	_create_component_popup.component_created.connect(func (component: EngineComponent):
-		_create_component_promise.resolve([component])
-		hide_custom_popup(_create_component_popup)
-	)
-	_create_component_popup.class_confirmed.connect(func (classname: String):
-		_create_component_promise.resolve([classname])
-		hide_custom_popup(_create_component_popup)
-	)
-	_create_component_popup.canceled.connect(hide_custom_popup.bind(_create_component_popup))
-	
-	add_custom_popup(_create_component_popup)
-
-
-## Sets up the component name popup
-func _set_up_name_popup() -> void:
-	_name_popup = components.ComponentNamePopup.instantiate()
-	_name_popup.set_anchors_preset(Control.PRESET_CENTER)
-	
-	_name_popup.confirmed.connect(func (arg): hide_custom_popup(_name_popup))
-	_name_popup.rejected.connect(hide_custom_popup.bind(_name_popup))
-	_name_popup.add_theme_stylebox_override("panel", _panel_stylebox)
-	
-	add_custom_popup(_name_popup)
-
-
-## Sets up the dialog box container
-func _set_up_dialog_box_container() -> void:
-	_dialog_box_container = components.DialogBoxContainer.instantiate()
-	add_custom_popup(_dialog_box_container)
-
-
-## Sets up the UIPanel settings
-func _set_up_panel_settings() -> void:
-	_ui_panel_settings = panels.UIPanelSettings.instantiate()
-	add_custom_popup(_ui_panel_settings)
-
-
-## Sets up the UiParameterFunctionList
-func _set_up_function_list() -> void:
-	_parameter_function_list = panels.UiParameterFunctionList.instantiate()
-	_parameter_function_list.close_request.connect(_parameter_function_list_promise.reject)
-	_parameter_function_list.close_request.connect(_parameter_function_list_promise.clear)
-	_parameter_function_list.function_chosen.connect(func (function: String):
-		_parameter_function_list_promise.resolve([function])
-		hide_custom_popup(_parameter_function_list)
-		_parameter_function_list_promise.clear()
-	)
-	add_custom_popup(_parameter_function_list)
-
-
-## Sets up the UIInputActionList
-func _set_up_input_action_list() -> void:
-	_input_action_list = panels.UIInputActionList.instantiate()
-	_input_action_list.close_request.connect(_input_action_list_promise.reject)
-	_input_action_list.close_request.connect(_input_action_list_promise.clear)
-	_input_action_list.action_chosen.connect(func (input_action: InputAction):
-		_input_action_list_promise.resolve([input_action])
-		hide_custom_popup(_input_action_list)
-		_input_action_list_promise.clear()
-	)
-	add_custom_popup(_input_action_list)
-
-
-## Sets up the UIControlMethodPicker
-func _set_up_control_method_picker() -> void:
-	_control_method_picker = panels.UIControlMethodPicker.instantiate()
-	add_custom_popup(_control_method_picker)
-	
-	_control_method_picker.close_request.connect(_method_picker_promise.reject)
-	_control_method_picker.close_request.connect(_method_picker_promise.clear)
-	_control_method_picker.method_chosen.connect(func (control_name: String):
-		_method_picker_promise.resolve([control_name])
-		hide_custom_popup(_control_method_picker)
-		_method_picker_promise.clear()
-	)
-
-
-## Try auto load the ui
-func _try_auto_load() -> void:
-	if FileAccess.file_exists(ui_library_location + "/main"):
-		var file: String = FileAccess.open(ui_library_location + "/main", FileAccess.READ).get_as_text()
-		
-		var saved_data = JSON.parse_string(file)
-		if saved_data:
-			self.load(saved_data)
-
-
-## Shows the object picker
-func show_object_picker(select_mode: ObjectPicker.SelectMode, callback: Callable, filter: String = "") -> void:
-	_object_picker.filter = filter
-	_object_picker.set_user_filtering(filter == "")
-	_object_picker.set_select_mode(select_mode)
-	
-	if _object_picker_selected_signal_connection.is_valid():
-		_object_picker.selection_confirmed.disconnect(_object_picker_selected_signal_connection)
-	
-	_object_picker_selected_signal_connection = func (selection) -> void:
-		hide_custom_popup(_object_picker)
-		callback.call(selection)
-	
-	_object_picker.selection_confirmed.connect(_object_picker_selected_signal_connection, CONNECT_ONE_SHOT)
-	
-	show_custom_popup(_object_picker)
-
-
-## Shows the create component popup
-func show_create_component(mode: CreateComponent.Mode, class_filter: String, auto_show_name_prompt: bool = false) -> Promise:
-	_create_component_promise.clear()
-	
-	_create_component_popup.deselect_all()
-	_create_component_popup.set_mode(mode)
-	_create_component_popup.set_class_filter(class_filter)
-	
-	if auto_show_name_prompt:
-		_create_component_promise.then(show_name_prompt)
-	
-	show_custom_popup(_create_component_popup)
-	return _create_component_promise
-
-
-## Shows the ComponentNamePopup
-func show_name_prompt(for_component: EngineComponent) -> void:
-	_name_popup.set_component(for_component)
-	_name_popup.focus()
-	show_custom_popup(_name_popup)
-
-
-## Shows the panel picker
-func show_panel_picker() -> Promise:
-	_panel_picker_promise.clear()
-	show_custom_popup(_panel_picker)
-	return _panel_picker_promise
-
-
-## Shows a regular confirmation dialog
-func show_confirmation_dialog(title: String, source: Variant = null) -> ConfirmationBox:
-	return _dialog_box_container.add_confirmation_dialog(title, source)
-
-
-## Shows a regular confirmation dialog
-func show_info_dialog(title: String, source: Variant = null) -> ConfirmationBox:
-	return _dialog_box_container.add_info_dialog(title, source)
-
-
-## Shows a delete confirmation dialog
-func show_delete_confirmation(title: String = "", source: Variant = null) -> ConfirmationBox:
-	return _dialog_box_container.add_delete_confirmation(title, source)
-
-
-## Shows a confirmation, and then deletes a component if the user accepts
-func confirm_and_delete_component(component: EngineComponent, source: Variant = null) -> ConfirmationBox:
-	return show_delete_confirmation(COMPONENT_DELETE_TEXT.replace("$name", component.get_name()), source).then(func ():
-		component.delete()
-	)
-
-
-## Shows a confirmation, and then deletes mutiple components if the user accepts
-func confirm_and_delete_components(components: Array, source: Variant = null) -> ConfirmationBox:
-	return show_delete_confirmation(MULTI_COMPONENT_DELETE_TEXT.replace("$count", str(len(components))), source).then(func ():
-		for component: Variant in components:
-			if component is EngineComponent:
-				component.delete()
-	)
-
-
-## Shows a rename dialog
-func show_name_dialog(title: String = "", default_text: String = "", source: Variant = null) -> NameDialogBox:
-	return _dialog_box_container.add_name_dialog_box(title, default_text, source)
-
-
-## Shows the UIPanelSettings for a given UIPanel
-func show_panel_settings(panel: UIPanel) -> void:
-	_ui_panel_settings.set_panel(panel)
-	show_custom_popup(_ui_panel_settings)
-
-
-## Shows the UiParameterFunctionList
-func show_function_list(fixtures: Array, parameter: String) -> Promise:
-	_parameter_function_list.set_fixtures(fixtures, parameter)
-	show_custom_popup(_parameter_function_list)
-	
-	return _parameter_function_list_promise
-
-
-## Shows the UIInputActionList
-func show_input_action_list() -> Promise:
-	show_custom_popup(_input_action_list)
-	
-	return _input_action_list_promise
-
-
-## Shows the UIControlMethodPicker for the given component
-func show_control_method_picker(component: EngineComponent) -> Promise:
-	_control_method_picker.set_component(component)
-	show_custom_popup(_control_method_picker)
-	
-	return _method_picker_promise
-
-
-## Shows a panel popup, source is the script who triggerd the popup to avoid it showing twice
-func create_panel_popup(panel: String, source: Variant = null) -> UIPanel:
-	if source and panel in _active_panel_popups:
-		return
-	
-	
-	var new_panel: UIPanel = panels[panel].instantiate()
-	add_custom_popup(new_panel)
-	show_custom_popup(new_panel)
-	new_panel.close_request.connect(func ():
-		hide_custom_popup(new_panel)
-		_active_panel_popups.erase(source)
-		new_panel.queue_free()
-	)
-	
-	_active_panel_popups[source] = new_panel
-	return new_panel
-
-
-## Adds a node as a child to the root. Allowing to create popups
-func add_custom_popup(popup: Control) -> void:
-	if is_instance_valid(popup):
-		if popup.get_parent_control():
-			popup.get_parent_control().remove_child(popup)
-		
-		if popup is UIPanel:
-			popup.close_request.connect(hide_custom_popup.bind(popup))
-			popup.set_display_mode(UIPanel.DisplayMode.Popup)
-			popup.add_theme_stylebox_override("panel", _panel_stylebox)
-		
-		popup.hide()
-		_custom_popup_container.add_child.call_deferred(popup)
-
-
-## Removes a custom popup
-func remove_custom_popup(popup: Control) -> void:
-	if popup in _custom_popup_container.get_children():
-		_custom_popup_container.remove_child(popup)
-
-
-## Shows a custom popup
-func show_custom_popup(popup: Control) -> void:
-	popup.move_to_front()
-	_dialog_box_container.move_to_front()
-	popup.show()
-
-
-## Hides a custom popup
-func hide_custom_popup(popup: Control) -> void:
+	config.nodes[p_window] = popup
+	config.setter_callables[p_window] = setter
+	config.active_state[p_window] = false
+	config.promises[p_window] = promise
 	popup.hide()
 
 
-## Gets a class icon
-func get_class_icon(classname: String) -> Texture2D:
-	var icon: Texture2D = icon_class_list.get(classname, null)
+## Shows the given WindowPopup
+func _show_window_popup(p_popup_type: WindowPopup, p_source: Node, p_setter_arg: Variant) -> Promise:
+	var window = p_source.get_window()
+	var config: PopupConfig = _window_popup_config[p_popup_type]
+	var popup: UIPanel = config.nodes[window]
+	var promise: Promise = config.promises[window]
 	
-	if not icon and ClassList.is_class_custom(classname):
-		icon = icon_class_list.get(ClassList.get_custon_classes()[classname][-2])
+	if config.active_state[window]:
+		config.promises[window].clear()
 	
-	return icon
+	if p_setter_arg:
+		config.setter_callables[window].call(p_setter_arg)
+	
+	config.active_state[window] = true
+	show_and_fade(popup)
+	
+	popup.move_to_front()
+	popup.focus()
+	
+	promise.set_object_refernce(popup)
+	return promise
 
 
-## Gets the panels settings
-func get_panel_settings() -> UIPanelSettings:
-	return _ui_panel_settings
+## Hides and active window popup
+func _hide_window_popup(p_popup_type: WindowPopup, p_window: Window) -> void:
+	var config: PopupConfig = _window_popup_config[p_popup_type]
+	
+	if not config.active_state[p_window]:
+		return
+	
+	config.active_state[p_window] = false
+	fade_and_hide(config.nodes[p_window])
+	config.promises[p_window].clear()
 
 
-## Saves the current ui layout to a file
-func save_to_file():
-	Utils.save_json_to_file(ui_library_location, "main", save())
+## Prompts the user to select a UIPanel
+func prompt_panel_picker(p_source: Node) -> Promise:
+	return _show_window_popup(WindowPopup.PANEL_PICKER, p_source, null)
 
 
-## Saves this ui to a dictionary
-func save() -> Dictionary:
-	return {
-		"InputServer": InputServer.save(),
-		"main_window": get_tree().root.get_node("Main").save(),
+## Promps the user with UIPaneSettings
+func prompt_panel_settings(p_source: Node, p_panel: UIPanel) -> Promise:
+	return _show_window_popup(WindowPopup.PANEL_SETTINGS, p_source, p_panel)
+
+
+## Promps the user with UIPaneSettings
+func prompt_object_picker(p_source: Node, p_index: Script, p_class_filter: String) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.OBJECT_PICKER, p_source, null)
+	var object_picker: UIObjectPicker = promise.get_object_refernce()
+	
+	object_picker.set_select_mode(UIObjectPicker.SelectMode.OBJECT)
+	object_picker.set_index(p_index, p_class_filter)
+	
+	return promise
+
+
+## Prompts the user with UIManifestPicker
+func prompt_manifest_picker(p_source: Node) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.MANIFEST_PICKER, p_source, null)
+	
+	return promise
+
+
+## Prompts the user with UIInterfaceSelector
+func prompt_interface_selector(p_source: Node) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.INTERFACE_SELECTOR, p_source, null)
+	
+	return promise
+
+
+## Promps the user with UIPaneSettings
+func prompt_create_component(p_source: Node, p_class_filter: String) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.OBJECT_PICKER, p_source, null)
+	var object_picker: UIObjectPicker = promise.get_object_refernce()
+	
+	object_picker.set_select_mode(UIObjectPicker.SelectMode.CLASS)
+	object_picker.set_index(EngineComponent, p_class_filter)
+	
+	return promise
+
+
+## Promps the user with SettingsModule
+func prompt_settings_module(p_source: Node, p_module: SettingsModule) -> Promise:
+	return _show_window_popup(WindowPopup.SETTINGS_MODULE, p_source, p_module)
+
+
+## Promps the user with a DataInput
+func prompt_data_input(p_source: Node, p_data_type: Data.Type, p_default: Variant, p_label: String) -> Promise:
+	var promise: Promise = _show_window_popup(WindowPopup.SETTINGS_MODULE, p_source, null)
+	var module_view: UIPopupSettingsModule = promise.get_object_refernce()
+	var dummy_module: SettingsModule = SettingsModule.new(p_label, p_label, p_data_type, SettingsModule.Type.SETTING, promise.resolvev, func (): return p_default, [], p_source)
+	
+	module_view.set_module(dummy_module)
+	module_view.focus()
+	return promise
+
+
+## Prompts the user with a delete confirmation dialog
+func prompt_delete_confirmation(p_source: Node, p_title: String = "Confirm Deletion?") -> Promise:
+	return prompt_popup_dialog(p_source, p_title).preset(UIPopupDialog.Preset.DELETE, p_title).promise()
+
+
+## Creates and adds a blank UIPopupDialog
+func prompt_popup_dialog(p_source: Node, p_title: String = "") -> UIPopupDialog:
+	if _open_popup_dialogs.has(p_source):
+		var open_dialog: UIPopupDialog = _open_popup_dialogs[p_source]
+		
+		open_dialog.focus()
+		open_dialog.move_to_front()
+		open_dialog.flash()
+		
+		return UIPopupDialog.new().set_promise(Promise.new().auto_reject())
+	
+	var window_popups: Control = _window_popups[p_source.get_window()]
+	var new_dialog: UIPopupDialog = UIDB.instance_popup(UIPopupDialog)
+	var promise: Promise = Promise.new()
+	
+	new_dialog.get_custom_signal_or_default().connect(func (...p_args): 
+		promise.resolve(p_args)
+		fade_and_hide(new_dialog, new_dialog.queue_free)
+		_open_popup_dialogs.erase(p_source)
+	)
+	new_dialog.canceled.connect(func (): 
+		promise.reject()
+		fade_and_hide(new_dialog, new_dialog.queue_free)
+		_open_popup_dialogs.erase(p_source)
+	)
+	
+	if p_title:
+		new_dialog.title(p_title)
+	
+	promise.set_object_refernce(new_dialog)
+	window_popups.add_child(new_dialog)
+	
+	new_dialog.set_promise(promise)
+	new_dialog.focus()
+	new_dialog.hide()
+	
+	show_and_fade(new_dialog, new_dialog.focus)
+	_open_popup_dialogs[p_source] = new_dialog
+	return new_dialog
+
+
+## Prompts the user with a custom panel popup
+func prompt_panel_popup(p_source: Node, p_panel_class: Variant) -> UIPanel:
+	var window_popups: Control = _window_popups[p_source.get_window()]
+	var panel: UIPanel = UIDB.instance_panel(p_panel_class)
+	
+	if not is_instance_valid(panel):
+		return null
+	
+	panel.close_request.connect(func ():
+		fade_and_hide(panel, panel.queue_free)
+	)
+	
+	panel.hide()
+	panel.set_display_mode(UIPanel.DisplayMode.Popup)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	window_popups.add_child(panel)
+	
+	show_and_fade(panel)
+	return panel
+
+
+## Sets the visability of a WindowPopup
+func set_popup_visable(p_popup_type: WindowPopup, p_source: Node, p_visible: bool) -> UIBase:
+	if p_visible:
+		_show_window_popup(p_popup_type, p_source, null)
+	else:
+		_hide_window_popup(p_popup_type, p_source.get_window())
+	
+	return get_window_popup(p_popup_type, p_source)
+
+
+## Sets the visability of a WindowPopup
+func toggle_popup_visable(p_popup_type: WindowPopup, p_source: Node) -> UIBase:
+	var popup: UIBase = get_window_popup(p_popup_type, p_source)
+	
+	if not popup:
+		return null
+	
+	if popup.visible:
+		_hide_window_popup(p_popup_type, p_source.get_window())
+	else:
+		_show_window_popup(p_popup_type, p_source, null)
+	
+	return popup
+
+
+## Hides all popup panels
+func hide_all_popup_panels() -> void:
+	for popup_type: WindowPopup in _window_popup_config:
+		_hide_window_popup(popup_type, get_window())
+
+
+## Saves the UI to the ui save file
+func save_ui() -> void:
+	Utils.save_json_to_file(_config.ui_save_location, _config.ui_save_file, serialize())
+
+
+## Loads the UI from the ui save file
+func load_ui() -> void:
+	deserialize(Utils.load_json_from_file(_config.ui_save_location, _config.ui_save_file))
+
+
+func serialize() -> Dictionary:
+	var serialize_data: Dictionary = {
+		"windows": {}
 	}
+	
+	for window_uuid: String in _windows.get_left():
+		serialize_data.windows[window_uuid] = _windows.left(window_uuid).serialize()
+	
+	return serialize_data
 
 
-## Loads this ui from a dictionary
-func load(saved_data: Dictionary) -> void:
-	InputServer.load(type_convert(saved_data.get("InputServer", {}), TYPE_DICTIONARY))
+## Deserializes the serialized data
+func deserialize(p_serialized_data) -> void:
+	var windows: Dictionary = type_convert(p_serialized_data.get("windows", {}), TYPE_DICTIONARY)
 	
-	if saved_data.has("main_window") and get_tree().root.has_node("Main"):
-		get_tree().root.get_node("Main").load(saved_data.main_window)
+	for window_uuid: Variant in windows:
+		if not window_uuid is String or not windows[window_uuid] is Dictionary: 
+			continue
+		
+		var serialized_window: Dictionary = windows[window_uuid]
+		
+		if window_uuid == "main":
+			get_window_node(self).deserialize(serialized_window)
+		else:
+			add_window(null).deserialize(serialized_window)
+
+
+## Gets the WindowPopup for the window containing the p_source node
+func get_window_popup(p_window_popup: WindowPopup, p_source: Node) -> UIBase:
+	if not _window_popup_config.has(p_window_popup):
+		return null
 	
+	var window: Window = p_source.get_window()
+	var config: PopupConfig = _window_popup_config[p_window_popup]
+	
+	return config.nodes.get(window, null)
+
+
+## Fades a property of an object and handles animation cleanup
+func fade_property(p_object: Object, p_property: String, p_to: Variant, p_callback: Callable = Callable(), p_time: float = ThemeManager.Constants.Times.InterfaceFadeTime) -> void:
+	kill_fade(p_object, p_property)
+	var tween: Tween = get_tree().create_tween()
+	
+	tween.tween_property(p_object, p_property, p_to, p_time).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func ():
+		if is_instance_valid(p_object):
+			_active_fade_animations[p_object].erase(p_property)
+		else:
+			_active_fade_animations.erase(null)
+		
+		if p_callback.is_valid():
+			p_callback.call()
+	)
+	
+	_active_fade_animations.get_or_add(p_object, {})[p_property] = tween
+
+
+## Kills a running fade
+func kill_fade(p_object: Object, p_property: String) -> void:
+	if _active_fade_animations.get(p_object, {}).has(p_property):
+		_active_fade_animations[p_object][p_property].kill()
+		_active_fade_animations[p_object].erase(p_property)
+
+
+## Checks if a property is currently fading
+func is_fading(p_control: Control, p_property: String) -> bool:
+	return _active_fade_animations.get(p_control, {}).has(p_property)
+
+
+## Shows and fades in a control
+func show_and_fade(p_control: Control, p_callback: Callable = Callable(), p_time: float = ThemeManager.Constants.Times.InterfaceFadeTime) -> void:
+	if p_control.visible and not is_fading(p_control, "modulate"):
+		return
+	
+	p_control.modulate = Color.TRANSPARENT
+	fade_property(p_control, "modulate", Color.WHITE, p_callback, p_time)
+	p_control.show()
+
+
+## Fades and hides a control
+func fade_and_hide(p_control: Control, p_callback: Callable = Callable(), p_time: float = ThemeManager.Constants.Times.InterfaceFadeTime) -> void:
+	if not p_control.visible and not is_fading(p_control, "modulate"):
+		return
+	
+	p_control.modulate = Color.WHITE
+	fade_property(p_control, "modulate", Color.TRANSPARENT, func ():
+		if is_instance_valid(p_control):
+			p_control.hide()
+			p_control.modulate = Color.WHITE
+		
+		if p_callback.is_valid():
+			p_callback.call()
+	, p_time)
+
+
+## Sets the visibility of a control node with a fade time
+func set_visible_and_fade(p_control: Control, p_visible: bool, p_callback: Callable = Callable(), p_time: float = ThemeManager.Constants.Times.InterfaceFadeTime) -> void:
+	if p_visible:
+		show_and_fade(p_control, p_callback, p_time)
+	else:
+		fade_and_hide(p_control, p_callback, p_time)
+
+
+## Stops any current fade and shows the given control node
+func show(p_control: Control) -> void:
+	kill_fade(p_control, "modulate")
+	p_control.modulate = Color.WHITE
+	p_control.show()
+
+
+## Stops any current fade and shows the given control node
+func hide(p_control: Control) -> void:
+	kill_fade(p_control, "modulate")
+	p_control.modulate = Color.WHITE
+	p_control.hide()
+
+
+## Adds a new window
+func add_window(p_base_panel: Script = UICore) -> UIWindow:
+	var new_window: UIWindow = UIWindow.new()
+	var uuid: String = UUID_Util.v4()
+	var popups: Control = _window_popups_scene.instantiate()
+	
+	_register_window_popups(popups, new_window)
+	_window_popups[new_window] = popups
+	_windows.map(uuid, new_window)
+	
+	new_window.set_initial_position(Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS)
+	add_child(new_window)
+	
+	(func () -> void:
+		new_window.set_name("New Window")
+		new_window.set_window_popups(popups)
+		new_window.set_base_panel(UIDB.instance_panel(p_base_panel))
+		new_window.set_window_title(new_window.name)
+	).call_deferred()
+	
+	window_added.emit(new_window)
+	return new_window
+
+
+## Removes the given window
+func remove_window(p_window: UIWindow) -> bool:
+	if not _windows.has_right(p_window) or p_window.is_window_root():
+		return false
+	
+	_windows.erase_right(p_window)
+	p_window.queue_free()
+	
+	remove_child(p_window)
+	window_removed.emit(p_window)
+	
+	return true
+
+
+## Hides the given window
+func close_window(p_window: UIWindow) -> bool:
+	if not _windows.has_right(p_window) or p_window.is_window_root():
+		return false
+	
+	p_window.hide()
+	return true
+
+
+## Hides the given window
+func show_window(p_window: UIWindow) -> bool:
+	if not _windows.has_right(p_window) or p_window.is_window_root():
+		return false
+	
+	p_window.show()
+	return true
+
+
+## Shows the WindowID on all the given windows. or all windows
+func show_window_id(p_on_windows: Array[UIWindow] = []) -> void:
+	if not p_on_windows:
+		p_on_windows = get_all_windows()
+	
+	for window: UIWindow in p_on_windows:
+		_show_window_popup(WindowPopup.WINDOW_ID, window, null)
+
+
+## Shows the WindowID on all the given windows. or all windows
+func hide_window_id(p_on_windows: Array[UIWindow] = []) -> void:
+	if not p_on_windows:
+		p_on_windows = get_all_windows()
+	
+	for window: UIWindow in p_on_windows:
+		_hide_window_popup(WindowPopup.WINDOW_ID, window)
+
+
+## Gets all windows
+func get_all_windows() -> Array[UIWindow]:
+	var result: Array[UIWindow] = []
+	result.assign(_windows.get_right())
+	
+	return result
+
+
+## Gets the Window node the p_source node is in
+func get_window_node(p_source: Node) -> UIWindow:
+	var window: Window = p_source.get_window()
+	
+	while not _windows.has_right(window):
+		window = window.get_window()
+	
+	return window
+
+
+## Adds an entry to the command palette
+func add_command_palette_entry(p_entry: CommandPaletteEntry) -> void:
+	for module: SettingsModule in p_entry.get_settings_manager().get_modules().values():
+		_palette_search_index.get_or_add(p_entry.get_class_name(), {})[module.get_id()] = module
+
+
+## Gets the current ResolveHint
+func get_current_resolve_hint() -> ResolveHint:
+	return _current_resolve_hint
+
+
+## Gets the current ResolveType
+func get_current_resolve_type() -> ResolveType:
+	return _current_resolve_type
+
+
+## Gets the current resolve classname
+func get_current_resolve_classname() -> String:
+	return _current_resolve_classname
+
+
+## Gets the current resolve color
+func get_current_resolve_color() -> Color:
+	return _current_resolve_color
+
+
+## Gets the color for a resolve hint
+func get_resolve_color(p_resolve_hint: ResolveHint) -> Color:
+	return _resolve_hint_colors[p_resolve_hint]
+
+
+## Enables the ResolveMode
+func enter_resolve_mode(p_resolve_type: ResolveType, p_resolve_hint: ResolveHint, p_classname: String) -> Promise:
+	_current_resolve_type = p_resolve_type
+	_current_resolve_hint = p_resolve_hint
+	_current_resolve_classname = p_classname
+	_current_resolve_color = get_resolve_color(_current_resolve_hint)
+	
+	resolve_requested.emit(_current_resolve_type, _current_resolve_hint, _current_resolve_classname, _current_resolve_color)
+	return _resolve_promise
+
+
+## Exits resolve mode
+func exit_resolve_mode() -> bool:
+	if _current_resolve_type == ResolveType.NONE:
+		return false
+	
+	_current_resolve_type = ResolveType.NONE
+	_current_resolve_hint = ResolveHint.NONE
+	_current_resolve_classname = "p_classname"
+	_current_resolve_color = Color.TRANSPARENT
+	
+	resolve_requested.emit(_current_resolve_type, _current_resolve_hint, _current_resolve_classname, _current_resolve_color)
+	return true
+
+
+## Loads the local config file
+func _load_config(p_config: InterfaceConfig) -> void:
+	_config = p_config
+	
+	for entry: CommandPaletteEntry in p_config.command_palette_default_items:
+		add_command_palette_entry(entry)
+	
+	for script: Script in p_config.object_picker_default_items:
+		_object_picker_index[script] = p_config.object_picker_default_items[script]

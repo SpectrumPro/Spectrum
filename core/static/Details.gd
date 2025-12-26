@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name Details extends RefCounted
 ## Static class to store program detils
@@ -8,7 +9,7 @@ static var version: String = "1.0.0 Beta"
 
 static var schema_version: int = 5
 
-static var copyright: String = "(c) 2024 Liam Sherwin. Licensed under GPL v3."
+static var copyright: String = "(c) 2025 Liam Sherwin. Licensed under GPL v3."
 
 static var ascii_name: String = """      
   ___              _                  

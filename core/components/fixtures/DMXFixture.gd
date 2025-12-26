@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name DMXFixture extends Fixture
 ## Dmx Fixture
@@ -8,12 +9,21 @@ class_name DMXFixture extends Fixture
 ## Emitted when the channel is changed
 signal channel_changed(channel: int)
 
+## Emitted when the universe is changed
+signal universe_changed(universe: Universe)
+
 ## Emitted when the manifest is changed
-signal manifest_changed(manifest: FixtureManifest)
+signal manifest_changed(manifest: FixtureManifest, mode: String)
+
+## Emitted when the mode is changed
+signal mode_changed(mode: String)
 
 
 ## The DMX channel of this fixture
 var _channel: int = 0
+
+## The current universe this fixture is patched to
+var _universe: Universe
 
 ## The mode of this fixture
 var _mode: String = ""
@@ -30,11 +40,25 @@ var _raw_override_layers: Dictionary[String, Dictionary] = {}
 var _manifest: FixtureManifest = null
 
 
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
+	_set_name("DMXFixture")
 	_set_self_class("DMXFixture")
 	
-	register_callback("on_channel_changed", _set_channel)
-	register_setting("DMXFixture", "channel", set_channel, get_channel, channel_changed, Utils.TYPE_INT, 0, "Channel", 1, 512)
+	_settings_manager.register_setting("channel", Data.Type.INT, set_channel, get_channel, [channel_changed]).set_min_max(1, 512)
+	_settings_manager.register_setting("universe", Data.Type.ENGINECOMPONENT, set_universe, get_universe, [universe_changed]).set_class_filter(Universe)
+	_settings_manager.register_setting("manifest", Data.Type.FIXTUREMANIFEST, set_manifest, get_manifest, [manifest_changed])
+	_settings_manager.register_status("mode", Data.Type.STRING, get_mode, [mode_changed])
+	
+	_settings_manager.register_networked_callbacks({
+		"on_channel_changed": _set_channel,
+		"on_universe_changed": _set_universe,
+		"on_manifest_changed": _set_manifest,
+	})
+	
+	_settings_manager.set_callback_allow_unresolved("on_manifest_changed")
 
 
 ## Gets the channel
@@ -42,14 +66,37 @@ func get_channel() -> int:
 	return _channel
 
 
-## Sets the channel
-func set_channel(p_channel: int) -> Promise:
-	return rpc("set_channel", [p_channel])
+## Gets the universe this fixture is patched to
+func get_universe() -> Universe:
+	return _universe
 
 
 ## Gets the FixtureManifest
 func get_manifest() -> FixtureManifest:
 	return _manifest
+
+
+## Gets the manifest mode this fixture is in
+func get_mode() -> String:
+	return _mode
+
+
+## Sets the channel
+func set_channel(p_channel: int) -> Promise:
+	return rpc("set_channel", [p_channel])
+
+
+## Sets the universe
+func set_universe(p_universe: Universe) -> Promise:
+	return rpc("set_universe", [p_universe])
+
+
+## Sets the FixtureManifest
+func set_manifest(p_manifest: Variant, p_mode: String) -> Promise:
+	if p_manifest is FixtureManifest:
+		p_manifest = p_manifest.uuid()
+	
+	return rpc("set_manifest", [type_convert(p_manifest, TYPE_STRING), p_mode])
 
 
 ## Gets all the override values
@@ -134,17 +181,36 @@ func function_can_fade(p_zone: String, p_parameter: String, p_function: String) 
 
 
 ## Internl: Sets the channel
-func _set_channel(p_channel: int) -> void:
+func _set_channel(p_channel: int, p_no_signal: bool = false) -> void:
 	_channel = p_channel
-	channel_changed.emit(_channel)
+	
+	if not p_no_signal:
+		channel_changed.emit(_channel)
+
+
+## Called when the universe is changed
+func _set_universe(p_universe: Universe, p_no_signal: bool = false) -> void:
+	_universe = p_universe
+	
+	if not p_no_signal:
+		universe_changed.emit(_universe)
 
 
 ## Sets the FixtureManifest
-func _set_manifest(p_manifest: FixtureManifest, p_mode: String) -> void:
+func _set_manifest(p_manifest: Variant, p_mode: String, p_no_signal: bool = false) -> void:
+	if p_manifest and p_manifest is String:
+		FixtureLibrary.request_manifest(type_convert(p_manifest, TYPE_STRING)).then(_set_manifest.bind(p_mode))
+		return
+	
+	elif not is_instance_valid(p_manifest):
+		return
+	
 	_mode = p_mode
 	_manifest = p_manifest
 	
-	manifest_changed.emit(_manifest)
+	if not p_no_signal:
+		manifest_changed.emit(_manifest, _mode)
+		mode_changed.emit(_mode)
 
 
 ## Internal: Sets a parameter to a float value
@@ -180,22 +246,18 @@ func _erase_all_overrides() -> void:
 
 
 ## Saves this DMXFixture to a dictonary
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		 "channel": _channel
-	}
+	})
 
 
 ## Loads this DMXFixture from a dictonary
-func _load_request(p_serialized_data: Dictionary) -> void:
-	_set_channel(type_convert(p_serialized_data.get("channel"), TYPE_INT))
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
 	
-	_mode = type_convert(p_serialized_data.get("mode", ""), TYPE_STRING)
-	var manifest_uuid: String = type_convert(p_serialized_data.get("manifest_uuid"), TYPE_STRING)
-	if manifest_uuid:
-		FixtureLibrary.request_manifest(manifest_uuid).then(func (manifest: FixtureManifest):
-			_set_manifest(manifest, _mode)
-		)
+	_channel = type_convert(p_serialized_data.get("channel"), TYPE_INT)
+	_set_manifest(type_convert(p_serialized_data.get("manifest_uuid"), TYPE_STRING), type_convert(p_serialized_data.get("mode", ""), TYPE_STRING), true)
 	
 	_raw_override_layers = Dictionary(type_convert(p_serialized_data.get("raw_override_layers", {}), TYPE_DICTIONARY), TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)
 	_active_values = Dictionary(type_convert(p_serialized_data.get("active_values", {}), TYPE_DICTIONARY), TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)

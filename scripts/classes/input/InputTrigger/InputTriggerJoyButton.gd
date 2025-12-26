@@ -21,7 +21,7 @@ func _component_ready() -> void:
 	set_name("InputTriggerJoyKey")
 	_set_class_name("InputTriggerJoyKey")
 	
-	register_setting("InputTriggerJoyKey", "listen", set_input_event, get_input_event, Signal(), Utils.TYPE_INPUTEVENTJOYBUTTON, 0, "Listen")
+	register_setting("InputTriggerJoyKey", "listen", set_input_event, get_input_event, Signal(), Data.Type.INPUTEVENT, 0, "Listen")
 	register_setting_int("button", set_button, get_button, button_changed, 0, 0x7FFFFFFF)
 
 

@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name FunctionGroup extends Function
 ## A group of functions
@@ -19,16 +20,20 @@ signal functions_index_changed(function: Function, index: int)
 var _functions: Array[Function]
 
 
-## Init
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("FunctionGroup")
 	_set_self_class("FunctionGroup")
 	
-	register_callback("on_functions_added", _add_functions)
-	register_callback("on_functions_removed", _remove_functions)
-	register_callback("on_functions_index_changed", _set_function_index)
+	_settings_manager.register_custom_panel("functions", preload("res://components/SettingsManagerCustomPanels/FixtureGroupFixtures.tscn"), "set_fixture_group")
 	
-	register_custom_panel("FunctionGroup", "functions", "set_function_group", load("res://components/ComponentSettings/ClassCustomModules/FunctionGroupFunctions.tscn"))
+	_settings_manager.register_networked_callbacks({
+		"on_functions_added": _add_functions,
+		"on_functions_removed": _remove_functions,
+		"on_functions_index_changed": _set_function_index,
+	})
 
 
 # Adds a function
@@ -144,24 +149,28 @@ func _set_function_index(p_function: Function, p_index: int) -> bool:
 
 
 ## Overide this function to serialize your object
-func _serialize_request() -> Dictionary:
+func serialize() -> Dictionary:
 	var function_uuids: Array[String]
 	
 	for function: Function in _functions:
 		function_uuids.append(function.uuid)
 	
-	return {
+	return super.serialize().merged({
 		"functions": function_uuids,
-	}
+	})
 
 
 ## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void:
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
 	var function_uuids: Array = type_convert(p_serialized_data.get("functions", []), TYPE_ARRAY)
 	
 	for uuid: Variant in function_uuids:
-		if uuid is String:
-			ComponentDB.request_component(uuid, func (function: EngineComponent):
-				if function is Function:
-					_add_function(function)
-			)
+		if not uuid is String:
+			continue
+		
+		ComponentDB.request_component(uuid, func (function: EngineComponent):
+			if function is Function:
+				_add_function(function)
+		)

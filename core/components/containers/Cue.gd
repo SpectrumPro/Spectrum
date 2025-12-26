@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name Cue extends DataContainer
 ## Data container for CueLists, a Cue doesn't do anything by itself, and needs to be part of a CueList to work
@@ -44,24 +45,26 @@ var _trigger_mode: TriggerMode = TriggerMode.MANUAL
 var _tracking_mode: TrackingMode = TrackingMode.TRACKING
 
 
-## Constructor
-func _component_ready() -> void:
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("Cue")
 	_set_self_class("Cue")
 	
-	register_callback("on_qid_changed", _set_qid)
-	register_callback("on_fade_time_changed", _set_fade_time)
-	register_callback("on_pre_wait_time_changed", _set_pre_wait)
-	register_callback("on_trigger_mode_changed", _set_trigger_mode)
-	register_callback("on_tracking_mode_changed", _set_tracking_mode)
+	_settings_manager.register_setting("qid", Data.Type.STRING, set_qid, get_qid, [qid_changed])
+	_settings_manager.register_setting("trigger_mode", Data.Type.ENUM, set_trigger_mode, get_trigger_mode, [trigger_mode_changed]).set_enum_dict(TriggerMode)
+	_settings_manager.register_setting("tracking_mode", Data.Type.ENUM, set_tracking_mode, get_tracking_mode, [tracking_mode_changed]).set_enum_dict(TrackingMode)
+	_settings_manager.register_control("fade_time", Data.Type.FLOAT, set_fade_time, get_fade_time, [fade_time_changed])
+	_settings_manager.register_control("pre_wait", Data.Type.FLOAT, set_pre_wait, get_pre_wait, [pre_wait_time_changed])
 	
-	register_setting_string("qid", set_qid, get_qid, qid_changed)
-	
-	register_setting_float("fade_time", set_fade_time, get_fade_time, fade_time_changed, 0, INF)
-	register_setting_float("pre_wait", set_pre_wait, get_pre_wait, pre_wait_time_changed, 0, INF)
-	
-	register_setting_enum("trigger_mode", set_trigger_mode, get_trigger_mode, trigger_mode_changed, TriggerMode)
-	register_setting_enum("tracking_mode", set_tracking_mode, get_tracking_mode, tracking_mode_changed, TrackingMode)
+	_settings_manager.register_networked_callbacks({
+		"on_qid_changed": _set_qid,
+		"on_fade_time_changed": _set_fade_time,
+		"on_pre_wait_time_changed": _set_pre_wait,
+		"on_trigger_mode_changed": _set_trigger_mode,
+		"on_tracking_mode_changed": _set_tracking_mode,
+	})
 
 
 ## Sets this Cue's QID
@@ -160,23 +163,22 @@ func _set_tracking_mode(p_tracking_mode: TrackingMode) -> void:
 
 
 ## Returnes a serialized copy of this cue
-func _serialize_request() -> Dictionary:
-	return {
+func serialize() -> Dictionary:
+	return super.serialize().merged({
 		"qid": _qid,
 		"fade_time": _fade_time,
 		"pre_wait": _pre_wait,
 		"trigger_mode": _trigger_mode,
 		"tracking_mode": _tracking_mode,
-		"stored_data": _serialize(),
-	}
+	})
 
 
 ## Loads this Cue from a dictionary
-func _load_request(serialized_data: Dictionary) -> void:
-	_qid = type_convert(serialized_data.get("qid", _qid), TYPE_STRING)
-	_fade_time = type_convert(serialized_data.get("fade_time", _fade_time), TYPE_FLOAT)
-	_pre_wait = type_convert(serialized_data.get("pre_wait", _pre_wait), TYPE_FLOAT)
-	_trigger_mode = type_convert(serialized_data.get("trigger_mode", _trigger_mode), TYPE_INT)
-	_tracking_mode = type_convert(serialized_data.get("tracking_mode", _tracking_mode), TYPE_INT)
-
-	_load(type_convert(serialized_data.get("stored_data", {}), TYPE_DICTIONARY))
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	_qid = type_convert(p_serialized_data.get("qid", _qid), TYPE_STRING)
+	_fade_time = type_convert(p_serialized_data.get("fade_time", _fade_time), TYPE_FLOAT)
+	_pre_wait = type_convert(p_serialized_data.get("pre_wait", _pre_wait), TYPE_FLOAT)
+	_trigger_mode = type_convert(p_serialized_data.get("trigger_mode", _trigger_mode), TYPE_INT)
+	_tracking_mode = type_convert(p_serialized_data.get("tracking_mode", _tracking_mode), TYPE_INT)

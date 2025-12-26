@@ -1,9 +1,11 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name Fixture extends EngineComponent
 ## Engine class to control parameters of fixtures
 
+@warning_ignore_start("unused_signal")
 
 ## Emitted when parameters are changed
 signal parameter_changed(zone: String, parameter: String, function: String, value: Variant)
@@ -25,17 +27,20 @@ signal all_override_removed()
 static var RootZone: String = "root"
 
 
-## Called when this EngineComponent is ready
-func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
-	_set_self_class("Fixture")
-	
-	register_callback("on_parameter_changed", _set_parameter)
-	register_callback("on_parameter_erased", _erase_parameter)
-	register_callback("on_override_changed", _set_override)
-	register_callback("on_override_erased", _erase_override)
-	register_callback("on_all_override_removed", _erase_all_overrides)
-	
+## init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
 	super._init(p_uuid, p_name)
+	
+	_set_self_class("Fixture")
+	_set_name("Fixture")
+	
+	_settings_manager.register_networked_callbacks({
+		"on_parameter_changed": _set_parameter,
+		"on_parameter_erased": _erase_parameter,
+		"on_override_changed": _set_override,
+		"on_override_erased": _erase_override,
+		"on_all_override_removed": _erase_all_overrides,
+	})
 
 
 ## Sets a parameter to a float value

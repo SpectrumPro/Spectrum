@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name EngineComponent extends RefCounted
 ## Base class for an engine components, contains functions for storing metadata, and uuid's
@@ -22,159 +23,84 @@ signal delete_requested()
 
 
 ## The name of this object
-var name: String = "Unnamed EngineComponent"
+var _name: String = "Unnamed EngineComponent"
 
 ## Infomation that can be stored by other scripts / clients, this data will get saved to disk and send to all clients
-var user_meta: Dictionary
+var _user_meta: Dictionary
 
 ## Uuid of the current component, do not modify at runtime unless you know what you are doing, things will break
-var uuid: String = ""
+var _uuid: String = ""
 
 ## The class_name of this component this should always be set by the object that extends EngineComponent
-var self_class_name: String = "EngineComponent" : set = _set_self_class
+var _self_class_name: String = "EngineComponent" : set = _set_self_class
 
 ## Stores all the classes this component inherits from
-var class_tree: Array[String] = ["EngineComponent"]
+var _class_tree: Array[String] = ["EngineComponent"]
 
 ## ComponentID
 var _cid: int = -1
 
-## List of functions that are allowed to be called by external control scripts.
-var _control_methods: Dictionary[String, Dictionary] = {}
+## The SettingsManager
+var _settings_manager: SettingsManager = SettingsManager.new()
 
-## Settings for this component
-var _settings: Dictionary = {
-}
 
-## Network Config:
-## high_frequency_signals: Contains all the signals that should be send over the udp stream, instead of the tcp websocket 
-var network_config: Dictionary = {
-	"callbacks": {
+## Init
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	_uuid = p_uuid
+	_name = p_name
+	
+	_settings_manager.set_owner(self)
+	_settings_manager.set_inheritance_array(_class_tree)
+	_settings_manager.set_delete_signal(delete_requested)
+	
+	_settings_manager.register_setting("name", Data.Type.STRING, set_name, get_name, [name_changed])
+	
+	#_settings_manager.register_setting("CID", Data.Type.CID, CIDManager.set_component_id.bind(self), cid, [cid_changed])\
+	#.display("EngineComponent", 1)
+	
+	_settings_manager.register_networked_callbacks({
 		"on_name_changed": _set_name,
-		"on_delete_requested": local_delete,
+		"on_delete_requested": delete,
 		"on_user_meta_changed": _set_user_meta,
 		"on_user_meta_deleted": _delete_user_meta
-	}
-}
-
-
-
-func _init(p_uuid: String = UUID_Util.v4(), p_name: String = name) -> void:
-	uuid = p_uuid
-	name = p_name
+	})
 	
-	register_setting("EngineComponent", "name", set_name, get_name, name_changed, "STRING", 0, "Name")
-	register_setting("EngineComponent", "CID", CIDManager.set_component_id.bind(self), cid, cid_changed, Utils.TYPE_CID, 1, "CID")
-	_component_ready()
-	
-	print_verbose("I am: ", name, " | ", uuid)
+	print_verbose("I am: ", name(), " | ", uuid())
 
 
-## Override this function to provide a _ready function for your script
-func _component_ready() -> void:
-	pass
+## Shorthand for get_cid()
+func cid() -> int:
+	return get_cid()
+
+
+## shorthand for get_uuid()
+func uuid() -> String:
+	return get_uuid()
+
+
+## Shorthand for get_name()
+func name() -> String:
+	return get_name()
+
+
+## Shorthand for get_self_classname()
+func classname() -> String:
+	return get_self_classname()
+
+
+## Shorthand for get_settings_manager()
+func settings() -> SettingsManager:
+	return get_settings_manager()
+
+
+## Calls a method on the remote object.
+func rpc(p_method_name: String, p_args: Array = []) -> Promise:
+	return Network.send_command(_uuid, p_method_name, p_args)
 
 
 ## Sets the name of this component
 func set_name(new_name) -> void: 
 	rpc("set_name", [new_name])
-
-
-## Gets the name
-func get_name() -> String:
-	return name
-
-
-## Gets the cid
-func cid() -> int:
-	return _cid
-
-
-## Gets the class tree
-func get_class_tree() -> Array[String]:
-	return class_tree.duplicate()
-
-
-## Calls a method on the remote object.
-func rpc(p_method_name: String, p_args: Array = []) -> Promise:
-	return Client.send_command(uuid, p_method_name, p_args)
-
-
-## Registers a callback to a server signal
-func register_callback(p_signal_name: String, p_callback: Callable) -> void:
-	network_config.callbacks[p_signal_name] = p_callback
-
-
-## Registers a setting
-func register_setting(p_classname: String, p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_type: String, p_visual_line: int, p_visual_name: String, p_min: Variant = null, p_max: Variant = null, p_enum: Dictionary = {}) -> void:
-	_settings.get_or_add(p_classname, {})[p_key] = {
-			"setter": p_setter,
-			"getter": p_getter,
-			"signal": p_signal,
-			"data_type": p_type,
-			"visual_line": p_visual_line,
-			"visual_name": p_visual_name,
-			"min": p_min,
-			"max": p_max,
-			"enum": p_enum
-	}
-
-
-## Shorthand for register_setting() for a string value
-func register_setting_string(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_STRING, -1, p_key.capitalize())
-
-
-## Shorthand for register_setting() for a float value
-func register_setting_bool(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_BOOL, -1, p_key.capitalize(), null, null)
-
-
-## Shorthand for register_setting() for a float value
-func register_setting_float(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_min: float, p_max: float) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_FLOAT, -1, p_key.capitalize(), p_min, p_max)
-
-
-## Shorthand for register_setting() for a float value
-func register_setting_enum(p_key: String, p_setter: Callable, p_getter: Callable, p_signal: Signal, p_enum: Dictionary) -> void:
-	register_setting(self_class_name, p_key, p_setter, p_getter, p_signal, Utils.TYPE_ENUM, -1, p_key.capitalize(), null, null, p_enum)
-
-
-## Registers a custom setting panel
-func register_custom_panel(p_classname: String, p_key: String, p_entry_point: String, p_custom_panel: PackedScene) -> void:
-	_settings.get_or_add(p_classname, {})[p_key] = {
-			"data_type": Utils.TYPE_CUSTOM,
-			"entry_point": p_entry_point,
-			"custom_panel": p_custom_panel
-	}
-
-
-## Gets the settings for the given class
-func get_settings(p_classname: String) -> Dictionary:
-	return _settings.get(p_classname, {}).duplicate()
-
-
-## Registers a method that can be called by external control systems
-func register_control_method(p_name: String, p_down_method: Callable, p_up_method: Callable = Callable(), p_signal: Signal = Signal(), p_args: Array[int] = []) -> void:
-	_control_methods.merge({
-		p_name: {
-			"down": p_down_method,
-			"up": p_up_method,
-			"signal": p_signal,
-			"args": p_args
-		}
-	})
-
-
-## Gets a control method by name
-func get_control_methods() -> Dictionary[String, Dictionary]:
-	return _control_methods.duplicate()
-
-
-## Gets a control method by name
-func get_control_method(p_control_name: String) -> Dictionary:
-	return _control_methods.get(p_control_name
-	, {})
 
 
 ## Sets user_meta from the given value
@@ -189,96 +115,109 @@ func delete_user_meta(key: String) -> void:
 
 ## Returns the value from user meta at the given key, if the key is not found, default is returned
 func get_user_meta(key: String, default = null) -> Variant: 
-	return user_meta.get(key, default)
+	return _user_meta.get(key, default)
 
 
 ## Returns all user meta
 func get_all_user_meta() -> Dictionary:
-	return user_meta
+	return _user_meta
 
 
-## Internal: Sets the name of this component
-func _set_name(p_name: String) -> void:
-	name = p_name
-	name_changed.emit(name)
+## Gets the CID
+func get_cid() -> int:
+	return _cid
 
 
-## Sets the self class name
-func _set_self_class(p_self_class_name: String) -> void:
-	class_tree.append(p_self_class_name)
-	self_class_name = p_self_class_name
+## Gets the uuid
+func get_uuid() -> String:
+	return _uuid
 
 
-## Internal: Sets user meta
-func _set_user_meta(p_key: String, p_value: Variant) -> void:
-	user_meta[p_key] = p_value
-	user_meta_changed.emit(p_key, p_value)
+## Gets the name
+func get_name() -> String:
+	return _name
 
 
-## Internal: Deletes user meta
-func _delete_user_meta(p_key: String) -> void:
-	if user_meta.erase(p_key):
-		user_meta_deleted.emit(p_key)
+## Gets the classname of this EngineComponent
+func get_self_classname() -> String:
+	return _self_class_name
+
+
+## Gets the settings manager
+func get_settings_manager() -> SettingsManager:
+	return _settings_manager
+
+
+## Gets the class tree
+func get_class_tree() -> Array[String]:
+	return _class_tree.duplicate()
 
 
 ## Always call this function when you want to delete this component. 
-func delete() -> void: 
+func delete_rpc() -> void: 
 	rpc("delete")
 
 
 ## Deletes this component localy, with out contacting the server. Usefull when handling server side delete requests
-func local_delete() -> void:
-	_delete_request()
-	
+func delete() -> void:
 	delete_requested.emit()
-	ComponentDB.deregister_component(self)
-	
-	print(uuid, " Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
-
-
-## Overide this function to handle delete requests
-func _delete_request() -> void: return
+	print(_uuid, " Has had a delete request send. Currently has:", str(get_reference_count()), " refernces")
 
 
 ## Returns serialized version of this component
 func serialize() -> Dictionary:
 	var serialized_data: Dictionary = {}
-	serialized_data = _serialize_request()
 	
-	serialized_data.uuid = uuid
-	serialized_data.name = name
+	serialized_data.uuid = _uuid
+	serialized_data.name = _name
 	serialized_data.user_meta = get_all_user_meta()
 	
 	return serialized_data
 
-## Overide this function to serialize your object
-func _serialize_request() -> Dictionary: return {}
-
 
 ## Loades this object from a serialized version
-func load(p_serialized_data: Dictionary) -> void:
-	name = p_serialized_data.get("name", "Unnamed EngineComponent")
-	name_changed.emit(name)
+func deserialize(p_serialized_data: Dictionary) -> void:
+	_name = p_serialized_data.get("name", "Unnamed EngineComponent")
+	name_changed.emit(_name)
 
-	uuid = p_serialized_data.get("uuid", UUID_Util.v4())
+	_uuid = p_serialized_data.get("uuid", UUID_Util.v4())
 	
-	user_meta = p_serialized_data.get("user_meta", {})
-	user_meta_changed.emit("user_meta", user_meta)
+	_user_meta = p_serialized_data.get("user_meta", {})
+	user_meta_changed.emit("user_meta", _user_meta)
 	
 	var cid: int = type_convert(p_serialized_data.get("cid", -1), TYPE_INT)
 	if CIDManager.set_component_id_local(cid, self, true):
 		_cid = cid
 	
 	if not "uuid" in p_serialized_data:
-		print(name, " No uuid found in serialized_data, making new one: ", uuid)
-	
-	_load_request(p_serialized_data)
+		print(_name, " No uuid found in serialized_data, making new one: ", _uuid)
 
-## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void: return
+
+## Internal: Sets the name of this component
+func _set_name(p_name: String) -> void:
+	_name = p_name
+	name_changed.emit(_name)
+
+
+## Sets the self class name
+func _set_self_class(p_self_class_name: String) -> void:
+	_class_tree.append(p_self_class_name)
+	_self_class_name = p_self_class_name
+
+
+## Internal: Sets user meta
+func _set_user_meta(p_key: String, p_value: Variant) -> void:
+	_user_meta[p_key] = p_value
+	user_meta_changed.emit(p_key, p_value)
+
+
+## Internal: Deletes user meta
+func _delete_user_meta(p_key: String) -> void:
+	if _user_meta.erase(p_key):
+		user_meta_deleted.emit(p_key)
 
 
 ## Debug function to tell if this component is freed from memory
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
-		print("\"", self.name, "\" Is being freed, uuid: ", self.uuid)
+		print("\"", self._name, "\" Is being freed, uuid: ", self._uuid)

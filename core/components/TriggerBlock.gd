@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name TriggerBlock extends EngineComponent
 ## Block of triggers
@@ -29,16 +30,20 @@ var _triggers: Dictionary[int, Dictionary]
 
 
 ## Ready
-func _component_ready() -> void:
+func _init(p_uuid: String = UUID_Util.v4(), p_name: String = _name) -> void:
+	super._init(p_uuid, p_name)
+	
 	_set_name("TriggerBlock")
 	_set_self_class("TriggerBlock")
-	
-	register_callback("on_trigger_added", _add_trigger)
-	register_callback("on_trigger_removed", _remove_trigger)
-	register_callback("on_column_reset", _reset_column)
-	register_callback("on_trigger_name_changed", _rename_trigger)
-	register_callback("on_trigger_up", _call_trigger_up)
-	register_callback("on_trigger_down", _call_trigger_down)
+		
+	_settings_manager.register_networked_callbacks({
+		"on_trigger_added": _add_trigger,
+		"on_trigger_removed": _remove_trigger,
+		"on_column_reset": _reset_column,
+		"on_trigger_name_changed": _rename_trigger,
+		"on_trigger_up": _call_trigger_up,
+		"on_trigger_down": _call_trigger_down,
+	})
 
 
 ## Adds a trigger at the given row and column
@@ -74,6 +79,50 @@ func call_trigger_down(p_row: int, p_column: int, p_value: Variant = null) -> Pr
 ## Gets all the triggers
 func get_triggers() -> Dictionary[int, Dictionary]:
 	return _triggers.duplicate()
+
+
+## Overide this function to serialize your object
+func serialize() -> Dictionary:
+	var triggers: Dictionary[int, Dictionary]
+	
+	for row: int in _triggers:
+		triggers[row] = {}
+		for column: int in _triggers[row]:
+			triggers[row][column] = {
+				"component": _triggers[row][column].component.uuid,
+				"up": _triggers[row][column].up.get_method() if _triggers[row][column].up else "",
+				"down": _triggers[row][column].down.get_method() if _triggers[row][column].down else "",
+				"name": _triggers[row][column].name,
+				"id": _triggers[row][column].id
+			}
+	
+	return super.serialize().merged({
+		"triggers": triggers
+	})
+
+
+## Overide this function to handle load requests
+func deserialize(p_serialized_data: Dictionary) -> void:
+	super.deserialize(p_serialized_data)
+	
+	var triggers: Dictionary = type_convert(p_serialized_data.get("triggers", {}), TYPE_DICTIONARY)
+	
+	for row_key: int in triggers.keys():
+		var row_dict: Dictionary = type_convert(triggers.get(row_key, {}), TYPE_DICTIONARY)
+		
+		for column_key: int in row_dict.keys():
+			var trigger_data: Dictionary = type_convert(row_dict.get(column_key, {}), TYPE_DICTIONARY)
+			
+			var component_id: String = type_convert(trigger_data.get("component", ""), TYPE_STRING)
+			var id: String = type_convert(trigger_data.get("id", ""), TYPE_STRING)
+			var name: String = type_convert(trigger_data.get("name", ""), TYPE_STRING)
+			
+			if component_id == null:
+				continue
+			
+			ComponentDB.request_component(component_id, func(component: EngineComponent) -> void:
+				_add_trigger(component, id, name, row_key, column_key, true)
+			)
 
 
 ## Internal: Adds a trigger at the given row and column
@@ -147,46 +196,3 @@ func _call_trigger_down(p_row: int, p_column: int, p_value: Variant = null) -> v
 		return
 	
 	trigger_down.emit(p_row, p_column, p_value)
-
-
-## Overide this function to serialize your object
-func _serialize_request() -> Dictionary:
-	var triggers: Dictionary[int, Dictionary]
-
-	for row: int in _triggers:
-		triggers[row] = {}
-		for column: int in _triggers[row]:
-			triggers[row][column] = {
-				"component": _triggers[row][column].component.uuid,
-				"up": _triggers[row][column].up.get_method() if _triggers[row][column].up else "",
-				"down": _triggers[row][column].down.get_method() if _triggers[row][column].down else "",
-				"name": _triggers[row][column].name,
-				"id": _triggers[row][column].id
-			}
-
-	return {
-		"triggers": triggers
-	}
-
-
-## Overide this function to handle load requests
-func _load_request(p_serialized_data: Dictionary) -> void:
-	var triggers: Dictionary = type_convert(p_serialized_data.get("triggers", {}), TYPE_DICTIONARY)
-
-	for row_key: int in triggers.keys():
-		var row_dict: Dictionary = type_convert(triggers.get(row_key, {}), TYPE_DICTIONARY)
-
-		for column_key: int in row_dict.keys():
-			var trigger_data: Dictionary = type_convert(row_dict.get(column_key, {}), TYPE_DICTIONARY)
-
-			var component_id: String = type_convert(trigger_data.get("component", ""), TYPE_STRING)
-			var id: String = type_convert(trigger_data.get("id", ""), TYPE_STRING)
-			var name: String = type_convert(trigger_data.get("name", ""), TYPE_STRING)
-
-			if component_id == null:
-				continue
-			
-			ComponentDB.request_component(component_id, func(component: EngineComponent) -> void:
-				_add_trigger(component, id, name, row_key, column_key, true)
-			)
-		
