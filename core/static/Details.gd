@@ -5,7 +5,7 @@
 class_name Details extends RefCounted
 ## Static class to store program detils
 
-static var version: String = "1.0.0 Beta"
+static var version: String = ProjectSettings.get_setting("application/config/version")
 
 static var schema_version: int = 5
 

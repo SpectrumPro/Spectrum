@@ -283,6 +283,12 @@ _resolve_button_container = NodePath("../HBoxContainer/MainContent/OverlayContai
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar"]
 layout_mode = 2
 
+[node name="VersionLabel" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Version"
+label_settings = ExtResource("13_c1is7")
+
 [node name="QuickAccessContainer" type="HBoxContainer" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
@@ -312,13 +318,6 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 label_settings = SubResource("LabelSettings_7y6be")
-
-[node name="VersionLabel" type="Label" parent="VBoxContainer/UICoreStatusBar/HBoxContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 8
-text = "Version"
-label_settings = ExtResource("13_c1is7")
 
 [node name="StartupBG" type="PanelContainer" parent="."]
 visible = false
