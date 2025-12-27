@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bfdb7diyn2pub"]
 
 [ext_resource type="StyleBox" uid="uid://csle20exwqtti" path="res://assets/styles/PanelMenuBar.tres" id="1_34rl8"]
-[ext_resource type="Script" uid="uid://dlxjko72ewn11" path="res://panels/UIObjectPicker/UIObjectPicker.gd" id="2_784nf"]
+[ext_resource type="Script" uid="uid://dlxjko72ewn11" path="res://panels/popups/UIObjectPicker/UIObjectPicker.gd" id="2_784nf"]
 [ext_resource type="Texture2D" uid="uid://dylarrrwlpxwu" path="res://assets/icons/Search.svg" id="2_sow86"]
 [ext_resource type="PackedScene" uid="uid://dfu5s8fjy0ex4" path="res://components/EditControls/EditControls.tscn" id="3_784nf"]
 [ext_resource type="Script" uid="uid://c1mxckcn5x4su" path="res://components/Scripts/TaggedLineEdit.gd" id="4_784nf"]
