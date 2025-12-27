@@ -2,15 +2,15 @@
 
 [ext_resource type="PackedScene" uid="uid://bojo5mnmadf4j" path="res://panels/popups/UIPanelPicker/UIPanelPicker.tscn" id="1_e0vty"]
 [ext_resource type="PackedScene" uid="uid://cgkb6rh0joakn" path="res://panels/UIPanelSettings/UIPanelSettings.tscn" id="2_m68sf"]
-[ext_resource type="PackedScene" uid="uid://d0naqdd3py4jm" path="res://panels/UIMainMenu/UIMainMenu.tscn" id="3_3r4oo"]
+[ext_resource type="PackedScene" uid="uid://d0naqdd3py4jm" path="res://panels/popups/UIMainMenu/UIMainMenu.tscn" id="3_3r4oo"]
 [ext_resource type="PackedScene" uid="uid://c3ri0p6vmbv6v" path="res://panels/UISettings/UISettings.tscn" id="4_u85oq"]
 [ext_resource type="PackedScene" uid="uid://dm6rs78fm1lh4" path="res://panels/UISaveLoad/UISaveLoad.tscn" id="5_aq3lt"]
-[ext_resource type="PackedScene" uid="uid://bgos7cwjodq8j" path="res://panels/UICommandPalette/UICommandPalette.tscn" id="6_5wuys"]
-[ext_resource type="PackedScene" uid="uid://bfdb7diyn2pub" path="res://panels/UIObjectPicker/UIObjectPicker.tscn" id="7_l8vcs"]
+[ext_resource type="PackedScene" uid="uid://bgos7cwjodq8j" path="res://panels/popups/UICommandPalette/UICommandPalette.tscn" id="6_5wuys"]
+[ext_resource type="PackedScene" uid="uid://bfdb7diyn2pub" path="res://panels/popups/UIObjectPicker/UIObjectPicker.tscn" id="7_l8vcs"]
 [ext_resource type="PackedScene" uid="uid://b1kltq456o7pj" path="res://panels/popups/UIPopupSettingsModule/UIPopupSettingsModule.tscn" id="8_fdaae"]
 [ext_resource type="PackedScene" uid="uid://dbindagv7rpfp" path="res://panels/UIWindowManager/UIWindowManager.tscn" id="9_if4f4"]
 [ext_resource type="PackedScene" uid="uid://k0p6c6xe8xmi" path="res://panels/popups/UIWindowID/UIWindowID.tscn" id="10_0h5oi"]
-[ext_resource type="PackedScene" uid="uid://bcksw5esp2mib" path="res://panels/UIManifestPicker/UIManifestPicker.tscn" id="11_jcwaf"]
+[ext_resource type="PackedScene" uid="uid://bcksw5esp2mib" path="res://panels/popups/UIManifestPicker/UIManifestPicker.tscn" id="11_jcwaf"]
 [ext_resource type="PackedScene" uid="uid://dpbusafl685o6" path="res://panels/popups/UIInterfaceSelector/UIInterfaceSelector.tscn" id="12_jcqk3"]
 
 [node name="WindowPopups" type="Control"]
@@ -164,7 +164,6 @@ offset_right = 343.0
 offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
-column_min_size = 150
 display_mode = 1
 
 [node name="UIInterfaceSelector" parent="." instance=ExtResource("12_jcqk3")]

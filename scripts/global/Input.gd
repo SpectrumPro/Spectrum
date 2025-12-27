@@ -1,5 +1,6 @@
-# Copyright (c) 2024 Liam Sherwin, All rights reserved.
-# This file is part of the Spectrum Lighting Engine, licensed under the GPL v3.
+# Copyright (c) 2025 Liam Sherwin. All rights reserved.
+# This file is part of the Spectrum Lighting Controller, licensed under the GPL v3.0 or later.
+# See the LICENSE file for details.
 
 class_name SpectrumInputServer extends Node
 ## Custom input manager for Spectrum
@@ -83,17 +84,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 		elif event.is_action_released(input_action.uuid()):
 			input_action.deactivate()
-
-
-## Notification
-func _notification(p_what: int) -> void:
-	if p_what == NOTIFICATION_WM_CLOSE_REQUEST:
-		Interface.prompt_popup_dialog(self, "Close Main Window?")\
-		.button("Cancel", false)\
-		.button("Close", true, Color.RED)\
-		.then(func ():
-			get_tree().quit()
-		)
 
 
 ## Resets to a default state
