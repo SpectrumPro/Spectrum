@@ -33,6 +33,12 @@ jobs:
           cache: true
           presets_to_export: windows.x86_64, macOS.universal, linux.x86.64
 
+      - name: Rename Archives
+        run: |
+          mv linux.x86_64.zip SpectrumClient.x86_64.linux.${{inputs.version}}.zip
+          mv windows.x86_64.zip SpectrumClient.x86_64.windows.${{inputs.version}}.zip
+          mv macos.universal.zip SpectrumClient.universal.macos.${{inputs.version}}.zip
+
       - name: Create git tag
         run: |
           git tag ${{ inputs.version }}
