@@ -31,7 +31,7 @@ jobs:
           relative_project_path: ./
           archive_output: true 
           cache: true
-          presets_to_export: windows.x86_64, macOS.universal, linux.x86.64
+          presets_to_export: windows.x86_64, macOS.universal, linux.x86_64
 
       - name: Rename Archives
         run: |
