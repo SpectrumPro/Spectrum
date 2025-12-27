@@ -15,6 +15,15 @@ signal window_added(window: UIWindow)
 ## Emitted when a window is removed
 signal window_removed(window: UIWindow)
 
+## Emitted when the UI scale factor is changed
+signal scale_factor_changed(scale_factor: float)
+
+## Emitted when the save ui on quit state is changed
+signal save_ui_on_quit_changed(save_ui: bool)
+
+## Emitted before the program is exited
+signal program_closing()
+
 
 ## Enum for ResolveTypes
 enum ResolveType {
@@ -161,6 +170,9 @@ func _init() -> void:
 	settings_manager.set_owner(self)
 	settings_manager.set_inheritance_array(["Interface"])
 	
+	settings_manager.register_setting("ScaleFactor", Data.Type.FLOAT, set_scale_factor, get_scale_factor, [scale_factor_changed]).set_min_max(0.2, 2)
+	settings_manager.register_setting("SaveUIOnQuit", Data.Type.BOOL, set_save_ui_on_quit, get_save_ui_on_quit, [save_ui_on_quit_changed])
+	
 	settings_manager.register_control("HideAllPopups", Data.Type.ACTION, hide_all_popup_panels, Callable(), [])
 	settings_manager.register_control("OpenMainMenu", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.MAIN_MENU, self, true), Callable(), [])
 	settings_manager.register_control("OpenSettings", Data.Type.ACTION, set_popup_visable.bind(WindowPopup.SETTINGS, self, true), Callable(), [])
@@ -187,6 +199,15 @@ func _ready() -> void:
 	(func () -> void:
 		load_ui()
 	).call_deferred()
+
+
+## Notification
+func _notification(p_what: int) -> void:
+	if p_what == NOTIFICATION_WM_CLOSE_REQUEST:
+		Interface.prompt_popup_dialog(self, "Close Main Window?")\
+		.button("Cancel", false)\
+		.button("Close", true, Color.RED)\
+		.then(quit)
 
 
 ## Registers all WindowPopups into the corrisponding PopupConfig class
@@ -424,6 +445,7 @@ func hide_all_popup_panels() -> void:
 ## Saves the UI to the ui save file
 func save_ui() -> void:
 	Utils.save_json_to_file(_config.ui_save_location, _config.ui_save_file, serialize())
+	_config.save_user_config()
 
 
 ## Loads the UI from the ui save file
@@ -696,9 +718,60 @@ func exit_resolve_mode() -> bool:
 	return true
 
 
+## Returns the SettingsManager object for ClientInterface
+func settings() -> SettingsManager:
+	return settings_manager
+
+
+## Returns the InterfaceConfig object
+func config() -> InterfaceConfig:
+	return _config
+
+
+## Quits the program
+func quit() -> void:
+	program_closing.emit()
+	
+	if get_save_ui_on_quit():
+		save_ui()
+	
+	get_tree().quit()
+
+
+## Sets the UI Scale factor
+func set_scale_factor(p_scale_factor: float) -> void:
+	_config.scale_factor = p_scale_factor
+	
+	for window: UIWindow in _windows.get_right():
+		window.content_scale_factor = p_scale_factor
+	
+	scale_factor_changed.emit(p_scale_factor)
+
+
+## Sets the save ui on quit state
+func set_save_ui_on_quit(p_save_ui: bool) -> void:
+	_config.save_ui_on_quit = p_save_ui
+	
+	save_ui_on_quit_changed.emit(p_save_ui)
+
+ 
+## Gets the UI scale factor
+func get_scale_factor() -> float:
+	return _config.scale_factor
+
+
+## Gets the save UI on quit option
+func get_save_ui_on_quit() -> bool:
+	return _config.save_ui_on_quit
+
+
 ## Loads the local config file
 func _load_config(p_config: InterfaceConfig) -> void:
+	if is_instance_valid(_config):
+		return
+	
 	_config = p_config
+	_config.load_user_config()
 	
 	for entry: CommandPaletteEntry in p_config.command_palette_default_items:
 		add_command_palette_entry(entry)

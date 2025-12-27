@@ -6,8 +6,12 @@ class_name SettingsManagerView extends UIComponent
 ## SettingsManagerView
 
 
+## List of Data.Types that wont be displayed
+@export var module_type_denylist: Array[Data.Type]
+
 ## The VBox for all SettingsManagerModuleView
 @onready var _view_container: VBoxContainer = $VBoxContainer
+
 
 ## The current SettingsManager
 var _manager: SettingsManager
@@ -46,6 +50,9 @@ func set_manager(p_manager: SettingsManager) -> void:
 		_view_container.add_child(view)
 	
 	for module: SettingsModule in _manager.get_modules().values():
+		if module.get_data_type() in module_type_denylist:
+			continue
+		
 		var view: SettingsManagerModuleView
 		
 		match module.get_data_type():

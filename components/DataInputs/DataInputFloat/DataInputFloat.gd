@@ -49,7 +49,7 @@ func _settings_module_changed(p_module: SettingsModule) -> void:
 
 ## Called when the orignal value is changed
 func _module_value_changed(p_value: Variant, ...p_args) -> void:
-	if p_value is int and not _unsaved:
+	if p_value is float and not _unsaved:
 		_spin_box.set_value_no_signal(p_value)
 
 
@@ -66,7 +66,9 @@ func _set_editable(p_editable: bool) -> void:
 ## Called when the value is changed
 func _on_spin_box_value_changed(value: float) -> void:
 	if _ignore_next_update:
+		_ignore_next_update = false
 		return
+	
 	
 	_update_outline_feedback(_module.get_setter().call(value))
 	_ignore_next_update = false

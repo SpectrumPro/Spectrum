@@ -10,9 +10,11 @@ class_name UISetting extends UIPanel
 ## Container for tab buttons
 @export var _tab_button_container: HBoxContainer
 
+## The SettingsManagerView for Interface settings
+@export var _interface_settings: SettingsManagerView
 
 ## Enum for each tab
-enum Tab {ClientSettings, ServerSettings, NetworkManager, Shortcuts}
+enum Tab {InterfaceSettings, ServerSettings, NetworkManager, Shortcuts}
 
 
 ## init
@@ -20,6 +22,11 @@ func _init() -> void:
 	super._init()
 	
 	_set_class_name("UISettings")
+
+
+## ready
+func _ready() -> void:
+	_interface_settings.set_manager(Interface.settings())
 
 
 ## Switched to the given tab

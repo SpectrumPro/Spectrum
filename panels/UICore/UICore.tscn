@@ -70,7 +70,7 @@ font_color = Color(0.789062, 0.789062, 0.789062, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphhv"]
 bg_color = Color(0.09, 0.09, 0.09, 1)
 
-[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar", "_startup_bg", "edit_controls", "menu_bar")]
+[node name="UICore" type="PanelContainer" node_paths=PackedStringArray("_side_bar", "_startup_bg", "_notice_container", "edit_controls", "menu_bar")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -80,6 +80,7 @@ theme_override_styles/panel = ExtResource("1_7kg0u")
 script = ExtResource("1_febpr")
 _side_bar = NodePath("VBoxContainer/HBoxContainer/UICorePrimarySideBar")
 _startup_bg = NodePath("StartupBG")
+_notice_container = NodePath("NoticeContainer")
 edit_controls = NodePath("VBoxContainer/PanelMenuBar/HBoxContainer/EditControls")
 menu_bar = NodePath("VBoxContainer/PanelMenuBar")
 
@@ -319,7 +320,12 @@ layout_mode = 2
 layout_mode = 2
 label_settings = SubResource("LabelSettings_7y6be")
 
+[node name="NoticeContainer" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
 [node name="StartupBG" type="PanelContainer" parent="."]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bphhv")
 
