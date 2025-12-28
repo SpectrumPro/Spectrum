@@ -102,7 +102,7 @@ show_settings = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="UICorePrimarySideBar" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_tab_button_container", "_menu_button", "_tab_control_container", "_overlay_container", "_tab_button_scroll", "_ui_core")]
+[node name="UICorePrimarySideBar" type="PanelContainer" parent="VBoxContainer/HBoxContainer" node_paths=PackedStringArray("_tab_button_container", "_menu_button", "_tab_control_container", "_overlay_container", "_tab_button_scroll", "_edit_button", "_ui_core")]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_aoeir")
@@ -112,6 +112,7 @@ _menu_button = NodePath("VBoxContainer/Menu")
 _tab_control_container = NodePath("../MainContent/HSplitContainer/VSplitContainer/TabControlContainer")
 _overlay_container = NodePath("../MainContent/OverlayContainer")
 _tab_button_scroll = NodePath("VBoxContainer/ScrollContainer")
+_edit_button = NodePath("VBoxContainer/Edit")
 _ui_core = NodePath("../../..")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/UICorePrimarySideBar"]
