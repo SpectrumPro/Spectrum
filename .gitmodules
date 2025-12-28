@@ -1,4 +1,0 @@
-[submodule "assets/logos"]
-	path = assets/logos
-  url = https://github.com/SpectrumPro/logos
-  ignore = dirty
