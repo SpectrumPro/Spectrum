@@ -151,6 +151,9 @@ func get_current_value(p_zone: String, p_parameter: String, p_allow_default: boo
 
 ## Gets all the zones
 func get_zones() -> Array[String]:
+	if not is_instance_valid(_manifest):
+		return []
+	
 	return _manifest.get_zones(_mode)
 
 

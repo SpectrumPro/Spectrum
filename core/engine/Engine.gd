@@ -287,7 +287,6 @@ func _set_file_name(p_file_name: String) -> void:
 	file_name_changed.emit(_current_file_name)
 
 
-
 ## Internal: Resets this engine to its default state
 func _reset():
 	print("Performing Engine Reset!")
@@ -296,4 +295,4 @@ func _reset():
 	
 	for object_class_name: String in _config.root_classes:
 		for component: EngineComponent in ComponentDB.get_components_by_classname(object_class_name):
-			component.local_delete()
+			component.delete()

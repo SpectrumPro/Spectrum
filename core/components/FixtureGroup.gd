@@ -168,7 +168,7 @@ func _add_group_items(group_items: Array) -> void:
 func _remove_fixture(fixture: Fixture, no_signal: bool = false) -> bool:
 	if not _fixtures.has(fixture): return false
 	
-	_fixtures[fixture].local_delete()
+	_fixtures[fixture].delete()
 	_fixtures.erase(fixture)
 	
 	if not no_signal:
