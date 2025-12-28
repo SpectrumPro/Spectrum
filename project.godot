@@ -20,8 +20,8 @@ config/auto_accept_quit=false
 config/features=PackedStringArray("4.5")
 boot_splash/bg_color=Color(0.0901961, 0.0901961, 0.0901961, 1)
 boot_splash/fullsize=false
-boot_splash/image="uid://bg5hotmf8svep"
-config/icon="uid://m2tieo4unrrd"
+boot_splash/image="uid://bsbmpadvx8wi8"
+config/icon="uid://b25mctiamjbwy"
 config/macos_native_icon="res://assets/logos/spectrum/spectrum_dark.icns"
 config/windows_native_icon="res://assets/logos/spectrum/spectrum_dark.ico"
 
