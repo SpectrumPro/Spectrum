@@ -153,9 +153,6 @@ popup/item_1/id = 1
 layout_mode = 2
 icon = ExtResource("6_xrr4a")
 
-[node name="EditControls" parent="VBoxContainer/PanelMenuBar/HBoxContainer" index="2"]
-show_settings = true
-
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3

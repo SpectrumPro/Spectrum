@@ -55,6 +55,9 @@ signal use_scroll_changed(p_use_scroll: bool)
 ## The ScrollContainer that contains the _tab_button_container
 @export var _tab_button_scroll: ScrollContainer
 
+## The Edit Button
+@export var _edit_button: Button
+
 ## The UICore
 @export var _ui_core: UICore
 
@@ -203,9 +206,11 @@ func switch_to_tab(p_tab: TabItem) -> void:
 	
 	_current_tab = p_tab
 	_current_empty_tab = -1
+	_edit_button.set_pressed_no_signal(false)
 	
 	if is_instance_valid(_current_tab):
 		Interface.show_and_fade(_current_tab.get_panel())
+		_edit_button.set_pressed_no_signal(_current_tab.get_panel().get_edit_mode())
 		
 		if _current_tab.get_panel().get_edit_mode(): 
 			Interface.show_and_fade(_current_tab.get_panel().get_menu_bar())
@@ -584,8 +589,7 @@ class TabItem extends RefCounted:
 
 
 #
-### The Edit Button
-#@export var _edit_button: Button
+
 #
 ### The PanelTypeOption menu
 #@export var _panel_type_option: PanelContainer

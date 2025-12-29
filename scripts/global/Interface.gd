@@ -778,3 +778,7 @@ func _load_config(p_config: InterfaceConfig) -> void:
 	
 	for script: Script in p_config.object_picker_default_items:
 		_object_picker_index[script] = p_config.object_picker_default_items[script]
+	
+	await get_tree().process_frame 
+	
+	set_scale_factor(_config.scale_factor)

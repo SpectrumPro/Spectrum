@@ -21,6 +21,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 step = 0.001
+select_all_on_focus = true
 
 [node name="Outline" type="Panel" parent="HBox/SpinBox"]
 modulate = Color(1, 1, 1, 0)

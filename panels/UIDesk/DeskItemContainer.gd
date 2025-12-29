@@ -67,8 +67,10 @@ func _ready() -> void:
 	
 	_set_anchors_to_current_size.call_deferred()
 	
-	update_label()
 	set_process(false)
+	
+	await get_tree().process_frame
+	update_label()
 
 
 ## Process
@@ -127,10 +129,10 @@ func get_panel() -> Variant:
 ## Updates the label to show the correct position and size
 func update_label() -> void:
 	if size > Vector2(180, 180):
-		_label_node.text = "W:" + str(_target_size.x) + " H:" + str(_target_size.y) + "\nX:" + str(_target_position.x) + " Y:" + str(_target_position.y)
+		_label_node.text = "W:" + str(int(_target_size.x)) + " H:" + str(int(_target_size.y)) + "\nX:" + str(int(_target_position.x)) + " Y:" + str(int(_target_position.y))
 		_label_node.label_settings.font_size = 16
 	else:
-		_label_node.text = "W:" + str(_target_size.x) + "\nH:" + str(_target_size.y) + "\nX:" + str(_target_position.x) + "\nY:" + str(_target_position.y)
+		_label_node.text = "W:" + str(int(_target_size.x)) + "\nH:" + str(int(_target_size.y)) + "\nX:" + str(int(_target_position.x)) + "\nY:" + str(int(_target_position.y))
 		_label_node.label_settings.font_size = 10
 
 
@@ -138,8 +140,10 @@ func update_label() -> void:
 func serialize() -> Dictionary:
 	return super.serialize().merged({
 		"type": "",
-		"position": [position.x, position.y],
-		"size": [size.x, size.y],
+		"anchor_left": get_anchor(SIDE_LEFT),
+		"anchor_right": get_anchor(SIDE_RIGHT),
+		"anchor_top": get_anchor(SIDE_TOP),
+		"anchor_bottom": get_anchor(SIDE_BOTTOM),
 		"serialized_panel": _panel.serialize() if _panel else {}
 	})
 

@@ -208,26 +208,29 @@ func deserialize(p_serialized_data: Dictionary) -> void:
 		var serialized_panel: Dictionary = type_convert(serialized_container.get("serialized_panel", []), TYPE_DICTIONARY)
 		var panel_class: String = type_convert(serialized_panel.get("class", []), TYPE_STRING)
 		
-		var saved_position: Array = type_convert(serialized_container.get("position", []), TYPE_ARRAY)
-		var panel_position: Vector2 = Vector2.ZERO
-		
-		var saved_size: Array = type_convert(serialized_container.get("size", []), TYPE_ARRAY)
-		var panel_size: Vector2 = Vector2.ZERO
-		
-		if saved_position.size() == 2:
-			panel_position = Vector2(type_convert(saved_position[0], TYPE_INT), type_convert(saved_position[1], TYPE_INT))
-		
-		if saved_size.size() == 2:
-			panel_size = Vector2(type_convert(saved_size[0], TYPE_INT), type_convert(saved_size[1], TYPE_INT))
+		var panel_anchor_left: float = type_convert(serialized_container.get("anchor_left"), TYPE_FLOAT)
+		var panel_anchor_right: float = type_convert(serialized_container.get("anchor_right"), TYPE_FLOAT)
+		var panel_anchor_top: float = type_convert(serialized_container.get("anchor_top"), TYPE_FLOAT)
+		var panel_anchor_bottom: float = type_convert(serialized_container.get("anchor_bottom"), TYPE_FLOAT)
 		
 		var panel: UIPanel = UIDB.instance_panel(panel_class)
 		
 		if not is_instance_valid(panel):
 			continue
 		
-		add_panel(panel, panel_position, panel_size)
-		panel.deserialize(serialized_panel)
+		var container: UIDeskItemContainer = add_panel(panel, Vector2.ZERO, Vector2.ZERO)
 		
+		container.set_anchor(SIDE_LEFT, panel_anchor_left, true, true)
+		container.set_anchor(SIDE_RIGHT, panel_anchor_right, true, true)
+		container.set_anchor(SIDE_TOP, panel_anchor_top, true, true)
+		container.set_anchor(SIDE_BOTTOM, panel_anchor_bottom, true, true)
+		
+		container.set_offset(SIDE_LEFT, 0)
+		container.set_offset(SIDE_RIGHT, 0)
+		container.set_offset(SIDE_TOP, 0)
+		container.set_offset(SIDE_BOTTOM, 0)
+		
+		panel.deserialize(serialized_panel)
 	
 	set_grid_size(type_convert(p_serialized_data.get("grid_size", _grid_size), TYPE_INT))
 
